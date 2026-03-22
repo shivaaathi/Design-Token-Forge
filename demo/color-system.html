@@ -509,7 +509,7 @@ var PE = window.PaletteEngine;
 // ══════════════════════════════════════════════════════════════
 var LIGHT_MAP = {
   'content-default':14,'content-strong':15,'content-subtle':10,'content-faint':7,
-  'component-bg-default':12,'component-bg-hover':14,'component-bg-pressed':15,
+  'component-bg-default':13,'component-bg-hover':14,'component-bg-pressed':15,
   'component-outline-default':9,'component-outline-hover':10,'component-outline-pressed':12,
   'component-separator':4,
   'container-bg':2,'container-hover':3,'container-pressed':4,'container-outline':7,'container-separator':4,
@@ -517,7 +517,7 @@ var LIGHT_MAP = {
 };
 var DARK_MAP = {
   'content-default':5,'content-strong':4,'content-subtle':7,'content-faint':10,
-  'component-bg-default':10,'component-bg-hover':9,'component-bg-pressed':8,
+  'component-bg-default':12,'component-bg-hover':10,'component-bg-pressed':9,
   'component-outline-default':12,'component-outline-hover':10,'component-outline-pressed':9,
   'component-separator':17,
   'container-bg':18,'container-hover':17,'container-pressed':16,'container-outline':14,'container-separator':17,
@@ -1344,10 +1344,12 @@ ghCommitBtn.addEventListener('click', function() {
   // Build the CSS content from current palette state
   var primCSS = buildPrimitivesFileCSS();
   var semCSS = buildSemanticFileCSS();
+  var surfCSS = buildSurfacesFileCSS();
 
   var filesToCommit = [
     { path: 'packages/tokens/src/primitives.css', content: primCSS },
-    { path: 'packages/tokens/src/semantic.css', content: semCSS }
+    { path: 'packages/tokens/src/semantic.css', content: semCSS },
+    { path: 'packages/tokens/src/surfaces.css', content: surfCSS }
   ];
 
   ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Committing to GitHub...';
@@ -1446,9 +1448,51 @@ function buildPrimitivesFileCSS() {
     }
     lines.push('');
   }
-  // Spacing and typography from existing file (preserve them)
-  lines.push('  /* \u2500\u2500 Spacing \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */');
-  lines.push('  /* (spacing tokens preserved from source) */');
+  // Spacing and typography (fixed tokens — not color-dependent)
+  lines.push('');
+  lines.push('  /* ═══════════════════════════════════════════════════════════');
+  lines.push('     Spacing  (43 tokens, dense in 1–15 px range)');
+  lines.push('     ═══════════════════════════════════════════════════════════ */');
+  var spacingTokens = [
+    'none:0px','1:1px','2:2px','3:3px','4:4px','5:5px','6:6px','8:8px',
+    '10:10px','11:11px','12:12px','13:13px','14:14px','15:15px','16:16px',
+    '18:18px','20:20px','22:22px','24:24px','25:25px','26:26px','28:28px',
+    '30:30px','32:32px','36:36px','40:40px','44:44px','45:45px','48:48px',
+    '50:50px','54:54px','56:56px','60:60px','64:64px','70:70px','72:72px',
+    '80:80px','90:90px','96:96px','100:100px','112:112px','120:120px'
+  ];
+  for (var sp = 0; sp < spacingTokens.length; sp++) {
+    var parts = spacingTokens[sp].split(':');
+    lines.push('  --spacing-' + parts[0] + ': ' + parts[1] + ';');
+  }
+  lines.push('');
+  lines.push('  /* ═══════════════════════════════════════════════════════════');
+  lines.push('     Typography');
+  lines.push('     ═══════════════════════════════════════════════════════════ */');
+  lines.push('  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;');
+  lines.push('  --font-family-sans: var(--font-family);');
+  lines.push('  --font-family-mono: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;');
+  var fontSizes = ['10:10px','11:11px','12:12px','13:13px','14:14px','16:16px','18:18px','20:20px','24:24px','26:26px','28:28px','32:32px','40:40px'];
+  for (var fs2 = 0; fs2 < fontSizes.length; fs2++) {
+    var fp = fontSizes[fs2].split(':');
+    lines.push('  --font-size-' + fp[0] + ': ' + fp[1] + ';');
+  }
+  lines.push('  --font-weight-regular: 400;');
+  lines.push('  --font-weight-medium: 500;');
+  lines.push('  --font-weight-semibold: 600;');
+  lines.push('  --font-weight-bold: 700;');
+  lines.push('  --font-weight-extrabold: 900;');
+  lines.push('  --line-height-tight: 1.25;');
+  lines.push('  --line-height-snug: 1.375;');
+  lines.push('  --line-height-normal: 1.5;');
+  lines.push('  --line-height-relaxed: 1.625;');
+  lines.push('  --line-height-loose: 2;');
+  lines.push('  --letter-spacing-tighter: -0.05em;');
+  lines.push('  --letter-spacing-tight: -0.025em;');
+  lines.push('  --letter-spacing-normal: 0em;');
+  lines.push('  --letter-spacing-wide: 0.025em;');
+  lines.push('  --letter-spacing-wider: 0.05em;');
+  lines.push('  --letter-spacing-widest: 0.1em;');
   lines.push('}');
   return lines.join('\n');
 }
@@ -1505,6 +1549,89 @@ function buildSemanticFileCSS() {
 function rolePrefix(r) {
   var PRIM_PREFIX = { primary:'monochromatic', brand:'brand', danger:'danger', warning:'warning', info:'info', success:'success', neutral:'neutral', greyscale:'greyscale', desaturated:'desaturated' };
   return PRIM_PREFIX[r.id] || r.id;
+}
+
+// Build surfaces.css from greyscale + monochromatic palette steps
+function buildSurfacesFileCSS() {
+  var grey = palettes.greyscale;
+  var mono = palettes.primary;
+  if (!grey || !mono) return null; // can't generate without these palettes
+
+  // Step name → palette index mapping
+  var stepIdx = {};
+  for (var si = 0; si < grey.steps.length; si++) stepIdx[grey.steps[si].name] = si;
+
+  function gs(stepName) { return grey.steps[stepIdx[stepName]].hex; }
+  function ms(stepName) {
+    for (var mi = 0; mi < mono.steps.length; mi++) {
+      if (mono.steps[mi].name === stepName) return mono.steps[mi].hex;
+    }
+    return '#000000';
+  }
+
+  // Surface step maps (greyscale for neutral, monochromatic for accent)
+  var PROP_ORDER = ['bg','hover','pressed','outline','separator',
+    'ct-default','ct-strong','ct-subtle','ct-faint',
+    'cm-bg','cm-bg-hover','cm-bg-pressed',
+    'cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator'];
+
+  var L = {
+    bright:  {bg:'white',hover:'25',pressed:'50',outline:'150',separator:'150','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'150'},
+    base:    {bg:'25',hover:'50',pressed:'75',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'white','cm-bg-hover':'25','cm-bg-pressed':'50','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'},
+    dim:     {bg:'50',hover:'75',pressed:'100',outline:'175',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'300','cm-separator':'175'},
+    deep:    {bg:'75',hover:'100',pressed:'150',outline:'175',separator:'200','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'450','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'200','cm-outline-hover':'250','cm-outline-pressed':'300','cm-separator':'200'},
+    container:{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'150','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'150'},
+    'over-container':{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'},
+    float:   {bg:'white',hover:'25',pressed:'50',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'550','ct-faint':'400','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'175','cm-outline-hover':'250','cm-outline-pressed':'300','cm-separator':'175'},
+    inverse: {bg:'900',hover:'850',pressed:'800',outline:'700',separator:'700','ct-default':'25','ct-strong':'white','ct-subtle':'250','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'}
+  };
+  var D = {
+    bright:  {bg:'850',hover:'800',pressed:'750',outline:'700',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'800','cm-bg-hover':'750','cm-bg-pressed':'700','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
+    base:    {bg:'900',hover:'850',pressed:'800',outline:'750',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
+    dim:     {bg:'900',hover:'850',pressed:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'},
+    deep:    {bg:'black',hover:'900',pressed:'850',outline:'800',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'300','ct-faint':'450','cm-bg':'900','cm-bg-hover':'850','cm-bg-pressed':'800','cm-outline':'700','cm-outline-hover':'600','cm-outline-pressed':'550','cm-separator':'750'},
+    container:{bg:'850',hover:'800',pressed:'750',outline:'700',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'800','cm-bg-hover':'750','cm-bg-pressed':'700','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
+    'over-container':{bg:'800',hover:'750',pressed:'700',outline:'600',separator:'600','ct-default':'50','ct-strong':'white','ct-subtle':'200','ct-faint':'400','cm-bg':'750','cm-bg-hover':'700','cm-bg-pressed':'600','cm-outline':'550','cm-outline-hover':'500','cm-outline-pressed':'450','cm-separator':'600'},
+    float:   {bg:'750',hover:'700',pressed:'600',outline:'550',separator:'550','ct-default':'25','ct-strong':'white','ct-subtle':'200','ct-faint':'300','cm-bg':'700','cm-bg-hover':'600','cm-bg-pressed':'550','cm-outline':'500','cm-outline-hover':'450','cm-outline-pressed':'400','cm-separator':'550'},
+    inverse: {bg:'50',hover:'75',pressed:'100',outline:'175',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'200','cm-outline-hover':'250','cm-outline-pressed':'300','cm-separator':'175'}
+  };
+  // Accent uses monochromatic palette
+  var LA = {bg:'25',hover:'50',pressed:'75',outline:'175',separator:'175','ct-default':'800','ct-strong':'900','ct-subtle':'700','ct-faint':'500','cm-bg':'white','cm-bg-hover':'25','cm-bg-pressed':'50','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'};
+  var DA = {bg:'900',hover:'850',pressed:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'150','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'};
+
+  var NAMES = ['bright','base','dim','deep','accent','container','over-container','float','inverse'];
+  var out = [];
+  out.push('/* ════════════════════════════════════════════════════════════════');
+  out.push('   Design Token Forge — T2 Surface Context Tokens');
+  out.push('   Generated by DTF Color Editor');
+  out.push('   ' + new Date().toISOString());
+  out.push('   DO NOT EDIT — regenerated automatically from primitives.');
+  out.push('   ════════════════════════════════════════════════════════════════ */');
+  out.push('');
+  out.push(':root {');
+  for (var ni = 0; ni < NAMES.length; ni++) {
+    var n = NAMES[ni];
+    var map = n === 'accent' ? LA : L[n];
+    var pal = n === 'accent' ? ms : gs;
+    out.push('  /* ── SURFACE-' + n.toUpperCase() + ' ── */');
+    for (var pi = 0; pi < PROP_ORDER.length; pi++) {
+      out.push('  --surface-' + n + '-' + PROP_ORDER[pi] + ': ' + pal(map[PROP_ORDER[pi]]) + ';');
+    }
+  }
+  out.push('}');
+  out.push('');
+  out.push('[data-theme="dark"] {');
+  for (var ni2 = 0; ni2 < NAMES.length; ni2++) {
+    var n2 = NAMES[ni2];
+    var map2 = n2 === 'accent' ? DA : D[n2];
+    var pal2 = n2 === 'accent' ? ms : gs;
+    out.push('  /* ── SURFACE-' + n2.toUpperCase() + ' (dark) ── */');
+    for (var pi2 = 0; pi2 < PROP_ORDER.length; pi2++) {
+      out.push('  --surface-' + n2 + '-' + PROP_ORDER[pi2] + ': ' + pal2(map2[PROP_ORDER[pi2]]) + ';');
+    }
+  }
+  out.push('}');
+  return out.join('\n');
 }
 
 // ══════════════════════════════════════════════════════════════

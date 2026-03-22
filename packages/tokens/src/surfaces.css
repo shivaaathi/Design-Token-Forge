@@ -1,345 +1,338 @@
 /* ════════════════════════════════════════════════════════════════
    Design Token Forge — T2 Surface Context Tokens
    9 surfaces × 16 tokens × light/dark
-   Page:      bright, base, dim, deep, accent
-   Container: container
-   Dialog:    over-container
-   Float:     float (menus, dropdowns, popups, tooltips)
-   Inverse:   inverse (snackbars, toasts — opposite of current theme)
+   Generated from primitive palette step mappings.
+   DO NOT EDIT — regenerate via: node scripts/generate-surfaces.cjs
    ════════════════════════════════════════════════════════════════ */
 
 /* ── Light Theme (default) ───────────────────────────────────────── */
-/* Page:      Bright > Base > Dim > Deep                        */
-/* Elevation: Float > Over-container > Container > Base          */
 :root {
 
-  /* ── SURFACE-BRIGHT (elevated / cards / modals) ─────────── */
+  /* ── SURFACE-BRIGHT (elevated / cards / modals) ── */
   --surface-bright-bg: #FFFFFF;
-  --surface-bright-hover: #F7F7F7;
-  --surface-bright-pressed: #F0F0F0;
-  --surface-bright-outline: #D4D4D4;
-  --surface-bright-separator: #D0D0D0;
-  --surface-bright-ct-default: #1A1A1A;
-  --surface-bright-ct-strong: #0A0A0A;
-  --surface-bright-ct-subtle: #525252;
-  --surface-bright-ct-faint: #8F8F8F;
-  --surface-bright-cm-bg: #F5F5F5;
-  --surface-bright-cm-bg-hover: #EDEDED;
-  --surface-bright-cm-bg-pressed: #E5E5E5;
-  --surface-bright-cm-outline: #D4D4D4;
-  --surface-bright-cm-outline-hover: #BFBFBF;
-  --surface-bright-cm-outline-pressed: #A8A8A8;
-  --surface-bright-cm-separator: #D0D0D0;
+  --surface-bright-hover: #F6F6F6;
+  --surface-bright-pressed: #F1F1F1;
+  --surface-bright-outline: #D1D1D1;
+  --surface-bright-separator: #D1D1D1;
+  --surface-bright-ct-default: #1B1B1B;
+  --surface-bright-ct-strong: #000000;
+  --surface-bright-ct-subtle: #5E5E5E;
+  --surface-bright-ct-faint: #868686;
+  --surface-bright-cm-bg: #F6F6F6;
+  --surface-bright-cm-bg-hover: #F1F1F1;
+  --surface-bright-cm-bg-pressed: #E8E8E8;
+  --surface-bright-cm-outline: #D1D1D1;
+  --surface-bright-cm-outline-hover: #BBBBBB;
+  --surface-bright-cm-outline-pressed: #ABABAB;
+  --surface-bright-cm-separator: #D1D1D1;
 
-  /* ── SURFACE-BASE (default page canvas) ─────────────────── */
-  --surface-base-bg: #FAFAFA;
-  --surface-base-hover: #F0F0F0;
+  /* ── SURFACE-BASE (default page canvas) ── */
+  --surface-base-bg: #F6F6F6;
+  --surface-base-hover: #F1F1F1;
   --surface-base-pressed: #E8E8E8;
-  --surface-base-outline: #D4D4D4;
-  --surface-base-separator: #CCCCCC;
-  --surface-base-ct-default: #1F1F1F;
-  --surface-base-ct-strong: #0E0E0E;
-  --surface-base-ct-subtle: #545454;
-  --surface-base-ct-faint: #8A8A8A;
+  --surface-base-outline: #D1D1D1;
+  --surface-base-separator: #C6C6C6;
+  --surface-base-ct-default: #1B1B1B;
+  --surface-base-ct-strong: #000000;
+  --surface-base-ct-subtle: #5E5E5E;
+  --surface-base-ct-faint: #868686;
   --surface-base-cm-bg: #FFFFFF;
-  --surface-base-cm-bg-hover: #F5F5F5;
-  --surface-base-cm-bg-pressed: #EDEDED;
-  --surface-base-cm-outline: #D4D4D4;
-  --surface-base-cm-outline-hover: #BFBFBF;
-  --surface-base-cm-outline-pressed: #A8A8A8;
-  --surface-base-cm-separator: #CCCCCC;
+  --surface-base-cm-bg-hover: #F6F6F6;
+  --surface-base-cm-bg-pressed: #F1F1F1;
+  --surface-base-cm-outline: #D1D1D1;
+  --surface-base-cm-outline-hover: #BBBBBB;
+  --surface-base-cm-outline-pressed: #ABABAB;
+  --surface-base-cm-separator: #C6C6C6;
 
-  /* ── SURFACE-DIM (muted / receded areas) ────────────────── */
-  --surface-dim-bg: #F2F2F2;
-  --surface-dim-hover: #EAEAEA;
-  --surface-dim-pressed: #E2E2E2;
-  --surface-dim-outline: #CCCCCC;
-  --surface-dim-separator: #C4C4C4;
-  --surface-dim-ct-default: #222222;
-  --surface-dim-ct-strong: #111111;
-  --surface-dim-ct-subtle: #565656;
-  --surface-dim-ct-faint: #888888;
-  --surface-dim-cm-bg: #FAFAFA;
-  --surface-dim-cm-bg-hover: #F0F0F0;
+  /* ── SURFACE-DIM (muted / receded areas) ── */
+  --surface-dim-bg: #F1F1F1;
+  --surface-dim-hover: #E8E8E8;
+  --surface-dim-pressed: #DFDFDF;
+  --surface-dim-outline: #C6C6C6;
+  --surface-dim-separator: #C6C6C6;
+  --surface-dim-ct-default: #1B1B1B;
+  --surface-dim-ct-strong: #000000;
+  --surface-dim-ct-subtle: #5E5E5E;
+  --surface-dim-ct-faint: #868686;
+  --surface-dim-cm-bg: #F6F6F6;
+  --surface-dim-cm-bg-hover: #F1F1F1;
   --surface-dim-cm-bg-pressed: #E8E8E8;
-  --surface-dim-cm-outline: #C8C8C8;
-  --surface-dim-cm-outline-hover: #B3B3B3;
-  --surface-dim-cm-outline-pressed: #9E9E9E;
-  --surface-dim-cm-separator: #C4C4C4;
+  --surface-dim-cm-outline: #C6C6C6;
+  --surface-dim-cm-outline-hover: #BBBBBB;
+  --surface-dim-cm-outline-pressed: #989898;
+  --surface-dim-cm-separator: #C6C6C6;
 
-  /* ── SURFACE-DEEP (recessed / sidebars / wells) ─────────── */
+  /* ── SURFACE-DEEP (recessed / sidebars / wells) ── */
   --surface-deep-bg: #E8E8E8;
   --surface-deep-hover: #DFDFDF;
-  --surface-deep-pressed: #D4D4D4;
-  --surface-deep-outline: #C4C4C4;
-  --surface-deep-separator: #B8B8B8;
-  --surface-deep-ct-default: #1C1C1C;
-  --surface-deep-ct-strong: #0C0C0C;
-  --surface-deep-ct-subtle: #4A4A4A;
-  --surface-deep-ct-faint: #7A7A7A;
-  --surface-deep-cm-bg: #F2F2F2;
+  --surface-deep-pressed: #D1D1D1;
+  --surface-deep-outline: #C6C6C6;
+  --surface-deep-separator: #BBBBBB;
+  --surface-deep-ct-default: #1B1B1B;
+  --surface-deep-ct-strong: #000000;
+  --surface-deep-ct-subtle: #5E5E5E;
+  --surface-deep-ct-faint: #7C7C7C;
+  --surface-deep-cm-bg: #F1F1F1;
   --surface-deep-cm-bg-hover: #E8E8E8;
   --surface-deep-cm-bg-pressed: #DFDFDF;
-  --surface-deep-cm-outline: #B5B5B5;
-  --surface-deep-cm-outline-hover: #A0A0A0;
-  --surface-deep-cm-outline-pressed: #8E8E8E;
-  --surface-deep-cm-separator: #B8B8B8;
+  --surface-deep-cm-outline: #BBBBBB;
+  --surface-deep-cm-outline-hover: #ABABAB;
+  --surface-deep-cm-outline-pressed: #989898;
+  --surface-deep-cm-separator: #BBBBBB;
 
-  /* ── SURFACE-ACCENT (primary-tinted) ────────────────────── */
-  --surface-accent-bg: #FFF2FC;
-  --surface-accent-hover: #FFE9FA;
-  --surface-accent-pressed: #FFDCF7;
-  --surface-accent-outline: #F0C8EC;
-  --surface-accent-separator: #E4B0DC;
-  --surface-accent-ct-default: #3A1535;
-  --surface-accent-ct-strong: #270E24;
-  --surface-accent-ct-subtle: #6B3D64;
-  --surface-accent-ct-faint: #9C6893;
+  /* ── SURFACE-ACCENT (primary-tinted) ── */
+  --surface-accent-bg: #F2F7FF;
+  --surface-accent-hover: #EAF1FF;
+  --surface-accent-pressed: #DDE9FF;
+  --surface-accent-outline: #ABC6FF;
+  --surface-accent-separator: #ABC6FF;
+  --surface-accent-ct-default: #06228B;
+  --surface-accent-ct-strong: #010260;
+  --surface-accent-ct-subtle: #163DB5;
+  --surface-accent-ct-faint: #3366F0;
   --surface-accent-cm-bg: #FFFFFF;
-  --surface-accent-cm-bg-hover: #FFF2FC;
-  --surface-accent-cm-bg-pressed: #FFE9FA;
-  --surface-accent-cm-outline: #E4B0DC;
-  --surface-accent-cm-outline-hover: #D8A0D0;
-  --surface-accent-cm-outline-pressed: #CC90C4;
-  --surface-accent-cm-separator: #E4B0DC;
+  --surface-accent-cm-bg-hover: #F2F7FF;
+  --surface-accent-cm-bg-pressed: #EAF1FF;
+  --surface-accent-cm-outline: #ABC6FF;
+  --surface-accent-cm-outline-hover: #9BBBFF;
+  --surface-accent-cm-outline-pressed: #82A9FE;
+  --surface-accent-cm-separator: #ABC6FF;
 
-  /* ── SURFACE-CONTAINER (cards, panels — one step above base) ─ */
+  /* ── SURFACE-CONTAINER (cards, panels) ── */
   --surface-container-bg: #FFFFFF;
-  --surface-container-hover: #F7F7F7;
-  --surface-container-pressed: #F0F0F0;
-  --surface-container-outline: #D4D4D4;
-  --surface-container-separator: #D0D0D0;
-  --surface-container-ct-default: #1A1A1A;
-  --surface-container-ct-strong: #0A0A0A;
-  --surface-container-ct-subtle: #525252;
-  --surface-container-ct-faint: #8F8F8F;
-  --surface-container-cm-bg: #F5F5F5;
-  --surface-container-cm-bg-hover: #EDEDED;
-  --surface-container-cm-bg-pressed: #E5E5E5;
-  --surface-container-cm-outline: #D4D4D4;
-  --surface-container-cm-outline-hover: #BFBFBF;
-  --surface-container-cm-outline-pressed: #A8A8A8;
-  --surface-container-cm-separator: #D0D0D0;
+  --surface-container-hover: #F6F6F6;
+  --surface-container-pressed: #F1F1F1;
+  --surface-container-outline: #D1D1D1;
+  --surface-container-separator: #D1D1D1;
+  --surface-container-ct-default: #1B1B1B;
+  --surface-container-ct-strong: #000000;
+  --surface-container-ct-subtle: #5E5E5E;
+  --surface-container-ct-faint: #868686;
+  --surface-container-cm-bg: #F6F6F6;
+  --surface-container-cm-bg-hover: #F1F1F1;
+  --surface-container-cm-bg-pressed: #E8E8E8;
+  --surface-container-cm-outline: #D1D1D1;
+  --surface-container-cm-outline-hover: #BBBBBB;
+  --surface-container-cm-outline-pressed: #ABABAB;
+  --surface-container-cm-separator: #D1D1D1;
 
   /* ── SURFACE-OVER-CONTAINER (popovers, dropdowns, modals) ── */
   --surface-over-container-bg: #FFFFFF;
-  --surface-over-container-hover: #F5F5F5;
-  --surface-over-container-pressed: #EDEDED;
-  --surface-over-container-outline: #E0E0E0;
-  --surface-over-container-separator: #D0D0D0;
-  --surface-over-container-ct-default: #171717;
-  --surface-over-container-ct-strong: #0A0A0A;
-  --surface-over-container-ct-subtle: #4A4A4A;
-  --surface-over-container-ct-faint: #858585;
-  --surface-over-container-cm-bg: #F0F0F0;
+  --surface-over-container-hover: #F6F6F6;
+  --surface-over-container-pressed: #F1F1F1;
+  --surface-over-container-outline: #D1D1D1;
+  --surface-over-container-separator: #C6C6C6;
+  --surface-over-container-ct-default: #1B1B1B;
+  --surface-over-container-ct-strong: #000000;
+  --surface-over-container-ct-subtle: #5E5E5E;
+  --surface-over-container-ct-faint: #868686;
+  --surface-over-container-cm-bg: #F1F1F1;
   --surface-over-container-cm-bg-hover: #E8E8E8;
-  --surface-over-container-cm-bg-pressed: #E0E0E0;
-  --surface-over-container-cm-outline: #CCCCCC;
-  --surface-over-container-cm-outline-hover: #B5B5B5;
-  --surface-over-container-cm-outline-pressed: #A0A0A0;
-  --surface-over-container-cm-separator: #D0D0D0;
+  --surface-over-container-cm-bg-pressed: #DFDFDF;
+  --surface-over-container-cm-outline: #C6C6C6;
+  --surface-over-container-cm-outline-hover: #BBBBBB;
+  --surface-over-container-cm-outline-pressed: #ABABAB;
+  --surface-over-container-cm-separator: #C6C6C6;
 
   /* ── SURFACE-FLOAT (menus, dropdowns, popups, tooltips) ── */
   --surface-float-bg: #FFFFFF;
-  --surface-float-hover: #F5F5F5;
-  --surface-float-pressed: #EBEBEB;
-  --surface-float-outline: #DBDBDB;
-  --surface-float-separator: #D0D0D0;
-  --surface-float-ct-default: #141414;
+  --surface-float-hover: #F6F6F6;
+  --surface-float-pressed: #F1F1F1;
+  --surface-float-outline: #D1D1D1;
+  --surface-float-separator: #C6C6C6;
+  --surface-float-ct-default: #1B1B1B;
   --surface-float-ct-strong: #000000;
-  --surface-float-ct-subtle: #454545;
-  --surface-float-ct-faint: #808080;
-  --surface-float-cm-bg: #F0F0F0;
-  --surface-float-cm-bg-hover: #E5E5E5;
-  --surface-float-cm-bg-pressed: #DBDBDB;
-  --surface-float-cm-outline: #C5C5C5;
+  --surface-float-ct-subtle: #6A6A6A;
+  --surface-float-ct-faint: #868686;
+  --surface-float-cm-bg: #F1F1F1;
+  --surface-float-cm-bg-hover: #E8E8E8;
+  --surface-float-cm-bg-pressed: #DFDFDF;
+  --surface-float-cm-outline: #C6C6C6;
   --surface-float-cm-outline-hover: #ABABAB;
-  --surface-float-cm-outline-pressed: #959595;
-  --surface-float-cm-separator: #D0D0D0;
+  --surface-float-cm-outline-pressed: #989898;
+  --surface-float-cm-separator: #C6C6C6;
 
-  /* ── SURFACE-INVERSE (snackbars, toasts — dark in light theme) ── */
-  --surface-inverse-bg: #1A1A1A;
-  --surface-inverse-hover: #222222;
-  --surface-inverse-pressed: #2C2C2C;
-  --surface-inverse-outline: #3C3C3C;
-  --surface-inverse-separator: #3C3C3C;
-  --surface-inverse-ct-default: #F7F7F7;
+  /* ── SURFACE-INVERSE (snackbars, toasts — opposite of current theme) ── */
+  --surface-inverse-bg: #1B1B1B;
+  --surface-inverse-hover: #2A2A2A;
+  --surface-inverse-pressed: #353535;
+  --surface-inverse-outline: #4E4E4E;
+  --surface-inverse-separator: #4E4E4E;
+  --surface-inverse-ct-default: #F6F6F6;
   --surface-inverse-ct-strong: #FFFFFF;
-  --surface-inverse-ct-subtle: #B3B3B3;
-  --surface-inverse-ct-faint: #808080;
+  --surface-inverse-ct-subtle: #ABABAB;
+  --surface-inverse-ct-faint: #868686;
   --surface-inverse-cm-bg: #2A2A2A;
-  --surface-inverse-cm-bg-hover: #343434;
-  --surface-inverse-cm-bg-pressed: #3C3C3C;
-  --surface-inverse-cm-outline: #505050;
-  --surface-inverse-cm-outline-hover: #606060;
-  --surface-inverse-cm-outline-pressed: #6E6E6E;
-  --surface-inverse-cm-separator: #404040;
+  --surface-inverse-cm-bg-hover: #353535;
+  --surface-inverse-cm-bg-pressed: #424242;
+  --surface-inverse-cm-outline: #5E5E5E;
+  --surface-inverse-cm-outline-hover: #6A6A6A;
+  --surface-inverse-cm-outline-pressed: #747474;
+  --surface-inverse-cm-separator: #4E4E4E;
 }
 
 /* ── Dark Theme ─────────────────────────────────────────────── */
-/* Page:      Bright > Base > Dim > Deep                        */
-/* Elevation: Float > Over-container > Container > Base          */
 [data-theme="dark"] {
 
-  /* ── SURFACE-BRIGHT (elevated / cards / modals) ─────────── */
-  --surface-bright-bg: #1E1E1E;
-  --surface-bright-hover: #282828;
-  --surface-bright-pressed: #323232;
-  --surface-bright-outline: #404040;
-  --surface-bright-separator: #404040;
-  --surface-bright-ct-default: #ECECEC;
+  /* ── SURFACE-BRIGHT (elevated / cards / modals) ── */
+  --surface-bright-bg: #2A2A2A;
+  --surface-bright-hover: #353535;
+  --surface-bright-pressed: #424242;
+  --surface-bright-outline: #4E4E4E;
+  --surface-bright-separator: #4E4E4E;
+  --surface-bright-ct-default: #F1F1F1;
   --surface-bright-ct-strong: #FFFFFF;
   --surface-bright-ct-subtle: #ABABAB;
-  --surface-bright-ct-faint: #6E6E6E;
-  --surface-bright-cm-bg: #2A2A2A;
-  --surface-bright-cm-bg-hover: #343434;
-  --surface-bright-cm-bg-pressed: #3E3E3E;
-  --surface-bright-cm-outline: #505050;
-  --surface-bright-cm-outline-hover: #606060;
-  --surface-bright-cm-outline-pressed: #707070;
-  --surface-bright-cm-separator: #404040;
+  --surface-bright-ct-faint: #7C7C7C;
+  --surface-bright-cm-bg: #353535;
+  --surface-bright-cm-bg-hover: #424242;
+  --surface-bright-cm-bg-pressed: #4E4E4E;
+  --surface-bright-cm-outline: #5E5E5E;
+  --surface-bright-cm-outline-hover: #6A6A6A;
+  --surface-bright-cm-outline-pressed: #747474;
+  --surface-bright-cm-separator: #4E4E4E;
 
-  /* ── SURFACE-BASE (default dark canvas) ─────────────────── */
-  --surface-base-bg: #141414;
-  --surface-base-hover: #1E1E1E;
-  --surface-base-pressed: #282828;
-  --surface-base-outline: #363636;
-  --surface-base-separator: #383838;
-  --surface-base-ct-default: #E5E5E5;
-  --surface-base-ct-strong: #FAFAFA;
-  --surface-base-ct-subtle: #A3A3A3;
-  --surface-base-ct-faint: #666666;
-  --surface-base-cm-bg: #1E1E1E;
-  --surface-base-cm-bg-hover: #282828;
-  --surface-base-cm-bg-pressed: #323232;
-  --surface-base-cm-outline: #444444;
-  --surface-base-cm-outline-hover: #555555;
-  --surface-base-cm-outline-pressed: #666666;
-  --surface-base-cm-separator: #383838;
+  /* ── SURFACE-BASE (default dark canvas) ── */
+  --surface-base-bg: #1B1B1B;
+  --surface-base-hover: #2A2A2A;
+  --surface-base-pressed: #353535;
+  --surface-base-outline: #424242;
+  --surface-base-separator: #4E4E4E;
+  --surface-base-ct-default: #F1F1F1;
+  --surface-base-ct-strong: #FFFFFF;
+  --surface-base-ct-subtle: #ABABAB;
+  --surface-base-ct-faint: #7C7C7C;
+  --surface-base-cm-bg: #2A2A2A;
+  --surface-base-cm-bg-hover: #353535;
+  --surface-base-cm-bg-pressed: #424242;
+  --surface-base-cm-outline: #5E5E5E;
+  --surface-base-cm-outline-hover: #6A6A6A;
+  --surface-base-cm-outline-pressed: #747474;
+  --surface-base-cm-separator: #4E4E4E;
 
-  /* ── SURFACE-DIM (muted dark areas) ─────────────────────── */
-  --surface-dim-bg: #101010;
-  --surface-dim-hover: #191919;
-  --surface-dim-pressed: #222222;
-  --surface-dim-outline: #303030;
-  --surface-dim-separator: #343434;
-  --surface-dim-ct-default: #D8D8D8;
-  --surface-dim-ct-strong: #F0F0F0;
-  --surface-dim-ct-subtle: #949494;
-  --surface-dim-ct-faint: #606060;
-  --surface-dim-cm-bg: #1A1A1A;
-  --surface-dim-cm-bg-hover: #232323;
-  --surface-dim-cm-bg-pressed: #2C2C2C;
-  --surface-dim-cm-outline: #3C3C3C;
-  --surface-dim-cm-outline-hover: #4C4C4C;
-  --surface-dim-cm-outline-pressed: #5C5C5C;
-  --surface-dim-cm-separator: #343434;
+  /* ── SURFACE-DIM (muted dark areas) ── */
+  --surface-dim-bg: #1B1B1B;
+  --surface-dim-hover: #2A2A2A;
+  --surface-dim-pressed: #353535;
+  --surface-dim-outline: #424242;
+  --surface-dim-separator: #424242;
+  --surface-dim-ct-default: #E8E8E8;
+  --surface-dim-ct-strong: #FFFFFF;
+  --surface-dim-ct-subtle: #ABABAB;
+  --surface-dim-ct-faint: #7C7C7C;
+  --surface-dim-cm-bg: #2A2A2A;
+  --surface-dim-cm-bg-hover: #353535;
+  --surface-dim-cm-bg-pressed: #424242;
+  --surface-dim-cm-outline: #5E5E5E;
+  --surface-dim-cm-outline-hover: #6A6A6A;
+  --surface-dim-cm-outline-pressed: #747474;
+  --surface-dim-cm-separator: #424242;
 
-  /* ── SURFACE-DEEP (deepest dark / sidebars) ─────────────── */
-  --surface-deep-bg: #0A0A0A;
-  --surface-deep-hover: #131313;
-  --surface-deep-pressed: #1C1C1C;
-  --surface-deep-outline: #2A2A2A;
-  --surface-deep-separator: #303030;
-  --surface-deep-ct-default: #D0D0D0;
-  --surface-deep-ct-strong: #EDEDED;
-  --surface-deep-ct-subtle: #8E8E8E;
-  --surface-deep-ct-faint: #606060;
-  --surface-deep-cm-bg: #151515;
-  --surface-deep-cm-bg-hover: #1E1E1E;
-  --surface-deep-cm-bg-pressed: #282828;
-  --surface-deep-cm-outline: #383838;
-  --surface-deep-cm-outline-hover: #484848;
-  --surface-deep-cm-outline-pressed: #585858;
-  --surface-deep-cm-separator: #303030;
+  /* ── SURFACE-DEEP (deepest dark / sidebars) ── */
+  --surface-deep-bg: #000000;
+  --surface-deep-hover: #1B1B1B;
+  --surface-deep-pressed: #2A2A2A;
+  --surface-deep-outline: #353535;
+  --surface-deep-separator: #424242;
+  --surface-deep-ct-default: #E8E8E8;
+  --surface-deep-ct-strong: #FFFFFF;
+  --surface-deep-ct-subtle: #989898;
+  --surface-deep-ct-faint: #7C7C7C;
+  --surface-deep-cm-bg: #1B1B1B;
+  --surface-deep-cm-bg-hover: #2A2A2A;
+  --surface-deep-cm-bg-pressed: #353535;
+  --surface-deep-cm-outline: #4E4E4E;
+  --surface-deep-cm-outline-hover: #5E5E5E;
+  --surface-deep-cm-outline-pressed: #6A6A6A;
+  --surface-deep-cm-separator: #424242;
 
-  /* ── SURFACE-ACCENT (primary-tinted dark) ───────────────── */
-  --surface-accent-bg: #280C24;
-  --surface-accent-hover: #3A1535;
-  --surface-accent-pressed: #4E1E48;
-  --surface-accent-outline: #622858;
-  --surface-accent-separator: #622858;
-  --surface-accent-ct-default: #FFDCF7;
+  /* ── SURFACE-ACCENT (primary-tinted dark) ── */
+  --surface-accent-bg: #010260;
+  --surface-accent-hover: #031678;
+  --surface-accent-pressed: #06228B;
+  --surface-accent-outline: #0E31A1;
+  --surface-accent-separator: #0E31A1;
+  --surface-accent-ct-default: #DDE9FF;
   --surface-accent-ct-strong: #FFFFFF;
-  --surface-accent-ct-subtle: #FFB6F0;
-  --surface-accent-ct-faint: #CE44BB;
-  --surface-accent-cm-bg: #3A1535;
-  --surface-accent-cm-bg-hover: #4E1E48;
-  --surface-accent-cm-bg-pressed: #622858;
-  --surface-accent-cm-outline: #7A3870;
-  --surface-accent-cm-outline-hover: #924888;
-  --surface-accent-cm-outline-pressed: #A858A0;
-  --surface-accent-cm-separator: #622858;
+  --surface-accent-ct-subtle: #BCD2FE;
+  --surface-accent-ct-faint: #487CFE;
+  --surface-accent-cm-bg: #031678;
+  --surface-accent-cm-bg-hover: #06228B;
+  --surface-accent-cm-bg-pressed: #0E31A1;
+  --surface-accent-cm-outline: #224FCE;
+  --surface-accent-cm-outline-hover: #2B5CE1;
+  --surface-accent-cm-outline-pressed: #3366F0;
+  --surface-accent-cm-separator: #0E31A1;
 
-  /* ── SURFACE-CONTAINER (cards, panels — dark) ───────────── */
-  --surface-container-bg: #1E1E1E;
-  --surface-container-hover: #282828;
-  --surface-container-pressed: #323232;
-  --surface-container-outline: #3E3E3E;
-  --surface-container-separator: #404040;
-  --surface-container-ct-default: #ECECEC;
+  /* ── SURFACE-CONTAINER (cards, panels — dark) ── */
+  --surface-container-bg: #2A2A2A;
+  --surface-container-hover: #353535;
+  --surface-container-pressed: #424242;
+  --surface-container-outline: #4E4E4E;
+  --surface-container-separator: #4E4E4E;
+  --surface-container-ct-default: #F1F1F1;
   --surface-container-ct-strong: #FFFFFF;
   --surface-container-ct-subtle: #ABABAB;
-  --surface-container-ct-faint: #6E6E6E;
-  --surface-container-cm-bg: #2A2A2A;
-  --surface-container-cm-bg-hover: #343434;
-  --surface-container-cm-bg-pressed: #3E3E3E;
-  --surface-container-cm-outline: #505050;
-  --surface-container-cm-outline-hover: #606060;
-  --surface-container-cm-outline-pressed: #707070;
-  --surface-container-cm-separator: #404040;
+  --surface-container-ct-faint: #7C7C7C;
+  --surface-container-cm-bg: #353535;
+  --surface-container-cm-bg-hover: #424242;
+  --surface-container-cm-bg-pressed: #4E4E4E;
+  --surface-container-cm-outline: #5E5E5E;
+  --surface-container-cm-outline-hover: #6A6A6A;
+  --surface-container-cm-outline-pressed: #747474;
+  --surface-container-cm-separator: #4E4E4E;
 
   /* ── SURFACE-OVER-CONTAINER (popovers, dropdowns — dark) ── */
-  --surface-over-container-bg: #282828;
-  --surface-over-container-hover: #323232;
-  --surface-over-container-pressed: #3C3C3C;
-  --surface-over-container-outline: #484848;
-  --surface-over-container-separator: #484848;
-  --surface-over-container-ct-default: #F0F0F0;
+  --surface-over-container-bg: #353535;
+  --surface-over-container-hover: #424242;
+  --surface-over-container-pressed: #4E4E4E;
+  --surface-over-container-outline: #5E5E5E;
+  --surface-over-container-separator: #5E5E5E;
+  --surface-over-container-ct-default: #F1F1F1;
   --surface-over-container-ct-strong: #FFFFFF;
-  --surface-over-container-ct-subtle: #B0B0B0;
-  --surface-over-container-ct-faint: #757575;
-  --surface-over-container-cm-bg: #343434;
-  --surface-over-container-cm-bg-hover: #3E3E3E;
-  --surface-over-container-cm-bg-pressed: #484848;
-  --surface-over-container-cm-outline: #5A5A5A;
-  --surface-over-container-cm-outline-hover: #6A6A6A;
-  --surface-over-container-cm-outline-pressed: #7A7A7A;
-  --surface-over-container-cm-separator: #484848;
+  --surface-over-container-ct-subtle: #BBBBBB;
+  --surface-over-container-ct-faint: #868686;
+  --surface-over-container-cm-bg: #424242;
+  --surface-over-container-cm-bg-hover: #4E4E4E;
+  --surface-over-container-cm-bg-pressed: #5E5E5E;
+  --surface-over-container-cm-outline: #6A6A6A;
+  --surface-over-container-cm-outline-hover: #747474;
+  --surface-over-container-cm-outline-pressed: #7C7C7C;
+  --surface-over-container-cm-separator: #5E5E5E;
 
-  /* ── SURFACE-FLOAT (menus, dropdowns, popups — dark) ───── */
-  --surface-float-bg: #303030;
-  --surface-float-hover: #3A3A3A;
-  --surface-float-pressed: #444444;
-  --surface-float-outline: #525252;
-  --surface-float-separator: #505050;
-  --surface-float-ct-default: #F5F5F5;
+  /* ── SURFACE-FLOAT (menus, dropdowns, popups — dark) ── */
+  --surface-float-bg: #424242;
+  --surface-float-hover: #4E4E4E;
+  --surface-float-pressed: #5E5E5E;
+  --surface-float-outline: #6A6A6A;
+  --surface-float-separator: #6A6A6A;
+  --surface-float-ct-default: #F6F6F6;
   --surface-float-ct-strong: #FFFFFF;
-  --surface-float-ct-subtle: #B8B8B8;
-  --surface-float-ct-faint: #7A7A7A;
-  --surface-float-cm-bg: #3C3C3C;
-  --surface-float-cm-bg-hover: #464646;
-  --surface-float-cm-bg-pressed: #505050;
-  --surface-float-cm-outline: #626262;
-  --surface-float-cm-outline-hover: #727272;
-  --surface-float-cm-outline-pressed: #828282;
-  --surface-float-cm-separator: #505050;
+  --surface-float-ct-subtle: #BBBBBB;
+  --surface-float-ct-faint: #989898;
+  --surface-float-cm-bg: #4E4E4E;
+  --surface-float-cm-bg-hover: #5E5E5E;
+  --surface-float-cm-bg-pressed: #6A6A6A;
+  --surface-float-cm-outline: #747474;
+  --surface-float-cm-outline-hover: #7C7C7C;
+  --surface-float-cm-outline-pressed: #868686;
+  --surface-float-cm-separator: #6A6A6A;
 
   /* ── SURFACE-INVERSE (snackbars, toasts — light in dark theme) ── */
-  --surface-inverse-bg: #F0F0F0;
+  --surface-inverse-bg: #F1F1F1;
   --surface-inverse-hover: #E8E8E8;
-  --surface-inverse-pressed: #E0E0E0;
-  --surface-inverse-outline: #C8C8C8;
-  --surface-inverse-separator: #C4C4C4;
-  --surface-inverse-ct-default: #1A1A1A;
-  --surface-inverse-ct-strong: #0A0A0A;
-  --surface-inverse-ct-subtle: #525252;
-  --surface-inverse-ct-faint: #808080;
-  --surface-inverse-cm-bg: #FAFAFA;
-  --surface-inverse-cm-bg-hover: #F0F0F0;
+  --surface-inverse-pressed: #DFDFDF;
+  --surface-inverse-outline: #C6C6C6;
+  --surface-inverse-separator: #C6C6C6;
+  --surface-inverse-ct-default: #1B1B1B;
+  --surface-inverse-ct-strong: #000000;
+  --surface-inverse-ct-subtle: #5E5E5E;
+  --surface-inverse-ct-faint: #868686;
+  --surface-inverse-cm-bg: #F6F6F6;
+  --surface-inverse-cm-bg-hover: #F1F1F1;
   --surface-inverse-cm-bg-pressed: #E8E8E8;
-  --surface-inverse-cm-outline: #B3B3B3;
-  --surface-inverse-cm-outline-hover: #A3A3A3;
-  --surface-inverse-cm-outline-pressed: #8F8F8F;
-  --surface-inverse-cm-separator: #C4C4C4;
+  --surface-inverse-cm-outline: #BBBBBB;
+  --surface-inverse-cm-outline-hover: #ABABAB;
+  --surface-inverse-cm-outline-pressed: #989898;
+  --surface-inverse-cm-separator: #C6C6C6;
 }
