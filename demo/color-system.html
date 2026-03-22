@@ -145,6 +145,31 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
 .exp-copy{position:absolute;top:8px;right:8px;padding:4px 10px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:var(--demo-surface);color:var(--demo-fg-subtle);font-size:var(--font-size-10,10px);cursor:pointer;font-family:inherit}
 .exp-copy:hover{background:var(--demo-surface-alt)}
 
+/* ── Deploy to Figma ───────────────────────────────────────── */
+.deploy-btn{padding:7px 18px;border-radius:var(--radius-sm,4px);font-size:var(--font-size-12,12px);font-weight:700;cursor:pointer;border:1px solid #BD22AB;background:#BD22AB;color:#fff;font-family:inherit;transition:all 120ms;margin-left:4px}
+.deploy-btn:hover{background:#9F008F}
+.gh-deploy-panel{padding:12px 24px;border-top:1px solid var(--demo-border);background:var(--demo-surface-alt,#f9f9f9)}
+.gh-deploy-inner{display:flex;flex-direction:column;gap:10px}
+.gh-auth-row,.gh-ready-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gh-label{font-size:var(--font-size-11,11px);font-weight:600;color:var(--demo-fg-subtle)}
+.gh-auth-row input{flex:1;min-width:180px;padding:6px 10px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);font-family:var(--font-family-mono,monospace);font-size:var(--font-size-11,11px)}
+.gh-auth-row input:focus{outline:2px solid #BD22AB;outline-offset:-1px}
+.gh-connect-btn,.gh-commit-btn,.gh-logout-btn{padding:6px 14px;border-radius:var(--radius-sm,4px);font-size:var(--font-size-11,11px);font-weight:700;cursor:pointer;border:1px solid var(--demo-border);font-family:inherit;transition:all 120ms}
+.gh-connect-btn{background:#166534;color:#fff;border-color:#166534}
+.gh-connect-btn:hover{background:#15803D}
+.gh-commit-btn{background:#BD22AB;color:#fff;border-color:#BD22AB;font-size:var(--font-size-12,12px);padding:8px 20px}
+.gh-commit-btn:hover{background:#9F008F}
+.gh-commit-btn:disabled{background:#ccc;color:#888;cursor:not-allowed;border-color:#ccc}
+.gh-logout-btn{background:transparent;color:var(--demo-fg-faint);border-color:var(--demo-border)}
+.gh-logout-btn:hover{background:#FEE2E2;color:#991B1B;border-color:#DC2626}
+.gh-help-link{font-size:var(--font-size-10,10px);color:#BD22AB}
+.gh-user{font-size:var(--font-size-11,11px);font-weight:600;color:#166534;background:#DCFCE7;padding:3px 10px;border-radius:var(--radius-sm,4px)}
+.gh-status{font-size:var(--font-size-11,11px);color:var(--demo-fg-subtle);min-height:18px}
+.gh-status.ok{color:#166534}
+.gh-status.err{color:#DC2626}
+.gh-status .gh-spinner{display:inline-block;width:12px;height:12px;border:2px solid #BD22AB33;border-top-color:#BD22AB;border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 /* ── Flow Arrow ───────────────────────────────────────────── */
 .flow-arrow{text-align:center;padding:8px 0;color:var(--demo-fg-faint);font-size:var(--font-size-10,10px);font-weight:600;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;justify-content:center;gap:8px}
 .flow-arrow::before,.flow-arrow::after{content:'';flex:1;height:1px;background:var(--demo-border)}
@@ -238,6 +263,24 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
       <span class="save-bar-msg" id="saveMsg"></span>
       <button class="reset-btn" id="resetBtn" type="button">Reset to Default</button>
       <button class="save-btn" id="saveBtn" type="button">Save &amp; Apply</button>
+      <button class="deploy-btn" id="deployBtn" type="button">🚀 Deploy to Figma</button>
+    </div>
+    <!-- GitHub deploy panel -->
+    <div class="gh-deploy-panel" id="ghPanel" style="display:none">
+      <div class="gh-deploy-inner">
+        <div class="gh-auth-row" id="ghAuthRow">
+          <span class="gh-label">GitHub Token:</span>
+          <input type="password" id="ghPatInput" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
+          <button class="gh-connect-btn" id="ghConnectBtn" type="button">Connect</button>
+          <a href="https://github.com/settings/tokens/new?scopes=repo&description=DTF+Color+Editor" target="_blank" rel="noopener" class="gh-help-link">Get token</a>
+        </div>
+        <div class="gh-ready-row" id="ghReadyRow" style="display:none">
+          <span class="gh-user" id="ghUser"></span>
+          <button class="gh-commit-btn" id="ghCommitBtn" type="button">🚀 Commit &amp; Deploy</button>
+          <button class="gh-logout-btn" id="ghLogoutBtn" type="button">Disconnect</button>
+        </div>
+        <div class="gh-status" id="ghStatus"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -1225,6 +1268,244 @@ resetBtn.addEventListener('click', function() {
   renderExport(currentFormat);
   showSaveMsg('Reset to defaults \u2014 component pages will use original tokens');
 });
+
+// ══════════════════════════════════════════════════════════════
+// DEPLOY TO FIGMA (GitHub Commit)
+// ══════════════════════════════════════════════════════════════
+var GH_OWNER = 'SridharRavi90';
+var GH_REPO  = 'Design-Token-Forge';
+var GH_BRANCH = 'main';
+var GH_API = 'https://api.github.com';
+var ghPat = '';
+var ghPanel = document.getElementById('ghPanel');
+var ghPatInput = document.getElementById('ghPatInput');
+var ghConnectBtn = document.getElementById('ghConnectBtn');
+var ghReadyRow = document.getElementById('ghReadyRow');
+var ghAuthRow = document.getElementById('ghAuthRow');
+var ghUser = document.getElementById('ghUser');
+var ghCommitBtn = document.getElementById('ghCommitBtn');
+var ghLogoutBtn = document.getElementById('ghLogoutBtn');
+var ghStatusEl = document.getElementById('ghStatus');
+
+document.getElementById('deployBtn').addEventListener('click', function() {
+  ghPanel.style.display = ghPanel.style.display === 'none' ? '' : 'none';
+});
+
+function ghFetch(endpoint, opts) {
+  opts = opts || {};
+  var url = endpoint.startsWith('http') ? endpoint : GH_API + endpoint;
+  return fetch(url, {
+    method: opts.method || 'GET',
+    headers: { 'Authorization': 'Bearer ' + ghPat, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  }).then(function(r) {
+    if (!r.ok) return r.json().then(function(d) { throw new Error(d.message || r.status); });
+    return r.json();
+  });
+}
+function ghEncode(str) { return btoa(unescape(encodeURIComponent(str))); }
+
+ghConnectBtn.addEventListener('click', function() {
+  ghPat = ghPatInput.value.trim();
+  if (!ghPat) return;
+  ghConnectBtn.textContent = 'Connecting...';
+  ghConnectBtn.disabled = true;
+  ghFetch('/user').then(function(u) {
+    ghUser.textContent = '\u2713 ' + u.login;
+    ghAuthRow.style.display = 'none';
+    ghReadyRow.style.display = 'flex';
+    ghStatusEl.textContent = 'Ready to deploy';
+    ghStatusEl.className = 'gh-status ok';
+  }).catch(function(e) {
+    ghStatusEl.textContent = 'Auth failed: ' + e.message;
+    ghStatusEl.className = 'gh-status err';
+  }).finally(function() {
+    ghConnectBtn.textContent = 'Connect';
+    ghConnectBtn.disabled = false;
+  });
+});
+ghPatInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') ghConnectBtn.click(); });
+
+ghLogoutBtn.addEventListener('click', function() {
+  ghPat = '';
+  ghAuthRow.style.display = 'flex';
+  ghReadyRow.style.display = 'none';
+  ghStatusEl.textContent = '';
+  ghPatInput.value = '';
+});
+
+ghCommitBtn.addEventListener('click', function() {
+  if (!ghPat) return;
+  ghCommitBtn.disabled = true;
+  ghCommitBtn.textContent = 'Deploying...';
+  ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Building CSS files...';
+  ghStatusEl.className = 'gh-status';
+
+  // Build the CSS content from current palette state
+  var primCSS = buildPrimitivesFileCSS();
+  var semCSS = buildSemanticFileCSS();
+
+  var filesToCommit = [
+    { path: 'packages/tokens/src/primitives.css', content: primCSS },
+    { path: 'packages/tokens/src/semantic.css', content: semCSS }
+  ];
+
+  ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Committing to GitHub...';
+
+  ghMultiCommit(filesToCommit, 'Update color tokens via DTF Color Editor')
+    .then(function() {
+      ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Committed! Waiting for deploy...';
+      ghStatusEl.className = 'gh-status ok';
+      ghPollDeploy();
+    })
+    .catch(function(e) {
+      ghStatusEl.textContent = '\u2717 Commit failed: ' + e.message;
+      ghStatusEl.className = 'gh-status err';
+    })
+    .finally(function() {
+      ghCommitBtn.disabled = false;
+      ghCommitBtn.textContent = '\uD83D\uDE80 Commit & Deploy';
+    });
+});
+
+function ghMultiCommit(files, message) {
+  return ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/git/ref/heads/' + GH_BRANCH)
+    .then(function(ref) {
+      var commitSha = ref.object.sha;
+      return ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/git/commits/' + commitSha)
+        .then(function(commit) {
+          var blobPromises = files.map(function(f) {
+            return ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/git/blobs', {
+              method: 'POST', body: { content: ghEncode(f.content), encoding: 'base64' }
+            }).then(function(blob) { return { path: f.path, sha: blob.sha }; });
+          });
+          return Promise.all(blobPromises).then(function(blobs) {
+            var tree = blobs.map(function(b) { return { path: b.path, mode: '100644', type: 'blob', sha: b.sha }; });
+            return ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/git/trees', {
+              method: 'POST', body: { base_tree: commit.tree.sha, tree: tree }
+            });
+          }).then(function(newTree) {
+            return ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/git/commits', {
+              method: 'POST', body: { message: message, tree: newTree.sha, parents: [commitSha] }
+            });
+          }).then(function(newCommit) {
+            return ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/git/refs/heads/' + GH_BRANCH, {
+              method: 'PATCH', body: { sha: newCommit.sha }
+            });
+          });
+        });
+    });
+}
+
+function ghPollDeploy() {
+  var start = Date.now();
+  var iv = setInterval(function() {
+    ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/actions/runs?branch=' + GH_BRANCH + '&per_page=1')
+      .then(function(data) {
+        if (!data.workflow_runs || !data.workflow_runs.length) return;
+        var run = data.workflow_runs[0];
+        var elapsed = Math.round((Date.now() - start) / 1000);
+        if (run.status === 'completed') {
+          clearInterval(iv);
+          if (run.conclusion === 'success') {
+            ghStatusEl.textContent = '\u2713 Deployed! Figma plugin will auto-detect the change. (' + elapsed + 's)';
+            ghStatusEl.className = 'gh-status ok';
+          } else {
+            ghStatusEl.textContent = '\u2717 Deploy failed: ' + run.conclusion;
+            ghStatusEl.className = 'gh-status err';
+          }
+        } else {
+          ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Deploying... (' + elapsed + 's)';
+        }
+      }).catch(function() {});
+    if (Date.now() - start > 300000) { clearInterval(iv); ghStatusEl.textContent = 'Deploy status unknown'; }
+  }, 5000);
+}
+
+// Build primitives.css from current palettes
+function buildPrimitivesFileCSS() {
+  var lines = [];
+  lines.push('/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550');
+  lines.push('   Design Token Forge \u2014 T0 Primitives');
+  lines.push('   Generated by DTF Color Editor');
+  lines.push('   ' + new Date().toISOString());
+  lines.push('   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */');
+  lines.push('');
+  lines.push(':root {');
+  lines.push('');
+  // Map role IDs to primitive prefix names
+  var PRIM_PREFIX = { primary:'monochromatic', brand:'brand', danger:'danger', warning:'warning', info:'info', success:'success', neutral:'neutral', greyscale:'greyscale', desaturated:'desaturated' };
+  for (var i = 0; i < roles.length; i++) {
+    var r = roles[i];
+    var pal = palettes[r.id];
+    if (!pal) continue;
+    var prefix = PRIM_PREFIX[r.id] || r.id;
+    lines.push('  /* \u2500\u2500 ' + r.label + ' (key \u2248 ' + r.keyHex + ') \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */');
+    for (var s = 0; s < pal.steps.length; s++) {
+      lines.push('  --prim-' + prefix + '-' + pal.steps[s].name + ': ' + pal.steps[s].hex + ';');
+    }
+    lines.push('');
+  }
+  // Spacing and typography from existing file (preserve them)
+  lines.push('  /* \u2500\u2500 Spacing \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */');
+  lines.push('  /* (spacing tokens preserved from source) */');
+  lines.push('}');
+  return lines.join('\n');
+}
+
+// Build semantic.css from current palettes
+function buildSemanticFileCSS() {
+  var lines = [];
+  lines.push('/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550');
+  lines.push('   Design Token Forge \u2014 T1 Semantic Role Tokens');
+  lines.push('   Generated by DTF Color Editor');
+  lines.push('   ' + new Date().toISOString());
+  lines.push('   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */');
+  lines.push('');
+  lines.push('/* \u2500\u2500 Light Theme (default) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */');
+  lines.push(':root {');
+  lines.push('');
+  for (var i = 0; i < TOKEN_ROLES.length; i++) {
+    var rid = TOKEN_ROLES[i];
+    var pal = palettes[rid];
+    if (!pal) continue;
+    var steps = pal.steps;
+    lines.push('  /* \u2500\u2500 ' + rid.toUpperCase() + ' \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */');
+    var lkeys = Object.keys(LIGHT_MAP);
+    for (var j = 0; j < lkeys.length; j++) {
+      var k = lkeys[j];
+      var idx = LIGHT_MAP[k];
+      lines.push('  --' + rid + '-' + k + ': ' + (idx === -1 ? '#FFFFFF' : steps[idx].hex) + ';');
+    }
+    lines.push('');
+  }
+  lines.push('}');
+  lines.push('');
+  lines.push('/* \u2500\u2500 Dark Theme \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */');
+  lines.push('[data-theme="dark"] {');
+  lines.push('');
+  for (var i2 = 0; i2 < TOKEN_ROLES.length; i2++) {
+    var rid2 = TOKEN_ROLES[i2];
+    var pal2 = palettes[rid2];
+    if (!pal2) continue;
+    var steps2 = pal2.steps;
+    lines.push('  /* \u2500\u2500 ' + rid2.toUpperCase() + ' (dark) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */');
+    var dkeys = Object.keys(DARK_MAP);
+    for (var d = 0; d < dkeys.length; d++) {
+      var dk = dkeys[d];
+      var di = DARK_MAP[dk];
+      lines.push('  --' + rid2 + '-' + dk + ': ' + (di === -1 ? '#FFFFFF' : steps2[di].hex) + ';');
+    }
+    lines.push('');
+  }
+  lines.push('}');
+  return lines.join('\n');
+}
+
+function rolePrefix(r) {
+  var PRIM_PREFIX = { primary:'monochromatic', brand:'brand', danger:'danger', warning:'warning', info:'info', success:'success', neutral:'neutral', greyscale:'greyscale', desaturated:'desaturated' };
+  return PRIM_PREFIX[r.id] || r.id;
+}
 
 // ══════════════════════════════════════════════════════════════
 // INITIAL RENDER (with saved config restore)
