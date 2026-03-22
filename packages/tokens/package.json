@@ -1,0 +1,20 @@
+{
+  "name": "@design-token-forge/tokens",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Token engine — schema parsing, resolution, and CSS/JSON/SCSS export",
+  "type": "module",
+  "main": "src/index.css",
+  "style": "src/index.css",
+  "exports": {
+    ".": "./src/index.css",
+    "./primitives": "./src/primitives.css",
+    "./semantic": "./src/semantic.css",
+    "./surfaces": "./src/surfaces.css",
+    "./extras": "./src/extras.css"
+  },
+  "scripts": {
+    "build": "echo 'TODO: configure build'",
+    "test": "echo 'TODO: configure tests'"
+  }
+}

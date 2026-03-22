@@ -1,0 +1,382 @@
+/* ════════════════════════════════════════════════════════════════
+   Design Token Forge — Textarea Component CSS
+   Variable-driven rendering — reads only from --textarea-* tokens.
+   Uses internal (--_ta-*) vars set by size & variant selectors.
+
+   Markup:
+   <div class="textarea-group" data-variant="outline" data-size="base">
+   <div class="textarea-group" data-variant="outline" data-size="base" data-height="fixed">
+     <label class="textarea__label" for="ta1">Label</label>
+     <div class="textarea-field">
+       <textarea id="ta1" placeholder="Placeholder…" rows="4"></textarea>
+     </div>
+     <span class="textarea__helper">Helper text</span>
+   </div>
+   ════════════════════════════════════════════════════════════════ */
+
+/* ────────────────────────────────────────────────────────────────
+   1.  BASE — Internal active variables (default = base + outline)
+   ──────────────────────────────────────────────────────────────── */
+.textarea-group {
+  display: flex;
+  flex-direction: column;
+  inline-size: var(--textarea-inline-size);
+  max-width: var(--textarea-max-width);
+  font-family: var(--textarea-font-family);
+  min-height: var(--textarea-min-tap-target);
+
+  /* Dimension active vars (base density) */
+  --_ta-px: var(--textarea-padding-x-base);
+  --_ta-py: var(--textarea-padding-y-base);
+  --_ta-fs: var(--textarea-font-size-base);
+  --_ta-radius: var(--textarea-radius-base);
+  --_ta-height: auto;
+
+  /* Surface active vars (outline default) */
+  --_ta-bg: var(--textarea-outline-bg);
+  --_ta-fg: var(--textarea-outline-fg);
+  --_ta-border-color: var(--textarea-outline-border-color);
+  --_ta-placeholder: var(--textarea-outline-placeholder);
+  --_ta-shadow: var(--textarea-shadow);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   2.  SIZE SELECTORS — map density tokens → active vars
+   ──────────────────────────────────────────────────────────────── */
+.textarea-group[data-size="micro"] {
+  --_ta-px: var(--textarea-padding-x-micro);
+  --_ta-py: var(--textarea-padding-y-micro);
+  --_ta-fs: var(--textarea-font-size-micro);
+  --_ta-radius: var(--textarea-radius-micro);
+}
+.textarea-group[data-size="tiny"] {
+  --_ta-px: var(--textarea-padding-x-tiny);
+  --_ta-py: var(--textarea-padding-y-tiny);
+  --_ta-fs: var(--textarea-font-size-tiny);
+  --_ta-radius: var(--textarea-radius-tiny);
+}
+.textarea-group[data-size="small"] {
+  --_ta-px: var(--textarea-padding-x-small);
+  --_ta-py: var(--textarea-padding-y-small);
+  --_ta-fs: var(--textarea-font-size-small);
+  --_ta-radius: var(--textarea-radius-small);
+}
+.textarea-group[data-size="base"] {
+  --_ta-px: var(--textarea-padding-x-base);
+  --_ta-py: var(--textarea-padding-y-base);
+  --_ta-fs: var(--textarea-font-size-base);
+  --_ta-radius: var(--textarea-radius-base);
+}
+.textarea-group[data-size="medium"] {
+  --_ta-px: var(--textarea-padding-x-medium);
+  --_ta-py: var(--textarea-padding-y-medium);
+  --_ta-fs: var(--textarea-font-size-medium);
+  --_ta-radius: var(--textarea-radius-medium);
+}
+.textarea-group[data-size="large"] {
+  --_ta-px: var(--textarea-padding-x-large);
+  --_ta-py: var(--textarea-padding-y-large);
+  --_ta-fs: var(--textarea-font-size-large);
+  --_ta-radius: var(--textarea-radius-large);
+}
+.textarea-group[data-size="big"] {
+  --_ta-px: var(--textarea-padding-x-big);
+  --_ta-py: var(--textarea-padding-y-big);
+  --_ta-fs: var(--textarea-font-size-big);
+  --_ta-radius: var(--textarea-radius-big);
+}
+.textarea-group[data-size="huge"] {
+  --_ta-px: var(--textarea-padding-x-huge);
+  --_ta-py: var(--textarea-padding-y-huge);
+  --_ta-fs: var(--textarea-font-size-huge);
+  --_ta-radius: var(--textarea-radius-huge);
+}
+.textarea-group[data-size="mega"] {
+  --_ta-px: var(--textarea-padding-x-mega);
+  --_ta-py: var(--textarea-padding-y-mega);
+  --_ta-fs: var(--textarea-font-size-mega);
+  --_ta-radius: var(--textarea-radius-mega);
+}
+.textarea-group[data-size="ultra"] {
+  --_ta-px: var(--textarea-padding-x-ultra);
+  --_ta-py: var(--textarea-padding-y-ultra);
+  --_ta-fs: var(--textarea-font-size-ultra);
+  --_ta-radius: var(--textarea-radius-ultra);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   2b. HEIGHT MODE — auto (default) vs fixed
+   Auto: textarea grows with content (rows attr controls initial).
+   Fixed: textarea gets a locked height from the size token.
+   ──────────────────────────────────────────────────────────────── */
+
+/* Fixed height per size — locks .textarea-field to a deterministic height */
+.textarea-group[data-height="fixed"]                        { --_ta-height: var(--textarea-height-base); }
+.textarea-group[data-height="fixed"][data-size="micro"]      { --_ta-height: var(--textarea-height-micro); }
+.textarea-group[data-height="fixed"][data-size="tiny"]       { --_ta-height: var(--textarea-height-tiny); }
+.textarea-group[data-height="fixed"][data-size="small"]      { --_ta-height: var(--textarea-height-small); }
+.textarea-group[data-height="fixed"][data-size="base"]       { --_ta-height: var(--textarea-height-base); }
+.textarea-group[data-height="fixed"][data-size="medium"]     { --_ta-height: var(--textarea-height-medium); }
+.textarea-group[data-height="fixed"][data-size="large"]      { --_ta-height: var(--textarea-height-large); }
+.textarea-group[data-height="fixed"][data-size="big"]        { --_ta-height: var(--textarea-height-big); }
+.textarea-group[data-height="fixed"][data-size="huge"]       { --_ta-height: var(--textarea-height-huge); }
+.textarea-group[data-height="fixed"][data-size="mega"]       { --_ta-height: var(--textarea-height-mega); }
+.textarea-group[data-height="fixed"][data-size="ultra"]      { --_ta-height: var(--textarea-height-ultra); }
+
+/* ────────────────────────────────────────────────────────────────
+   3.  VARIANT SELECTORS — map surface tokens → active vars
+   ──────────────────────────────────────────────────────────────── */
+
+/* Outline (default) */
+.textarea-group,
+.textarea-group[data-variant="outline"] {
+  --_ta-bg: var(--textarea-outline-bg);
+  --_ta-fg: var(--textarea-outline-fg);
+  --_ta-border-color: var(--textarea-outline-border-color);
+  --_ta-placeholder: var(--textarea-outline-placeholder);
+}
+
+/* Filled */
+.textarea-group[data-variant="filled"] {
+  --_ta-bg: var(--textarea-filled-bg);
+  --_ta-fg: var(--textarea-filled-fg);
+  --_ta-border-color: var(--textarea-filled-border-color);
+  --_ta-placeholder: var(--textarea-filled-placeholder);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   4.  STATE OVERRIDES — hover, focus, error, disabled
+   ──────────────────────────────────────────────────────────────── */
+
+/* ── Hover (outline) ──────────────────────────────────────── */
+.textarea-group:not([data-disabled]):not([data-readonly]):not([data-variant]):has(.textarea-field:hover),
+.textarea-group[data-variant="outline"]:not([data-disabled]):not([data-readonly]):has(.textarea-field:hover) {
+  --_ta-bg: var(--textarea-outline-bg-hover);
+  --_ta-border-color: var(--textarea-outline-border-color-hover);
+}
+
+/* ── Hover (filled) ───────────────────────────────────────── */
+.textarea-group[data-variant="filled"]:not([data-disabled]):not([data-readonly]):has(.textarea-field:hover) {
+  --_ta-bg: var(--textarea-filled-bg-hover);
+  --_ta-border-color: var(--textarea-filled-border-color-hover);
+}
+
+/* ── Focus (outline) ──────────────────────────────────────── */
+.textarea-group:not([data-disabled]):not([data-variant]):has(.textarea-field:focus-within),
+.textarea-group[data-variant="outline"]:not([data-disabled]):has(.textarea-field:focus-within) {
+  --_ta-bg: var(--textarea-outline-bg-focus);
+  --_ta-border-color: var(--textarea-outline-border-color-focus);
+  --_ta-shadow: var(--textarea-shadow-focus);
+}
+
+/* ── Focus (filled) ───────────────────────────────────────── */
+.textarea-group[data-variant="filled"]:not([data-disabled]):has(.textarea-field:focus-within) {
+  --_ta-bg: var(--textarea-filled-bg-focus);
+  --_ta-border-color: var(--textarea-filled-border-color-focus);
+  --_ta-shadow: var(--textarea-shadow-focus);
+}
+
+/* ── Error (outline) ──────────────────────────────────────── */
+.textarea-group[data-error]:not([data-variant]),
+.textarea-group[data-error][data-variant="outline"] {
+  --_ta-bg: var(--textarea-outline-bg-error);
+  --_ta-border-color: var(--textarea-outline-border-color-error);
+}
+
+/* ── Error (filled) ───────────────────────────────────────── */
+.textarea-group[data-error][data-variant="filled"] {
+  --_ta-bg: var(--textarea-filled-bg-error);
+  --_ta-border-color: var(--textarea-filled-border-color-error);
+}
+
+/* Error + Focus should keep error border color */
+.textarea-group[data-error]:has(.textarea-field:focus-within) {
+  --_ta-shadow: var(--textarea-shadow-focus);
+}
+
+/* ── Disabled (outline) ───────────────────────────────────── */
+.textarea-group[data-disabled]:not([data-variant]),
+.textarea-group[data-disabled][data-variant="outline"] {
+  --_ta-bg: var(--textarea-outline-bg-disabled);
+  --_ta-fg: var(--textarea-outline-fg-disabled);
+  --_ta-border-color: var(--textarea-outline-border-color-disabled);
+  --_ta-placeholder: var(--textarea-outline-placeholder-disabled);
+}
+
+/* ── Disabled (filled) ────────────────────────────────────── */
+.textarea-group[data-disabled][data-variant="filled"] {
+  --_ta-bg: var(--textarea-filled-bg-disabled);
+  --_ta-fg: var(--textarea-filled-fg-disabled);
+  --_ta-border-color: var(--textarea-filled-border-color-disabled);
+  --_ta-placeholder: var(--textarea-filled-placeholder-disabled);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   5.  FIELD RENDERING — .textarea-field reads active vars
+   ──────────────────────────────────────────────────────────────── */
+.textarea-field {
+  display: flex;
+  align-items: flex-start;
+  min-width: var(--textarea-min-width);
+  height: var(--_ta-height);
+
+  background: var(--_ta-bg);
+  color: var(--_ta-fg);
+  border-width: var(--textarea-border-width);
+  border-style: var(--textarea-border-style);
+  border-color: var(--_ta-border-color);
+  border-radius: var(--_ta-radius);
+  box-shadow: var(--_ta-shadow);
+
+  font-family: var(--textarea-font-family);
+  font-size: var(--_ta-fs);
+  font-weight: var(--textarea-font-weight);
+  line-height: var(--textarea-line-height);
+  caret-color: var(--textarea-caret-color);
+
+  transition-property: var(--textarea-transition-property);
+  transition-duration: var(--textarea-transition-duration);
+  transition-timing-function: var(--textarea-transition-easing);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   6.  NATIVE TEXTAREA — reset + sizing
+   ──────────────────────────────────────────────────────────────── */
+.textarea-field textarea {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  flex: 1;
+  min-width: 0;
+  padding: var(--_ta-py) var(--_ta-px);
+  outline: none;
+  resize: var(--textarea-resize);
+}
+
+/* Fixed height: single-line truncated, vertically centered */
+.textarea-group[data-height="fixed"] .textarea-field {
+  align-items: center;
+  overflow: hidden;
+}
+.textarea-group[data-height="fixed"] .textarea-field textarea {
+  resize: none;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0 var(--_ta-px);
+  height: 1lh;
+  min-height: 0;
+}
+
+.textarea-field textarea::placeholder {
+  color: var(--_ta-placeholder);
+  opacity: 1;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   7.  FOCUS RING — on :focus-within
+   ──────────────────────────────────────────────────────────────── */
+.textarea-group:not([data-disabled]):has(.textarea-field:focus-within) .textarea-field {
+  outline: var(--textarea-focus-outline-width) var(--textarea-outline-style) var(--textarea-focus-outline-color);
+  outline-offset: var(--textarea-focus-outline-offset);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   8.  DISABLED STATE — opacity + cursor
+   ──────────────────────────────────────────────────────────────── */
+.textarea-group[data-disabled] .textarea-field {
+  cursor: not-allowed;
+}
+.textarea-group[data-disabled]:not([data-variant]) .textarea-field,
+.textarea-group[data-disabled][data-variant="outline"] .textarea-field {
+  opacity: var(--textarea-outline-opacity-disabled);
+}
+.textarea-group[data-disabled][data-variant="filled"] .textarea-field {
+  opacity: var(--textarea-filled-opacity-disabled);
+}
+
+.textarea-group[data-disabled] .textarea-field textarea {
+  cursor: not-allowed;
+  resize: none;
+}
+
+/* ── Readonly ─────────────────────────────────────────────── */
+.textarea-group[data-readonly] .textarea-field {
+  cursor: default;
+}
+.textarea-group[data-readonly] .textarea-field textarea {
+  cursor: default;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   9.  LABEL SLOT — .textarea__label
+   ──────────────────────────────────────────────────────────────── */
+.textarea__label {
+  font-size: var(--textarea-label-font-size);
+  font-weight: var(--textarea-label-font-weight);
+  line-height: var(--textarea-line-height);
+  color: var(--textarea-label-color);
+  margin-bottom: var(--textarea-label-gap);
+}
+
+.textarea-group:has(.textarea-field:focus-within) .textarea__label {
+  color: var(--textarea-label-color-focus);
+}
+.textarea-group[data-error] .textarea__label {
+  color: var(--textarea-label-color-error);
+}
+.textarea-group[data-disabled] .textarea__label {
+  color: var(--textarea-label-color-disabled);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   10. HELPER SLOT — .textarea__helper
+   ──────────────────────────────────────────────────────────────── */
+.textarea__helper {
+  font-size: var(--textarea-helper-font-size);
+  font-weight: var(--textarea-helper-font-weight);
+  line-height: var(--textarea-line-height);
+  color: var(--textarea-helper-color);
+  margin-top: var(--textarea-helper-gap);
+}
+
+.textarea-group[data-error] .textarea__helper {
+  color: var(--textarea-helper-color-error);
+}
+.textarea-group[data-disabled] .textarea__helper {
+  color: var(--textarea-label-color-disabled);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   11. ACCESSIBILITY — Forced colors
+   ──────────────────────────────────────────────────────────────── */
+@media (forced-colors: active) {
+  .textarea-field {
+    border-color: ButtonText;
+  }
+  .textarea-group:has(.textarea-field:focus-within) .textarea-field {
+    outline-color: Highlight;
+    border-color: Highlight;
+  }
+  .textarea-group[data-disabled] .textarea-field {
+    border-color: GrayText;
+    color: GrayText;
+  }
+  .textarea-group[data-error] .textarea-field {
+    border-color: LinkText;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   REDUCED MOTION
+   ════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .textarea-field {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}

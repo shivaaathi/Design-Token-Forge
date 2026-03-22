@@ -1,0 +1,9 @@
+{
+  "name": "@design-token-forge/figma-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DTF Figma Plugin POC — Import DTF tokens into Figma Variables",
+  "scripts": {
+    "export-tokens": "node ../generator/src/export-figma.js --out ./dtf-figma-tokens.json"
+  }
+}

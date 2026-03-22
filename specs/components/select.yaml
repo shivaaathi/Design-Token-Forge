@@ -1,0 +1,168 @@
+# /specs/components/select.yaml
+# Design Token Forge — Select Variable Specification
+# 120 CSS custom properties across 7 axes
+
+component:
+  name: "Select"
+  tag: "div.select-group > div.select-field > select"
+  prefix: "select"
+  description: >
+    Native select dropdown with label and helper slots.
+    Uses same height/padding/radius scale as Input.
+    Built-in chevron indicator scales with density.
+    Supports outline and filled variants across 10 density modes.
+  category: "inputs"
+
+sizes: [micro, tiny, small, base, medium, large, big, huge, mega, ultra]
+variants: [outline, filled]
+states: [default, hover, focus, disabled, error, readonly]
+
+markup: |
+  <div class="select-group" data-variant="outline" data-size="base">
+    <label class="select__label" for="sel1">Label</label>
+    <div class="select-field">
+      <select id="sel1">
+        <option value="" disabled selected>Choose…</option>
+        <option value="a">Option A</option>
+        <option value="b">Option B</option>
+      </select>
+      <span class="select__chevron" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </span>
+    </div>
+    <span class="select__helper">Helper text</span>
+  </div>
+
+variables:
+
+  # ──────────────────────────────────────────
+  # 📐 SHAPE  (18 vars)
+  # ──────────────────────────────────────────
+  shape:
+    border-radius:
+      - name: "--select-radius-{size}"
+        sizes: { micro: "var(--radius-xs)", tiny: "var(--radius-sm)", small: "var(--radius-md)", base: "var(--radius-DEFAULT)", medium: "var(--radius-DEFAULT)", large: "var(--radius-lg)", big: "var(--radius-lg)", huge: "var(--radius-xl)", mega: "var(--radius-2xl)", ultra: "var(--radius-3xl)" }
+        count: 10
+    border:
+      - { name: "--select-border-width", default: "1px" }
+      - { name: "--select-border-style", default: "solid" }
+    shadow:
+      - { name: "--select-shadow",       default: "var(--shadow-none)" }
+      - { name: "--select-shadow-focus", default: "var(--shadow-none)" }
+    ring:
+      - { name: "--select-ring-width",    default: "2px" }
+      - { name: "--select-ring-color",    default: "var(--primary-component-outline-default)" }
+      - { name: "--select-ring-offset",   default: "2px" }
+      - { name: "--select-outline-style", default: "solid" }
+
+  # ──────────────────────────────────────────
+  # 📏 DIMENSION  (32 vars)
+  # ──────────────────────────────────────────
+  dimension:
+    height:
+      - name: "--select-height-{size}"
+        sizes: { micro: "var(--spacing-24)", tiny: "var(--spacing-28)", small: "var(--spacing-32)", base: "var(--spacing-36)", medium: "var(--spacing-40)", large: "var(--spacing-44)", big: "var(--spacing-48)", huge: "var(--spacing-56)", mega: "var(--spacing-64)", ultra: "var(--spacing-80)" }
+        count: 10
+        description: "Field height — same scale as Input/Button"
+    padding-x:
+      - name: "--select-padding-x-{size}"
+        sizes: { micro: "var(--spacing-6)", tiny: "var(--spacing-8)", small: "var(--spacing-10)", base: "var(--spacing-12)", medium: "var(--spacing-14)", large: "var(--spacing-16)", big: "var(--spacing-20)", huge: "var(--spacing-24)", mega: "var(--spacing-28)", ultra: "var(--spacing-36)" }
+        count: 10
+    padding-y:
+      - name: "--select-padding-y-{size}"
+        sizes: { micro: "var(--spacing-2)", tiny: "var(--spacing-3)", small: "var(--spacing-4)", base: "var(--spacing-6)", medium: "var(--spacing-8)", large: "var(--spacing-10)", big: "var(--spacing-12)", huge: "var(--spacing-14)", mega: "var(--spacing-18)", ultra: "var(--spacing-24)" }
+        count: 10
+    width:
+      - { name: "--select-min-width",   default: "var(--spacing-120)" }
+      - { name: "--select-max-width",   default: "none" }
+
+  # ──────────────────────────────────────────
+  # 🎨 SURFACE  (37 vars = 2 variants × 15 + 7 shared)
+  # ──────────────────────────────────────────
+  surface:
+    outline:
+      - { name: "--select-outline-bg",                    default: "transparent" }
+      - { name: "--select-outline-bg-hover",              default: "transparent" }
+      - { name: "--select-outline-bg-focus",              default: "transparent" }
+      - { name: "--select-outline-bg-disabled",           default: "transparent" }
+      - { name: "--select-outline-bg-error",              default: "transparent" }
+      - { name: "--select-outline-fg",                    default: "var(--surface-base-ct-default)" }
+      - { name: "--select-outline-fg-disabled",           default: "var(--surface-base-ct-faint)" }
+      - { name: "--select-outline-border-color",          default: "var(--surface-base-cm-outline)" }
+      - { name: "--select-outline-border-color-hover",    default: "var(--surface-base-cm-outline-hover)" }
+      - { name: "--select-outline-border-color-focus",    default: "var(--primary-component-outline-default)" }
+      - { name: "--select-outline-border-color-disabled", default: "var(--surface-base-cm-outline)" }
+      - { name: "--select-outline-border-color-error",    default: "var(--danger-component-outline-default)" }
+      - { name: "--select-outline-placeholder",           default: "var(--surface-base-ct-faint)" }
+      - { name: "--select-outline-placeholder-disabled",  default: "var(--surface-base-ct-faint)" }
+      - { name: "--select-outline-opacity-disabled",      default: "0.5" }
+    filled:
+      - { name: "--select-filled-bg",                    default: "var(--surface-base-cm-bg)" }
+      - { name: "--select-filled-bg-hover",              default: "var(--surface-base-cm-bg-hover)" }
+      - { name: "--select-filled-bg-focus",              default: "var(--surface-base-cm-bg)" }
+      - { name: "--select-filled-bg-disabled",           default: "var(--surface-base-cm-bg)" }
+      - { name: "--select-filled-bg-error",              default: "var(--surface-base-cm-bg)" }
+      - { name: "--select-filled-fg",                    default: "var(--surface-base-ct-default)" }
+      - { name: "--select-filled-fg-disabled",           default: "var(--surface-base-ct-faint)" }
+      - { name: "--select-filled-border-color",          default: "var(--surface-base-cm-outline)" }
+      - { name: "--select-filled-border-color-hover",    default: "var(--surface-base-cm-outline-hover)" }
+      - { name: "--select-filled-border-color-focus",    default: "var(--primary-component-outline-default)" }
+      - { name: "--select-filled-border-color-disabled", default: "var(--surface-base-cm-outline)" }
+      - { name: "--select-filled-border-color-error",    default: "var(--danger-component-outline-default)" }
+      - { name: "--select-filled-placeholder",           default: "var(--surface-base-ct-faint)" }
+      - { name: "--select-filled-placeholder-disabled",  default: "var(--surface-base-ct-faint)" }
+      - { name: "--select-filled-opacity-disabled",      default: "0.5" }
+    shared:
+      - { name: "--select-label-color",          default: "var(--surface-base-ct-subtle)" }
+      - { name: "--select-label-color-focus",    default: "var(--primary-content-default)" }
+      - { name: "--select-label-color-error",    default: "var(--danger-content-default)" }
+      - { name: "--select-label-color-disabled", default: "var(--surface-base-ct-faint)" }
+      - { name: "--select-helper-color",         default: "var(--surface-base-ct-subtle)" }
+      - { name: "--select-helper-color-error",   default: "var(--danger-content-default)" }
+      - { name: "--select-chevron-color",        default: "var(--surface-base-ct-subtle)" }
+
+  # ──────────────────────────────────────────
+  # ✏️ TYPOGRAPHY  (13 vars)
+  # ──────────────────────────────────────────
+  typography:
+    - { name: "--select-font-family",       default: "var(--font-family-sans)" }
+    - name: "--select-font-size-{size}"
+      sizes: { micro: "var(--font-size-10)", tiny: "var(--font-size-11)", small: "var(--font-size-12)", base: "var(--font-size-14)", medium: "var(--font-size-14)", large: "var(--font-size-16)", big: "var(--font-size-16)", huge: "var(--font-size-18)", mega: "var(--font-size-20)", ultra: "var(--font-size-24)" }
+      count: 10
+    - { name: "--select-font-weight",       default: "var(--font-weight-regular)" }
+    - { name: "--select-line-height",       default: "var(--line-height-normal)" }
+
+  # ──────────────────────────────────────────
+  # 🧩 SLOTS  (16 vars)
+  # ──────────────────────────────────────────
+  slots:
+    chevron:
+      - name: "--select-chevron-size-{size}"
+        sizes: { micro: "var(--spacing-10)", tiny: "var(--spacing-12)", small: "var(--spacing-13)", base: "var(--spacing-16)", medium: "var(--spacing-16)", large: "var(--spacing-18)", big: "var(--spacing-18)", huge: "var(--spacing-20)", mega: "var(--spacing-24)", ultra: "var(--spacing-28)" }
+        count: 10
+        description: "Chevron icon size per density"
+    label:
+      - { name: "--select-label-font-size",   default: "var(--font-size-13)" }
+      - { name: "--select-label-font-weight", default: "var(--font-weight-medium)" }
+      - { name: "--select-label-gap",         default: "var(--spacing-6)" }
+    helper:
+      - { name: "--select-helper-font-size",   default: "var(--font-size-12)" }
+      - { name: "--select-helper-font-weight", default: "var(--font-weight-regular)" }
+      - { name: "--select-helper-gap",         default: "var(--spacing-4)" }
+
+  # ──────────────────────────────────────────
+  # ⚡ MOTION  (3 vars)
+  # ──────────────────────────────────────────
+  motion:
+    - { name: "--select-transition-property", default: "border-color, background-color, box-shadow, color, opacity" }
+    - { name: "--select-transition-duration", default: "var(--duration-normal)" }
+    - { name: "--select-transition-easing",   default: "var(--easing-in-out)" }
+
+  # ──────────────────────────────────────────
+  # ♿ A11Y  (1 var)
+  # ──────────────────────────────────────────
+  a11y:
+    - { name: "--select-min-tap-target", default: "44px" }
+
+# Total: 120 vars
+# Shape 18, Dimension 32, Surface 37, Typography 13, Slots 16, Motion 3, A11y 1

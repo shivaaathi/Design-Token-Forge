@@ -1,0 +1,539 @@
+# /specs/components/datepicker.yaml
+# Design Token Forge — DatePicker Component Variable Specification
+# Variable-exhaustive L1 component: ~190 CSS custom properties
+# covering all 7 axes (Shape, Dimension, Surface, Typography, Slots, Motion, A11y)
+#
+# Philosophy: Any date-picker design, from Material date picker with rounded
+# day cells, to Apple Calendar's compact grid, to Airbnb's range-selection
+# UI, to a boxy enterprise calendar — all achievable by tuning variables alone.
+# No designer should ever need to escape the system.
+#
+# Anatomy:
+#   ┌─────────────────────────────────────┐
+#   │ .datepicker (popover container)     │
+#   │ ┌─────────────────────────────────┐ │
+#   │ │ .datepicker__header             │ │
+#   │ │  [prev] Month Year [next]       │ │
+#   │ ├─────────────────────────────────┤ │
+#   │ │ .datepicker__weekdays           │ │
+#   │ │  Su Mo Tu We Th Fr Sa          │ │
+#   │ ├─────────────────────────────────┤ │
+#   │ │ .datepicker__grid              │ │
+#   │ │  7×6 grid of .datepicker__day  │ │
+#   │ │  States: today, selected,      │ │
+#   │ │    range-start, range-end,     │ │
+#   │ │    in-range, outside, disabled │ │
+#   │ ├─────────────────────────────────┤ │
+#   │ │ .datepicker__footer  (optional) │ │
+#   │ │  [Today] [Clear]               │ │
+#   │ └─────────────────────────────────┘ │
+#   └─────────────────────────────────────┘
+#
+# The trigger input is a standard Input component with a calendar icon —
+# DatePicker owns only the calendar dropdown (popover).
+
+component:
+  name: DatePicker
+  tag: div
+  prefix: datepicker
+  description: >
+    Calendar date-picker popover with month/year navigation, weekday labels,
+    and a 7×6 day grid. Compound component: header (nav arrows + month label)
+    + weekday row + day grid + optional footer. Supports single date,
+    range selection, disabled dates, and today highlighting. The trigger
+    is a standard Input component; DatePicker owns the calendar popover.
+  category: inputs
+
+sizes: [micro, tiny, small, base, medium, large, big, huge, mega, ultra]
+
+variants: []  # No named variants — visual style entirely custom-property-driven
+
+states: [default, hover, focus-visible, disabled, selected, today, range, outside]
+
+# ═══════════════════════════════════════════════════════════════
+# VARIABLES — ~190 total
+# ═══════════════════════════════════════════════════════════════
+
+variables:
+
+  # ────────────────────────────────────────────────────────────
+  # 📐 SHAPE  (21 variables)
+  # ────────────────────────────────────────────────────────────
+  shape:
+    popover:
+      - name: "--datepicker-radius"
+        default: "var(--radius-lg)"
+        description: "Popover container border-radius."
+      - name: "--datepicker-border-width"
+        default: "1px"
+      - name: "--datepicker-border-style"
+        default: "solid"
+      - name: "--datepicker-shadow"
+        default: "var(--shadow-lg)"
+        description: "Popover drop shadow."
+
+    day-cell:
+      - name: "--datepicker-day-radius"
+        default: "var(--radius-full)"
+        description: "Day cell shape. full=circle, md=rounded, none=square."
+      - name: "--datepicker-day-border-width"
+        default: "0px"
+      - name: "--datepicker-day-border-style"
+        default: "solid"
+
+    today-indicator:
+      - name: "--datepicker-today-radius"
+        default: "var(--datepicker-day-radius)"
+        description: "Today cell radius. Inherits day-radius by default."
+      - name: "--datepicker-today-border-width"
+        default: "2px"
+        description: "Today cell border width for ring indicator."
+
+    selected:
+      - name: "--datepicker-selected-radius"
+        default: "var(--datepicker-day-radius)"
+        description: "Selected day cell radius."
+
+    range:
+      - name: "--datepicker-range-radius"
+        default: "0px"
+        description: "In-range days — 0 for continuous band, or radius for pills."
+      - name: "--datepicker-range-end-radius"
+        default: "var(--datepicker-day-radius)"
+        description: "Range start/end cap radius."
+
+    header-nav:
+      - name: "--datepicker-nav-radius"
+        default: "var(--radius-full)"
+        description: "Prev/next navigation button radius."
+
+    footer:
+      - name: "--datepicker-footer-border-width"
+        default: "1px"
+        description: "Separator above footer."
+      - name: "--datepicker-footer-border-style"
+        default: "solid"
+
+    focus:
+      - name: "--datepicker-ring-width"
+        default: "2px"
+        description: "Focus ring width on day cells."
+      - name: "--datepicker-ring-color"
+        default: "var(--primary-component-outline-default)"
+      - name: "--datepicker-ring-offset"
+        default: "2px"
+      - name: "--datepicker-outline-style"
+        default: "solid"
+      - name: "--datepicker-outline-width"
+        default: "2px"
+
+    clip:
+      - name: "--datepicker-clip-path"
+        default: "none"
+
+  # ────────────────────────────────────────────────────────────
+  # 📏 DIMENSION  (36 variables)
+  # ────────────────────────────────────────────────────────────
+  dimension:
+    popover:
+      - name: "--datepicker-width"
+        default: "auto"
+        description: "Calendar popover width. auto = sized by grid."
+      - name: "--datepicker-padding"
+        default: "var(--spacing-16)"
+        description: "Internal padding around calendar content."
+      - name: "--datepicker-gap"
+        default: "var(--spacing-8)"
+        description: "Gap between header, weekdays, grid, footer."
+
+    day-cell:
+      - name: "--datepicker-day-size-small"
+        default: "var(--spacing-28)"
+        description: "Day cell width & height at small density."
+      - name: "--datepicker-day-size-base"
+        default: "var(--spacing-36)"
+      - name: "--datepicker-day-size-medium"
+        default: "var(--spacing-40)"
+      - name: "--datepicker-day-size-large"
+        default: "var(--spacing-48)"
+
+    grid:
+      - name: "--datepicker-grid-gap-x"
+        default: "var(--spacing-2)"
+        description: "Horizontal gap between day cells."
+      - name: "--datepicker-grid-gap-y"
+        default: "var(--spacing-2)"
+        description: "Vertical gap between day rows."
+
+    header:
+      - name: "--datepicker-header-height-small"
+        default: "var(--spacing-32)"
+      - name: "--datepicker-header-height-base"
+        default: "var(--spacing-36)"
+      - name: "--datepicker-header-height-medium"
+        default: "var(--spacing-40)"
+      - name: "--datepicker-header-height-large"
+        default: "var(--spacing-48)"
+      - name: "--datepicker-header-gap"
+        default: "var(--spacing-8)"
+        description: "Gap between nav buttons and month label."
+
+    nav-button:
+      - name: "--datepicker-nav-size-small"
+        default: "var(--spacing-24)"
+      - name: "--datepicker-nav-size-base"
+        default: "var(--spacing-28)"
+      - name: "--datepicker-nav-size-medium"
+        default: "var(--spacing-32)"
+      - name: "--datepicker-nav-size-large"
+        default: "var(--spacing-36)"
+
+    weekday:
+      - name: "--datepicker-weekday-height-small"
+        default: "var(--spacing-24)"
+      - name: "--datepicker-weekday-height-base"
+        default: "var(--spacing-28)"
+      - name: "--datepicker-weekday-height-medium"
+        default: "var(--spacing-32)"
+      - name: "--datepicker-weekday-height-large"
+        default: "var(--spacing-36)"
+
+    footer:
+      - name: "--datepicker-footer-height"
+        default: "var(--spacing-40)"
+      - name: "--datepicker-footer-padding-x"
+        default: "var(--spacing-8)"
+      - name: "--datepicker-footer-padding-y"
+        default: "var(--spacing-8)"
+      - name: "--datepicker-footer-gap"
+        default: "var(--spacing-8)"
+
+    a11y:
+      - name: "--datepicker-min-tap-target"
+        default: "var(--spacing-44)"
+        description: "Minimum interactive area for touch targets."
+
+    range:
+      - name: "--datepicker-range-height"
+        default: "100%"
+        description: "Range band height relative to day cell."
+
+    popover-offset:
+      - name: "--datepicker-offset"
+        default: "var(--spacing-4)"
+        description: "Gap between trigger and popover."
+
+    week-number:
+      - name: "--datepicker-weeknum-width"
+        default: "var(--spacing-28)"
+        description: "Width of week-number column."
+
+    # Per-size font offsets (used by internal var bridge)
+    font-per-size:
+      - name: "--datepicker-day-font-size-small"
+        default: "var(--font-size-11)"
+      - name: "--datepicker-day-font-size-base"
+        default: "var(--font-size-13)"
+      - name: "--datepicker-day-font-size-medium"
+        default: "var(--font-size-14)"
+      - name: "--datepicker-day-font-size-large"
+        default: "var(--font-size-16)"
+
+  # ────────────────────────────────────────────────────────────
+  # 🎨 SURFACE  (50 variables)
+  # ────────────────────────────────────────────────────────────
+  surface:
+    popover:
+      - name: "--datepicker-bg"
+        default: "var(--surface-float-bg)"
+      - name: "--datepicker-border-color"
+        default: "var(--surface-float-outline)"
+      - name: "--datepicker-fg"
+        default: "var(--surface-float-ct-default)"
+
+    day-default:
+      - name: "--datepicker-day-bg"
+        default: "transparent"
+      - name: "--datepicker-day-fg"
+        default: "var(--surface-float-ct-default)"
+      - name: "--datepicker-day-bg-hover"
+        default: "var(--primary-container-bg)"
+      - name: "--datepicker-day-fg-hover"
+        default: "var(--primary-on-container)"
+      - name: "--datepicker-day-border-color"
+        default: "transparent"
+
+    today:
+      - name: "--datepicker-today-bg"
+        default: "transparent"
+        description: "Today's date background (unselected)."
+      - name: "--datepicker-today-fg"
+        default: "var(--primary-component-bg-default)"
+        description: "Today's date text color."
+      - name: "--datepicker-today-border-color"
+        default: "var(--primary-component-outline-default)"
+        description: "Today ring border color."
+      - name: "--datepicker-today-font-weight"
+        default: "var(--font-weight-bold)"
+
+    selected:
+      - name: "--datepicker-selected-bg"
+        default: "var(--primary-component-bg-default)"
+      - name: "--datepicker-selected-fg"
+        default: "var(--primary-on-component)"
+      - name: "--datepicker-selected-bg-hover"
+        default: "var(--primary-component-bg-hover)"
+      - name: "--datepicker-selected-fg-hover"
+        default: "var(--primary-on-component)"
+      - name: "--datepicker-selected-border-color"
+        default: "transparent"
+      - name: "--datepicker-selected-shadow"
+        default: "var(--shadow-xs)"
+
+    range:
+      - name: "--datepicker-range-bg"
+        default: "var(--primary-container-bg)"
+        description: "Background for days in-range (between start and end)."
+      - name: "--datepicker-range-fg"
+        default: "var(--primary-container-ct, var(--surface-float-ct-default))"
+      - name: "--datepicker-range-start-bg"
+        default: "var(--primary-component-bg-default)"
+      - name: "--datepicker-range-start-fg"
+        default: "var(--primary-on-component)"
+      - name: "--datepicker-range-end-bg"
+        default: "var(--primary-component-bg-default)"
+      - name: "--datepicker-range-end-fg"
+        default: "var(--primary-on-component)"
+
+    outside-month:
+      - name: "--datepicker-outside-fg"
+        default: "var(--surface-float-ct-faint)"
+        description: "Text color for days outside the current month."
+      - name: "--datepicker-outside-bg"
+        default: "transparent"
+      - name: "--datepicker-outside-opacity"
+        default: "0.5"
+
+    disabled:
+      - name: "--datepicker-disabled-fg"
+        default: "var(--surface-float-ct-faint)"
+      - name: "--datepicker-disabled-bg"
+        default: "transparent"
+      - name: "--datepicker-disabled-opacity"
+        default: "0.4"
+
+    weekend:
+      - name: "--datepicker-weekend-fg"
+        default: "var(--danger-content-default, var(--surface-float-ct-default))"
+        description: "Weekend day text color. Set to default to disable."
+
+    header:
+      - name: "--datepicker-header-bg"
+        default: "transparent"
+      - name: "--datepicker-header-fg"
+        default: "var(--surface-float-ct-strong)"
+      - name: "--datepicker-nav-bg"
+        default: "transparent"
+      - name: "--datepicker-nav-fg"
+        default: "var(--surface-float-ct-subtle)"
+      - name: "--datepicker-nav-bg-hover"
+        default: "var(--primary-container-bg)"
+      - name: "--datepicker-nav-fg-hover"
+        default: "var(--primary-on-container)"
+
+    weekday-labels:
+      - name: "--datepicker-weekday-fg"
+        default: "var(--surface-float-ct-faint)"
+      - name: "--datepicker-weekday-bg"
+        default: "transparent"
+
+    footer:
+      - name: "--datepicker-footer-bg"
+        default: "var(--surface-float-cm-bg)"
+      - name: "--datepicker-footer-fg"
+        default: "var(--surface-float-ct-subtle)"
+      - name: "--datepicker-footer-border-color"
+        default: "var(--surface-float-separator)"
+
+    week-number:
+      - name: "--datepicker-weeknum-fg"
+        default: "var(--surface-float-ct-faint)"
+      - name: "--datepicker-weeknum-bg"
+        default: "transparent"
+
+    separator:
+      - name: "--datepicker-separator-color"
+        default: "var(--surface-float-separator)"
+        description: "Optional horizontal line between header and grid."
+
+    focus-ring:
+      - name: "--datepicker-focus-outline-color"
+        default: "var(--primary-component-outline-default)"
+      - name: "--datepicker-focus-outline-width"
+        default: "2px"
+      - name: "--datepicker-focus-outline-offset"
+        default: "2px"
+
+  # ────────────────────────────────────────────────────────────
+  # ✏️ TYPOGRAPHY  (19 variables)
+  # ────────────────────────────────────────────────────────────
+  typography:
+    day:
+      - name: "--datepicker-day-font-family"
+        default: "var(--font-family-sans)"
+      - name: "--datepicker-day-font-weight"
+        default: "var(--font-weight-regular)"
+
+    header:
+      - name: "--datepicker-header-font-family"
+        default: "var(--font-family-sans)"
+      - name: "--datepicker-header-font-size-small"
+        default: "var(--font-size-12)"
+      - name: "--datepicker-header-font-size-base"
+        default: "var(--font-size-14)"
+      - name: "--datepicker-header-font-size-medium"
+        default: "var(--font-size-16)"
+      - name: "--datepicker-header-font-size-large"
+        default: "var(--font-size-18)"
+      - name: "--datepicker-header-font-weight"
+        default: "var(--font-weight-semibold)"
+
+    weekday:
+      - name: "--datepicker-weekday-font-family"
+        default: "var(--font-family-sans)"
+      - name: "--datepicker-weekday-font-size-small"
+        default: "var(--font-size-10)"
+      - name: "--datepicker-weekday-font-size-base"
+        default: "var(--font-size-11)"
+      - name: "--datepicker-weekday-font-size-medium"
+        default: "var(--font-size-12)"
+      - name: "--datepicker-weekday-font-size-large"
+        default: "var(--font-size-13)"
+      - name: "--datepicker-weekday-font-weight"
+        default: "var(--font-weight-semibold)"
+      - name: "--datepicker-weekday-text-transform"
+        default: "uppercase"
+      - name: "--datepicker-weekday-letter-spacing"
+        default: "0.04em"
+
+    footer:
+      - name: "--datepicker-footer-font-size"
+        default: "var(--font-size-12)"
+      - name: "--datepicker-footer-font-weight"
+        default: "var(--font-weight-medium)"
+
+  # ────────────────────────────────────────────────────────────
+  # 🧩 SLOTS  (11 variables)
+  # ────────────────────────────────────────────────────────────
+  slots:
+    display:
+      - name: "--datepicker-footer-display"
+        default: "none"
+        description: "none | flex. Show/hide footer with Today/Clear."
+      - name: "--datepicker-weeknum-display"
+        default: "none"
+        description: "none | block. Show/hide week numbers column."
+      - name: "--datepicker-separator-display"
+        default: "none"
+        description: "none | block. Show/hide line between header and grid."
+
+    icons:
+      - name: "--datepicker-nav-icon-size"
+        default: "1em"
+      - name: "--datepicker-nav-icon-color"
+        default: "currentColor"
+
+    content:
+      - name: "--datepicker-today-dot-display"
+        default: "none"
+        description: "none | block. Show a dot below today's number."
+      - name: "--datepicker-today-dot-size"
+        default: "4px"
+      - name: "--datepicker-today-dot-color"
+        default: "var(--primary-component-bg-default)"
+
+    nav-label:
+      - name: "--datepicker-nav-label-gap"
+        default: "var(--spacing-4)"
+        description: "Gap between month and year in header label."
+
+    day-content:
+      - name: "--datepicker-day-line-height"
+        default: "1"
+        description: "Line height of day number."
+
+  # ────────────────────────────────────────────────────────────
+  # ⚡ MOTION  (8 variables)
+  # ────────────────────────────────────────────────────────────
+  motion:
+    day:
+      - name: "--datepicker-day-transition-property"
+        default: "background-color, color, border-color, box-shadow"
+      - name: "--datepicker-day-transition-duration"
+        default: "var(--duration-fast)"
+      - name: "--datepicker-day-transition-easing"
+        default: "var(--easing-in-out)"
+
+    popover:
+      - name: "--datepicker-popover-transition-duration"
+        default: "var(--duration-normal)"
+      - name: "--datepicker-popover-transition-easing"
+        default: "var(--easing-out)"
+
+    month:
+      - name: "--datepicker-month-transition-duration"
+        default: "var(--duration-normal)"
+        description: "Duration for month slide animation."
+      - name: "--datepicker-month-transition-easing"
+        default: "var(--easing-in-out)"
+
+    nav:
+      - name: "--datepicker-nav-transition-duration"
+        default: "var(--duration-fast)"
+
+  # ────────────────────────────────────────────────────────────
+  # ♿ ACCESSIBILITY  (5 variables)
+  # ────────────────────────────────────────────────────────────
+  a11y:
+    - name: "--datepicker-focus-outline-width"
+      default: "2px"
+    - name: "--datepicker-focus-outline-color"
+      default: "var(--primary-component-outline-default)"
+    - name: "--datepicker-focus-outline-offset"
+      default: "2px"
+    - name: "--datepicker-min-tap-target"
+      default: "var(--spacing-44)"
+      description: "Minimum 44px for day cells on touch devices."
+    - name: "--datepicker-forced-colors-selected"
+      default: "Highlight"
+      description: "High-contrast selected day indicator."
+
+# ═══════════════════════════════════════════════════════════════
+# ANATOMY REFERENCE
+# ═══════════════════════════════════════════════════════════════
+anatomy: |
+  <div class="datepicker" data-size="base" data-open>
+    <div class="datepicker__header">
+      <button class="datepicker__nav datepicker__nav--prev" type="button" aria-label="Previous month">‹</button>
+      <span class="datepicker__title">March 2026</span>
+      <button class="datepicker__nav datepicker__nav--next" type="button" aria-label="Next month">›</button>
+    </div>
+    <div class="datepicker__weekdays">
+      <span>Su</span><span>Mo</span><span>Tu</span>…
+    </div>
+    <div class="datepicker__grid" role="grid">
+      <button class="datepicker__day" type="button">1</button>
+      <button class="datepicker__day" data-today type="button">20</button>
+      <button class="datepicker__day" data-selected type="button">15</button>
+      <button class="datepicker__day" data-outside type="button">1</button>
+      <button class="datepicker__day" data-disabled type="button">5</button>
+      <button class="datepicker__day" data-range-start type="button">10</button>
+      <button class="datepicker__day" data-in-range type="button">11</button>
+      <button class="datepicker__day" data-range-end type="button">14</button>
+      <button class="datepicker__day" data-weekend type="button">8</button>
+    </div>
+    <div class="datepicker__footer">
+      <button class="datepicker__footer-btn" type="button">Today</button>
+      <button class="datepicker__footer-btn" type="button">Clear</button>
+    </div>
+  </div>

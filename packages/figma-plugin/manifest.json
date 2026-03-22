@@ -1,0 +1,14 @@
+{
+  "name": "Design Token Forge",
+  "id": "0000000000000000000",
+  "api": "1.0.0",
+  "main": "code.js",
+  "capabilities": [],
+  "enableProposedApi": true,
+  "editorType": ["figma"],
+  "ui": "ui.html",
+  "networkAccess": {
+    "allowedDomains": ["http://localhost:9500"],
+    "reasoning": "Connects to local DTF Sync Server to receive live token updates"
+  }
+}

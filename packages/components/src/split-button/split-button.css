@@ -1,0 +1,465 @@
+/* ════════════════════════════════════════════════════════════════
+   Design Token Forge — SplitButton Component CSS
+   Variable-driven rendering. Zero hardcoded visual values.
+   Compound component: action zone + divider + trigger zone.
+   Uses internal (--_sb-*) vars set by variant/size selectors.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════════════════════════
+   CONTAINER
+   ════════════════════════════════════════════════════════════════ */
+
+.split-btn {
+  display: inline-flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  position: relative;
+  height: var(--_sb-height);
+
+  /* Shape — outer container */
+  border-radius: var(--_sb-radius);
+  border-width: var(--split-btn-border-width);
+  border-style: var(--split-btn-border-style);
+  border-color: var(--_sb-border-color);
+  box-shadow: var(--_sb-shadow);
+  overflow: hidden;
+
+  /* Surface — default bg applied to container */
+  background-color: var(--_sb-bg);
+  color: var(--_sb-fg);
+
+  /* Remove gap between inline children */
+  font-size: 0;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   ACTION ZONE — left button with label + optional icon
+   ════════════════════════════════════════════════════════════════ */
+
+.split-btn__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--_sb-gap);
+  box-sizing: border-box;
+
+  height: 100%;
+  padding: var(--_sb-py) var(--_sb-action-px);
+  border: none;
+  background: transparent;
+  color: inherit;
+
+  /* Typography */
+  font-family: var(--split-btn-font-family);
+  font-size: var(--_sb-fs);
+  font-weight: var(--split-btn-font-weight);
+  line-height: var(--split-btn-line-height);
+  letter-spacing: var(--split-btn-letter-spacing);
+  text-transform: var(--split-btn-text-transform);
+  white-space: nowrap;
+
+  /* Motion */
+  transition-property: var(--split-btn-transition-property);
+  transition-duration: var(--split-btn-transition-duration);
+  transition-timing-function: var(--split-btn-transition-easing);
+
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Action zone hover — independent from trigger  */
+.split-btn__action:hover {
+  background-color: var(--_sb-bg-hover);
+  color: var(--_sb-fg-hover);
+}
+.split-btn__action:active {
+  background-color: var(--_sb-bg-active);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   DIVIDER — vertical separator between zones
+   ════════════════════════════════════════════════════════════════ */
+
+.split-btn__divider {
+  width: var(--split-btn-divider-width);
+  align-self: stretch;
+  background-color: var(--_sb-divider-color);
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   TRIGGER ZONE — right button with chevron
+   ════════════════════════════════════════════════════════════════ */
+
+.split-btn__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+
+  height: 100%;
+  padding: 0 var(--_sb-trigger-px);
+  border: none;
+  background: transparent;
+  color: inherit;
+
+  /* Motion */
+  transition-property: var(--split-btn-transition-property);
+  transition-duration: var(--split-btn-transition-duration);
+  transition-timing-function: var(--split-btn-transition-easing);
+
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Trigger zone hover — independent from action */
+.split-btn__trigger:hover {
+  background-color: var(--_sb-bg-hover);
+  color: var(--_sb-fg-hover);
+}
+.split-btn__trigger:active {
+  background-color: var(--_sb-bg-active);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   SIZE SELECTORS  — map stored tokens → active vars
+   ════════════════════════════════════════════════════════════════ */
+
+.split-btn:not([data-size]),
+.split-btn[data-size="base"] {
+  --_sb-height: var(--split-btn-height-base);
+  --_sb-action-px: var(--split-btn-action-padding-x-base);
+  --_sb-py: var(--split-btn-padding-y-base);
+  --_sb-gap: var(--split-btn-gap-base);
+  --_sb-trigger-px: var(--split-btn-trigger-padding-x-base);
+  --_sb-radius: var(--split-btn-radius-base);
+  --_sb-fs: var(--split-btn-font-size-base);
+  --_sb-icon-size: var(--split-btn-icon-size-base);
+}
+
+.split-btn[data-size="micro"] {
+  --_sb-height: var(--split-btn-height-micro);
+  --_sb-action-px: var(--split-btn-action-padding-x-micro);
+  --_sb-py: var(--split-btn-padding-y-micro);
+  --_sb-gap: var(--split-btn-gap-micro);
+  --_sb-trigger-px: var(--split-btn-trigger-padding-x-micro);
+  --_sb-radius: var(--split-btn-radius-micro);
+  --_sb-fs: var(--split-btn-font-size-micro);
+  --_sb-icon-size: var(--split-btn-icon-size-micro);
+}
+
+.split-btn[data-size="tiny"] {
+  --_sb-height: var(--split-btn-height-tiny);
+  --_sb-action-px: var(--split-btn-action-padding-x-tiny);
+  --_sb-py: var(--split-btn-padding-y-tiny);
+  --_sb-gap: var(--split-btn-gap-tiny);
+  --_sb-trigger-px: var(--split-btn-trigger-padding-x-tiny);
+  --_sb-radius: var(--split-btn-radius-tiny);
+  --_sb-fs: var(--split-btn-font-size-tiny);
+  --_sb-icon-size: var(--split-btn-icon-size-tiny);
+}
+
+.split-btn[data-size="small"] {
+  --_sb-height: var(--split-btn-height-small);
+  --_sb-action-px: var(--split-btn-action-padding-x-small);
+  --_sb-py: var(--split-btn-padding-y-small);
+  --_sb-gap: var(--split-btn-gap-small);
+  --_sb-trigger-px: var(--split-btn-trigger-padding-x-small);
+  --_sb-radius: var(--split-btn-radius-small);
+  --_sb-fs: var(--split-btn-font-size-small);
+  --_sb-icon-size: var(--split-btn-icon-size-small);
+}
+
+.split-btn[data-size="medium"] {
+  --_sb-height: var(--split-btn-height-medium);
+  --_sb-action-px: var(--split-btn-action-padding-x-medium);
+  --_sb-py: var(--split-btn-padding-y-medium);
+  --_sb-gap: var(--split-btn-gap-medium);
+  --_sb-trigger-px: var(--split-btn-trigger-padding-x-medium);
+  --_sb-radius: var(--split-btn-radius-medium);
+  --_sb-fs: var(--split-btn-font-size-medium);
+  --_sb-icon-size: var(--split-btn-icon-size-medium);
+}
+
+.split-btn[data-size="large"] {
+  --_sb-height: var(--split-btn-height-large);
+  --_sb-action-px: var(--split-btn-action-padding-x-large);
+  --_sb-py: var(--split-btn-padding-y-large);
+  --_sb-gap: var(--split-btn-gap-large);
+  --_sb-trigger-px: var(--split-btn-trigger-padding-x-large);
+  --_sb-radius: var(--split-btn-radius-large);
+  --_sb-fs: var(--split-btn-font-size-large);
+  --_sb-icon-size: var(--split-btn-icon-size-large);
+}
+
+.split-btn[data-size="big"] {
+  --_sb-height: var(--split-btn-height-big);
+  --_sb-action-px: var(--split-btn-action-padding-x-big);
+  --_sb-py: var(--split-btn-padding-y-big);
+  --_sb-gap: var(--split-btn-gap-big);
+  --_sb-trigger-px: var(--split-btn-trigger-padding-x-big);
+  --_sb-radius: var(--split-btn-radius-big);
+  --_sb-fs: var(--split-btn-font-size-big);
+  --_sb-icon-size: var(--split-btn-icon-size-big);
+}
+
+.split-btn[data-size="huge"] {
+  --_sb-height: var(--split-btn-height-huge);
+  --_sb-action-px: var(--split-btn-action-padding-x-huge);
+  --_sb-py: var(--split-btn-padding-y-huge);
+  --_sb-gap: var(--split-btn-gap-huge);
+  --_sb-trigger-px: var(--split-btn-trigger-padding-x-huge);
+  --_sb-radius: var(--split-btn-radius-huge);
+  --_sb-fs: var(--split-btn-font-size-huge);
+  --_sb-icon-size: var(--split-btn-icon-size-huge);
+}
+
+.split-btn[data-size="mega"] {
+  --_sb-height: var(--split-btn-height-mega);
+  --_sb-action-px: var(--split-btn-action-padding-x-mega);
+  --_sb-py: var(--split-btn-padding-y-mega);
+  --_sb-gap: var(--split-btn-gap-mega);
+  --_sb-trigger-px: var(--split-btn-trigger-padding-x-mega);
+  --_sb-radius: var(--split-btn-radius-mega);
+  --_sb-fs: var(--split-btn-font-size-mega);
+  --_sb-icon-size: var(--split-btn-icon-size-mega);
+}
+
+.split-btn[data-size="ultra"] {
+  --_sb-height: var(--split-btn-height-ultra);
+  --_sb-action-px: var(--split-btn-action-padding-x-ultra);
+  --_sb-py: var(--split-btn-padding-y-ultra);
+  --_sb-gap: var(--split-btn-gap-ultra);
+  --_sb-trigger-px: var(--split-btn-trigger-padding-x-ultra);
+  --_sb-radius: var(--split-btn-radius-ultra);
+  --_sb-fs: var(--split-btn-font-size-ultra);
+  --_sb-icon-size: var(--split-btn-icon-size-ultra);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   SHAPE MODIFIER — rounded pill
+   ════════════════════════════════════════════════════════════════ */
+
+.split-btn[data-rounded] {
+  --_sb-radius: var(--split-btn-radius-rounded);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   VARIANT SELECTORS  — map stored tokens → active surface vars
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── PRIMARY (default) ──────────────────────────────────────── */
+.split-btn:not([data-variant]),
+.split-btn[data-variant="primary"] {
+  --_sb-bg: var(--split-btn-primary-bg);
+  --_sb-bg-hover: var(--split-btn-primary-bg-hover);
+  --_sb-bg-active: var(--split-btn-primary-bg-active);
+  --_sb-fg: var(--split-btn-primary-fg);
+  --_sb-fg-hover: var(--split-btn-primary-fg-hover);
+  --_sb-border-color: var(--split-btn-primary-border-color);
+  --_sb-shadow: var(--split-btn-shadow);
+  --_sb-divider-color: var(--split-btn-divider-color-primary);
+}
+.split-btn:not([data-variant]):hover,
+.split-btn[data-variant="primary"]:hover {
+  --_sb-border-color: var(--split-btn-primary-border-color-hover);
+  --_sb-shadow: var(--split-btn-shadow-hover);
+}
+
+/* ── SECONDARY ──────────────────────────────────────────────── */
+.split-btn[data-variant="secondary"] {
+  --_sb-bg: var(--split-btn-secondary-bg);
+  --_sb-bg-hover: var(--split-btn-secondary-bg-hover);
+  --_sb-bg-active: var(--split-btn-secondary-bg-active);
+  --_sb-fg: var(--split-btn-secondary-fg);
+  --_sb-fg-hover: var(--split-btn-secondary-fg-hover);
+  --_sb-border-color: var(--split-btn-secondary-border-color);
+  --_sb-shadow: var(--split-btn-shadow);
+  --_sb-divider-color: var(--split-btn-divider-color-secondary);
+}
+.split-btn[data-variant="secondary"]:hover {
+  --_sb-border-color: var(--split-btn-secondary-border-color-hover);
+  --_sb-shadow: var(--split-btn-shadow-hover);
+}
+
+/* ── DANGER ─────────────────────────────────────────────────── */
+.split-btn[data-variant="danger"] {
+  --_sb-bg: var(--split-btn-danger-bg);
+  --_sb-bg-hover: var(--split-btn-danger-bg-hover);
+  --_sb-bg-active: var(--split-btn-danger-bg-active);
+  --_sb-fg: var(--split-btn-danger-fg);
+  --_sb-fg-hover: var(--split-btn-danger-fg-hover);
+  --_sb-border-color: var(--split-btn-danger-border-color);
+  --_sb-shadow: var(--split-btn-shadow);
+  --_sb-divider-color: var(--split-btn-divider-color-danger);
+}
+.split-btn[data-variant="danger"]:hover {
+  --_sb-border-color: var(--split-btn-danger-border-color-hover);
+  --_sb-shadow: var(--split-btn-shadow-hover);
+}
+
+/* ── NEUTRAL ────────────────────────────────────────────────── */
+.split-btn[data-variant="neutral"] {
+  --_sb-bg: var(--split-btn-neutral-bg);
+  --_sb-bg-hover: var(--split-btn-neutral-bg-hover);
+  --_sb-bg-active: var(--split-btn-neutral-bg-active);
+  --_sb-fg: var(--split-btn-neutral-fg);
+  --_sb-fg-hover: var(--split-btn-neutral-fg-hover);
+  --_sb-border-color: var(--split-btn-neutral-border-color);
+  --_sb-shadow: var(--split-btn-shadow);
+  --_sb-divider-color: var(--split-btn-divider-color-neutral);
+}
+.split-btn[data-variant="neutral"]:hover {
+  --_sb-border-color: var(--split-btn-neutral-border-color-hover);
+  --_sb-shadow: var(--split-btn-shadow-hover);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   STATES
+   ════════════════════════════════════════════════════════════════ */
+
+/* Focus-visible on individual zones — keyboard focus ring */
+.split-btn__action:focus-visible,
+.split-btn__trigger:focus-visible {
+  outline: var(--split-btn-focus-outline-width) solid var(--split-btn-focus-outline-color);
+  outline-offset: calc(-1 * var(--split-btn-focus-outline-width));
+  z-index: 1;
+}
+
+/* Disabled — entire container */
+.split-btn[data-disabled],
+.split-btn:has(.split-btn__action:disabled) {
+  pointer-events: none;
+}
+
+.split-btn:not([data-variant])[data-disabled],
+.split-btn[data-variant="primary"][data-disabled],
+.split-btn:not([data-variant]):has(.split-btn__action:disabled),
+.split-btn[data-variant="primary"]:has(.split-btn__action:disabled) {
+  --_sb-bg: var(--split-btn-primary-bg-disabled);
+  --_sb-fg: var(--split-btn-primary-fg-disabled);
+  --_sb-border-color: var(--split-btn-primary-border-color-disabled);
+  opacity: var(--split-btn-primary-opacity-disabled);
+}
+.split-btn[data-variant="secondary"][data-disabled],
+.split-btn[data-variant="secondary"]:has(.split-btn__action:disabled) {
+  --_sb-bg: var(--split-btn-secondary-bg-disabled);
+  --_sb-fg: var(--split-btn-secondary-fg-disabled);
+  --_sb-border-color: var(--split-btn-secondary-border-color-disabled);
+  opacity: var(--split-btn-secondary-opacity-disabled);
+}
+.split-btn[data-variant="danger"][data-disabled],
+.split-btn[data-variant="danger"]:has(.split-btn__action:disabled) {
+  --_sb-bg: var(--split-btn-danger-bg-disabled);
+  --_sb-fg: var(--split-btn-danger-fg-disabled);
+  --_sb-border-color: var(--split-btn-danger-border-color-disabled);
+  opacity: var(--split-btn-danger-opacity-disabled);
+}
+.split-btn[data-variant="neutral"][data-disabled],
+.split-btn[data-variant="neutral"]:has(.split-btn__action:disabled) {
+  --_sb-bg: var(--split-btn-neutral-bg-disabled);
+  --_sb-fg: var(--split-btn-neutral-fg-disabled);
+  --_sb-border-color: var(--split-btn-neutral-border-color-disabled);
+  opacity: var(--split-btn-neutral-opacity-disabled);
+}
+
+.split-btn[data-disabled] .split-btn__action,
+.split-btn[data-disabled] .split-btn__trigger {
+  cursor: not-allowed;
+}
+
+/* Loading — pulse on action zone */
+.split-btn[data-loading] .split-btn__action {
+  cursor: wait;
+  pointer-events: none;
+  animation: split-btn-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes split-btn-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   SLOTS — icon, label, chevron
+   ════════════════════════════════════════════════════════════════ */
+
+.split-btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--_sb-icon-size);
+  height: var(--_sb-icon-size);
+  color: var(--split-btn-icon-color);
+  flex-shrink: 0;
+}
+.split-btn__action:hover .split-btn__icon {
+  color: var(--split-btn-icon-color-hover);
+}
+.split-btn__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.split-btn__label {
+  display: inline-block;
+}
+
+.split-btn__chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--_sb-icon-size);
+  height: var(--_sb-icon-size);
+  color: var(--split-btn-icon-color);
+  flex-shrink: 0;
+}
+.split-btn__trigger:hover .split-btn__chevron {
+  color: var(--split-btn-icon-color-hover);
+}
+.split-btn__chevron svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   FORCED COLORS (Windows High Contrast)
+   ════════════════════════════════════════════════════════════════ */
+
+@media (forced-colors: active) {
+  .split-btn {
+    border: 1px solid ButtonText;
+    color: ButtonText;
+    background: ButtonFace;
+  }
+  .split-btn__action:hover,
+  .split-btn__trigger:hover {
+    color: Highlight;
+  }
+  .split-btn__divider {
+    background: ButtonText;
+  }
+  .split-btn[data-disabled],
+  .split-btn:has(.split-btn__action:disabled) {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   REDUCED MOTION
+   ════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .split-btn__action,
+  .split-btn__trigger {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}

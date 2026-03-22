@@ -1,0 +1,253 @@
+/* ════════════════════════════════════════════════════════════════
+   Design Token Forge — T1 Semantic Role Tokens
+   6 roles × 18 tokens × light/dark
+   Roles: primary, brand, success, warning, danger, info
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Light Theme (default) ──────────────────────────────────── */
+:root {
+
+  /* ── PRIMARY (monochromatic / pink) ─────────────────────── */
+  --primary-content-default: #9F008F;
+  --primary-content-strong: #840077;
+  --primary-content-subtle: #CE44BB;
+  --primary-content-faint: #CC6FBC;
+  --primary-component-bg-default: #BD22AB;
+  --primary-component-bg-hover: #9F008F;
+  --primary-component-bg-pressed: #840077;
+  --primary-component-outline-default: #E05DCD;
+  --primary-component-outline-hover: #CE44BB;
+  --primary-component-outline-pressed: #BD22AB;
+  --primary-component-separator: #FFCEF4;
+  --primary-container-bg: #FFE9FA;
+  --primary-container-hover: #FFDCF7;
+  --primary-container-pressed: #FFCEF4;
+  --primary-container-outline: #FF8BEB;
+  --primary-container-separator: #FFCEF4;
+  --primary-on-component: #FFFFFF;
+  --primary-on-container: #840077;
+
+  /* ── BRAND (orange-red) ─────────────────────────────────── */
+  --brand-content-default: #B3311E;
+  --brand-content-strong: #9A2A19;
+  --brand-content-subtle: #F04C36;
+  --brand-content-faint: #D2776B;
+  --brand-component-bg-default: #D93B26;
+  --brand-component-bg-hover: #B3311E;
+  --brand-component-bg-pressed: #9A2A19;
+  --brand-component-outline-default: #FF634E;
+  --brand-component-outline-hover: #F04C36;
+  --brand-component-outline-pressed: #E53F28;
+  --brand-component-separator: #FFC9C1;
+  --brand-container-bg: #FFEBE7;
+  --brand-container-hover: #FFE0DB;
+  --brand-container-pressed: #FFC9C1;
+  --brand-container-outline: #FF9182;
+  --brand-container-separator: #FFC9C1;
+  --brand-on-component: #FFFFFF;
+  --brand-on-container: #9A2A19;
+
+  /* ── DANGER (red) ───────────────────────────────────────── */
+  --danger-content-default: #B91C1C;
+  --danger-content-strong: #991B1B;
+  --danger-content-subtle: #EF4444;
+  --danger-content-faint: #D27575;
+  --danger-component-bg-default: #DC2626;
+  --danger-component-bg-hover: #B91C1C;
+  --danger-component-bg-pressed: #991B1B;
+  --danger-component-outline-default: #F45A5A;
+  --danger-component-outline-hover: #EF4444;
+  --danger-component-outline-pressed: #DC2626;
+  --danger-component-separator: #FECACA;
+  --danger-container-bg: #FEE2E2;
+  --danger-container-hover: #FECECE;
+  --danger-container-pressed: #FECACA;
+  --danger-container-outline: #F98B8B;
+  --danger-container-separator: #FECACA;
+  --danger-on-component: #FFFFFF;
+  --danger-on-container: #991B1B;
+
+  /* ── SUCCESS (green) ────────────────────────────────────── */
+  --success-content-default: #15803D;
+  --success-content-strong: #166534;
+  --success-content-subtle: #1CA54E;
+  --success-content-faint: #42A169;
+  --success-component-bg-default: #12883D;
+  --success-component-bg-hover: #15803D;
+  --success-component-bg-pressed: #166534;
+  --success-component-outline-default: #34D269;
+  --success-component-outline-hover: #22C55E;
+  --success-component-outline-pressed: #16A34A;
+  --success-component-separator: #BBF7D0;
+  --success-container-bg: #DCFCE7;
+  --success-container-hover: #CCFADE;
+  --success-container-pressed: #BBF7D0;
+  --success-container-outline: #5DE092;
+  --success-container-separator: #BBF7D0;
+  --success-on-component: #FFFFFF;
+  --success-on-container: #166534;
+
+  /* ── WARNING (amber) ────────────────────────────────────── */
+  --warning-content-default: #B45309;
+  --warning-content-strong: #92400E;
+  --warning-content-subtle: #CB7F07;
+  --warning-content-faint: #B48919;
+  --warning-component-bg-default: #D97706;
+  --warning-component-bg-hover: #B45309;
+  --warning-component-bg-pressed: #92400E;
+  --warning-component-outline-default: #F59E0B;
+  --warning-component-outline-hover: #E89209;
+  --warning-component-outline-pressed: #D97706;
+  --warning-component-separator: #FDE68A;
+  --warning-container-bg: #FEF3C7;
+  --warning-container-hover: #FDEAA5;
+  --warning-container-pressed: #FDE68A;
+  --warning-container-outline: #FBBF24;
+  --warning-container-separator: #FDE68A;
+  --warning-on-component: #451A03;
+  --warning-on-container: #92400E;
+
+  /* ── INFO (sky blue) ────────────────────────────────────── */
+  --info-content-default: #0179B7;
+  --info-content-strong: #0369A1;
+  --info-content-subtle: #1D99D0;
+  --info-content-faint: #4898BF;
+  --info-component-bg-default: #0A7DB1;
+  --info-component-bg-hover: #0284C7;
+  --info-component-bg-pressed: #0369A1;
+  --info-component-outline-default: #38BDF8;
+  --info-component-outline-hover: #22B0F0;
+  --info-component-outline-pressed: #0EA5E9;
+  --info-component-separator: #BAE6FD;
+  --info-container-bg: #E0F2FE;
+  --info-container-hover: #CEE9FD;
+  --info-container-pressed: #BAE6FD;
+  --info-container-outline: #5DC3F5;
+  --info-container-separator: #BAE6FD;
+  --info-on-component: #FFFFFF;
+  --info-on-container: #0369A1;
+}
+
+/* ── Dark Theme ─────────────────────────────────────────────── */
+[data-theme="dark"] {
+
+  /* ── PRIMARY (monochromatic / pink) ─────────────────────── */
+  --primary-content-default: #FFB6F0;
+  --primary-content-strong: #FFCEF4;
+  --primary-content-subtle: #FF8BEB;
+  --primary-content-faint: #CE44BB;
+  --primary-component-bg-default: #C13FAF;
+  --primary-component-bg-hover: #D954C3;
+  --primary-component-bg-pressed: #E669D1;
+  --primary-component-outline-default: #BD22AB;
+  --primary-component-outline-hover: #CE44BB;
+  --primary-component-outline-pressed: #E05DCD;
+  --primary-component-separator: #5C0153;
+  --primary-container-bg: #4B0043;
+  --primary-container-hover: #5C0153;
+  --primary-container-pressed: #720166;
+  --primary-container-outline: #9F008F;
+  --primary-container-separator: #5C0153;
+  --primary-on-component: #FFFFFF;
+  --primary-on-container: #FFCEF4;
+
+  /* ── BRAND (orange-red) ─────────────────────────────────── */
+  --brand-content-default: #FFB2A6;
+  --brand-content-strong: #FFC9C1;
+  --brand-content-subtle: #FF9182;
+  --brand-content-faint: #F04C36;
+  --brand-component-bg-default: #D3422F;
+  --brand-component-bg-hover: #E8523F;
+  --brand-component-bg-pressed: #F56350;
+  --brand-component-outline-default: #E53F28;
+  --brand-component-outline-hover: #F04C36;
+  --brand-component-outline-pressed: #FF634E;
+  --brand-component-separator: #681C0F;
+  --brand-container-bg: #4F150A;
+  --brand-container-hover: #681C0F;
+  --brand-container-pressed: #812314;
+  --brand-container-outline: #B3311E;
+  --brand-container-separator: #681C0F;
+  --brand-on-component: #FFFFFF;
+  --brand-on-container: #FFC9C1;
+
+  /* ── DANGER (red) ───────────────────────────────────────── */
+  --danger-content-default: #FCA5A5;
+  --danger-content-strong: #FECACA;
+  --danger-content-subtle: #F98B8B;
+  --danger-content-faint: #EF4444;
+  --danger-component-bg-default: #D53C3C;
+  --danger-component-bg-hover: #E64F4F;
+  --danger-component-bg-pressed: #F06262;
+  --danger-component-outline-default: #DC2626;
+  --danger-component-outline-hover: #EF4444;
+  --danger-component-outline-pressed: #F45A5A;
+  --danger-component-separator: #7F1D1D;
+  --danger-container-bg: #450A0A;
+  --danger-container-hover: #6B1818;
+  --danger-container-pressed: #7F1D1D;
+  --danger-container-outline: #B91C1C;
+  --danger-container-separator: #7F1D1D;
+  --danger-on-component: #FFFFFF;
+  --danger-on-container: #FECACA;
+
+  /* ── SUCCESS (green) ────────────────────────────────────── */
+  --success-content-default: #86EFAC;
+  --success-content-strong: #BBF7D0;
+  --success-content-subtle: #5DE092;
+  --success-content-faint: #22C55E;
+  --success-component-bg-default: #178740;
+  --success-component-bg-hover: #1E9D4E;
+  --success-component-bg-pressed: #28B35E;
+  --success-component-outline-default: #16A34A;
+  --success-component-outline-hover: #22C55E;
+  --success-component-outline-pressed: #34D269;
+  --success-component-separator: #14532D;
+  --success-container-bg: #052E16;
+  --success-container-hover: #124826;
+  --success-container-pressed: #14532D;
+  --success-container-outline: #15803D;
+  --success-container-separator: #14532D;
+  --success-on-component: #FFFFFF;
+  --success-on-container: #BBF7D0;
+
+  /* ── WARNING (amber) ────────────────────────────────────── */
+  --warning-content-default: #FCD34D;
+  --warning-content-strong: #FDE68A;
+  --warning-content-subtle: #FBBF24;
+  --warning-content-faint: #E89209;
+  --warning-component-bg-default: #E89209;
+  --warning-component-bg-hover: #F59E0B;
+  --warning-component-bg-pressed: #F7B217;
+  --warning-component-outline-default: #D97706;
+  --warning-component-outline-hover: #E89209;
+  --warning-component-outline-pressed: #F59E0B;
+  --warning-component-separator: #78350F;
+  --warning-container-bg: #451A03;
+  --warning-container-hover: #62300E;
+  --warning-container-pressed: #78350F;
+  --warning-container-outline: #B45309;
+  --warning-container-separator: #78350F;
+  --warning-on-component: #451A03;
+  --warning-on-container: #FDE68A;
+
+  /* ── INFO (sky blue) ────────────────────────────────────── */
+  --info-content-default: #7DD3FC;
+  --info-content-strong: #BAE6FD;
+  --info-content-subtle: #5DC3F5;
+  --info-content-faint: #22B0F0;
+  --info-component-bg-default: #187DAB;
+  --info-component-bg-hover: #1F92C5;
+  --info-component-bg-pressed: #27A6DD;
+  --info-component-outline-default: #0EA5E9;
+  --info-component-outline-hover: #22B0F0;
+  --info-component-outline-pressed: #38BDF8;
+  --info-component-separator: #075985;
+  --info-container-bg: #0C4A6E;
+  --info-container-hover: #064E77;
+  --info-container-pressed: #075985;
+  --info-container-outline: #0284C7;
+  --info-container-separator: #075985;
+  --info-on-component: #FFFFFF;
+  --info-on-container: #BAE6FD;
+}

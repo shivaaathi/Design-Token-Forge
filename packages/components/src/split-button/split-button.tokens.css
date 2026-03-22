@@ -1,0 +1,225 @@
+/* ════════════════════════════════════════════════════════════════
+   Design Token Forge — SplitButton Token Defaults
+   Layer 0: System defaults for 154 split-button variables.
+   All values reference global tokens — zero hardcoded visuals.
+   ════════════════════════════════════════════════════════════════ */
+
+.split-btn {
+
+  /* ────────────────────────────────────────────────────────────
+     📐 SHAPE  (14 vars)
+     ──────────────────────────────────────────────────────────── */
+
+  /* Border radius per density mode (outer container corners) */
+  --split-btn-radius-micro: var(--radius-xs);
+  --split-btn-radius-tiny: var(--radius-sm);
+  --split-btn-radius-small: var(--radius-sm);
+  --split-btn-radius-base: var(--radius-md);
+  --split-btn-radius-medium: var(--radius-md);
+  --split-btn-radius-large: var(--radius-DEFAULT);
+  --split-btn-radius-big: var(--radius-DEFAULT);
+  --split-btn-radius-huge: var(--radius-lg);
+  --split-btn-radius-mega: var(--radius-xl);
+  --split-btn-radius-ultra: var(--radius-xl);
+
+  /* Border */
+  --split-btn-border-width: 1px;
+  --split-btn-border-style: solid;
+
+  /* Shadow */
+  --split-btn-shadow: var(--shadow-none);
+  --split-btn-shadow-hover: var(--shadow-none);
+
+  /* ────────────────────────────────────────────────────────────
+     📏 DIMENSION  (50 vars)
+     ──────────────────────────────────────────────────────────── */
+
+  /* Height per density mode */
+  --split-btn-height-micro: var(--spacing-24);
+  --split-btn-height-tiny: var(--spacing-28);
+  --split-btn-height-small: var(--spacing-32);
+  --split-btn-height-base: var(--spacing-36);
+  --split-btn-height-medium: var(--spacing-40);
+  --split-btn-height-large: var(--spacing-44);
+  --split-btn-height-big: var(--spacing-48);
+  --split-btn-height-huge: var(--spacing-56);
+  --split-btn-height-mega: var(--spacing-64);
+  --split-btn-height-ultra: var(--spacing-80);
+
+  /* Horizontal padding inside the action zone (icon-wrapper padding) */
+  --split-btn-action-padding-x-micro: var(--spacing-8);
+  --split-btn-action-padding-x-tiny: var(--spacing-8);
+  --split-btn-action-padding-x-small: var(--spacing-10);
+  --split-btn-action-padding-x-base: var(--spacing-12);
+  --split-btn-action-padding-x-medium: var(--spacing-14);
+  --split-btn-action-padding-x-large: var(--spacing-16);
+  --split-btn-action-padding-x-big: var(--spacing-18);
+  --split-btn-action-padding-x-huge: var(--spacing-20);
+  --split-btn-action-padding-x-mega: var(--spacing-24);
+  --split-btn-action-padding-x-ultra: var(--spacing-28);
+
+  /* Vertical padding for action zone */
+  --split-btn-padding-y-micro: var(--spacing-2);
+  --split-btn-padding-y-tiny: var(--spacing-3);
+  --split-btn-padding-y-small: var(--spacing-4);
+  --split-btn-padding-y-base: var(--spacing-6);
+  --split-btn-padding-y-medium: var(--spacing-8);
+  --split-btn-padding-y-large: var(--spacing-10);
+  --split-btn-padding-y-big: var(--spacing-12);
+  --split-btn-padding-y-huge: var(--spacing-14);
+  --split-btn-padding-y-mega: var(--spacing-16);
+  --split-btn-padding-y-ultra: var(--spacing-20);
+
+  /* Gap between icon and label in action zone */
+  --split-btn-gap-micro: var(--spacing-4);
+  --split-btn-gap-tiny: var(--spacing-6);
+  --split-btn-gap-small: var(--spacing-8);
+  --split-btn-gap-base: var(--spacing-8);
+  --split-btn-gap-medium: var(--spacing-8);
+  --split-btn-gap-large: var(--spacing-10);
+  --split-btn-gap-big: var(--spacing-10);
+  --split-btn-gap-huge: var(--spacing-12);
+  --split-btn-gap-mega: var(--spacing-14);
+  --split-btn-gap-ultra: var(--spacing-16);
+
+  /* Horizontal padding inside the trigger zone (chevron-wrapper padding) */
+  --split-btn-trigger-padding-x-micro: var(--spacing-2);
+  --split-btn-trigger-padding-x-tiny: var(--spacing-2);
+  --split-btn-trigger-padding-x-small: var(--spacing-3);
+  --split-btn-trigger-padding-x-base: var(--spacing-3);
+  --split-btn-trigger-padding-x-medium: var(--spacing-4);
+  --split-btn-trigger-padding-x-large: var(--spacing-4);
+  --split-btn-trigger-padding-x-big: var(--spacing-5);
+  --split-btn-trigger-padding-x-huge: var(--spacing-6);
+  --split-btn-trigger-padding-x-mega: var(--spacing-8);
+  --split-btn-trigger-padding-x-ultra: var(--spacing-10);
+
+  /* ────────────────────────────────────────────────────────────
+     🎨 SURFACE  (48 vars = 4 variants × 12 properties)
+     Pattern: --split-btn-{variant}-{property}[-{state}]
+     ──────────────────────────────────────────────────────────── */
+
+  /* ── PRIMARY (filled, blue) ─────────────────────────────── */
+  --split-btn-primary-bg: var(--primary-component-bg-default);
+  --split-btn-primary-bg-hover: var(--primary-component-bg-hover);
+  --split-btn-primary-bg-active: var(--primary-component-bg-pressed);
+  --split-btn-primary-bg-disabled: var(--primary-component-bg-default);
+  --split-btn-primary-fg: var(--primary-on-component);
+  --split-btn-primary-fg-hover: var(--primary-on-component);
+  --split-btn-primary-fg-disabled: var(--primary-on-component);
+  --split-btn-primary-border-color: var(--primary-component-bg-default);
+  --split-btn-primary-border-color-hover: var(--primary-component-bg-hover);
+  --split-btn-primary-border-color-active: var(--primary-component-bg-pressed);
+  --split-btn-primary-border-color-disabled: var(--primary-component-bg-default);
+  --split-btn-primary-opacity-disabled: 0.5;
+
+  /* ── SECONDARY (outlined, primary color border) ─────────── */
+  --split-btn-secondary-bg: transparent;
+  --split-btn-secondary-bg-hover: var(--primary-container-bg);
+  --split-btn-secondary-bg-active: var(--primary-container-pressed);
+  --split-btn-secondary-bg-disabled: transparent;
+  --split-btn-secondary-fg: var(--primary-content-default);
+  --split-btn-secondary-fg-hover: var(--primary-content-default);
+  --split-btn-secondary-fg-disabled: var(--primary-content-default);
+  --split-btn-secondary-border-color: var(--primary-component-outline-default);
+  --split-btn-secondary-border-color-hover: var(--primary-component-outline-hover);
+  --split-btn-secondary-border-color-active: var(--primary-component-outline-pressed);
+  --split-btn-secondary-border-color-disabled: var(--primary-component-outline-default);
+  --split-btn-secondary-opacity-disabled: 0.5;
+
+  /* ── DANGER (filled, red) ───────────────────────────────── */
+  --split-btn-danger-bg: var(--danger-component-bg-default);
+  --split-btn-danger-bg-hover: var(--danger-component-bg-hover);
+  --split-btn-danger-bg-active: var(--danger-component-bg-pressed);
+  --split-btn-danger-bg-disabled: var(--danger-component-bg-default);
+  --split-btn-danger-fg: var(--danger-on-component);
+  --split-btn-danger-fg-hover: var(--danger-on-component);
+  --split-btn-danger-fg-disabled: var(--danger-on-component);
+  --split-btn-danger-border-color: var(--danger-component-bg-default);
+  --split-btn-danger-border-color-hover: var(--danger-component-bg-hover);
+  --split-btn-danger-border-color-active: var(--danger-component-bg-pressed);
+  --split-btn-danger-border-color-disabled: var(--danger-component-bg-default);
+  --split-btn-danger-opacity-disabled: 0.5;
+
+  /* ── NEUTRAL (filled, surface-context) ───────────────────── */
+  --split-btn-neutral-bg: var(--surface-base-cm-bg);
+  --split-btn-neutral-bg-hover: var(--surface-base-cm-bg-hover);
+  --split-btn-neutral-bg-active: var(--surface-base-cm-bg-pressed);
+  --split-btn-neutral-bg-disabled: var(--surface-base-cm-bg);
+  --split-btn-neutral-fg: var(--surface-base-ct-default);
+  --split-btn-neutral-fg-hover: var(--surface-base-ct-strong);
+  --split-btn-neutral-fg-disabled: var(--surface-base-ct-default);
+  --split-btn-neutral-border-color: var(--surface-base-cm-outline);
+  --split-btn-neutral-border-color-hover: var(--surface-base-cm-outline-hover);
+  --split-btn-neutral-border-color-active: var(--surface-base-cm-outline-pressed);
+  --split-btn-neutral-border-color-disabled: var(--surface-base-cm-outline);
+  --split-btn-neutral-opacity-disabled: 0.5;
+
+  /* ────────────────────────────────────────────────────────────
+     DIVIDER  (5 vars)
+     ──────────────────────────────────────────────────────────── */
+  --split-btn-divider-width: 1px;
+  --split-btn-divider-color-primary: rgba(255, 255, 255, 0.3);
+  --split-btn-divider-color-secondary: var(--primary-component-outline-default);
+  --split-btn-divider-color-danger: rgba(255, 255, 255, 0.3);
+  --split-btn-divider-color-neutral: var(--surface-base-cm-outline);
+
+  /* ────────────────────────────────────────────────────────────
+     ✏️ TYPOGRAPHY  (15 vars)
+     ──────────────────────────────────────────────────────────── */
+  --split-btn-font-family: var(--font-family-sans);
+
+  /* Font size per density mode */
+  --split-btn-font-size-micro: var(--font-size-10);
+  --split-btn-font-size-tiny: var(--font-size-11);
+  --split-btn-font-size-small: var(--font-size-12);
+  --split-btn-font-size-base: var(--font-size-14);
+  --split-btn-font-size-medium: var(--font-size-14);
+  --split-btn-font-size-large: var(--font-size-16);
+  --split-btn-font-size-big: var(--font-size-16);
+  --split-btn-font-size-huge: var(--font-size-18);
+  --split-btn-font-size-mega: var(--font-size-20);
+  --split-btn-font-size-ultra: var(--font-size-24);
+
+  --split-btn-font-weight: var(--font-weight-medium);
+  --split-btn-line-height: var(--line-height-normal);
+  --split-btn-letter-spacing: var(--letter-spacing-normal);
+  --split-btn-text-transform: none;
+
+  /* ────────────────────────────────────────────────────────────
+     🧩 SLOTS  (12 vars)
+     ──────────────────────────────────────────────────────────── */
+
+  /* Icon size (action zone icon + trigger zone chevron) */
+  --split-btn-icon-size-micro: var(--spacing-10);
+  --split-btn-icon-size-tiny: var(--spacing-12);
+  --split-btn-icon-size-small: var(--spacing-13);
+  --split-btn-icon-size-base: var(--spacing-16);
+  --split-btn-icon-size-medium: var(--spacing-16);
+  --split-btn-icon-size-large: var(--spacing-18);
+  --split-btn-icon-size-big: var(--spacing-18);
+  --split-btn-icon-size-huge: var(--spacing-20);
+  --split-btn-icon-size-mega: var(--spacing-24);
+  --split-btn-icon-size-ultra: var(--spacing-28);
+
+  --split-btn-icon-color: currentColor;
+  --split-btn-icon-color-hover: currentColor;
+
+  /* ────────────────────────────────────────────────────────────
+     ⚡ MOTION  (5 vars)
+     ──────────────────────────────────────────────────────────── */
+  --split-btn-transition-property: background-color, border-color, color, box-shadow, opacity;
+  --split-btn-transition-duration: var(--duration-normal);
+  --split-btn-transition-easing: var(--easing-in-out);
+  --split-btn-animation-enter: none;
+  --split-btn-animation-exit: none;
+
+  /* ────────────────────────────────────────────────────────────
+     ♿ ACCESSIBILITY  (5 vars)
+     ──────────────────────────────────────────────────────────── */
+  --split-btn-focus-outline-width: 2px;
+  --split-btn-focus-outline-color: var(--primary-component-outline-default);
+  --split-btn-focus-outline-offset: 2px;
+  --split-btn-min-tap-target: 44px;
+  --split-btn-radius-rounded: var(--radius-full);
+}

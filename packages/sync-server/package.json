@@ -1,0 +1,12 @@
+{
+  "name": "@design-token-forge/sync-server",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Local dev server — watches CSS tokens for changes, serves live sync API for the Figma plugin",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js --verbose"
+  }
+}

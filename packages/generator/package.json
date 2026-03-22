@@ -1,0 +1,12 @@
+{
+  "name": "@design-token-forge/generator",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Config-to-CSS generator — reads product config, outputs resolved variable files",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "echo 'TODO: configure build'",
+    "test": "echo 'TODO: configure tests'"
+  }
+}

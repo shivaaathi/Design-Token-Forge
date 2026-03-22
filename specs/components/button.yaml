@@ -1,0 +1,471 @@
+# /specs/components/button.yaml
+# Design Token Forge — Button Component Variable Specification
+# Variable-exhaustive L1 component: 246 CSS custom properties
+# covering all 7 axes (Shape, Dimension, Surface, Typography, Slots, Motion, A11y)
+
+component:
+  name: Button
+  tag: button
+  prefix: btn
+  description: >
+    Primary interactive element for triggering actions.
+    Most visible brand expression in the system.
+    Supports 10 visual variants, 10 density modes, and
+    rich slot composition (icon + label + loader).
+  category: inputs
+
+sizes: [micro, tiny, small, base, medium, large, big, huge, mega, ultra]
+
+variants:
+  semantic: [primary, secondary, tertiary, ghost, danger, success, warning]
+  surface:  [neutral, outline, brand]
+
+states: [default, hover, active, focus-visible, disabled, loading]
+
+# ═══════════════════════════════════════════════════════════════
+# VARIABLES — 246 total
+# ═══════════════════════════════════════════════════════════════
+
+variables:
+
+  # ────────────────────────────────────────────────────────────
+  # 📐 SHAPE  (26 variables)
+  # ────────────────────────────────────────────────────────────
+  shape:
+    border-radius:
+      - name: "--btn-radius-{size}"
+        description: "Border radius per density mode (all 4 corners)"
+        per_size:
+          micro: "var(--radius-xs)"
+          tiny: "var(--radius-sm)"
+          small: "var(--radius-sm)"
+          base: "var(--radius-md)"
+          medium: "var(--radius-md)"
+          large: "var(--radius-DEFAULT)"
+          big: "var(--radius-DEFAULT)"
+          huge: "var(--radius-lg)"
+          mega: "var(--radius-xl)"
+          ultra: "var(--radius-xl)"
+
+    border:
+      - name: "--btn-border-width-t"
+        default: "1px"
+      - name: "--btn-border-width-r"
+        default: "1px"
+      - name: "--btn-border-width-b"
+        default: "1px"
+      - name: "--btn-border-width-l"
+        default: "1px"
+      - name: "--btn-border-style"
+        default: "solid"
+        options: [solid, dashed, dotted, double, none]
+
+    shadow:
+      - name: "--btn-shadow"
+        default: "var(--shadow-none)"
+        description: "Default shadow"
+      - name: "--btn-shadow-hover"
+        default: "var(--shadow-none)"
+        description: "Shadow on hover"
+      - name: "--btn-shadow-active"
+        default: "var(--shadow-none)"
+        description: "Shadow on press"
+
+    ring:
+      - name: "--btn-ring-width"
+        default: "2px"
+        description: "Focus ring width"
+      - name: "--btn-ring-color"
+        default: "var(--primary-component-outline-default)"
+        description: "Focus ring color"
+      - name: "--btn-ring-offset"
+        default: "2px"
+        description: "Gap between element edge and ring"
+
+    outline:
+      - name: "--btn-outline-style"
+        default: "solid"
+      - name: "--btn-outline-width"
+        default: "2px"
+
+    clip:
+      - name: "--btn-clip-path"
+        default: "none"
+
+    overflow:
+      - name: "--btn-overflow"
+        default: "hidden"
+        options: [visible, hidden, clip, scroll, auto]
+
+    rounded:
+      - name: "--btn-radius-rounded"
+        default: "var(--radius-full)"
+        description: "Pill radius applied via data-rounded boolean attribute"
+
+  # ────────────────────────────────────────────────────────────
+  # 📏 DIMENSION  (62 variables)
+  # ────────────────────────────────────────────────────────────
+  dimension:
+    height:
+      - name: "--btn-height-{size}"
+        description: "Component height per density mode"
+        per_size:
+          micro: "var(--spacing-24)"
+          tiny: "var(--spacing-28)"
+          small: "var(--spacing-32)"
+          base: "var(--spacing-36)"
+          medium: "var(--spacing-40)"
+          large: "var(--spacing-45)"
+          big: "var(--spacing-50)"
+          huge: "var(--spacing-60)"
+          mega: "var(--spacing-72)"
+          ultra: "var(--spacing-90)"
+
+    padding-x:
+      - name: "--btn-padding-x-{size}"
+        description: "Horizontal (inline) padding per density mode"
+        per_size:
+          micro: "var(--spacing-8)"
+          tiny: "var(--spacing-10)"
+          small: "var(--spacing-12)"
+          base: "var(--spacing-16)"
+          medium: "var(--spacing-18)"
+          large: "var(--spacing-20)"
+          big: "var(--spacing-24)"
+          huge: "var(--spacing-30)"
+          mega: "var(--spacing-36)"
+          ultra: "var(--spacing-48)"
+
+    padding-y:
+      - name: "--btn-padding-y-{size}"
+        description: "Vertical (block) padding per density mode"
+        per_size:
+          micro: "var(--spacing-2)"
+          tiny: "var(--spacing-3)"
+          small: "var(--spacing-4)"
+          base: "var(--spacing-6)"
+          medium: "var(--spacing-8)"
+          large: "var(--spacing-10)"
+          big: "var(--spacing-12)"
+          huge: "var(--spacing-14)"
+          mega: "var(--spacing-18)"
+          ultra: "var(--spacing-24)"
+
+    min-width:
+      - name: "--btn-min-width-{size}"
+        description: "Minimum button width per density mode (hug content + minimum)"
+        per_size:
+          micro: "var(--spacing-40)"
+          tiny: "var(--spacing-48)"
+          small: "var(--spacing-54)"
+          base: "var(--spacing-64)"
+          medium: "var(--spacing-72)"
+          large: "var(--spacing-80)"
+          big: "var(--spacing-96)"
+          huge: "var(--spacing-112)"
+          mega: "var(--spacing-120)"
+          ultra: "var(--spacing-120)"
+
+    width:
+      - name: "--btn-max-width"
+        default: "none"
+      - name: "--btn-inline-size"
+        default: "fit-content"
+        description: "Hug content by default"
+        options: [fit-content, fill-available, "100%"]
+
+    gap:
+      - name: "--btn-gap-{size}"
+        description: "Gap between icon/label slots, scales with density"
+        per_size:
+          micro: "var(--spacing-2)"
+          tiny: "var(--spacing-3)"
+          small: "var(--spacing-4)"
+          base: "var(--spacing-6)"
+          medium: "var(--spacing-6)"
+          large: "var(--spacing-8)"
+          big: "var(--spacing-8)"
+          huge: "var(--spacing-10)"
+          mega: "var(--spacing-12)"
+          ultra: "var(--spacing-16)"
+
+    padding-x-icon:
+      - name: "--btn-padding-x-icon-{size}"
+        description: "Tighter inline padding on the icon side for visual balance"
+        per_size:
+          micro: "var(--spacing-8)"
+          tiny: "var(--spacing-8)"
+          small: "var(--spacing-10)"
+          base: "var(--spacing-12)"
+          medium: "var(--spacing-14)"
+          large: "var(--spacing-16)"
+          big: "var(--spacing-18)"
+          huge: "var(--spacing-20)"
+          mega: "var(--spacing-24)"
+          ultra: "var(--spacing-28)"
+
+  # ────────────────────────────────────────────────────────────
+  # 🎨 SURFACE  (120 variables = 10 variants × 12 properties)
+  # ────────────────────────────────────────────────────────────
+  #
+  # Pattern: --btn-{variant}-{property}[-{state}]
+  # "default" state is omitted from the name.
+  #
+  # Each variant defines 12 surface variables:
+  #   bg (×4 states), fg (×3 states), border-color (×4 states), opacity-disabled (×1)
+
+  surface:
+    schema:
+      properties:
+        - property: "bg"
+          states: [default, hover, active, disabled]
+        - property: "fg"
+          states: [default, hover, disabled]
+        - property: "border-color"
+          states: [default, hover, active, disabled]
+        - property: "opacity-disabled"
+          states: null
+
+    defaults:
+      primary:
+        bg:                 "var(--primary-component-bg-default)"
+        bg-hover:           "var(--primary-component-bg-hover)"
+        bg-active:          "var(--primary-component-bg-pressed)"
+        bg-disabled:        "var(--primary-component-bg-default)"
+        fg:                 "var(--primary-on-component)"
+        fg-hover:           "var(--primary-on-component)"
+        fg-disabled:        "var(--primary-on-component)"
+        border-color:       "var(--primary-component-bg-default)"
+        border-color-hover: "var(--primary-component-bg-hover)"
+        border-color-active: "var(--primary-component-bg-pressed)"
+        border-color-disabled: "var(--primary-component-bg-default)"
+        opacity-disabled:   "0.5"
+
+      secondary:
+        bg:                 "transparent"
+        bg-hover:           "var(--primary-container-bg)"
+        bg-active:          "var(--primary-container-pressed)"
+        bg-disabled:        "transparent"
+        fg:                 "var(--primary-content-default)"
+        fg-hover:           "var(--primary-content-default)"
+        fg-disabled:        "var(--primary-content-default)"
+        border-color:       "var(--primary-component-outline-default)"
+        border-color-hover: "var(--primary-component-outline-hover)"
+        border-color-active: "var(--primary-component-outline-pressed)"
+        border-color-disabled: "var(--primary-component-outline-default)"
+        opacity-disabled:   "0.5"
+
+      tertiary:
+        bg:                 "var(--primary-container-bg)"
+        bg-hover:           "var(--primary-container-hover)"
+        bg-active:          "var(--primary-container-pressed)"
+        bg-disabled:        "var(--primary-container-bg)"
+        fg:                 "var(--primary-content-default)"
+        fg-hover:           "var(--primary-content-default)"
+        fg-disabled:        "var(--primary-content-default)"
+        border-color:       "transparent"
+        border-color-hover: "transparent"
+        border-color-active: "transparent"
+        border-color-disabled: "transparent"
+        opacity-disabled:   "0.5"
+
+      ghost:
+        bg:                 "transparent"
+        bg-hover:           "var(--surface-base-hover)"
+        bg-active:          "var(--surface-base-pressed)"
+        bg-disabled:        "transparent"
+        fg:                 "var(--surface-base-ct-default)"
+        fg-hover:           "var(--surface-base-ct-default)"
+        fg-disabled:        "var(--surface-base-ct-default)"
+        border-color:       "transparent"
+        border-color-hover: "transparent"
+        border-color-active: "transparent"
+        border-color-disabled: "transparent"
+        opacity-disabled:   "0.5"
+
+      danger:
+        bg:                 "var(--danger-component-bg-default)"
+        bg-hover:           "var(--danger-component-bg-hover)"
+        bg-active:          "var(--danger-component-bg-pressed)"
+        bg-disabled:        "var(--danger-component-bg-default)"
+        fg:                 "var(--danger-on-component)"
+        fg-hover:           "var(--danger-on-component)"
+        fg-disabled:        "var(--danger-on-component)"
+        border-color:       "var(--danger-component-bg-default)"
+        border-color-hover: "var(--danger-component-bg-hover)"
+        border-color-active: "var(--danger-component-bg-pressed)"
+        border-color-disabled: "var(--danger-component-bg-default)"
+        opacity-disabled:   "0.5"
+
+      success:
+        bg:                 "var(--success-component-bg-default)"
+        bg-hover:           "var(--success-component-bg-hover)"
+        bg-active:          "var(--success-component-bg-pressed)"
+        bg-disabled:        "var(--success-component-bg-default)"
+        fg:                 "var(--success-on-component)"
+        fg-hover:           "var(--success-on-component)"
+        fg-disabled:        "var(--success-on-component)"
+        border-color:       "var(--success-component-bg-default)"
+        border-color-hover: "var(--success-component-bg-hover)"
+        border-color-active: "var(--success-component-bg-pressed)"
+        border-color-disabled: "var(--success-component-bg-default)"
+        opacity-disabled:   "0.5"
+
+      warning:
+        bg:                 "var(--warning-component-bg-default)"
+        bg-hover:           "var(--warning-component-bg-hover)"
+        bg-active:          "var(--warning-component-bg-pressed)"
+        bg-disabled:        "var(--warning-component-bg-default)"
+        fg:                 "var(--warning-on-component)"
+        fg-hover:           "var(--warning-on-component)"
+        fg-disabled:        "var(--warning-on-component)"
+        border-color:       "var(--warning-component-bg-default)"
+        border-color-hover: "var(--warning-component-bg-hover)"
+        border-color-active: "var(--warning-component-bg-pressed)"
+        border-color-disabled: "var(--warning-component-bg-default)"
+        opacity-disabled:   "0.5"
+
+      # ── SURFACE-CONTEXT VARIANTS ──────────────────────────
+
+      neutral:
+        bg:                 "var(--surface-base-cm-bg)"
+        bg-hover:           "var(--surface-base-cm-bg-hover)"
+        bg-active:          "var(--surface-base-cm-bg-pressed)"
+        bg-disabled:        "var(--surface-base-cm-bg)"
+        fg:                 "var(--surface-base-ct-default)"
+        fg-hover:           "var(--surface-base-ct-strong)"
+        fg-disabled:        "var(--surface-base-ct-default)"
+        border-color:       "var(--surface-base-cm-outline)"
+        border-color-hover: "var(--surface-base-cm-outline-hover)"
+        border-color-active: "var(--surface-base-cm-outline-pressed)"
+        border-color-disabled: "var(--surface-base-cm-outline)"
+        opacity-disabled:   "0.5"
+
+      outline:
+        bg:                 "transparent"
+        bg-hover:           "var(--surface-base-hover)"
+        bg-active:          "var(--surface-base-pressed)"
+        bg-disabled:        "transparent"
+        fg:                 "var(--surface-base-ct-default)"
+        fg-hover:           "var(--surface-base-ct-strong)"
+        fg-disabled:        "var(--surface-base-ct-default)"
+        border-color:       "var(--surface-base-outline)"
+        border-color-hover: "var(--surface-base-cm-outline-hover)"
+        border-color-active: "var(--surface-base-cm-outline-pressed)"
+        border-color-disabled: "var(--surface-base-outline)"
+        opacity-disabled:   "0.5"
+
+      brand:
+        bg:                 "var(--brand-component-bg-default)"
+        bg-hover:           "var(--brand-component-bg-hover)"
+        bg-active:          "var(--brand-component-bg-pressed)"
+        bg-disabled:        "var(--brand-component-bg-default)"
+        fg:                 "var(--brand-on-component)"
+        fg-hover:           "var(--brand-on-component)"
+        fg-disabled:        "var(--brand-on-component)"
+        border-color:       "var(--brand-component-bg-default)"
+        border-color-hover: "var(--brand-component-bg-hover)"
+        border-color-active: "var(--brand-component-bg-pressed)"
+        border-color-disabled: "var(--brand-component-bg-default)"
+        opacity-disabled:   "0.5"
+
+  # ────────────────────────────────────────────────────────────
+  # ✏️ TYPOGRAPHY  (15 variables)
+  # ────────────────────────────────────────────────────────────
+  typography:
+    - name: "--btn-font-family"
+      default: "var(--font-family-sans)"
+    - name: "--btn-font-size-{size}"
+      per_size:
+        micro: "var(--font-size-10)"
+        tiny: "var(--font-size-11)"
+        small: "var(--font-size-12)"
+        base: "var(--font-size-14)"
+        medium: "var(--font-size-14)"
+        large: "var(--font-size-16)"
+        big: "var(--font-size-16)"
+        huge: "var(--font-size-18)"
+        mega: "var(--font-size-20)"
+        ultra: "var(--font-size-24)"
+    - name: "--btn-font-weight"
+      default: "var(--font-weight-medium)"
+    - name: "--btn-line-height"
+      default: "var(--line-height-normal)"
+    - name: "--btn-letter-spacing"
+      default: "var(--letter-spacing-normal)"
+    - name: "--btn-text-transform"
+      default: "none"
+      options: [none, uppercase, capitalize, lowercase]
+
+  # ────────────────────────────────────────────────────────────
+  # 🧩 SLOTS  (14 variables)
+  # ────────────────────────────────────────────────────────────
+  slots:
+    icon:
+      - name: "--btn-icon-size-{size}"
+        description: "Icon width/height per density mode"
+        per_size:
+          micro: "var(--spacing-10)"
+          tiny: "var(--spacing-12)"
+          small: "var(--spacing-13)"
+          base: "var(--spacing-16)"
+          medium: "var(--spacing-16)"
+          large: "var(--spacing-18)"
+          big: "var(--spacing-18)"
+          huge: "var(--spacing-20)"
+          mega: "var(--spacing-24)"
+          ultra: "var(--spacing-28)"
+      - name: "--btn-icon-color"
+        default: "currentColor"
+      - name: "--btn-icon-color-hover"
+        default: "currentColor"
+
+    loader:
+      - name: "--btn-loader-color"
+        default: "currentColor"
+        description: "Loading text shimmer color"
+      - name: "--btn-loader-speed"
+        default: "1.8s"
+        description: "Shimmer animation duration (cyclic, not a transition)"
+
+  # ────────────────────────────────────────────────────────────
+  # ⚡ MOTION  (5 variables)
+  # ────────────────────────────────────────────────────────────
+  motion:
+    - name: "--btn-transition-property"
+      default: "background-color, border-color, color, box-shadow, opacity, transform"
+    - name: "--btn-transition-duration"
+      default: "var(--duration-normal)"
+    - name: "--btn-transition-easing"
+      default: "var(--easing-in-out)"
+    - name: "--btn-animation-enter"
+      default: "none"
+    - name: "--btn-animation-exit"
+      default: "none"
+
+  # ────────────────────────────────────────────────────────────
+  # ♿ ACCESSIBILITY  (4 variables)
+  # ────────────────────────────────────────────────────────────
+  a11y:
+    - name: "--btn-focus-outline-width"
+      default: "2px"
+    - name: "--btn-focus-outline-color"
+      default: "var(--primary-component-outline-default)"
+    - name: "--btn-focus-outline-offset"
+      default: "2px"
+    - name: "--btn-min-tap-target"
+      default: "44px"
+      description: "Minimum touch target size — WCAG 2.5.8"
+
+# ═══════════════════════════════════════════════════════════════
+# VARIABLE COUNT SUMMARY
+# ═══════════════════════════════════════════════════════════════
+#   Shape:       19  (10 radius per density + 4 border-width + border-style + 3 shadow + 1 clip + 1 overflow)
+#   Dimension:   62  (10 height + 10 px + 10 py + 10 min-width + 10 gap + 1 max-width + 1 inline-size)
+#   Surface:    120  (10 variants × 12 properties)
+#   Typography:  15  (1 family + 10 sizes + 4 base)
+#   Slots:       14  (10 icon-size + 2 icon-color + 2 loader)
+#   Motion:       5
+#   A11y:         4
+#   ─────────────────
+#   TOTAL:      239

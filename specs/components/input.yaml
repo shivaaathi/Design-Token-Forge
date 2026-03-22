@@ -1,0 +1,266 @@
+# /specs/components/input.yaml
+# Design Token Forge — Input / TextField Variable Specification
+# 172 CSS custom properties across 7 axes
+
+component:
+  name: "Input"
+  tag: "div.input-group > div.input-field > input"
+  prefix: "input"
+  description: "Text input field with label, prefix/suffix slots, and helper text. Supports outline, filled, and underline variants across 10 density modes."
+  category: "inputs"
+
+sizes: [micro, tiny, small, base, medium, large, big, huge, mega, ultra]
+variants: [outline, filled, underline]
+states: [default, hover, focus, disabled, error, readonly]
+
+variables:
+
+  # ──────────────────────────────────────────
+  # 📐 SHAPE  (24 vars)
+  # ──────────────────────────────────────────
+  shape:
+    border-radius:
+      - { name: "--input-radius-micro",  default: "var(--radius-xs)",      description: "Radius at micro density" }
+      - { name: "--input-radius-tiny",   default: "var(--radius-sm)",      description: "Radius at tiny density" }
+      - { name: "--input-radius-small",  default: "var(--radius-sm)",      description: "Radius at small density" }
+      - { name: "--input-radius-base",   default: "var(--radius-md)",      description: "Radius at base density" }
+      - { name: "--input-radius-medium", default: "var(--radius-md)",      description: "Radius at medium density" }
+      - { name: "--input-radius-large",  default: "var(--radius-DEFAULT)", description: "Radius at large density" }
+      - { name: "--input-radius-big",    default: "var(--radius-DEFAULT)", description: "Radius at big density" }
+      - { name: "--input-radius-huge",   default: "var(--radius-lg)",      description: "Radius at huge density" }
+      - { name: "--input-radius-mega",   default: "var(--radius-xl)",      description: "Radius at mega density" }
+      - { name: "--input-radius-ultra",  default: "var(--radius-xl)",      description: "Radius at ultra density" }
+
+    border:
+      - { name: "--input-border-width-t", default: "1px",   description: "Top border width" }
+      - { name: "--input-border-width-r", default: "1px",   description: "Right border width" }
+      - { name: "--input-border-width-b", default: "1px",   description: "Bottom border width" }
+      - { name: "--input-border-width-l", default: "1px",   description: "Left border width" }
+      - { name: "--input-border-style",   default: "solid", description: "Border style" }
+
+    shadow:
+      - { name: "--input-shadow",       default: "var(--shadow-none)", description: "Default shadow" }
+      - { name: "--input-shadow-focus", default: "var(--shadow-none)", description: "Shadow on focus" }
+
+    ring:
+      - { name: "--input-ring-width",  default: "2px",                                    description: "Focus ring width" }
+      - { name: "--input-ring-color",  default: "var(--primary-component-outline-default)", description: "Focus ring color" }
+      - { name: "--input-ring-offset", default: "2px",                                    description: "Focus ring offset" }
+
+    outline:
+      - { name: "--input-outline-style", default: "solid", description: "Outline style" }
+      - { name: "--input-outline-width", default: "2px",   description: "Outline width" }
+
+    misc:
+      - { name: "--input-clip-path", default: "none",   description: "Clip path" }
+      - { name: "--input-overflow",  default: "hidden", description: "Overflow behavior" }
+
+  # ──────────────────────────────────────────
+  # 📏 DIMENSION  (52 vars)
+  # ──────────────────────────────────────────
+  dimension:
+    height:
+      - { name: "--input-height-micro",  default: "var(--spacing-24)", description: "Field height at micro (24px)" }
+      - { name: "--input-height-tiny",   default: "var(--spacing-28)", description: "Field height at tiny (28px)" }
+      - { name: "--input-height-small",  default: "var(--spacing-32)", description: "Field height at small (32px)" }
+      - { name: "--input-height-base",   default: "var(--spacing-36)", description: "Field height at base (36px)" }
+      - { name: "--input-height-medium", default: "var(--spacing-40)", description: "Field height at medium (40px)" }
+      - { name: "--input-height-large",  default: "var(--spacing-45)", description: "Field height at large (45px)" }
+      - { name: "--input-height-big",    default: "var(--spacing-50)", description: "Field height at big (50px)" }
+      - { name: "--input-height-huge",   default: "var(--spacing-60)", description: "Field height at huge (60px)" }
+      - { name: "--input-height-mega",   default: "var(--spacing-72)", description: "Field height at mega (72px)" }
+      - { name: "--input-height-ultra",  default: "var(--spacing-90)", description: "Field height at ultra (90px)" }
+
+    padding-x:
+      - { name: "--input-padding-x-micro",  default: "var(--spacing-6)",  description: "Horizontal padding at micro" }
+      - { name: "--input-padding-x-tiny",   default: "var(--spacing-8)",  description: "Horizontal padding at tiny" }
+      - { name: "--input-padding-x-small",  default: "var(--spacing-10)", description: "Horizontal padding at small" }
+      - { name: "--input-padding-x-base",   default: "var(--spacing-12)", description: "Horizontal padding at base" }
+      - { name: "--input-padding-x-medium", default: "var(--spacing-14)", description: "Horizontal padding at medium" }
+      - { name: "--input-padding-x-large",  default: "var(--spacing-16)", description: "Horizontal padding at large" }
+      - { name: "--input-padding-x-big",    default: "var(--spacing-18)", description: "Horizontal padding at big" }
+      - { name: "--input-padding-x-huge",   default: "var(--spacing-20)", description: "Horizontal padding at huge" }
+      - { name: "--input-padding-x-mega",   default: "var(--spacing-24)", description: "Horizontal padding at mega" }
+      - { name: "--input-padding-x-ultra",  default: "var(--spacing-32)", description: "Horizontal padding at ultra" }
+
+    padding-y:
+      - { name: "--input-padding-y-micro",  default: "var(--spacing-2)",  description: "Vertical padding at micro" }
+      - { name: "--input-padding-y-tiny",   default: "var(--spacing-3)",  description: "Vertical padding at tiny" }
+      - { name: "--input-padding-y-small",  default: "var(--spacing-4)",  description: "Vertical padding at small" }
+      - { name: "--input-padding-y-base",   default: "var(--spacing-6)",  description: "Vertical padding at base" }
+      - { name: "--input-padding-y-medium", default: "var(--spacing-8)",  description: "Vertical padding at medium" }
+      - { name: "--input-padding-y-large",  default: "var(--spacing-10)", description: "Vertical padding at large" }
+      - { name: "--input-padding-y-big",    default: "var(--spacing-12)", description: "Vertical padding at big" }
+      - { name: "--input-padding-y-huge",   default: "var(--spacing-14)", description: "Vertical padding at huge" }
+      - { name: "--input-padding-y-mega",   default: "var(--spacing-18)", description: "Vertical padding at mega" }
+      - { name: "--input-padding-y-ultra",  default: "var(--spacing-24)", description: "Vertical padding at ultra" }
+
+    min-width:
+      - { name: "--input-min-width-micro",  default: "var(--spacing-80)",  description: "Min-width at micro" }
+      - { name: "--input-min-width-tiny",   default: "var(--spacing-96)",  description: "Min-width at tiny" }
+      - { name: "--input-min-width-small",  default: "var(--spacing-112)", description: "Min-width at small" }
+      - { name: "--input-min-width-base",   default: "var(--spacing-120)", description: "Min-width at base" }
+      - { name: "--input-min-width-medium", default: "var(--spacing-120)", description: "Min-width at medium" }
+      - { name: "--input-min-width-large",  default: "var(--spacing-120)", description: "Min-width at large" }
+      - { name: "--input-min-width-big",    default: "var(--spacing-120)", description: "Min-width at big" }
+      - { name: "--input-min-width-huge",   default: "var(--spacing-120)", description: "Min-width at huge" }
+      - { name: "--input-min-width-mega",   default: "var(--spacing-120)", description: "Min-width at mega" }
+      - { name: "--input-min-width-ultra",  default: "var(--spacing-120)", description: "Min-width at ultra" }
+
+    gap:
+      - { name: "--input-gap-micro",  default: "var(--spacing-2)",  description: "Internal gap at micro" }
+      - { name: "--input-gap-tiny",   default: "var(--spacing-3)",  description: "Internal gap at tiny" }
+      - { name: "--input-gap-small",  default: "var(--spacing-4)",  description: "Internal gap at small" }
+      - { name: "--input-gap-base",   default: "var(--spacing-6)",  description: "Internal gap at base" }
+      - { name: "--input-gap-medium", default: "var(--spacing-6)",  description: "Internal gap at medium" }
+      - { name: "--input-gap-large",  default: "var(--spacing-8)",  description: "Internal gap at large" }
+      - { name: "--input-gap-big",    default: "var(--spacing-8)",  description: "Internal gap at big" }
+      - { name: "--input-gap-huge",   default: "var(--spacing-10)", description: "Internal gap at huge" }
+      - { name: "--input-gap-mega",   default: "var(--spacing-12)", description: "Internal gap at mega" }
+      - { name: "--input-gap-ultra",  default: "var(--spacing-16)", description: "Internal gap at ultra" }
+
+    width:
+      - { name: "--input-max-width",   default: "none", description: "Maximum width constraint" }
+      - { name: "--input-inline-size", default: "100%", description: "Inline size (width model)" }
+
+  # ──────────────────────────────────────────
+  # 🎨 SURFACE  (52 vars)
+  # ──────────────────────────────────────────
+  surface:
+    outline:
+      - { name: "--input-outline-bg",                    default: "transparent",                              description: "Outline bg" }
+      - { name: "--input-outline-bg-hover",              default: "transparent",                              description: "Outline bg on hover" }
+      - { name: "--input-outline-bg-focus",              default: "transparent",                              description: "Outline bg on focus" }
+      - { name: "--input-outline-bg-disabled",           default: "transparent",                              description: "Outline bg when disabled" }
+      - { name: "--input-outline-bg-error",              default: "transparent",                              description: "Outline bg in error" }
+      - { name: "--input-outline-fg",                    default: "var(--surface-base-ct-default)",           description: "Outline text color" }
+      - { name: "--input-outline-fg-disabled",           default: "var(--surface-base-ct-faint)",             description: "Outline text when disabled" }
+      - { name: "--input-outline-border-color",          default: "var(--surface-base-cm-outline)",           description: "Outline border" }
+      - { name: "--input-outline-border-color-hover",    default: "var(--surface-base-cm-outline-hover)",     description: "Outline border on hover" }
+      - { name: "--input-outline-border-color-focus",    default: "var(--primary-component-outline-default)", description: "Outline border on focus" }
+      - { name: "--input-outline-border-color-disabled", default: "var(--surface-base-cm-outline)",           description: "Outline border when disabled" }
+      - { name: "--input-outline-border-color-error",    default: "var(--danger-component-outline-default)",  description: "Outline border in error" }
+      - { name: "--input-outline-placeholder",           default: "var(--surface-base-ct-faint)",             description: "Outline placeholder color" }
+      - { name: "--input-outline-placeholder-disabled",  default: "var(--surface-base-ct-faint)",             description: "Outline placeholder when disabled" }
+      - { name: "--input-outline-opacity-disabled",      default: "0.5",                                      description: "Outline opacity when disabled" }
+
+    filled:
+      - { name: "--input-filled-bg",                    default: "var(--surface-base-cm-bg)",                description: "Filled bg" }
+      - { name: "--input-filled-bg-hover",              default: "var(--surface-base-cm-bg-hover)",          description: "Filled bg on hover" }
+      - { name: "--input-filled-bg-focus",              default: "var(--surface-base-cm-bg)",                description: "Filled bg on focus" }
+      - { name: "--input-filled-bg-disabled",           default: "var(--surface-base-cm-bg)",                description: "Filled bg when disabled" }
+      - { name: "--input-filled-bg-error",              default: "var(--surface-base-cm-bg)",                description: "Filled bg in error" }
+      - { name: "--input-filled-fg",                    default: "var(--surface-base-ct-default)",           description: "Filled text color" }
+      - { name: "--input-filled-fg-disabled",           default: "var(--surface-base-ct-faint)",             description: "Filled text when disabled" }
+      - { name: "--input-filled-border-color",          default: "var(--surface-base-cm-outline)",           description: "Filled border (full outline)" }
+      - { name: "--input-filled-border-color-hover",    default: "var(--surface-base-cm-outline-hover)",     description: "Filled border on hover" }
+      - { name: "--input-filled-border-color-focus",    default: "var(--primary-component-outline-default)", description: "Filled border on focus" }
+      - { name: "--input-filled-border-color-disabled", default: "var(--surface-base-cm-outline)",           description: "Filled border when disabled" }
+      - { name: "--input-filled-border-color-error",    default: "var(--danger-component-outline-default)",  description: "Filled border in error" }
+      - { name: "--input-filled-placeholder",           default: "var(--surface-base-ct-faint)",             description: "Filled placeholder color" }
+      - { name: "--input-filled-placeholder-disabled",  default: "var(--surface-base-ct-faint)",             description: "Filled placeholder when disabled" }
+      - { name: "--input-filled-opacity-disabled",      default: "0.5",                                      description: "Filled opacity when disabled" }
+
+    underline:
+      - { name: "--input-underline-bg",                    default: "transparent",                              description: "Underline bg" }
+      - { name: "--input-underline-bg-hover",              default: "transparent",                              description: "Underline bg on hover" }
+      - { name: "--input-underline-bg-focus",              default: "transparent",                              description: "Underline bg on focus" }
+      - { name: "--input-underline-bg-disabled",           default: "transparent",                              description: "Underline bg when disabled" }
+      - { name: "--input-underline-bg-error",              default: "transparent",                              description: "Underline bg in error" }
+      - { name: "--input-underline-fg",                    default: "var(--surface-base-ct-default)",           description: "Underline text color" }
+      - { name: "--input-underline-fg-disabled",           default: "var(--surface-base-ct-faint)",             description: "Underline text when disabled" }
+      - { name: "--input-underline-border-color",          default: "var(--surface-base-cm-outline)",           description: "Underline border" }
+      - { name: "--input-underline-border-color-hover",    default: "var(--surface-base-ct-subtle)",            description: "Underline border on hover" }
+      - { name: "--input-underline-border-color-focus",    default: "var(--primary-component-outline-default)", description: "Underline border on focus" }
+      - { name: "--input-underline-border-color-disabled", default: "var(--surface-base-cm-outline)",           description: "Underline border when disabled" }
+      - { name: "--input-underline-border-color-error",    default: "var(--danger-component-outline-default)",  description: "Underline border in error" }
+      - { name: "--input-underline-placeholder",           default: "var(--surface-base-ct-faint)",             description: "Underline placeholder" }
+      - { name: "--input-underline-placeholder-disabled",  default: "var(--surface-base-ct-faint)",             description: "Underline placeholder when disabled" }
+      - { name: "--input-underline-opacity-disabled",      default: "0.5",                                      description: "Underline opacity when disabled" }
+
+    shared:
+      - { name: "--input-label-color",          default: "var(--surface-base-ct-subtle)",            description: "Label default color" }
+      - { name: "--input-label-color-focus",    default: "var(--primary-content-default)",           description: "Label color on focus" }
+      - { name: "--input-label-color-error",    default: "var(--danger-content-default)",            description: "Label color in error" }
+      - { name: "--input-label-color-disabled", default: "var(--surface-base-ct-faint)",             description: "Label color when disabled" }
+      - { name: "--input-helper-color",         default: "var(--surface-base-ct-subtle)",            description: "Helper default color" }
+      - { name: "--input-helper-color-error",   default: "var(--danger-content-default)",            description: "Helper color in error" }
+      - { name: "--input-caret-color",          default: "var(--primary-component-bg-default)",      description: "Text cursor color" }
+
+  # ──────────────────────────────────────────
+  # ✏️ TYPOGRAPHY  (15 vars)
+  # ──────────────────────────────────────────
+  typography:
+    - { name: "--input-font-family",       default: "var(--font-family-sans)",       description: "Font family" }
+    - { name: "--input-font-size-micro",   default: "var(--font-size-10)",           description: "Font size at micro" }
+    - { name: "--input-font-size-tiny",    default: "var(--font-size-11)",           description: "Font size at tiny" }
+    - { name: "--input-font-size-small",   default: "var(--font-size-12)",           description: "Font size at small" }
+    - { name: "--input-font-size-base",    default: "var(--font-size-14)",           description: "Font size at base" }
+    - { name: "--input-font-size-medium",  default: "var(--font-size-14)",           description: "Font size at medium" }
+    - { name: "--input-font-size-large",   default: "var(--font-size-16)",           description: "Font size at large" }
+    - { name: "--input-font-size-big",     default: "var(--font-size-16)",           description: "Font size at big" }
+    - { name: "--input-font-size-huge",    default: "var(--font-size-18)",           description: "Font size at huge" }
+    - { name: "--input-font-size-mega",    default: "var(--font-size-20)",           description: "Font size at mega" }
+    - { name: "--input-font-size-ultra",   default: "var(--font-size-24)",           description: "Font size at ultra" }
+    - { name: "--input-font-weight",       default: "var(--font-weight-regular)",    description: "Input text weight" }
+    - { name: "--input-line-height",       default: "var(--line-height-normal)",     description: "Line height" }
+    - { name: "--input-letter-spacing",    default: "var(--letter-spacing-normal)",  description: "Letter spacing" }
+    - { name: "--input-placeholder-style", default: "normal",                        description: "Placeholder font-style" }
+
+  # ──────────────────────────────────────────
+  # 🧩 SLOTS  (20 vars)
+  # ──────────────────────────────────────────
+  slots:
+    affix:
+      - { name: "--input-affix-size-micro",    default: "var(--spacing-10)", description: "Icon size at micro" }
+      - { name: "--input-affix-size-tiny",     default: "var(--spacing-12)", description: "Icon size at tiny" }
+      - { name: "--input-affix-size-small",    default: "var(--spacing-13)", description: "Icon size at small" }
+      - { name: "--input-affix-size-base",     default: "var(--spacing-16)", description: "Icon size at base" }
+      - { name: "--input-affix-size-medium",   default: "var(--spacing-16)", description: "Icon size at medium" }
+      - { name: "--input-affix-size-large",    default: "var(--spacing-18)", description: "Icon size at large" }
+      - { name: "--input-affix-size-big",      default: "var(--spacing-18)", description: "Icon size at big" }
+      - { name: "--input-affix-size-huge",     default: "var(--spacing-20)", description: "Icon size at huge" }
+      - { name: "--input-affix-size-mega",     default: "var(--spacing-24)", description: "Icon size at mega" }
+      - { name: "--input-affix-size-ultra",    default: "var(--spacing-28)", description: "Icon size at ultra" }
+      - { name: "--input-affix-color",         default: "var(--surface-base-ct-subtle)", description: "Icon color" }
+      - { name: "--input-affix-color-disabled", default: "var(--surface-base-ct-faint)", description: "Icon color when disabled" }
+      - { name: "--input-affix-px-micro",    default: "var(--spacing-6)",  description: "Icon wrapper padding at micro" }
+      - { name: "--input-affix-px-tiny",     default: "var(--spacing-6)",  description: "Icon wrapper padding at tiny" }
+      - { name: "--input-affix-px-small",    default: "var(--spacing-8)",  description: "Icon wrapper padding at small" }
+      - { name: "--input-affix-px-base",     default: "var(--spacing-10)", description: "Icon wrapper padding at base" }
+      - { name: "--input-affix-px-medium",   default: "var(--spacing-10)", description: "Icon wrapper padding at medium" }
+      - { name: "--input-affix-px-large",    default: "var(--spacing-12)", description: "Icon wrapper padding at large" }
+      - { name: "--input-affix-px-big",      default: "var(--spacing-14)", description: "Icon wrapper padding at big" }
+      - { name: "--input-affix-px-huge",     default: "var(--spacing-14)", description: "Icon wrapper padding at huge" }
+      - { name: "--input-affix-px-mega",     default: "var(--spacing-18)", description: "Icon wrapper padding at mega" }
+      - { name: "--input-affix-px-ultra",    default: "var(--spacing-20)", description: "Icon wrapper padding at ultra" }
+
+    label:
+      - { name: "--input-label-font-size",   default: "var(--font-size-13)",        description: "Label font size" }
+      - { name: "--input-label-font-weight", default: "var(--font-weight-medium)",  description: "Label font weight" }
+      - { name: "--input-label-gap",         default: "var(--spacing-6)",           description: "Gap between label and field" }
+
+    helper:
+      - { name: "--input-helper-font-size",      default: "var(--font-size-12)",          description: "Helper font size" }
+      - { name: "--input-helper-font-weight",    default: "var(--font-weight-regular)",   description: "Helper font weight" }
+      - { name: "--input-helper-gap",            default: "var(--spacing-4)",             description: "Gap between field and helper" }
+      - { name: "--input-helper-letter-spacing", default: "var(--letter-spacing-normal)", description: "Helper letter spacing" }
+
+  # ──────────────────────────────────────────
+  # ⚡ MOTION  (5 vars)
+  # ──────────────────────────────────────────
+  motion:
+    - { name: "--input-transition-property", default: "border-color, background-color, box-shadow, color, opacity", description: "Transition properties" }
+    - { name: "--input-transition-duration", default: "var(--duration-normal)",  description: "Transition duration" }
+    - { name: "--input-transition-easing",   default: "var(--easing-in-out)",   description: "Transition easing" }
+    - { name: "--input-animation-enter",     default: "none",                   description: "Enter animation" }
+    - { name: "--input-animation-exit",      default: "none",                   description: "Exit animation" }
+
+  # ──────────────────────────────────────────
+  # ♿ A11Y  (4 vars)
+  # ──────────────────────────────────────────
+  a11y:
+    - { name: "--input-focus-outline-width",  default: "2px",                                     description: "Focus outline width" }
+    - { name: "--input-focus-outline-color",  default: "var(--primary-component-outline-default)", description: "Focus outline color" }
+    - { name: "--input-focus-outline-offset", default: "2px",                                     description: "Focus outline offset" }
+    - { name: "--input-min-tap-target",       default: "44px",                                    description: "Minimum touch target" }

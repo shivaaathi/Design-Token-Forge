@@ -1,0 +1,351 @@
+# /specs/components/split-button.yaml
+# Design Token Forge — SplitButton Component Variable Specification
+# Variable-exhaustive L1 component: 154 CSS custom properties
+# covering all 7 axes (Shape, Dimension, Surface, Typography, Slots, Motion, A11y)
+
+component:
+  name: SplitButton
+  tag: div (container) > button + button
+  prefix: split-btn
+  description: >
+    Compound two-zone action button. Left "action" zone acts as the
+    primary action (label + optional icon). Right "trigger" zone opens
+    a dropdown menu (chevron). A vertical divider separates the zones.
+    Both zones share the container's border radius and surface variant
+    but have independent hover/active states.
+  category: inputs
+
+sizes: [micro, tiny, small, base, medium, large, big, huge, mega, ultra]
+
+variants:
+  semantic: [primary, secondary, danger, neutral]
+
+states: [default, hover, active, focus-visible, disabled, loading]
+
+markup: |
+  <div class="split-btn" data-variant="primary" data-size="base">
+    <button class="split-btn__action" type="button">
+      <span class="split-btn__icon">…</span>
+      <span class="split-btn__label">Save</span>
+    </button>
+    <span class="split-btn__divider"></span>
+    <button class="split-btn__trigger" type="button" aria-label="More options" aria-haspopup="true">
+      <span class="split-btn__chevron">▾</span>
+    </button>
+  </div>
+
+# ═══════════════════════════════════════════════════════════════
+# VARIABLES — 141 total
+# ═══════════════════════════════════════════════════════════════
+
+variables:
+
+  # ────────────────────────────────────────────────────────────
+  # 📐 SHAPE  (14 variables)
+  # ────────────────────────────────────────────────────────────
+  shape:
+    border-radius:
+      - name: "--split-btn-radius-{size}"
+        description: "Border radius per density mode (outer container corners)"
+        per_size:
+          micro: "var(--radius-xs)"
+          tiny: "var(--radius-sm)"
+          small: "var(--radius-sm)"
+          base: "var(--radius-md)"
+          medium: "var(--radius-md)"
+          large: "var(--radius-DEFAULT)"
+          big: "var(--radius-DEFAULT)"
+          huge: "var(--radius-lg)"
+          mega: "var(--radius-xl)"
+          ultra: "var(--radius-xl)"
+        count: 10
+
+    border:
+      - name: "--split-btn-border-width"
+        default: "1px"
+        count: 1
+      - name: "--split-btn-border-style"
+        default: "solid"
+        count: 1
+
+    shadow:
+      - name: "--split-btn-shadow"
+        default: "var(--shadow-none)"
+        count: 1
+      - name: "--split-btn-shadow-hover"
+        default: "var(--shadow-none)"
+        count: 1
+
+    total: 14
+
+  # ────────────────────────────────────────────────────────────
+  # 📏 DIMENSION  (50 variables)
+  # ────────────────────────────────────────────────────────────
+  dimension:
+    height:
+      - name: "--split-btn-height-{size}"
+        description: "Container height per density mode"
+        per_size:
+          micro: "var(--spacing-24)"
+          tiny: "var(--spacing-28)"
+          small: "var(--spacing-32)"
+          base: "var(--spacing-36)"
+          medium: "var(--spacing-40)"
+          large: "var(--spacing-44)"
+          big: "var(--spacing-48)"
+          huge: "var(--spacing-56)"
+          mega: "var(--spacing-64)"
+          ultra: "var(--spacing-80)"
+        count: 10
+
+    action-padding-x:
+      - name: "--split-btn-action-padding-x-{size}"
+        description: "Horizontal padding inside the action zone (icon-wrapper padding)"
+        per_size:
+          micro: "var(--spacing-8)"
+          tiny: "var(--spacing-8)"
+          small: "var(--spacing-10)"
+          base: "var(--spacing-12)"
+          medium: "var(--spacing-14)"
+          large: "var(--spacing-16)"
+          big: "var(--spacing-18)"
+          huge: "var(--spacing-20)"
+          mega: "var(--spacing-24)"
+          ultra: "var(--spacing-28)"
+        count: 10
+
+    padding-y:
+      - name: "--split-btn-padding-y-{size}"
+        description: "Vertical padding for action zone"
+        per_size:
+          micro: "var(--spacing-2)"
+          tiny: "var(--spacing-3)"
+          small: "var(--spacing-4)"
+          base: "var(--spacing-6)"
+          medium: "var(--spacing-8)"
+          large: "var(--spacing-10)"
+          big: "var(--spacing-12)"
+          huge: "var(--spacing-14)"
+          mega: "var(--spacing-16)"
+          ultra: "var(--spacing-20)"
+        count: 10
+
+    gap:
+      - name: "--split-btn-gap-{size}"
+        description: "Gap between icon and label in action zone"
+        per_size:
+          micro: "var(--spacing-4)"
+          tiny: "var(--spacing-6)"
+          small: "var(--spacing-8)"
+          base: "var(--spacing-8)"
+          medium: "var(--spacing-8)"
+          large: "var(--spacing-10)"
+          big: "var(--spacing-10)"
+          huge: "var(--spacing-12)"
+          mega: "var(--spacing-14)"
+          ultra: "var(--spacing-16)"
+        count: 10
+
+    trigger-padding-x:
+      - name: "--split-btn-trigger-padding-x-{size}"
+        description: "Horizontal padding inside the trigger zone (chevron-wrapper padding)"
+        per_size:
+          micro: "var(--spacing-2)"
+          tiny: "var(--spacing-2)"
+          small: "var(--spacing-3)"
+          base: "var(--spacing-3)"
+          medium: "var(--spacing-4)"
+          large: "var(--spacing-4)"
+          big: "var(--spacing-5)"
+          huge: "var(--spacing-6)"
+          mega: "var(--spacing-8)"
+          ultra: "var(--spacing-10)"
+        count: 10
+
+    total: 50
+
+  # ────────────────────────────────────────────────────────────
+  # 🎨 SURFACE  (48 variables = 4 variants × 12 properties)
+  # Pattern: --split-btn-{variant}-{property}[-{state}]
+  # ────────────────────────────────────────────────────────────
+  surface:
+    primary:
+      - { name: "--split-btn-primary-bg",                   default: "var(--primary-component-bg-default)" }
+      - { name: "--split-btn-primary-bg-hover",             default: "var(--primary-component-bg-hover)" }
+      - { name: "--split-btn-primary-bg-active",            default: "var(--primary-component-bg-pressed)" }
+      - { name: "--split-btn-primary-bg-disabled",          default: "var(--primary-component-bg-default)" }
+      - { name: "--split-btn-primary-fg",                   default: "var(--primary-on-component)" }
+      - { name: "--split-btn-primary-fg-hover",             default: "var(--primary-on-component)" }
+      - { name: "--split-btn-primary-fg-disabled",          default: "var(--primary-on-component)" }
+      - { name: "--split-btn-primary-border-color",         default: "var(--primary-component-bg-default)" }
+      - { name: "--split-btn-primary-border-color-hover",   default: "var(--primary-component-bg-hover)" }
+      - { name: "--split-btn-primary-border-color-active",  default: "var(--primary-component-bg-pressed)" }
+      - { name: "--split-btn-primary-border-color-disabled", default: "var(--primary-component-bg-default)" }
+      - { name: "--split-btn-primary-opacity-disabled",     default: "0.5" }
+
+    secondary:
+      - { name: "--split-btn-secondary-bg",                   default: "transparent" }
+      - { name: "--split-btn-secondary-bg-hover",             default: "var(--primary-container-bg)" }
+      - { name: "--split-btn-secondary-bg-active",            default: "var(--primary-container-pressed)" }
+      - { name: "--split-btn-secondary-bg-disabled",          default: "transparent" }
+      - { name: "--split-btn-secondary-fg",                   default: "var(--primary-content-default)" }
+      - { name: "--split-btn-secondary-fg-hover",             default: "var(--primary-content-default)" }
+      - { name: "--split-btn-secondary-fg-disabled",          default: "var(--primary-content-default)" }
+      - { name: "--split-btn-secondary-border-color",         default: "var(--primary-component-outline-default)" }
+      - { name: "--split-btn-secondary-border-color-hover",   default: "var(--primary-component-outline-hover)" }
+      - { name: "--split-btn-secondary-border-color-active",  default: "var(--primary-component-outline-pressed)" }
+      - { name: "--split-btn-secondary-border-color-disabled", default: "var(--primary-component-outline-default)" }
+      - { name: "--split-btn-secondary-opacity-disabled",     default: "0.5" }
+
+    danger:
+      - { name: "--split-btn-danger-bg",                   default: "var(--danger-component-bg-default)" }
+      - { name: "--split-btn-danger-bg-hover",             default: "var(--danger-component-bg-hover)" }
+      - { name: "--split-btn-danger-bg-active",            default: "var(--danger-component-bg-pressed)" }
+      - { name: "--split-btn-danger-bg-disabled",          default: "var(--danger-component-bg-default)" }
+      - { name: "--split-btn-danger-fg",                   default: "var(--danger-on-component)" }
+      - { name: "--split-btn-danger-fg-hover",             default: "var(--danger-on-component)" }
+      - { name: "--split-btn-danger-fg-disabled",          default: "var(--danger-on-component)" }
+      - { name: "--split-btn-danger-border-color",         default: "var(--danger-component-bg-default)" }
+      - { name: "--split-btn-danger-border-color-hover",   default: "var(--danger-component-bg-hover)" }
+      - { name: "--split-btn-danger-border-color-active",  default: "var(--danger-component-bg-pressed)" }
+      - { name: "--split-btn-danger-border-color-disabled", default: "var(--danger-component-bg-default)" }
+      - { name: "--split-btn-danger-opacity-disabled",     default: "0.5" }
+
+    neutral:
+      - { name: "--split-btn-neutral-bg",                   default: "var(--surface-base-cm-bg)" }
+      - { name: "--split-btn-neutral-bg-hover",             default: "var(--surface-base-cm-bg-hover)" }
+      - { name: "--split-btn-neutral-bg-active",            default: "var(--surface-base-cm-bg-pressed)" }
+      - { name: "--split-btn-neutral-bg-disabled",          default: "var(--surface-base-cm-bg)" }
+      - { name: "--split-btn-neutral-fg",                   default: "var(--surface-base-ct-default)" }
+      - { name: "--split-btn-neutral-fg-hover",             default: "var(--surface-base-ct-strong)" }
+      - { name: "--split-btn-neutral-fg-disabled",          default: "var(--surface-base-ct-default)" }
+      - { name: "--split-btn-neutral-border-color",         default: "var(--surface-base-cm-outline)" }
+      - { name: "--split-btn-neutral-border-color-hover",   default: "var(--surface-base-cm-outline-hover)" }
+      - { name: "--split-btn-neutral-border-color-active",  default: "var(--surface-base-cm-outline-pressed)" }
+      - { name: "--split-btn-neutral-border-color-disabled", default: "var(--surface-base-cm-outline)" }
+      - { name: "--split-btn-neutral-opacity-disabled",     default: "0.5" }
+
+    total: 48
+
+  # ────────────────────────────────────────────────────────────
+  # DIVIDER  (4 variables)
+  # ────────────────────────────────────────────────────────────
+  divider:
+    - { name: "--split-btn-divider-width",          default: "1px" }
+    - { name: "--split-btn-divider-color-primary",  default: "rgba(255,255,255,0.3)" }
+    - { name: "--split-btn-divider-color-secondary", default: "var(--primary-component-outline-default)" }
+    - { name: "--split-btn-divider-color-danger",   default: "rgba(255,255,255,0.3)" }
+    - { name: "--split-btn-divider-color-neutral",  default: "var(--surface-base-cm-outline)" }
+    total: 5
+
+  # ────────────────────────────────────────────────────────────
+  # ✏️ TYPOGRAPHY  (15 variables)
+  # ────────────────────────────────────────────────────────────
+  typography:
+    family:
+      - name: "--split-btn-font-family"
+        default: "var(--font-family-sans)"
+        count: 1
+
+    size:
+      - name: "--split-btn-font-size-{size}"
+        per_size:
+          micro: "var(--font-size-10)"
+          tiny: "var(--font-size-11)"
+          small: "var(--font-size-12)"
+          base: "var(--font-size-14)"
+          medium: "var(--font-size-14)"
+          large: "var(--font-size-16)"
+          big: "var(--font-size-16)"
+          huge: "var(--font-size-18)"
+          mega: "var(--font-size-20)"
+          ultra: "var(--font-size-24)"
+        count: 10
+
+    weight:
+      - name: "--split-btn-font-weight"
+        default: "var(--font-weight-medium)"
+        count: 1
+
+    line-height:
+      - name: "--split-btn-line-height"
+        default: "var(--line-height-normal)"
+        count: 1
+
+    letter-spacing:
+      - name: "--split-btn-letter-spacing"
+        default: "var(--letter-spacing-normal)"
+        count: 1
+
+    text-transform:
+      - name: "--split-btn-text-transform"
+        default: "none"
+        count: 1
+
+    total: 15
+
+  # ────────────────────────────────────────────────────────────
+  # 🧩 SLOTS  (12 variables)
+  # ────────────────────────────────────────────────────────────
+  slots:
+    icon:
+      - name: "--split-btn-icon-size-{size}"
+        description: "Icon size in action zone and chevron size in trigger zone"
+        per_size:
+          micro: "var(--spacing-10)"
+          tiny: "var(--spacing-12)"
+          small: "var(--spacing-13)"
+          base: "var(--spacing-16)"
+          medium: "var(--spacing-16)"
+          large: "var(--spacing-18)"
+          big: "var(--spacing-18)"
+          huge: "var(--spacing-20)"
+          mega: "var(--spacing-24)"
+          ultra: "var(--spacing-28)"
+        count: 10
+
+      - name: "--split-btn-icon-color"
+        default: "currentColor"
+        count: 1
+
+      - name: "--split-btn-icon-color-hover"
+        default: "currentColor"
+        count: 1
+
+    total: 12
+
+  # ────────────────────────────────────────────────────────────
+  # ⚡ MOTION  (5 variables)
+  # ────────────────────────────────────────────────────────────
+  motion:
+    - { name: "--split-btn-transition-property",  default: "background-color, border-color, color, box-shadow, opacity" }
+    - { name: "--split-btn-transition-duration",  default: "var(--duration-normal)" }
+    - { name: "--split-btn-transition-easing",    default: "var(--easing-in-out)" }
+    - { name: "--split-btn-animation-enter",      default: "none" }
+    - { name: "--split-btn-animation-exit",       default: "none" }
+    total: 5
+
+  # ────────────────────────────────────────────────────────────
+  # ♿ ACCESSIBILITY  (5 variables)
+  # ────────────────────────────────────────────────────────────
+  accessibility:
+    - { name: "--split-btn-focus-outline-width",  default: "2px" }
+    - { name: "--split-btn-focus-outline-color",  default: "var(--primary-component-outline-default)" }
+    - { name: "--split-btn-focus-outline-offset",  default: "2px" }
+    - { name: "--split-btn-min-tap-target",        default: "44px" }
+    - { name: "--split-btn-radius-rounded",        default: "var(--radius-full)" }
+    total: 5
+
+# ═══════════════════════════════════════════════════════════════
+# SUMMARY
+# ═══════════════════════════════════════════════════════════════
+# Shape:      14
+# Dimension:  50
+# Surface:    36
+# Divider:     4
+# Typography: 15
+# Slots:      12
+# Motion:      5
+# A11y:        5
+# ─────────────
+# Total:     141

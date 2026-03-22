@@ -1,0 +1,240 @@
+# /specs/components/radio.yaml
+# Design Token Forge — Radio Component Variable Specification
+# Variable-exhaustive L1 component: 73 CSS custom properties
+# covering all 7 axes (Shape, Dimension, Surface, Typography, Slots, Motion, A11y)
+
+component:
+  name: Radio
+  tag: label
+  prefix: radio
+  description: >
+    A single-selection control used in groups. Native <input type="radio">
+    is visually hidden; a styled .radio__circle renders the indicator
+    with a filled dot for the selected state. Supports optional label text.
+    Always circular — the dot/ring pattern scales per density. Error state
+    for form validation. Radio groups use a name attribute for mutual exclusion.
+  category: inputs
+
+sizes: [micro, tiny, small, base, medium, large, big, huge, mega, ultra]
+
+variants:
+  semantic: [filled, outline]
+
+states: [unchecked, checked, hover, active, focus-visible, disabled, error]
+
+markup: |
+  <!-- Single radio -->
+  <label class="radio" data-size="base">
+    <input type="radio" class="radio__control" name="group1" value="a">
+    <span class="radio__circle">
+      <span class="radio__dot"></span>
+    </span>
+    <span class="radio__label">Option A</span>
+  </label>
+
+  <!-- Radio group wrapper -->
+  <fieldset class="radio-group" data-direction="vertical">
+    <legend class="radio-group__legend">Pick one</legend>
+    <label class="radio" data-size="base">
+      <input type="radio" class="radio__control" name="group1" value="a" checked>
+      <span class="radio__circle"><span class="radio__dot"></span></span>
+      <span class="radio__label">Option A</span>
+    </label>
+    <label class="radio" data-size="base">
+      <input type="radio" class="radio__control" name="group1" value="b">
+      <span class="radio__circle"><span class="radio__dot"></span></span>
+      <span class="radio__label">Option B</span>
+    </label>
+  </fieldset>
+
+# ═══════════════════════════════════════════════════════════════
+# VARIABLES — 68 total
+# ═══════════════════════════════════════════════════════════════
+
+variables:
+
+  # ────────────────────────────────────────────────────────────
+  # 📐 SHAPE  (4 variables)
+  # ────────────────────────────────────────────────────────────
+  shape:
+    border:
+      - name: "--radio-circle-border-width"
+        default: "2px"
+        count: 1
+      - name: "--radio-circle-border-style"
+        default: "solid"
+        count: 1
+    shadow:
+      - name: "--radio-circle-shadow"
+        default: "none"
+        count: 1
+      - name: "--radio-circle-shadow-hover"
+        default: "none"
+        count: 1
+    total: 4
+
+  # ────────────────────────────────────────────────────────────
+  # 📏 DIMENSION  (20 variables — 10 outer + 10 dot)
+  # ────────────────────────────────────────────────────────────
+  dimension:
+    outer:
+      - name: "--radio-circle-size-{size}"
+        sizes: { micro: 14px, tiny: 16px, small: 18px, base: 20px, medium: 22px, large: 24px, big: 28px, huge: 32px, mega: 36px, ultra: 40px }
+        count: 10
+    dot:
+      - name: "--radio-dot-size-{size}"
+        sizes: { micro: 6px, tiny: 7px, small: 8px, base: 9px, medium: 10px, large: 11px, big: 13px, huge: 15px, mega: 17px, ultra: 19px }
+        description: "Inner dot diameter — roughly 45% of outer for balanced visual weight"
+        count: 10
+    total: 20
+
+  # ────────────────────────────────────────────────────────────
+  # 🎨 SURFACE — FILLED  (16 variables)
+  # ────────────────────────────────────────────────────────────
+  surface:
+    unchecked:
+      - name: "--radio-circle-bg-off"
+        default: "var(--surface-base-cm-bg)"
+      - name: "--radio-circle-bg-off-hover"
+        default: "var(--surface-base-cm-bg-hover)"
+      - name: "--radio-circle-border-color-off"
+        default: "var(--surface-base-cm-outline)"
+      - name: "--radio-circle-border-color-off-hover"
+        default: "var(--surface-base-cm-outline-hover)"
+    checked:
+      - name: "--radio-circle-bg-on"
+        default: "var(--primary-component-bg-default)"
+      - name: "--radio-circle-bg-on-hover"
+        default: "var(--primary-component-bg-hover)"
+      - name: "--radio-circle-border-color-on"
+        default: "var(--primary-component-bg-default)"
+      - name: "--radio-circle-border-color-on-hover"
+        default: "var(--primary-component-bg-hover)"
+    dot:
+      - name: "--radio-dot-color"
+        default: "var(--color-fixed-white)"
+        description: "Dot color when checked — white on primary bg"
+    disabled:
+      - name: "--radio-circle-bg-on-disabled"
+        default: "var(--primary-component-bg-default)"
+      - name: "--radio-circle-border-color-disabled"
+        default: "var(--surface-base-cm-outline)"
+      - name: "--radio-opacity-disabled"
+        default: "0.5"
+    error:
+      - name: "--radio-circle-border-color-error"
+        default: "var(--danger-component-outline-default)"
+      - name: "--radio-circle-border-color-error-hover"
+        default: "var(--danger-component-outline-hover)"
+      - name: "--radio-circle-bg-on-error"
+        default: "var(--danger-component-bg-default)"
+      - name: "--radio-circle-bg-on-error-hover"
+        default: "var(--danger-component-bg-hover)"
+    total: 16
+
+  # ────────────────────────────────────────────────────────────
+  # 🎨 SURFACE — OUTLINE VARIANT  (13 variables)
+  # ────────────────────────────────────────────────────────────
+  surface_outline:
+    unchecked:
+      - name: "--radio-outline-circle-bg-off"
+        default: "transparent"
+      - name: "--radio-outline-circle-bg-off-hover"
+        default: "var(--surface-base-cm-bg-hover)"
+      - name: "--radio-outline-circle-border-color-off"
+        default: "var(--surface-base-cm-outline)"
+      - name: "--radio-outline-circle-border-color-off-hover"
+        default: "var(--surface-base-cm-outline-hover)"
+    checked:
+      - name: "--radio-outline-circle-bg-on"
+        default: "var(--primary-component-bg-default)"
+      - name: "--radio-outline-circle-bg-on-hover"
+        default: "var(--primary-component-bg-hover)"
+      - name: "--radio-outline-circle-border-color-on"
+        default: "var(--primary-component-bg-default)"
+      - name: "--radio-outline-circle-border-color-on-hover"
+        default: "var(--primary-component-bg-hover)"
+    dot:
+      - name: "--radio-outline-dot-color"
+        default: "var(--color-fixed-white)"
+    disabled:
+      - name: "--radio-outline-circle-bg-on-disabled"
+        default: "var(--primary-component-bg-default)"
+      - name: "--radio-outline-circle-border-color-disabled"
+        default: "var(--surface-base-cm-outline)"
+      - name: "--radio-outline-opacity-disabled"
+        default: "0.5"
+    border:
+      - name: "--radio-outline-circle-border-width"
+        default: "2px"
+    total: 13
+
+  # ────────────────────────────────────────────────────────────
+  # ✏️ TYPOGRAPHY  (4 variables)
+  # ────────────────────────────────────────────────────────────
+  typography:
+    - name: "--radio-label-font-family"
+      default: "var(--font-family-sans)"
+    - name: "--radio-label-font-size"
+      default: "var(--font-size-14)"
+    - name: "--radio-label-font-weight"
+      default: "var(--font-weight-regular)"
+    - name: "--radio-label-line-height"
+      default: "var(--line-height-normal)"
+    total: 4
+
+  # ────────────────────────────────────────────────────────────
+  # 🧩 SLOTS  (4 variables)
+  # ────────────────────────────────────────────────────────────
+  slots:
+    - name: "--radio-gap"
+      default: "var(--spacing-8)"
+      description: "Gap between circle and label"
+    - name: "--radio-circle-scale-active"
+      default: "0.92"
+      description: "Press scale feedback"
+    - name: "--radio-group-gap"
+      default: "var(--spacing-8)"
+      description: "Gap between radio items in a group"
+    - name: "--radio-group-gap-horizontal"
+      default: "var(--spacing-16)"
+      description: "Gap between radio items in horizontal group"
+    total: 4
+
+  # ────────────────────────────────────────────────────────────
+  # ⚡ MOTION  (5 variables)
+  # ────────────────────────────────────────────────────────────
+  motion:
+    - name: "--radio-transition-property"
+      default: "background-color, border-color, box-shadow, opacity"
+    - name: "--radio-transition-duration"
+      default: "var(--duration-fast)"
+    - name: "--radio-transition-easing"
+      default: "var(--easing-in-out)"
+    - name: "--radio-dot-transition-duration"
+      default: "var(--duration-fast)"
+    - name: "--radio-dot-transition-easing"
+      default: "var(--easing-out)"
+    total: 5
+
+  # ────────────────────────────────────────────────────────────
+  # ♿ ACCESSIBILITY  (7 variables)
+  # ────────────────────────────────────────────────────────────
+  accessibility:
+    - name: "--radio-focus-outline-width"
+      default: "2px"
+    - name: "--radio-focus-outline-color"
+      default: "var(--primary-component-outline-default)"
+    - name: "--radio-focus-outline-offset"
+      default: "2px"
+    - name: "--radio-min-tap-target"
+      default: "44px"
+    - name: "--radio-required-color"
+      default: "var(--danger-content-default)"
+    - name: "--radio-label-color"
+      default: "var(--surface-base-ct-default)"
+    - name: "--radio-label-color-disabled"
+      default: "var(--surface-base-ct-subtle)"
+    total: 7
+
+# Summary: 4 + 20 + 16 + 13 + 4 + 4 + 4 + 5 + 7 = 73 component vars + 4 group vars = 77 total

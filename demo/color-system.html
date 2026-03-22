@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Color System — Design Token Forge</title>
+<link rel="stylesheet" href="../packages/tokens/src/index.css">
+<link rel="stylesheet" href="../packages/components/src/button/button.tokens.css">
+<link rel="stylesheet" href="../packages/components/src/button/button.css">
+<link rel="stylesheet" href="../packages/components/src/input/input.tokens.css">
+<link rel="stylesheet" href="../packages/components/src/input/input.css">
+<link rel="stylesheet" href="../packages/components/src/toggle/toggle.tokens.css">
+<link rel="stylesheet" href="../packages/components/src/toggle/toggle.css">
+<link rel="stylesheet" href="../packages/components/src/checkbox/checkbox.tokens.css">
+<link rel="stylesheet" href="../packages/components/src/checkbox/checkbox.css">
+<link rel="stylesheet" href="shared.css">
+<style id="dynamicTokens"></style>
+<style>
+/* ════════════════════════════════════════════════════════════
+   Color System — Multi-Role Unified Page
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Role Rows ────────────────────────────────────────────── */
+.role-list{display:flex;flex-direction:column;gap:0}
+.role-group-label{font-size:var(--font-size-10,10px);font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--demo-fg-faint);padding:14px 24px 6px;border-top:1px solid var(--demo-border)}
+.role-group-label:first-child{border-top:none;padding-top:10px}
+.role-row{padding:10px 24px 14px;border-bottom:1px solid var(--demo-border);display:flex;flex-direction:column;gap:6px}
+.role-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.role-label{font-size:var(--font-size-13,13px);font-weight:700;color:var(--demo-fg-strong);min-width:90px}
+.role-label-input{width:110px;padding:3px 8px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);font-size:var(--font-size-12,12px);font-weight:600;color:var(--demo-fg-strong);background:var(--demo-surface);font-family:inherit}
+.role-picker{display:flex;align-items:center;gap:8px}
+.pick-native{width:40px;height:28px;border:2px solid var(--demo-border);border-radius:var(--radius-sm,4px);cursor:pointer;padding:0;background:none}
+.pick-native::-webkit-color-swatch-wrapper{padding:0}
+.pick-native::-webkit-color-swatch{border:none;border-radius:2px}
+.pick-hex{width:80px;padding:4px 8px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);font-family:var(--font-family-mono,monospace);font-size:var(--font-size-12,12px);font-weight:600;color:var(--demo-fg-strong);background:var(--demo-surface);text-transform:uppercase}
+.pick-hex:focus{outline:2px solid var(--primary-component-bg-default);outline-offset:-1px}
+.role-auto-tag{font-size:var(--font-size-10,10px);color:var(--demo-fg-faint);font-style:italic}
+.role-del{width:22px;height:22px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:transparent;color:var(--demo-fg-faint);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:auto;transition:all 120ms;line-height:1}
+.role-del:hover{color:#DC2626;border-color:#DC2626;background:#FEE2E2}
+
+.cert-mini{font-size:var(--font-size-10,10px);font-weight:700;padding:2px 8px;border-radius:var(--radius-xs,3px);white-space:nowrap}
+.cert-mini[data-status="CERTIFIED"]{background:#DCFCE7;color:#166534}
+.cert-mini[data-status="CONDITIONAL"]{background:#FEF3C7;color:#92400E}
+.cert-mini[data-status="FAILED"]{background:#FEE2E2;color:#991B1B}
+html[data-theme="dark"] .cert-mini[data-status="CERTIFIED"]{background:#14532D;color:#86EFAC}
+html[data-theme="dark"] .cert-mini[data-status="CONDITIONAL"]{background:#78350F;color:#FCD34D}
+html[data-theme="dark"] .cert-mini[data-status="FAILED"]{background:#7F1D1D;color:#FCA5A5}
+
+.role-strip{display:flex;border-radius:var(--radius-md,6px);overflow:hidden;height:44px}
+.role-swatch{flex:1;position:relative;cursor:pointer;transition:transform 100ms ease}
+.role-swatch:hover{transform:scaleY(1.18);z-index:1}
+.role-swatch[data-key]{outline:2px solid var(--demo-fg-strong);outline-offset:-2px;z-index:2}
+.role-tip{display:none;position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--demo-fg-strong);color:var(--demo-bg);font-size:9px;font-family:var(--font-family-mono,monospace);padding:2px 7px;border-radius:var(--radius-xs,3px);white-space:nowrap;z-index:10;pointer-events:none}
+.role-swatch:hover .role-tip{display:block}
+.role-swatch-lbl{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:700;letter-spacing:.03em;opacity:0;transition:opacity 100ms;pointer-events:none}
+.role-swatch:hover .role-swatch-lbl{opacity:1}
+
+.add-role-wrap{padding:12px 24px}
+.add-role-btn{width:100%;padding:10px 16px;border:2px dashed var(--demo-border);border-radius:var(--radius-md,6px);background:transparent;color:var(--demo-fg-subtle);font-size:var(--font-size-12,12px);font-weight:600;cursor:pointer;transition:all 120ms;font-family:inherit;text-align:center}
+.add-role-btn:hover{border-color:var(--primary-component-bg-default);color:var(--primary-content-default);background:var(--primary-container-bg)}
+
+/* ── Save / Reset Bar ─────────────────────────────────────── */
+.save-bar{display:flex;align-items:center;gap:10px;padding:12px 24px;border-top:1px solid var(--demo-border)}
+.save-bar-msg{font-size:var(--font-size-10,10px);color:var(--demo-fg-faint);font-style:italic;margin-right:auto}
+.save-btn,.reset-btn{padding:7px 18px;border-radius:var(--radius-sm,4px);font-size:var(--font-size-12,12px);font-weight:700;cursor:pointer;border:1px solid var(--demo-border);font-family:inherit;transition:all 120ms}
+.save-btn{background:#166534;color:#fff;border-color:#166534}
+.save-btn:hover{background:#15803D}
+.save-btn[data-saved]{background:#DCFCE7;color:#166534;border-color:#16A34A}
+.reset-btn{background:transparent;color:var(--demo-fg-subtle)}
+.reset-btn:hover{background:#FEE2E2;color:#991B1B;border-color:#DC2626}
+
+/* ── Role Selector ────────────────────────────────────────── */
+.role-select{padding:5px 10px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:var(--demo-surface);color:var(--demo-fg);font-size:var(--font-size-12,12px);font-weight:500;cursor:pointer;font-family:inherit}
+
+/* ── Token Map ────────────────────────────────────────────── */
+.map-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.map-pane{padding:20px 24px;display:flex;flex-direction:column;gap:0}
+.map-pane--dark{background:#141414;color:#e5e5e5}
+.map-title{font-size:var(--font-size-10,10px);font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--demo-fg-faint);padding:0 0 10px 0;border-bottom:1px solid var(--demo-border)}
+.map-pane--dark .map-title{color:#888;border-color:#333}
+.map-group-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--demo-fg-faint);padding:12px 0 4px 0}
+.map-pane--dark .map-group-label{color:#666}
+.map-row{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:var(--font-size-10,10px);font-family:var(--font-family-mono,monospace)}
+.map-swatch{width:22px;height:14px;border-radius:3px;border:1px solid rgba(128,128,128,.2);flex-shrink:0}
+.map-name{flex:1;color:var(--demo-fg-subtle);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.map-pane--dark .map-name{color:#aaa}
+.map-step{color:var(--demo-fg-faint);min-width:36px;text-align:right;font-size:9px}
+.map-pane--dark .map-step{color:#777}
+.map-hex{color:var(--demo-fg-faint);min-width:60px;text-align:right}
+.map-pane--dark .map-hex{color:#888}
+
+/* ── Step Detail Table ────────────────────────────────────── */
+.step-tbl{width:100%;font-size:var(--font-size-11,11px);border-collapse:collapse}
+.step-tbl th{position:sticky;top:0;background:var(--demo-surface-alt);text-align:left;padding:6px 10px;font-size:var(--font-size-10,10px);font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--demo-fg-faint);border-bottom:1px solid var(--demo-border)}
+.step-tbl td{padding:5px 10px;border-bottom:1px solid var(--demo-border);font-family:var(--font-family-mono,monospace);color:var(--demo-fg-subtle)}
+.step-tbl tr:hover td{background:var(--demo-surface-alt)}
+.st-sw{width:28px;height:18px;border-radius:3px;border:1px solid rgba(128,128,128,.2);display:inline-block;vertical-align:middle}
+.st-pass{color:#16A34A;font-weight:700}
+.st-fail{color:#DC2626;font-weight:700}
+.st-name{font-weight:600;color:var(--demo-fg-strong)}
+
+/* ── Live Component Preview ───────────────────────────────── */
+.live-surfaces{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.live-pane{padding:32px 28px;display:flex;flex-direction:column;gap:20px}
+.live-pane--light{background:var(--surface-base-bg)}
+.live-pane--dark{background:#141414;color:#e5e5e5}
+.live-pane-title{font-size:var(--font-size-10,10px);font-weight:700;text-transform:uppercase;letter-spacing:.05em;opacity:.5;margin:0 0 4px 0}
+.live-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.live-row-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;opacity:.5;width:100%;margin:0 0 -8px 0}
+.live-card{background:var(--surface-container-bg);border:1px solid var(--surface-container-outline);border-radius:var(--radius-md,6px);padding:20px;display:flex;flex-direction:column;gap:14px;width:100%}
+.live-pane--dark .live-card{background:#1e1e1e;border-color:#333}
+
+/* ── Trust Certificate ────────────────────────────────────── */
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;padding:16px 20px;border-bottom:1px solid var(--demo-border)}
+.cert-card{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-sm,4px);border:1px solid var(--demo-border);cursor:pointer;transition:all 120ms}
+.cert-card:hover{background:var(--demo-surface-alt)}
+.cert-card[data-active]{border-color:var(--primary-component-bg-default);background:var(--demo-surface-alt)}
+.cert-card-swatch{width:16px;height:16px;border-radius:3px;border:1px solid rgba(128,128,128,.2);flex-shrink:0}
+.cert-card-name{font-size:var(--font-size-11,11px);font-weight:600;color:var(--demo-fg-strong);flex:1}
+.cert-card-badge{font-size:10px}
+.cert-panel{display:flex;flex-direction:column;gap:0}
+.cert-overall{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--demo-border);background:var(--demo-surface-alt)}
+.cert-badge{padding:4px 12px;border-radius:var(--radius-sm,4px);font-size:var(--font-size-12,12px);font-weight:700;letter-spacing:.02em}
+.cert-badge[data-status="CERTIFIED"]{background:#DCFCE7;color:#166534}
+.cert-badge[data-status="CONDITIONAL"]{background:#FEF3C7;color:#92400E}
+.cert-badge[data-status="FAILED"]{background:#FEE2E2;color:#991B1B}
+html[data-theme="dark"] .cert-badge[data-status="CERTIFIED"]{background:#14532D;color:#86EFAC}
+html[data-theme="dark"] .cert-badge[data-status="CONDITIONAL"]{background:#78350F;color:#FCD34D}
+html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;color:#FCA5A5}
+.cert-score{font-size:var(--font-size-11,11px);color:var(--demo-fg-subtle)}
+.cert-test{display:flex;align-items:flex-start;gap:10px;padding:10px 20px;border-bottom:1px solid var(--demo-border)}
+.cert-test:last-child{border-bottom:none}
+.cert-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.cert-test-body{flex:1;display:flex;flex-direction:column;gap:2px}
+.cert-test-name{font-size:var(--font-size-12,12px);font-weight:600;color:var(--demo-fg-strong)}
+.cert-test-desc{font-size:var(--font-size-10,10px);color:var(--demo-fg-faint)}
+.cert-test-detail{font-size:var(--font-size-10,10px);font-family:var(--font-family-mono,monospace);color:var(--demo-fg-subtle);padding:2px 0 0 0}
+
+/* ── Export ───────────────────────────────────────────────── */
+.exp-tabs{display:flex;gap:2px;background:var(--demo-cm-bg);padding:2px;border-radius:var(--radius-md,6px);margin:0 0 12px 0;width:fit-content}
+.exp-tab{padding:5px 14px;border-radius:var(--radius-sm,4px);border:none;background:transparent;color:var(--demo-fg-subtle);font-size:var(--font-size-11,11px);font-weight:500;cursor:pointer;transition:all 150ms;font-family:inherit}
+.exp-tab:hover{color:var(--demo-fg)}
+.exp-tab[aria-pressed="true"]{background:var(--demo-surface);color:var(--demo-fg-strong);box-shadow:var(--shadow-xs)}
+.exp-code{background:var(--demo-cm-bg);border-radius:var(--radius-md,6px);padding:16px;font-family:var(--font-family-mono,monospace);font-size:var(--font-size-11,11px);color:var(--demo-fg);overflow-x:auto;white-space:pre;line-height:1.6;max-height:500px;overflow-y:auto}
+.exp-copy{position:absolute;top:8px;right:8px;padding:4px 10px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:var(--demo-surface);color:var(--demo-fg-subtle);font-size:var(--font-size-10,10px);cursor:pointer;font-family:inherit}
+.exp-copy:hover{background:var(--demo-surface-alt)}
+
+/* ── Flow Arrow ───────────────────────────────────────────── */
+.flow-arrow{text-align:center;padding:8px 0;color:var(--demo-fg-faint);font-size:var(--font-size-10,10px);font-weight:600;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;justify-content:center;gap:8px}
+.flow-arrow::before,.flow-arrow::after{content:'';flex:1;height:1px;background:var(--demo-border)}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media(max-width:900px){
+  .page-layout{grid-template-columns:1fr}
+  .sidebar-nav{display:none}
+  .live-surfaces{grid-template-columns:1fr}
+  .map-grid{grid-template-columns:1fr}
+  .demo-main{padding:16px;gap:32px}
+  .cert-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<nav class="explorer-nav" aria-label="Page navigation">
+  <div class="nav-crumb">
+    <a href="index.html" class="nav-home" aria-label="Component Explorer" title="Component Explorer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1v-9"/></svg></a>
+    <span class="nav-sep">/</span>
+    <div class="nav-switcher">
+      <button class="nav-switcher-btn" id="navSwitcher" aria-expanded="false" aria-haspopup="true" type="button">
+        Color System
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="nav-dropdown" id="navDropdown" role="menu">
+        <div class="dd-group">Color System</div>
+        <a href="color-system.html" role="menuitem" aria-current="page">Color System <span class="dd-hint">Live</span></a>
+        <a href="color-tokens.html" role="menuitem">Color Tokens <span class="dd-hint">~740 vars</span></a>
+        <div class="dd-sep" role="separator"></div>
+        <div class="dd-group">Guides</div>
+        <a href="frameworks.html" role="menuitem">Frameworks <span class="dd-hint">Integration</span></a>
+        <div class="dd-sep" role="separator"></div>
+        <div class="dd-group">Components</div>
+        <a href="button.html" role="menuitem">Button <span class="dd-hint">246 vars</span></a>
+        <a href="icon-button.html" role="menuitem">IconButton <span class="dd-hint">120 vars</span></a>
+        <a href="split-button.html" role="menuitem">SplitButton <span class="dd-hint">154 vars</span></a>
+        <a href="input.html" role="menuitem">Input <span class="dd-hint">172 vars</span></a>
+        <a href="textarea.html" role="menuitem">Textarea <span class="dd-hint">114 vars</span></a>
+        <a href="select.html" role="menuitem">Select <span class="dd-hint">120 vars</span></a>
+        <a href="menu-button.html" role="menuitem">MenuButton <span class="dd-hint">139 vars</span></a>
+        <a href="toggle.html" role="menuitem">Toggle <span class="dd-hint">93 vars</span></a>
+        <a href="checkbox.html" role="menuitem">Checkbox <span class="dd-hint">74 vars</span></a>
+        <a href="radio.html" role="menuitem">Radio <span class="dd-hint">73 vars</span></a>
+        <a href="slider.html" role="menuitem">Slider <span class="dd-hint">120 vars</span></a>
+        <a href="datepicker.html" role="menuitem">DatePicker <span class="dd-hint">~190 vars</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle" type="button">Toggle Dark</button>
+  </div>
+</nav>
+
+<header class="demo-header">
+  <h1>Color System <span>— Pick &rarr; Generate &rarr; Tokenize &rarr; Render</span></h1>
+  <div class="demo-meta">
+    <span class="demo-badge">CIE L* Tone + OKLCH</span>
+    <span class="demo-badge">4-Tier Token Pipeline</span>
+    <span class="demo-badge">Real-time Component Sync</span>
+  </div>
+</header>
+
+<div class="page-layout">
+<aside class="sidebar-nav" id="sidebarNav" aria-label="Section navigation">
+  <a href="#sec-roles"><span class="sn-num">1</span>Color Roles</a>
+  <a href="#sec-map"><span class="sn-num">2</span>Token Map</a>
+  <a href="#sec-live"><span class="sn-num">3</span>Live Components</a>
+  <a href="#sec-cert"><span class="sn-num">4</span>Trust Certificates</a>
+  <a href="#sec-steps"><span class="sn-num">5</span>Step Details</a>
+  <a href="#sec-export"><span class="sn-num">6</span>Export</a>
+</aside>
+
+<div class="page-content">
+<main class="demo-main">
+
+<!-- ═══════════════ 1. Color Roles ══════════════════════ -->
+<section class="section" id="sec-roles">
+  <div class="section-header">
+    <h2>1. Color Roles</h2>
+    <span class="section-tag">All Palettes</span>
+  </div>
+  <p class="section-desc">Each role generates a WCAG-guaranteed 21-step palette from a single key color. Neutral and desaturated are auto-derived from the primary hue. Add custom roles for secondary, tertiary, or accent colors.</p>
+  <div class="section-body">
+    <div class="role-list" id="rolesList"></div>
+    <div class="add-role-wrap">
+      <button class="add-role-btn" id="addRoleBtn" type="button">+ Add Color Role</button>
+    </div>
+    <div class="save-bar">
+      <span class="save-bar-msg" id="saveMsg"></span>
+      <button class="reset-btn" id="resetBtn" type="button">Reset to Default</button>
+      <button class="save-btn" id="saveBtn" type="button">Save &amp; Apply</button>
+    </div>
+  </div>
+</section>
+
+<div class="flow-arrow">T0 primitives feed into T1 semantic roles</div>
+
+<!-- ═══════════════ 2. Token Map ════════════════════════ -->
+<section class="section" id="sec-map">
+  <div class="section-header">
+    <h2>2. T1 &mdash; Semantic Token Map</h2>
+    <span class="section-tag">18 Tokens &times; Light/Dark</span>
+  </div>
+  <p class="section-desc">Each primitive step is assigned a semantic purpose. Select a role to see how its 21-step palette maps to 18 semantic tokens for both light and dark themes.</p>
+  <div style="padding:8px 0 0 0;display:flex;align-items:center;gap:10px">
+    <label for="mapRoleSelect" style="font-size:var(--font-size-11,11px);font-weight:600;color:var(--demo-fg-subtle)">Inspect role:</label>
+    <select class="role-select" id="mapRoleSelect"></select>
+  </div>
+  <div class="section-body">
+    <div class="map-grid" id="mapGrid"></div>
+  </div>
+</section>
+
+<div class="flow-arrow">T1 semantic tokens drive T3 component styles</div>
+
+<!-- ═══════════════ 3. Live Components ══════════════════ -->
+<section class="section" id="sec-live">
+  <div class="section-header">
+    <h2>3. Live Components</h2>
+    <span class="section-tag">Real-time Sync</span>
+  </div>
+  <p class="section-desc">Real project components rendered with generated tokens. Change any color above — watch everything update instantly. Zero hardcoded values.</p>
+  <div class="section-body">
+    <div class="live-surfaces">
+      <!-- Light mode pane -->
+      <div class="live-pane live-pane--light" id="liveLight">
+        <div class="live-pane-title">Light Mode</div>
+        <div class="live-row-label">Primary Variants</div>
+        <div class="live-row">
+          <button class="btn" data-variant="primary" data-size="base" type="button"><span class="btn__label">Primary</span></button>
+          <button class="btn" data-variant="secondary" data-size="base" type="button"><span class="btn__label">Secondary</span></button>
+          <button class="btn" data-variant="tertiary" data-size="base" type="button"><span class="btn__label">Tertiary</span></button>
+          <button class="btn" data-variant="ghost" data-size="base" type="button"><span class="btn__label">Ghost</span></button>
+        </div>
+        <div class="live-row-label">Status Variants</div>
+        <div class="live-row">
+          <button class="btn" data-variant="danger" data-size="base" type="button"><span class="btn__label">Danger</span></button>
+          <button class="btn" data-variant="success" data-size="base" type="button"><span class="btn__label">Success</span></button>
+          <button class="btn" data-variant="warning" data-size="base" type="button"><span class="btn__label">Warning</span></button>
+          <button class="btn" data-variant="primary" data-size="base" disabled type="button"><span class="btn__label">Disabled</span></button>
+        </div>
+        <div class="live-row-label">Input</div>
+        <div class="live-row">
+          <div class="input-group" data-variant="outline" data-size="base" style="flex:1;max-width:260px">
+            <div class="input-field"><input type="text" placeholder="Type here..."></div>
+          </div>
+          <div class="input-group" data-variant="filled" data-size="base" style="flex:1;max-width:260px">
+            <div class="input-field"><input type="text" placeholder="Filled variant"></div>
+          </div>
+        </div>
+        <div class="live-row-label">Toggle &amp; Checkbox</div>
+        <div class="live-row">
+          <label class="switch-label">
+            <button class="switch" role="switch" aria-checked="true" data-size="base" type="button">
+              <span class="switch__track"><span class="switch__thumb"></span></span>
+            </button>
+            <span class="switch-label__text">On</span>
+          </label>
+          <label class="switch-label">
+            <button class="switch" role="switch" aria-checked="false" data-size="base" type="button">
+              <span class="switch__track"><span class="switch__thumb"></span></span>
+            </button>
+            <span class="switch-label__text">Off</span>
+          </label>
+          <label class="checkbox" data-size="base">
+            <input type="checkbox" class="checkbox__control" checked>
+            <span class="checkbox__box"><svg class="checkbox__check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8.5 6.5 13 14 3"/></svg><svg class="checkbox__dash" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-linecap="round"><line x1="2" y1="8" x2="14" y2="8"/></svg></span>
+            <span class="checkbox__label">Checked</span>
+          </label>
+          <label class="checkbox" data-size="base">
+            <input type="checkbox" class="checkbox__control">
+            <span class="checkbox__box"><svg class="checkbox__check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8.5 6.5 13 14 3"/></svg><svg class="checkbox__dash" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-linecap="round"><line x1="2" y1="8" x2="14" y2="8"/></svg></span>
+            <span class="checkbox__label">Unchecked</span>
+          </label>
+        </div>
+        <div class="live-row-label">On Accent Surface</div>
+        <div class="live-card" style="background:var(--surface-accent-bg);border-color:var(--surface-accent-outline)">
+          <div class="live-row">
+            <button class="btn" data-variant="primary" data-size="base" type="button"><span class="btn__label">Action</span></button>
+            <button class="btn" data-variant="secondary" data-size="base" type="button"><span class="btn__label">Cancel</span></button>
+            <div class="input-group" data-variant="outline" data-size="base" style="flex:1;max-width:220px">
+              <div class="input-field"><input type="text" placeholder="Search..."></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dark mode pane -->
+      <div class="live-pane live-pane--dark" id="liveDark" data-theme="dark">
+        <div class="live-pane-title">Dark Mode</div>
+        <div class="live-row-label" style="color:#888">Primary Variants</div>
+        <div class="live-row">
+          <button class="btn" data-variant="primary" data-size="base" type="button"><span class="btn__label">Primary</span></button>
+          <button class="btn" data-variant="secondary" data-size="base" type="button"><span class="btn__label">Secondary</span></button>
+          <button class="btn" data-variant="tertiary" data-size="base" type="button"><span class="btn__label">Tertiary</span></button>
+          <button class="btn" data-variant="ghost" data-size="base" type="button"><span class="btn__label">Ghost</span></button>
+        </div>
+        <div class="live-row-label" style="color:#888">Status Variants</div>
+        <div class="live-row">
+          <button class="btn" data-variant="danger" data-size="base" type="button"><span class="btn__label">Danger</span></button>
+          <button class="btn" data-variant="success" data-size="base" type="button"><span class="btn__label">Success</span></button>
+          <button class="btn" data-variant="warning" data-size="base" type="button"><span class="btn__label">Warning</span></button>
+          <button class="btn" data-variant="primary" data-size="base" disabled type="button"><span class="btn__label">Disabled</span></button>
+        </div>
+        <div class="live-row-label" style="color:#888">Input</div>
+        <div class="live-row">
+          <div class="input-group" data-variant="outline" data-size="base" style="flex:1;max-width:260px">
+            <div class="input-field"><input type="text" placeholder="Type here..."></div>
+          </div>
+          <div class="input-group" data-variant="filled" data-size="base" style="flex:1;max-width:260px">
+            <div class="input-field"><input type="text" placeholder="Filled variant"></div>
+          </div>
+        </div>
+        <div class="live-row-label" style="color:#888">Toggle &amp; Checkbox</div>
+        <div class="live-row">
+          <label class="switch-label">
+            <button class="switch" role="switch" aria-checked="true" data-size="base" type="button">
+              <span class="switch__track"><span class="switch__thumb"></span></span>
+            </button>
+            <span class="switch-label__text" style="color:#ccc">On</span>
+          </label>
+          <label class="switch-label">
+            <button class="switch" role="switch" aria-checked="false" data-size="base" type="button">
+              <span class="switch__track"><span class="switch__thumb"></span></span>
+            </button>
+            <span class="switch-label__text" style="color:#ccc">Off</span>
+          </label>
+          <label class="checkbox" data-size="base">
+            <input type="checkbox" class="checkbox__control" checked>
+            <span class="checkbox__box"><svg class="checkbox__check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8.5 6.5 13 14 3"/></svg><svg class="checkbox__dash" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-linecap="round"><line x1="2" y1="8" x2="14" y2="8"/></svg></span>
+            <span class="checkbox__label" style="color:#ccc">Checked</span>
+          </label>
+          <label class="checkbox" data-size="base">
+            <input type="checkbox" class="checkbox__control">
+            <span class="checkbox__box"><svg class="checkbox__check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 8.5 6.5 13 14 3"/></svg><svg class="checkbox__dash" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-linecap="round"><line x1="2" y1="8" x2="14" y2="8"/></svg></span>
+            <span class="checkbox__label" style="color:#ccc">Unchecked</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ 4. Trust Certificates ═══════════════ -->
+<section class="section" id="sec-cert">
+  <div class="section-header">
+    <h2>4. Trust Certificates</h2>
+    <span class="section-tag">7 Tests &times; All Roles</span>
+  </div>
+  <p class="section-desc">Every generated palette is tested against 7 quality checks. Click a role below to see its detailed results.</p>
+  <div class="section-body">
+    <div class="cert-grid" id="certGrid"></div>
+    <div class="cert-panel" id="certPanel"></div>
+  </div>
+</section>
+
+<!-- ═══════════════ 5. Step Details ═════════════════════ -->
+<section class="section" id="sec-steps">
+  <div class="section-header">
+    <h2>5. Step Details</h2>
+    <span class="section-tag">Table</span>
+  </div>
+  <div style="padding:8px 0 0 0;display:flex;align-items:center;gap:10px">
+    <label for="stepRoleSelect" style="font-size:var(--font-size-11,11px);font-weight:600;color:var(--demo-fg-subtle)">Inspect role:</label>
+    <select class="role-select" id="stepRoleSelect"></select>
+  </div>
+  <div class="section-body" style="max-height:480px;overflow-y:auto">
+    <table class="step-tbl">
+      <thead>
+        <tr>
+          <th>Step</th>
+          <th></th>
+          <th>Hex</th>
+          <th>Tone (L*)</th>
+          <th>Contrast vs #FFF</th>
+          <th>WCAG Level</th>
+        </tr>
+      </thead>
+      <tbody id="stepBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════ 6. Export ═══════════════════════════ -->
+<section class="section" id="sec-export">
+  <div class="section-header">
+    <h2>6. Export</h2>
+    <span class="section-tag">All Roles</span>
+  </div>
+  <div class="section-body" style="padding:20px 24px">
+    <div class="exp-tabs" id="expTabs">
+      <button class="exp-tab" aria-pressed="true" data-format="css" type="button">CSS</button>
+      <button class="exp-tab" aria-pressed="false" data-format="json" type="button">JSON DTCG</button>
+      <button class="exp-tab" aria-pressed="false" data-format="scss" type="button">SCSS</button>
+    </div>
+    <div style="position:relative">
+      <pre class="exp-code" id="expCode"></pre>
+      <button class="exp-copy" id="expCopy" type="button">Copy</button>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+</div>
+
+<script src="shared.js"></script>
+<script src="palette-engine.js"></script>
+<script>
+/* ════════════════════════════════════════════════════════════
+   Color System — Multi-Role Page Logic
+   ════════════════════════════════════════════════════════════ */
+var PE = window.PaletteEngine;
+
+// ══════════════════════════════════════════════════════════════
+// SEMANTIC MAPPING — step indices for each token
+// ══════════════════════════════════════════════════════════════
+var LIGHT_MAP = {
+  'content-default':14,'content-strong':15,'content-subtle':10,'content-faint':7,
+  'component-bg-default':12,'component-bg-hover':14,'component-bg-pressed':15,
+  'component-outline-default':9,'component-outline-hover':10,'component-outline-pressed':12,
+  'component-separator':4,
+  'container-bg':2,'container-hover':3,'container-pressed':4,'container-outline':7,'container-separator':4,
+  'on-component':-1,'on-container':15
+};
+var DARK_MAP = {
+  'content-default':5,'content-strong':4,'content-subtle':7,'content-faint':10,
+  'component-bg-default':10,'component-bg-hover':9,'component-bg-pressed':8,
+  'component-outline-default':12,'component-outline-hover':10,'component-outline-pressed':9,
+  'component-separator':17,
+  'container-bg':18,'container-hover':17,'container-pressed':16,'container-outline':14,'container-separator':17,
+  'on-component':-1,'on-container':4
+};
+var SEM_GROUPS = [
+  {label:'Content',keys:['content-default','content-strong','content-subtle','content-faint']},
+  {label:'Component',keys:['component-bg-default','component-bg-hover','component-bg-pressed','component-outline-default','component-outline-hover','component-outline-pressed','component-separator']},
+  {label:'Container',keys:['container-bg','container-hover','container-pressed','container-outline','container-separator']},
+  {label:'Contrast Text',keys:['on-component','on-container']}
+];
+
+// Roles that map to actual component semantic tokens
+var TOKEN_ROLES = ['primary','brand','danger','warning','info','success'];
+
+// ══════════════════════════════════════════════════════════════
+// ROLE STATE
+// ══════════════════════════════════════════════════════════════
+var roles = [];
+var palettes = {};
+var certs = {};
+var customCounter = 0;
+var selectedCertRole = 'primary';
+var selectedMapRole = 'primary';
+var selectedStepRole = 'primary';
+var currentFormat = 'css';
+
+var DEFAULT_CUSTOM_COLORS = ['#7C3AED','#EC4899','#F97316','#06B6D4','#8B5CF6','#10B981','#EF4444','#14B8A6'];
+var CUSTOM_NAMES = ['Secondary','Tertiary','Accent','Extra'];
+
+var STORAGE_KEY_TOKENS = 'dtf-saved-tokens';
+var STORAGE_KEY_CONFIG = 'dtf-color-config';
+
+var DEFAULT_ROLES = [
+  {id:'primary',  label:'Primary',  keyHex:'#286CE5', type:'fixed'},
+  {id:'brand',    label:'Brand',    keyHex:'#E53F28', type:'fixed'},
+  {id:'danger',   label:'Danger',   keyHex:'#DC2626', type:'fixed'},
+  {id:'warning',  label:'Warning',  keyHex:'#D97706', type:'fixed'},
+  {id:'info',     label:'Info',     keyHex:'#0EA5E9', type:'fixed'},
+  {id:'success',  label:'Success',  keyHex:'#16A34A', type:'fixed'},
+  {id:'neutral',  label:'Neutral',  keyHex:null, type:'auto', derive:'neutral'},
+  {id:'greyscale', label:'Greyscale', keyHex:null, type:'auto', derive:'greyscale'},
+  {id:'desaturated', label:'Desaturated', keyHex:null, type:'auto', derive:'desaturated'},
+];
+
+function initRoles() {
+  roles = DEFAULT_ROLES.map(function(r) { return Object.assign({}, r); });
+}
+
+function deriveKeyHex(derive) {
+  var primary = roles[0];
+  if (!primary) return '#737373';
+  var oklch = PE.hexToOklch(primary.keyHex);
+  if (derive === 'neutral') {
+    return PE.oklchToHex(oklch[0], 0.012, oklch[2]);
+  }
+  if (derive === 'greyscale') {
+    return PE.oklchToHex(oklch[0], 0, 0);
+  }
+  if (derive === 'desaturated') {
+    return PE.oklchToHex(oklch[0], Math.min(oklch[1] * 0.35, 0.06), oklch[2]);
+  }
+  return primary.keyHex;
+}
+
+function getRoleById(id) {
+  for (var i = 0; i < roles.length; i++) { if (roles[i].id === id) return roles[i]; }
+  return null;
+}
+
+// ══════════════════════════════════════════════════════════════
+// GENERATE ALL PALETTES
+// ══════════════════════════════════════════════════════════════
+function generateAll() {
+  for (var i = 0; i < roles.length; i++) {
+    var r = roles[i];
+    if (r.type === 'auto') r.keyHex = deriveKeyHex(r.derive);
+    palettes[r.id] = PE.generatePalette(r.keyHex);
+    certs[r.id] = PE.certifyPalette(palettes[r.id]);
+  }
+}
+
+function generateRole(id) {
+  var r = getRoleById(id);
+  if (!r) return;
+  if (r.type === 'auto') r.keyHex = deriveKeyHex(r.derive);
+  palettes[r.id] = PE.generatePalette(r.keyHex);
+  certs[r.id] = PE.certifyPalette(palettes[r.id]);
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER ROLE LIST (Section 1)
+// ══════════════════════════════════════════════════════════════
+var rolesList = document.getElementById('rolesList');
+
+function renderRolesList() {
+  var html = '';
+  html += '<div class="role-group-label">Semantic Roles</div>';
+  for (var i = 0; i < roles.length; i++) {
+    var r = roles[i];
+    if (r.type === 'auto' && i > 0 && roles[i-1].type !== 'auto') {
+      html += '<div class="role-group-label">Auto-derived from Primary</div>';
+    }
+    if (r.type === 'custom' && i > 0 && roles[i-1].type !== 'custom') {
+      html += '<div class="role-group-label">Custom Roles</div>';
+    }
+    html += buildRoleRow(r);
+  }
+  rolesList.innerHTML = html;
+  wireRoleEvents();
+}
+
+function buildRoleRow(r) {
+  var cert = certs[r.id];
+  var certStatus = cert ? cert.overall : '';
+  var certIcon = cert ? (cert.overall === 'CERTIFIED' ? '\u2705' : cert.overall === 'CONDITIONAL' ? '\u26A0\uFE0F' : '\u274C') : '';
+  var certCount = cert ? cert.pass + '/7' : '';
+
+  var h = '<div class="role-row" data-role="' + r.id + '">';
+  h += '<div class="role-head">';
+
+  if (r.type === 'custom') {
+    h += '<input class="role-label-input" data-role-name="' + r.id + '" value="' + escHtml(r.label) + '" spellcheck="false">';
+  } else {
+    h += '<span class="role-label">' + escHtml(r.label) + '</span>';
+  }
+
+  if (r.type !== 'auto') {
+    h += '<div class="role-picker">';
+    h += '<input type="color" class="pick-native" data-role-color="' + r.id + '" value="' + r.keyHex + '">';
+    h += '<input type="text" class="pick-hex" data-role-hex="' + r.id + '" value="' + r.keyHex + '" maxlength="7" spellcheck="false">';
+    h += '</div>';
+  } else {
+    h += '<span class="role-auto-tag">from Primary \u2022 ' + (r.keyHex || '') + '</span>';
+  }
+
+  if (cert) {
+    h += '<span class="cert-mini" data-status="' + certStatus + '">' + certIcon + ' ' + certCount + '</span>';
+  }
+
+  if (r.type === 'custom') {
+    h += '<button class="role-del" data-role-del="' + r.id + '" type="button" title="Remove role">&times;</button>';
+  }
+
+  h += '</div>'; // .role-head
+
+  h += '<div class="role-strip" id="strip-' + r.id + '">';
+  h += buildStripHtml(r.id);
+  h += '</div>';
+
+  h += '</div>'; // .role-row
+  return h;
+}
+
+function buildStripHtml(roleId) {
+  var pal = palettes[roleId];
+  if (!pal) return '';
+  return pal.steps.map(function(s, i) {
+    var tc = s.contrast > 4.5 ? '#FFFFFF' : '#000000';
+    var attr = i === 12 ? ' data-key' : '';
+    return '<div class="role-swatch"' + attr + ' style="background:' + s.hex + '">' +
+      '<span class="role-tip">' + s.name + ' ' + s.hex + '</span>' +
+      '<span class="role-swatch-lbl" style="color:' + tc + '">' + s.name + '</span></div>';
+  }).join('');
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ══════════════════════════════════════════════════════════════
+// WIRE ROLE EVENTS
+// ══════════════════════════════════════════════════════════════
+function wireRoleEvents() {
+  // Color pickers
+  rolesList.querySelectorAll('[data-role-color]').forEach(function(el) {
+    el.addEventListener('input', function() {
+      var rid = el.getAttribute('data-role-color');
+      var hexEl = rolesList.querySelector('[data-role-hex="' + rid + '"]');
+      if (hexEl) hexEl.value = el.value.toUpperCase();
+      onRoleColorChange(rid, el.value);
+    });
+  });
+  // Hex inputs
+  rolesList.querySelectorAll('[data-role-hex]').forEach(function(el) {
+    el.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        var v = el.value.trim();
+        if (/^#?[0-9A-Fa-f]{6}$/.test(v)) {
+          var hex = v.startsWith('#') ? v : '#' + v;
+          var rid = el.getAttribute('data-role-hex');
+          var colorEl = rolesList.querySelector('[data-role-color="' + rid + '"]');
+          if (colorEl) colorEl.value = hex;
+          onRoleColorChange(rid, hex);
+        }
+      }
+    });
+    el.addEventListener('blur', function() {
+      var v = el.value.trim();
+      if (/^#?[0-9A-Fa-f]{6}$/.test(v)) {
+        var hex = v.startsWith('#') ? v : '#' + v;
+        var rid = el.getAttribute('data-role-hex');
+        var colorEl = rolesList.querySelector('[data-role-color="' + rid + '"]');
+        if (colorEl) colorEl.value = hex;
+        onRoleColorChange(rid, hex);
+      }
+    });
+  });
+  // Name inputs (custom roles)
+  rolesList.querySelectorAll('[data-role-name]').forEach(function(el) {
+    el.addEventListener('change', function() {
+      var rid = el.getAttribute('data-role-name');
+      var r = getRoleById(rid);
+      if (r) r.label = el.value.trim() || r.label;
+      refreshSelectors();
+    });
+  });
+  // Delete buttons
+  rolesList.querySelectorAll('[data-role-del]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var rid = el.getAttribute('data-role-del');
+      removeRole(rid);
+    });
+  });
+}
+
+function onRoleColorChange(roleId, hex) {
+  hex = hex.toUpperCase();
+  var r = getRoleById(roleId);
+  if (!r) return;
+  r.keyHex = hex;
+
+  generateRole(roleId);
+
+  // If primary changed, regenerate auto-derived roles
+  if (roleId === 'primary') {
+    for (var i = 0; i < roles.length; i++) {
+      if (roles[i].type === 'auto') {
+        generateRole(roles[i].id);
+        updateRoleStrip(roles[i].id);
+        updateRoleCert(roles[i].id);
+      }
+    }
+  }
+
+  updateRoleStrip(roleId);
+  updateRoleCert(roleId);
+  injectAllTokens();
+  renderMap();
+  renderCertGrid();
+  renderCertDetail(selectedCertRole);
+  renderSteps();
+  renderExport(currentFormat);
+}
+
+function updateRoleStrip(roleId) {
+  var stripEl = document.getElementById('strip-' + roleId);
+  if (stripEl) stripEl.innerHTML = buildStripHtml(roleId);
+  // Update auto tag text
+  var r = getRoleById(roleId);
+  if (r && r.type === 'auto') {
+    var row = rolesList.querySelector('[data-role="' + roleId + '"]');
+    if (row) {
+      var tag = row.querySelector('.role-auto-tag');
+      if (tag) tag.textContent = 'from Primary \u2022 ' + (r.keyHex || '');
+    }
+  }
+}
+
+function updateRoleCert(roleId) {
+  var cert = certs[roleId];
+  if (!cert) return;
+  var row = rolesList.querySelector('[data-role="' + roleId + '"]');
+  if (!row) return;
+  var mini = row.querySelector('.cert-mini');
+  if (mini) {
+    var icon = cert.overall === 'CERTIFIED' ? '\u2705' : cert.overall === 'CONDITIONAL' ? '\u26A0\uFE0F' : '\u274C';
+    mini.textContent = icon + ' ' + cert.pass + '/7';
+    mini.setAttribute('data-status', cert.overall);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// ADD / REMOVE CUSTOM ROLES
+// ══════════════════════════════════════════════════════════════
+document.getElementById('addRoleBtn').addEventListener('click', function() {
+  var name = customCounter < CUSTOM_NAMES.length ? CUSTOM_NAMES[customCounter] : 'Custom ' + (customCounter - CUSTOM_NAMES.length + 1);
+  var color = DEFAULT_CUSTOM_COLORS[customCounter % DEFAULT_CUSTOM_COLORS.length];
+  customCounter++;
+  var id = 'custom-' + customCounter;
+  roles.push({id:id, label:name, keyHex:color, type:'custom'});
+  generateRole(id);
+  renderRolesList();
+  refreshSelectors();
+  injectAllTokens();
+  renderCertGrid();
+  renderExport(currentFormat);
+});
+
+function removeRole(rid) {
+  for (var i = 0; i < roles.length; i++) {
+    if (roles[i].id === rid) { roles.splice(i, 1); break; }
+  }
+  delete palettes[rid];
+  delete certs[rid];
+  if (selectedCertRole === rid) selectedCertRole = 'primary';
+  if (selectedMapRole === rid) selectedMapRole = 'primary';
+  if (selectedStepRole === rid) selectedStepRole = 'primary';
+  renderRolesList();
+  refreshSelectors();
+  injectAllTokens();
+  renderCertGrid();
+  renderCertDetail(selectedCertRole);
+  renderSteps();
+  renderExport(currentFormat);
+}
+
+// ══════════════════════════════════════════════════════════════
+// LIVE TOKEN INJECTION
+// ══════════════════════════════════════════════════════════════
+var dynamicTokens = document.getElementById('dynamicTokens');
+
+function injectAllTokens() {
+  var root = document.documentElement.style;
+  var darkCSS = '';
+
+  // Inject semantic tokens for known roles
+  for (var t = 0; t < TOKEN_ROLES.length; t++) {
+    var roleId = TOKEN_ROLES[t];
+    var pal = palettes[roleId];
+    if (!pal) continue;
+    var steps = pal.steps;
+
+    // T0 primitives (--prim-{role}-{step})
+    for (var s = 0; s < steps.length; s++) {
+      root.setProperty('--prim-' + roleId + '-' + steps[s].name, steps[s].hex);
+    }
+    // Also inject --prim-monochromatic-* for primary (backwards compat)
+    if (roleId === 'primary') {
+      for (var s2 = 0; s2 < steps.length; s2++) {
+        root.setProperty('--prim-monochromatic-' + steps[s2].name, steps[s2].hex);
+      }
+    }
+
+    // T1 semantic (light)
+    var lkeys = Object.keys(LIGHT_MAP);
+    for (var j = 0; j < lkeys.length; j++) {
+      var k = lkeys[j];
+      var idx = LIGHT_MAP[k];
+      root.setProperty('--' + roleId + '-' + k, idx === -1 ? '#FFFFFF' : steps[idx].hex);
+    }
+
+    // T1 semantic (dark)
+    var dkeys = Object.keys(DARK_MAP);
+    for (var d = 0; d < dkeys.length; d++) {
+      var dk = dkeys[d];
+      var di = DARK_MAP[dk];
+      darkCSS += '  --' + roleId + '-' + dk + ': ' + (di === -1 ? '#FFFFFF' : steps[di].hex) + ';\n';
+    }
+  }
+
+  // Surface accent from primary
+  var ps = palettes.primary ? palettes.primary.steps : null;
+  if (ps) {
+    root.setProperty('--surface-accent-bg', ps[2].hex);
+    root.setProperty('--surface-accent-hover', ps[3].hex);
+    root.setProperty('--surface-accent-outline', ps[7].hex);
+    darkCSS += '  --surface-accent-bg: ' + ps[18].hex + ';\n';
+    darkCSS += '  --surface-accent-hover: ' + ps[17].hex + ';\n';
+    darkCSS += '  --surface-accent-outline: ' + ps[16].hex + ';\n';
+  }
+
+  dynamicTokens.textContent = darkCSS ? '#liveDark, [data-theme="dark"] {\n' + darkCSS + '}\n' : '';
+}
+
+// ══════════════════════════════════════════════════════════════
+// SELECTORS (for Token Map, Steps, Cert)
+// ══════════════════════════════════════════════════════════════
+var mapRoleSelect = document.getElementById('mapRoleSelect');
+var stepRoleSelect = document.getElementById('stepRoleSelect');
+
+function refreshSelectors() {
+  var opts = roles.map(function(r) {
+    return '<option value="' + r.id + '">' + escHtml(r.label) + '</option>';
+  }).join('');
+  mapRoleSelect.innerHTML = opts;
+  stepRoleSelect.innerHTML = opts;
+  mapRoleSelect.value = selectedMapRole;
+  stepRoleSelect.value = selectedStepRole;
+}
+
+mapRoleSelect.addEventListener('change', function() {
+  selectedMapRole = mapRoleSelect.value;
+  renderMap();
+});
+
+stepRoleSelect.addEventListener('change', function() {
+  selectedStepRole = stepRoleSelect.value;
+  renderSteps();
+});
+
+// ══════════════════════════════════════════════════════════════
+// RENDER: TOKEN MAP (Section 2)
+// ══════════════════════════════════════════════════════════════
+var mapGrid = document.getElementById('mapGrid');
+
+function renderMap() {
+  var rid = selectedMapRole;
+  var pal = palettes[rid];
+  if (!pal) { mapGrid.innerHTML = ''; return; }
+  var r = getRoleById(rid);
+  var prefix = (TOKEN_ROLES.indexOf(rid) >= 0) ? rid : (r ? r.label.toLowerCase().replace(/[^a-z0-9]/g,'-') : rid);
+
+  function buildPane(map, title, isDark) {
+    var cls = isDark ? 'map-pane map-pane--dark' : 'map-pane';
+    var html = '<div class="' + cls + '"><div class="map-title">' + title + '</div>';
+    for (var g = 0; g < SEM_GROUPS.length; g++) {
+      var grp = SEM_GROUPS[g];
+      html += '<div class="map-group-label">' + grp.label + '</div>';
+      for (var rr = 0; rr < grp.keys.length; rr++) {
+        var key = grp.keys[rr];
+        var idx = map[key];
+        var hex = idx === -1 ? '#FFFFFF' : pal.steps[idx].hex;
+        var stepLabel = idx === -1 ? 'fixed' : pal.steps[idx].name;
+        html += '<div class="map-row">' +
+          '<span class="map-swatch" style="background:' + hex + '"></span>' +
+          '<span class="map-name">--' + prefix + '-' + key + '</span>' +
+          '<span class="map-step">\u2190 ' + stepLabel + '</span>' +
+          '<span class="map-hex">' + hex + '</span></div>';
+      }
+    }
+    html += '</div>';
+    return html;
+  }
+
+  mapGrid.innerHTML = buildPane(LIGHT_MAP, 'Light Theme', false) + buildPane(DARK_MAP, 'Dark Theme', true);
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER: TRUST CERTIFICATES (Section 4)
+// ══════════════════════════════════════════════════════════════
+var certGrid = document.getElementById('certGrid');
+var certPanel = document.getElementById('certPanel');
+
+function renderCertGrid() {
+  var html = '';
+  for (var i = 0; i < roles.length; i++) {
+    var r = roles[i];
+    var cert = certs[r.id];
+    if (!cert) continue;
+    var icon = cert.overall === 'CERTIFIED' ? '\u2705' : cert.overall === 'CONDITIONAL' ? '\u26A0\uFE0F' : '\u274C';
+    var keyHex = r.keyHex || '#737373';
+    var active = r.id === selectedCertRole ? ' data-active' : '';
+    html += '<div class="cert-card" data-cert-role="' + r.id + '"' + active + '>' +
+      '<span class="cert-card-swatch" style="background:' + keyHex + '"></span>' +
+      '<span class="cert-card-name">' + escHtml(r.label) + '</span>' +
+      '<span class="cert-card-badge">' + icon + ' ' + cert.pass + '/7</span></div>';
+  }
+  certGrid.innerHTML = html;
+
+  // Wire clicks
+  certGrid.querySelectorAll('[data-cert-role]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      selectedCertRole = el.getAttribute('data-cert-role');
+      certGrid.querySelectorAll('.cert-card').forEach(function(c) { c.removeAttribute('data-active'); });
+      el.setAttribute('data-active', '');
+      renderCertDetail(selectedCertRole);
+    });
+  });
+}
+
+function renderCertDetail(roleId) {
+  var cert = certs[roleId];
+  if (!cert) { certPanel.innerHTML = ''; return; }
+  var iconMap = {PASS:'\u2705',WARN:'\u26A0\uFE0F',FAIL:'\u274C'};
+  var statusLabel = cert.overall === 'CERTIFIED' ? 'CERTIFIED \u2705' :
+                    cert.overall === 'CONDITIONAL' ? 'CONDITIONAL \u26A0\uFE0F' : 'FAILED \u274C';
+  var r = getRoleById(roleId);
+  var html = '<div class="cert-overall">' +
+    '<span class="cert-badge" data-status="' + cert.overall + '">' + escHtml(r ? r.label : roleId) + ' \u2014 ' + statusLabel + '</span>' +
+    '<span class="cert-score">' + cert.pass + ' passed, ' + cert.warn + ' warnings, ' + cert.fail + ' failed</span></div>';
+
+  for (var t = 0; t < cert.tests.length; t++) {
+    var test = cert.tests[t];
+    var details = '';
+    if (test.details && test.details.length > 0) {
+      for (var dd = 0; dd < Math.min(test.details.length, 6); dd++) {
+        var d = test.details[dd];
+        if (d.ratio !== undefined) {
+          details += '<div class="cert-test-detail">' + d.label + ': ' + d.ratio + ':1 (need ' + d.threshold + ':1) ' + (d.pass ? '\u2705' : '\u274C') + '</div>';
+        } else if (d.delta !== undefined && d.from) {
+          details += '<div class="cert-test-detail">' + d.from + '\u2192' + d.to + ': \u0394L=' + d.delta + (d.pass === false ? ' \u274C reversal' : ' \u26A0\uFE0F too small') + '</div>';
+        }
+      }
+    }
+    if (test.maxDrift !== undefined) {
+      details += '<div class="cert-test-detail">Max drift: ' + test.maxDrift + '\u00B0, Avg: ' + test.avgDrift + '\u00B0</div>';
+    }
+    if (test.clumps > 0) {
+      details += '<div class="cert-test-detail">Clumped step pairs: ' + test.clumps + '</div>';
+    }
+    html += '<div class="cert-test"><span class="cert-icon">' + (iconMap[test.status] || '?') + '</span>' +
+      '<div class="cert-test-body"><div class="cert-test-name">' + test.name +
+      ' <span style="font-weight:400;color:var(--demo-fg-faint)">(' + test.passed + '/' + test.checked + ')</span></div>' +
+      '<div class="cert-test-desc">' + test.description + '</div>' + details + '</div></div>';
+  }
+  certPanel.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER: STEP DETAILS (Section 5)
+// ══════════════════════════════════════════════════════════════
+var stepBody = document.getElementById('stepBody');
+
+function renderSteps() {
+  var pal = palettes[selectedStepRole];
+  if (!pal) { stepBody.innerHTML = ''; return; }
+  stepBody.innerHTML = pal.steps.map(function(s) {
+    var level = s.contrast >= 7 ? 'AAA' : s.contrast >= 4.5 ? 'AA' : s.contrast >= 3 ? 'AA-lg' : 'Decorative';
+    var cls = s.contrast >= 4.5 ? 'st-pass' : s.contrast >= 3 ? '' : 'st-fail';
+    return '<tr><td class="st-name">' + s.name + '</td>' +
+      '<td><span class="st-sw" style="background:' + s.hex + '"></span></td>' +
+      '<td>' + s.hex + '</td><td>' + s.tone + '</td>' +
+      '<td class="' + cls + '">' + s.contrast.toFixed(2) + ':1</td>' +
+      '<td>' + level + '</td></tr>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER: EXPORT (Section 6)
+// ══════════════════════════════════════════════════════════════
+var expCode = document.getElementById('expCode');
+var expCopy = document.getElementById('expCopy');
+var expTabs = document.getElementById('expTabs');
+
+function renderExport(format) {
+  var output = '';
+
+  if (format === 'css') {
+    output = ':root {\n';
+    for (var i = 0; i < roles.length; i++) {
+      var r = roles[i];
+      var pal = palettes[r.id];
+      if (!pal) continue;
+      var prefix = rolePrefix(r);
+      output += '\n  /* T0: ' + r.label + ' */\n';
+      pal.steps.forEach(function(s) {
+        output += '  --prim-' + prefix + '-' + s.name + ': ' + s.hex + ';\n';
+      });
+    }
+    // T1 semantic for token roles
+    for (var t = 0; t < TOKEN_ROLES.length; t++) {
+      var rid = TOKEN_ROLES[t];
+      var pal2 = palettes[rid];
+      if (!pal2) continue;
+      output += '\n  /* T1: ' + rid + ' (light) */\n';
+      var lkeys = Object.keys(LIGHT_MAP);
+      for (var j = 0; j < lkeys.length; j++) {
+        var k = lkeys[j];
+        var idx = LIGHT_MAP[k];
+        output += '  --' + rid + '-' + k + ': ' + (idx === -1 ? '#FFFFFF' : pal2.steps[idx].hex) + ';\n';
+      }
+    }
+    output += '}\n';
+  } else if (format === 'json') {
+    var json = {};
+    for (var i2 = 0; i2 < roles.length; i2++) {
+      var r2 = roles[i2];
+      var pal3 = palettes[r2.id];
+      if (!pal3) continue;
+      var prefix2 = rolePrefix(r2);
+      var tokens = {};
+      pal3.steps.forEach(function(s) { tokens[s.name] = {$type:'color',$value:s.hex}; });
+      json[prefix2] = tokens;
+    }
+    output = JSON.stringify(json, null, 2);
+  } else if (format === 'scss') {
+    for (var i3 = 0; i3 < roles.length; i3++) {
+      var r3 = roles[i3];
+      var pal4 = palettes[r3.id];
+      if (!pal4) continue;
+      var prefix3 = rolePrefix(r3);
+      output += '// ' + r3.label + '\n';
+      pal4.steps.forEach(function(s) {
+        output += '$prim-' + prefix3 + '-' + s.name + ': ' + s.hex + ';\n';
+      });
+      output += '\n';
+    }
+  }
+
+  expCode.textContent = output;
+}
+
+function rolePrefix(r) {
+  if (TOKEN_ROLES.indexOf(r.id) >= 0) return r.id;
+  if (r.id === 'neutral' || r.id === 'desaturated') return r.id;
+  return r.label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+expTabs.addEventListener('click', function(e) {
+  var tab = e.target.closest('.exp-tab');
+  if (!tab) return;
+  currentFormat = tab.dataset.format;
+  expTabs.querySelectorAll('.exp-tab').forEach(function(t) {
+    t.setAttribute('aria-pressed', t === tab ? 'true' : 'false');
+  });
+  renderExport(currentFormat);
+});
+
+expCopy.addEventListener('click', function() {
+  navigator.clipboard.writeText(expCode.textContent).then(function() {
+    expCopy.textContent = 'Copied!';
+    setTimeout(function() { expCopy.textContent = 'Copy'; }, 1500);
+  });
+});
+
+// ══════════════════════════════════════════════════════════════
+// TOGGLE SWITCHES
+// ══════════════════════════════════════════════════════════════
+document.querySelectorAll('.switch').forEach(function(sw) {
+  sw.addEventListener('click', function() {
+    var on = sw.getAttribute('aria-checked') === 'true';
+    sw.setAttribute('aria-checked', on ? 'false' : 'true');
+    var txt = sw.closest('.switch-label').querySelector('.switch-label__text');
+    if (txt) txt.textContent = on ? 'Off' : 'On';
+  });
+});
+
+// ══════════════════════════════════════════════════════════════
+// SAVE / RESET / LOAD (localStorage)
+// ══════════════════════════════════════════════════════════════
+var saveBtn = document.getElementById('saveBtn');
+var resetBtn = document.getElementById('resetBtn');
+var saveMsg = document.getElementById('saveMsg');
+
+function buildSaveableCSS() {
+  // Build a complete CSS string that can be injected on any page
+  var css = '/* DTF Saved Color Tokens */\n:root {\n';
+  var darkCSS = '';
+  for (var i = 0; i < roles.length; i++) {
+    var r = roles[i];
+    var pal = palettes[r.id];
+    if (!pal) continue;
+    var prefix = rolePrefix(r);
+    // T0 primitives
+    for (var s = 0; s < pal.steps.length; s++) {
+      css += '  --prim-' + prefix + '-' + pal.steps[s].name + ': ' + pal.steps[s].hex + ';\n';
+    }
+    // Backwards compat for primary->monochromatic
+    if (r.id === 'primary') {
+      for (var s2 = 0; s2 < pal.steps.length; s2++) {
+        css += '  --prim-monochromatic-' + pal.steps[s2].name + ': ' + pal.steps[s2].hex + ';\n';
+      }
+    }
+    // T1 semantic tokens for known roles
+    if (TOKEN_ROLES.indexOf(r.id) >= 0) {
+      var lkeys = Object.keys(LIGHT_MAP);
+      for (var j = 0; j < lkeys.length; j++) {
+        var k = lkeys[j];
+        var idx = LIGHT_MAP[k];
+        css += '  --' + r.id + '-' + k + ': ' + (idx === -1 ? '#FFFFFF' : pal.steps[idx].hex) + ';\n';
+      }
+      var dkeys = Object.keys(DARK_MAP);
+      for (var d = 0; d < dkeys.length; d++) {
+        var dk = dkeys[d];
+        var di = DARK_MAP[dk];
+        darkCSS += '  --' + r.id + '-' + dk + ': ' + (di === -1 ? '#FFFFFF' : pal.steps[di].hex) + ';\n';
+      }
+    }
+  }
+  // Surface accent from primary
+  var ps = palettes.primary ? palettes.primary.steps : null;
+  if (ps) {
+    css += '  --surface-accent-bg: ' + ps[2].hex + ';\n';
+    css += '  --surface-accent-hover: ' + ps[3].hex + ';\n';
+    css += '  --surface-accent-outline: ' + ps[7].hex + ';\n';
+    darkCSS += '  --surface-accent-bg: ' + ps[18].hex + ';\n';
+    darkCSS += '  --surface-accent-hover: ' + ps[17].hex + ';\n';
+    darkCSS += '  --surface-accent-outline: ' + ps[16].hex + ';\n';
+  }
+  css += '}\n';
+  if (darkCSS) {
+    css += '[data-theme="dark"] {\n' + darkCSS + '}\n';
+  }
+  return css;
+}
+
+function buildSaveableConfig() {
+  return JSON.stringify({
+    roles: roles.map(function(r) {
+      return {id: r.id, label: r.label, keyHex: r.keyHex, type: r.type, derive: r.derive || null};
+    }),
+    customCounter: customCounter
+  });
+}
+
+function loadSavedConfig() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY_CONFIG);
+    if (!raw) return false;
+    var cfg = JSON.parse(raw);
+    if (!cfg.roles || !cfg.roles.length) return false;
+    roles = cfg.roles.map(function(r) { return Object.assign({}, r); });
+    customCounter = cfg.customCounter || 0;
+    return true;
+  } catch(e) { return false; }
+}
+
+function showSaveMsg(text) {
+  saveMsg.textContent = text;
+  setTimeout(function() { saveMsg.textContent = ''; }, 3000);
+}
+
+function updateSaveIndicator() {
+  var hasSaved = !!localStorage.getItem(STORAGE_KEY_CONFIG);
+  if (hasSaved) {
+    saveMsg.textContent = 'Saved palette active across all pages';
+  }
+}
+
+saveBtn.addEventListener('click', function() {
+  var css = buildSaveableCSS();
+  var config = buildSaveableConfig();
+  localStorage.setItem(STORAGE_KEY_TOKENS, css);
+  localStorage.setItem(STORAGE_KEY_CONFIG, config);
+  saveBtn.setAttribute('data-saved', '');
+  saveBtn.textContent = 'Saved!';
+  showSaveMsg('Tokens saved \u2014 all component pages will use these colors');
+  setTimeout(function() {
+    saveBtn.removeAttribute('data-saved');
+    saveBtn.innerHTML = 'Save &amp; Apply';
+  }, 2000);
+});
+
+resetBtn.addEventListener('click', function() {
+  localStorage.removeItem(STORAGE_KEY_TOKENS);
+  localStorage.removeItem(STORAGE_KEY_CONFIG);
+  customCounter = 0;
+  initRoles();
+  generateAll();
+  renderRolesList();
+  refreshSelectors();
+  injectAllTokens();
+  renderMap();
+  renderCertGrid();
+  renderCertDetail(selectedCertRole);
+  renderSteps();
+  renderExport(currentFormat);
+  showSaveMsg('Reset to defaults \u2014 component pages will use original tokens');
+});
+
+// ══════════════════════════════════════════════════════════════
+// INITIAL RENDER (with saved config restore)
+// ══════════════════════════════════════════════════════════════
+var didRestore = loadSavedConfig();
+if (!didRestore) initRoles();
+generateAll();
+renderRolesList();
+refreshSelectors();
+injectAllTokens();
+renderMap();
+renderCertGrid();
+renderCertDetail(selectedCertRole);
+renderSteps();
+renderExport(currentFormat);
+updateSaveIndicator();
+</script>
+</body>
+</html>

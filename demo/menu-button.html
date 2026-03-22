@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design Token Forge — MenuButton Explorer</title>
+<link rel="stylesheet" href="../packages/tokens/src/index.css">
+<link rel="stylesheet" href="../packages/components/src/menu-button/menu-button.tokens.css">
+<link rel="stylesheet" href="../packages/components/src/menu-button/menu-button.css">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<nav class="explorer-nav" aria-label="Component navigation">
+  <div class="nav-crumb">
+    <a href="index.html" class="nav-home" aria-label="Component Explorer" title="Component Explorer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1v-9"/></svg></a>
+    <span class="nav-sep">/</span>
+    <div class="nav-switcher">
+      <button class="nav-switcher-btn" id="navSwitcher" aria-expanded="false" aria-haspopup="true" type="button">
+        MenuButton
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="nav-dropdown" id="navDropdown" role="menu">
+        <div class="dd-group">Color System</div>
+        <a href="color-system.html" role="menuitem">Color System <span class="dd-hint">Live</span></a>
+        <a href="color-tokens.html" role="menuitem">Color Tokens <span class="dd-hint">~740 vars</span></a>
+        <div class="dd-sep" role="separator"></div>
+        <div class="dd-group">Guides</div>
+        <a href="frameworks.html" role="menuitem">Frameworks <span class="dd-hint">Integration</span></a>
+        <div class="dd-sep" role="separator"></div>
+        <div class="dd-group">Components</div>
+        <a href="button.html" role="menuitem">Button <span class="dd-hint">246 vars</span></a>
+        <a href="icon-button.html" role="menuitem">IconButton <span class="dd-hint">120 vars</span></a>
+        <a href="split-button.html" role="menuitem">SplitButton <span class="dd-hint">154 vars</span></a>
+        <a href="input.html" role="menuitem">Input <span class="dd-hint">172 vars</span></a>
+        <a href="textarea.html" role="menuitem">Textarea <span class="dd-hint">114 vars</span></a>
+        <a href="select.html" role="menuitem">Select <span class="dd-hint">120 vars</span></a>
+        <a href="menu-button.html" role="menuitem" aria-current="page">MenuButton <span class="dd-hint">139 vars</span></a>
+        <a href="toggle.html" role="menuitem">Toggle <span class="dd-hint">93 vars</span></a>
+        <a href="checkbox.html" role="menuitem">Checkbox <span class="dd-hint">74 vars</span></a>
+        <a href="radio.html" role="menuitem">Radio <span class="dd-hint">73 vars</span></a>
+        <a href="slider.html" role="menuitem">Slider <span class="dd-hint">120 vars</span></a>
+        <a href="datepicker.html" role="menuitem">DatePicker <span class="dd-hint">~190 vars</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle" type="button">Toggle Dark</button>
+  </div>
+</nav>
+
+<div class="page-layout">
+<aside class="sidebar-nav" id="sidebarNav" aria-label="Section navigation">
+  <a href="#sec-hero"><span class="sn-num">1</span>Hero Preview</a>
+  <a href="#sec-variants"><span class="sn-num">2</span>Variant Gallery</a>
+  <a href="#sec-density"><span class="sn-num">3</span>Density Scale</a>
+  <a href="#sec-states"><span class="sn-num">4</span>State Matrix</a>
+  <a href="#sec-anatomy"><span class="sn-num">5</span>Slots &amp; Anatomy</a>
+  <a href="#sec-surface"><span class="sn-num">6</span>Surface Context</a>
+  <a href="#sec-shape"><span class="sn-num">7</span>Shape & Shadow</a>
+  <a href="#sec-motion"><span class="sn-num">8</span>Motion</a>
+  <a href="#sec-playground"><span class="sn-num">9</span>Context Playground</a>
+  <a href="#sec-a11y"><span class="sn-num">10</span>Accessibility</a>
+  <a href="#sec-framework"><span class="sn-num">11</span>Use in Framework</a>
+</aside>
+<div class="page-content">
+
+<header class="demo-header">
+  <h1>MenuButton Explorer <span>— Design Token Forge</span></h1>
+  <div class="demo-meta">
+    <span class="demo-badge">139 CSS Variables</span>
+    <span class="demo-badge">4 Variants</span>
+    <span class="demo-badge">10 Sizes</span>
+    <span class="demo-badge">7 Axes</span>
+  </div>
+</header>
+
+<nav class="global-controls" aria-label="Global menu-button preview controls">
+  <div class="control-group">
+    <label>Variant</label>
+    <div class="pill-bar" id="variantBar" role="radiogroup" aria-label="Variant selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-variant="primary" type="button">Primary</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="secondary" type="button">Secondary</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="ghost" type="button">Ghost</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="neutral" type="button">Neutral</button>
+    </div>
+  </div>
+  <div class="control-divider"></div>
+  <div class="control-group">
+    <label>Size</label>
+    <div class="pill-bar" id="sizeBar" role="radiogroup" aria-label="Size selector">
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="micro" type="button">Micro</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="tiny" type="button">Tiny</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="small" type="button">Small</button>
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-size="base" type="button">Base</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="medium" type="button">Medium</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="large" type="button">Large</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="big" type="button">Big</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="huge" type="button">Huge</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="mega" type="button">Mega</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="ultra" type="button">Ultra</button>
+    </div>
+  </div>
+  <div class="control-divider"></div>
+  <div class="control-group">
+    <label>Shape</label>
+    <div class="pill-bar" id="roundedBar" role="radiogroup" aria-label="Rounded toggle">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-rounded="false" type="button">Default</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-rounded="true" type="button">Rounded</button>
+    </div>
+  </div>
+</nav>
+
+<main class="demo-main">
+
+  <!-- 1. HERO -->
+  <section class="section" id="sec-hero">
+    <div class="section-header"><h2>Hero Preview</h2><span class="section-tag">Live</span></div>
+    <p class="section-desc">Reflects the global variant and size controls. Single button with label + trailing chevron. Inspector shows resolved token values.</p>
+    <div class="section-body">
+      <div class="hero">
+        <div class="hero-preview">
+          <button class="menu-btn synced-mb" data-variant="primary" data-size="base" type="button" aria-haspopup="true" aria-expanded="false">
+            <span class="menu-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg></span>
+            <span class="menu-btn__label">Actions</span>
+            <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+          </button>
+        </div>
+        <div class="hero-inspector" id="heroInspector"><div class="inspector-title">Resolved Tokens</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. VARIANT GALLERY -->
+  <section class="section" id="sec-variants">
+    <div class="section-header"><h2>Variant Gallery</h2><span class="section-tag">Surface</span></div>
+    <p class="section-desc">All 4 variants at the globally selected size. Primary (filled), secondary (outlined), ghost (transparent), neutral (surface-context).</p>
+    <div class="section-body"><div class="preview-grid" id="variantGallery"></div></div>
+  </section>
+
+  <!-- 3. DENSITY SCALE -->
+  <section class="section" id="sec-density">
+    <div class="section-header"><h2>Density Scale</h2><span class="section-tag">Dimension</span></div>
+    <p class="section-desc">All 10 density modes at the globally selected variant. Each maps: height, padding-x, chevron-pe, font-size, radius, icon-size.</p>
+    <div class="section-body"><div class="density-strip" id="densityScale"></div></div>
+  </section>
+
+  <!-- 4. STATE MATRIX -->
+  <section class="section" id="sec-states">
+    <div class="section-header"><h2>State Matrix</h2><span class="section-tag">States</span></div>
+    <p class="section-desc">Every variant in every interactive state. Hover to see transitions.</p>
+    <div class="section-body"><div id="stateMatrix" style="display:flex;flex-direction:column"></div></div>
+  </section>
+
+  <!-- 5. ANATOMY -->
+  <section class="section" id="sec-anatomy">
+    <div class="section-header"><h2>Slots &amp; Anatomy</h2><span class="section-tag">Slots</span></div>
+    <p class="section-desc">MenuButton is a single button: optional leading icon, label, trailing chevron. Multiple slot combinations shown below.</p>
+    <div class="section-body"><div class="slot-grid" id="slotsDemo"></div></div>
+  </section>
+
+  <!-- 6. SURFACE CONTEXT -->
+  <section class="section" id="sec-surface">
+    <div class="section-header"><h2>Surface Context</h2><span class="section-tag">Surface</span></div>
+    <p class="section-desc">All variants on three background levels. Ghost and neutral variants adapt to surface context.</p>
+    <div class="section-body">
+      <div class="surface-strip">
+        <div class="surface-panel surface-panel--base" id="surfaceBase"><span class="surface-panel-label">surface-base-bg</span></div>
+        <div class="surface-panel surface-panel--alt" id="surfaceAlt"><span class="surface-panel-label">surface-base-hover</span></div>
+        <div class="surface-panel surface-panel--deep" id="surfaceDeep"><span class="surface-panel-label">surface-base-pressed</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. SHAPE & SHADOW -->
+  <section class="section" id="sec-shape">
+    <div class="section-header"><h2>Shape &amp; Shadow</h2><span class="section-tag">Shape</span></div>
+    <p class="section-desc">Radius scales with density. Rounded mode creates pill shape. Shadows reference global shadow tokens.</p>
+    <div class="section-body">
+      <div class="sub-label">Radius per density</div>
+      <div class="density-strip" id="radiusScale"></div>
+      <div style="border-top:1px solid var(--demo-border)"></div>
+      <div class="sub-label">Rounded (pill) per density</div>
+      <div class="density-strip" id="roundedScale"></div>
+      <div style="border-top:1px solid var(--demo-border)"></div>
+      <div class="sub-label">Shadow presets</div>
+      <div class="shadow-strip" id="shadowStrip"></div>
+    </div>
+  </section>
+
+  <!-- 8. MOTION -->
+  <section class="section" id="sec-motion">
+    <div class="section-header"><h2>Motion</h2><span class="section-tag">Motion</span></div>
+    <p class="section-desc">Transition durations, easing functions, and loading pulse.</p>
+    <div class="section-body"><div class="motion-strip" id="motionDemo"></div></div>
+  </section>
+
+  <!-- 9. CONTEXT PLAYGROUND -->
+  <section class="section" id="sec-playground">
+    <div class="section-header"><h2>Context Playground</h2><span class="section-tag">Surface × Role</span></div>
+    <p class="section-desc">See how menu buttons adapt across surface contexts and semantic color roles. Two cards with independent surface + role — compare side by side.</p>
+    <div class="section-body">
+      <div class="pg-controls">
+        <div class="pg-ctrl"><label>Density</label>
+          <div class="pill-bar" id="pgDensityBar" role="radiogroup" aria-label="Playground density">
+            <button class="pill" role="radio" aria-pressed="false" data-pg-size="small" type="button">small</button>
+            <button class="pill" role="radio" aria-pressed="true" data-pg-size="base" type="button">base</button>
+            <button class="pill" role="radio" aria-pressed="false" data-pg-size="large" type="button">large</button>
+            <button class="pill" role="radio" aria-pressed="false" data-pg-size="huge" type="button">huge</button>
+          </div>
+        </div>
+      </div>
+      <div class="pg-cards">
+        <!-- Card A -->
+        <div class="pg-card" id="pgCardA">
+          <div class="pg-card-head">
+            <span class="pg-card-label">Card A</span>
+            <div class="pg-ctrl"><label>Surface</label><select data-pg-surface="A"><option value="base" selected>Base</option><option value="bright">Bright</option><option value="deep">Deep</option><option value="accent">Accent</option><option value="dim">Dim</option><option value="container">Container</option><option value="over-container">Over-container</option><option value="float">Float</option></select></div>
+            <div class="pg-ctrl"><label>Role</label><select data-pg-role="A"><option value="primary" selected>Primary</option><option value="brand">Brand</option><option value="danger">Danger</option><option value="success">Success</option><option value="warning">Warning</option><option value="info">Info</option></select></div>
+          </div>
+          <div class="pg-card-body" id="pgBodyA">
+            <div class="pg-variant-row"><span class="pg-variant-label">Primary</span>
+              <button class="menu-btn pg-mb" data-variant="primary" data-size="base" type="button" aria-haspopup="true">
+                <span class="menu-btn__label">Actions</span>
+                <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+              </button>
+            </div>
+            <div class="pg-variant-row"><span class="pg-variant-label">Secondary</span>
+              <button class="menu-btn pg-mb" data-variant="secondary" data-size="base" type="button" aria-haspopup="true">
+                <span class="menu-btn__label">Export</span>
+                <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+              </button>
+            </div>
+            <div class="pg-variant-row"><span class="pg-variant-label">Ghost</span>
+              <button class="menu-btn pg-mb" data-variant="ghost" data-size="base" type="button" aria-haspopup="true">
+                <span class="menu-btn__label">Options</span>
+                <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+              </button>
+            </div>
+            <div class="pg-variant-row"><span class="pg-variant-label">Neutral</span>
+              <button class="menu-btn pg-mb" data-variant="neutral" data-size="base" type="button" aria-haspopup="true">
+                <span class="menu-btn__label">Settings</span>
+                <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+              </button>
+            </div>
+            <div class="pg-variant-row"><span class="pg-variant-label">Disabled</span>
+              <button class="menu-btn pg-mb" data-variant="primary" data-size="base" type="button" disabled aria-haspopup="true">
+                <span class="menu-btn__label">Disabled</span>
+                <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Card B -->
+        <div class="pg-card" id="pgCardB">
+          <div class="pg-card-head">
+            <span class="pg-card-label">Card B</span>
+            <div class="pg-ctrl"><label>Surface</label><select data-pg-surface="B"><option value="base">Base</option><option value="bright">Bright</option><option value="deep" selected>Deep</option><option value="accent">Accent</option><option value="dim">Dim</option><option value="container">Container</option><option value="over-container">Over-container</option><option value="float">Float</option></select></div>
+            <div class="pg-ctrl"><label>Role</label><select data-pg-role="B"><option value="primary">Primary</option><option value="brand">Brand</option><option value="danger" selected>Danger</option><option value="success">Success</option><option value="warning">Warning</option><option value="info">Info</option></select></div>
+          </div>
+          <div class="pg-card-body" id="pgBodyB">
+            <div class="pg-variant-row"><span class="pg-variant-label">Primary</span>
+              <button class="menu-btn pg-mb" data-variant="primary" data-size="base" type="button" aria-haspopup="true">
+                <span class="menu-btn__label">Delete</span>
+                <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+              </button>
+            </div>
+            <div class="pg-variant-row"><span class="pg-variant-label">Secondary</span>
+              <button class="menu-btn pg-mb" data-variant="secondary" data-size="base" type="button" aria-haspopup="true">
+                <span class="menu-btn__label">Remove</span>
+                <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+              </button>
+            </div>
+            <div class="pg-variant-row"><span class="pg-variant-label">Ghost</span>
+              <button class="menu-btn pg-mb" data-variant="ghost" data-size="base" type="button" aria-haspopup="true">
+                <span class="menu-btn__label">More</span>
+                <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+              </button>
+            </div>
+            <div class="pg-variant-row"><span class="pg-variant-label">Neutral</span>
+              <button class="menu-btn pg-mb" data-variant="neutral" data-size="base" type="button" aria-haspopup="true">
+                <span class="menu-btn__label">Manage</span>
+                <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+              </button>
+            </div>
+            <div class="pg-variant-row"><span class="pg-variant-label">Disabled</span>
+              <button class="menu-btn pg-mb" data-variant="primary" data-size="base" type="button" disabled aria-haspopup="true">
+                <span class="menu-btn__label">Disabled</span>
+                <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pg-chain" id="pgChain"></div>
+    </div>
+  </section>
+
+  <!-- 10. ACCESSIBILITY -->
+  <section class="section" id="sec-a11y">
+    <div class="section-header"><h2>Accessibility</h2><span class="section-tag">A11y</span></div>
+    <p class="section-desc">Focus ring, disabled states, aria-haspopup, aria-expanded, and forced-colors handling.</p>
+    <div class="section-body">
+      <div class="a11y-grid">
+        <div class="a11y-card">
+          <div class="a11y-card-title">Focus Ring</div>
+          <p class="a11y-card-desc">Tab to the button. <code>:focus-visible</code> ring appears.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+            <button class="menu-btn synced-mb" data-variant="primary" data-size="base" type="button" aria-haspopup="true">
+              <span class="menu-btn__label">Focus me</span>
+              <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+            </button>
+          </div>
+        </div>
+        <div class="a11y-card">
+          <div class="a11y-card-title">Disabled</div>
+          <p class="a11y-card-desc"><code>disabled</code> attribute applies per-variant opacity.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+            <button class="menu-btn synced-mb" data-variant="primary" data-size="base" type="button" disabled aria-haspopup="true">
+              <span class="menu-btn__label">Disabled</span>
+              <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+            </button>
+          </div>
+        </div>
+        <div class="a11y-card">
+          <div class="a11y-card-title">ARIA Attributes</div>
+          <p class="a11y-card-desc"><code>aria-haspopup="true"</code> and <code>aria-expanded</code> for screen readers.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+            <button class="menu-btn synced-mb" data-variant="secondary" data-size="base" type="button" aria-haspopup="true" aria-expanded="false">
+              <span class="menu-btn__label">ARIA demo</span>
+              <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+            </button>
+          </div>
+        </div>
+        <div class="a11y-card">
+          <div class="a11y-card-title">Forced Colors</div>
+          <p class="a11y-card-desc">High Contrast uses <code>ButtonText</code>, <code>Highlight</code>, <code>GrayText</code>.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+            <button class="menu-btn synced-mb" data-variant="primary" data-size="base" type="button" aria-haspopup="true">
+              <span class="menu-btn__label">HC Mode</span>
+              <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ USE IN YOUR FRAMEWORK ═════════ -->
+  <section class="section" id="sec-framework">
+    <div class="section-header"><h2>Use in Your Framework</h2><span class="section-tag">Integration</span></div>
+    <p class="section-desc">Wrap this component in your framework. Props become data attributes — our CSS does the rest.</p>
+    <div class="section-body">
+      <div class="fw-snippet">
+        <div class="fw-snippet-head">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>MenuButton Wrapper</h3>
+          <a class="fw-snippet-link" href="frameworks.html">Full guide <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
+        </div>
+        <div class="fw-snippet-tabs" data-tabs="fw-mb">
+          <button class="fw-snippet-tab" aria-selected="true" data-tab="react" type="button">React</button>
+          <button class="fw-snippet-tab" aria-selected="false" data-tab="vue" type="button">Vue</button>
+          <button class="fw-snippet-tab" aria-selected="false" data-tab="html" type="button">HTML</button>
+          <button class="fw-snippet-tab" aria-selected="false" data-tab="css" type="button">CSS Tokens</button>
+        </div>
+        <div class="fw-snippet-code" data-panel="react" data-active>&lt;button
+  className="menu-btn"
+  data-variant={variant}   {/* primary | secondary | ghost | neutral */}
+  data-size={size}
+  data-rounded={rounded || undefined}
+  data-loading={loading || undefined}
+  disabled={disabled}
+  aria-expanded={open}
+  aria-haspopup="true"
+  onClick={onToggle}
+&gt;
+  &lt;span className="menu-btn__label"&gt;{children}&lt;/span&gt;
+  &lt;span className="menu-btn__chevron"&gt;▾&lt;/span&gt;
+&lt;/button&gt;</div>
+        <div class="fw-snippet-code" data-panel="vue">&lt;button
+  class="menu-btn"
+  :data-variant="variant ?? 'primary'"
+  :data-size="size ?? 'base'"
+  :data-rounded="rounded || undefined"
+  :data-loading="loading || undefined"
+  :disabled="disabled"
+  :aria-expanded="open"
+  aria-haspopup="true"
+  @click="$emit('toggle')"
+&gt;
+  &lt;span class="menu-btn__label"&gt;&lt;slot /&gt;&lt;/span&gt;
+  &lt;span class="menu-btn__chevron"&gt;▾&lt;/span&gt;
+&lt;/button&gt;</div>
+        <div class="fw-snippet-code" data-panel="html">&lt;button class="menu-btn" data-variant="primary" data-size="base" aria-expanded="false" aria-haspopup="true"&gt;
+  &lt;span class="menu-btn__label"&gt;Options&lt;/span&gt;
+  &lt;span class="menu-btn__chevron"&gt;▾&lt;/span&gt;
+&lt;/button&gt;</div>
+        <div class="fw-snippet-code" data-panel="css">/* Shape */
+--menu-btn-radius-{size}
+--menu-btn-radius-rounded
+--menu-btn-shadow / -hover
+--menu-btn-border-style / -width
+
+/* Dimension */
+--menu-btn-height-{size}
+--menu-btn-padding-x-{size} / --menu-btn-padding-y-{size}
+--menu-btn-icon-size-{size}    /* chevron icon */
+
+/* Surface */
+--menu-btn-{variant}-bg / -hover / -active / -disabled
+--menu-btn-{variant}-fg / -hover / -disabled
+--menu-btn-{variant}-border-color / -hover / -active
+--menu-btn-{variant}-opacity-disabled
+
+/* Typography */
+--menu-btn-font-family / -weight
+--menu-btn-font-size-{size}
+--menu-btn-letter-spacing / --menu-btn-line-height
+--menu-btn-text-transform
+
+/* Motion */
+--menu-btn-transition-duration / -easing / -property
+--menu-btn-animation-enter / -exit
+
+/* A11y */
+--menu-btn-focus-outline-width / -offset / -color
+--menu-btn-min-tap-target</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</div><!-- /.page-content -->
+</div><!-- /.page-layout -->
+
+<script src="shared.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  var VARIANTS=['primary','secondary','ghost','neutral'];
+  var SIZES=['micro','tiny','small','base','medium','large','big','huge','mega','ultra'];
+  var SIZE_HT={micro:'24px',tiny:'28px',small:'32px',base:'36px',medium:'40px',large:'44px',big:'48px',huge:'56px',mega:'64px',ultra:'80px'};
+  var SHADOWS=['none','xs','sm','DEFAULT','md','lg','xl','2xl'];
+  var VARIANT_LABELS={primary:'Actions',secondary:'Export',ghost:'Options',neutral:'Settings'};
+
+  /* SVG fragments */
+  var ICON_PLUS='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg>';
+  var ICON_CHEVRON='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg>';
+  var ICON_MENU='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h12M2 8h12M2 12h12"/></svg>';
+  var ICON_DOWNLOAD='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M5 8l3 3 3-3M3 13h10"/></svg>';
+  var ICON_SETTINGS='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2.5"/><path d="M13.3 9.7a1.1 1.1 0 0 0 .2 1.2l.04.04a1.33 1.33 0 1 1-1.88 1.88l-.04-.04a1.1 1.1 0 0 0-1.2-.2 1.1 1.1 0 0 0-.67 1.01v.12a1.33 1.33 0 1 1-2.67 0v-.06a1.1 1.1 0 0 0-.72-1.01 1.1 1.1 0 0 0-1.2.2l-.04.04a1.33 1.33 0 1 1-1.88-1.88l.04-.04a1.1 1.1 0 0 0 .2-1.2 1.1 1.1 0 0 0-1.01-.67h-.12a1.33 1.33 0 1 1 0-2.67h.06A1.1 1.1 0 0 0 3.4 5.6a1.1 1.1 0 0 0-.2-1.2l-.04-.04A1.33 1.33 0 1 1 5.04 2.5l.04.04a1.1 1.1 0 0 0 1.2.2h.05a1.1 1.1 0 0 0 .67-1.01v-.12a1.33 1.33 0 1 1 2.67 0v.06a1.1 1.1 0 0 0 .67 1.07 1.1 1.1 0 0 0 1.2-.2l.04-.04a1.33 1.33 0 1 1 1.88 1.88l-.04.04a1.1 1.1 0 0 0-.2 1.2v.05a1.1 1.1 0 0 0 1.01.67h.12a1.33 1.33 0 0 1 0 2.67h-.06a1.1 1.1 0 0 0-1.07.67z"/></svg>';
+  var ICON_FILTER='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h12l-4.5 5.3V13l-3-1.5V8.3L2 3z"/></svg>';
+
+  var VARIANT_ICONS={primary:ICON_MENU,secondary:ICON_DOWNLOAD,ghost:ICON_FILTER,neutral:ICON_SETTINGS};
+
+  var curV='primary', curS='base', curRounded=false;
+
+  function makeMB(v,s,o){
+    o=o||{};
+    var b=document.createElement('button');
+    b.type='button'; b.className='menu-btn';
+    if(!o.noSync) b.classList.add('synced-mb');
+    b.dataset.variant=v; b.dataset.size=s;
+    b.setAttribute('aria-haspopup','true');
+    if(o.disabled){b.disabled=true}
+    if(o.loading) b.dataset.loading='';
+    if(o.rounded || (curRounded && !o.noRounded)) b.dataset.rounded='';
+
+    /* Leading icon */
+    if(o.iconStart){
+      var ic=document.createElement('span');ic.className='menu-btn__icon';
+      ic.innerHTML=o.iconSvg||VARIANT_ICONS[v]||ICON_MENU;b.appendChild(ic);
+    }
+
+    /* Label */
+    var label=o.label!==undefined?o.label:VARIANT_LABELS[v]||'Menu';
+    if(label!==false){
+      var lb=document.createElement('span');lb.className='menu-btn__label';lb.textContent=label;b.appendChild(lb);
+    }
+
+    /* Chevron */
+    if(o.noChevron!==true){
+      var ch=document.createElement('span');ch.className='menu-btn__chevron';ch.innerHTML=ICON_CHEVRON;
+      b.appendChild(ch);
+    }
+
+    if(o.style){for(var k in o.style){if(o.style.hasOwnProperty(k))b.style.setProperty(k,o.style[k])}}
+    return b;
+  }
+
+  function wrapCard(el,t){var d=document.createElement('div');d.className='variant-card';d.appendChild(el);var l=document.createElement('span');l.className='variant-label';l.textContent=t;d.appendChild(l);return d}
+  function clr(id){var e=document.getElementById(id);e.innerHTML='';return e}
+  function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+
+  /* ── Section Renderers ──────────────────────────────── */
+
+  function renderVariants(){
+    var el=clr('variantGallery');
+    VARIANTS.forEach(function(v){el.appendChild(wrapCard(makeMB(v,curS,{iconStart:true,noSync:true}),v))});
+  }
+
+  function renderDensity(){
+    var el=clr('densityScale');
+    SIZES.forEach(function(s){
+      var it=document.createElement('div');it.className='density-item';
+      it.appendChild(makeMB(curV,s,{iconStart:true,noSync:true}));
+      var m=document.createElement('div');m.className='density-meta';m.textContent=SIZE_HT[s];it.appendChild(m);el.appendChild(it);
+    });
+  }
+
+  function renderStates(){
+    var el=clr('stateMatrix');
+    VARIANTS.forEach(function(v){
+      var row=document.createElement('div');row.className='state-row';
+      var lbl=document.createElement('span');lbl.className='state-label';lbl.textContent=v;row.appendChild(lbl);
+
+      /* Default */
+      var dc=document.createElement('div');dc.className='variant-card';
+      dc.appendChild(makeMB(v,curS,{iconStart:true,noSync:true}));
+      var dl=document.createElement('span');dl.className='variant-label';dl.textContent='Default';dc.appendChild(dl);
+      row.appendChild(dc);
+
+      /* Hover */
+      var hc=document.createElement('div');hc.className='variant-card';
+      hc.appendChild(makeMB(v,curS,{iconStart:true,noSync:true}));
+      var hl=document.createElement('span');hl.className='variant-label';hl.textContent='Hover';hc.appendChild(hl);
+      row.appendChild(hc);
+
+      /* Disabled */
+      var xc=document.createElement('div');xc.className='variant-card';
+      xc.appendChild(makeMB(v,curS,{iconStart:true,disabled:true,noSync:true}));
+      var xl=document.createElement('span');xl.className='variant-label';xl.textContent='Disabled';xc.appendChild(xl);
+      row.appendChild(xc);
+
+      /* Loading */
+      var lc=document.createElement('div');lc.className='variant-card';
+      lc.appendChild(makeMB(v,curS,{iconStart:true,loading:true,label:'Loading...',noSync:true}));
+      var ll=document.createElement('span');ll.className='variant-label';ll.textContent='Loading';lc.appendChild(ll);
+      row.appendChild(lc);
+
+      el.appendChild(row);
+    });
+  }
+
+  function renderSlots(){
+    var el=clr('slotsDemo');
+    var combos=[
+      {label:'Label + Chevron',opts:{label:'Actions'}},
+      {label:'Icon + Label + Chevron',opts:{iconStart:true,label:'Actions'}},
+      {label:'Label only (no chevron)',opts:{label:'Menu',noChevron:true}},
+      {label:'Icon + Label (ghost)',opts:{iconStart:true,label:'Filter',variant:'ghost'}},
+      {label:'Icon + Chevron (no label)',opts:{iconStart:true,label:false}},
+    ];
+    combos.forEach(function(c){
+      var cd=document.createElement('div');cd.className='slot-card';
+      cd.appendChild(makeMB(c.opts.variant||curV,curS,{iconStart:c.opts.iconStart,label:c.opts.label,noChevron:c.opts.noChevron,noSync:true}));
+      var l=document.createElement('span');l.className='slot-label';l.textContent=c.label;cd.appendChild(l);el.appendChild(cd);
+    });
+  }
+
+  function renderSurface(){
+    ['surfaceBase','surfaceAlt','surfaceDeep'].forEach(function(id){
+      var p=document.getElementById(id);
+      while(p.children.length>1)p.removeChild(p.lastChild);
+      VARIANTS.forEach(function(v){p.appendChild(makeMB(v,curS,{iconStart:true,noSync:true}))});
+    });
+  }
+
+  function renderRadius(){
+    var el=clr('radiusScale');
+    SIZES.forEach(function(s){
+      var it=document.createElement('div');it.className='density-item';
+      it.appendChild(makeMB(curV,s,{noSync:true,noRounded:true}));
+      var m=document.createElement('div');m.className='density-meta';m.textContent=s;it.appendChild(m);el.appendChild(it);
+    });
+  }
+
+  function renderRounded(){
+    var el=clr('roundedScale');
+    SIZES.forEach(function(s){
+      var it=document.createElement('div');it.className='density-item';
+      it.appendChild(makeMB(curV,s,{noSync:true,rounded:true}));
+      var m=document.createElement('div');m.className='density-meta';m.textContent=s+' (pill)';it.appendChild(m);el.appendChild(it);
+    });
+  }
+
+  function renderShadows(){
+    var el=clr('shadowStrip');
+    SHADOWS.forEach(function(s){
+      var it=document.createElement('div');it.className='density-item';
+      it.appendChild(makeMB(curV,curS,{noSync:true,style:{'--menu-btn-shadow':'var(--shadow-'+s+')','--menu-btn-shadow-hover':'var(--shadow-'+s+')'}}));
+      var m=document.createElement('div');m.className='density-meta';m.textContent='--shadow-'+s;it.appendChild(m);el.appendChild(it);
+    });
+  }
+
+  function renderMotion(){
+    var el=clr('motionDemo');
+    var items=[
+      {label:'Normal',sub:'duration-normal',opts:{iconStart:true}},
+      {label:'Loading...',sub:'1.5s pulse',opts:{loading:true,label:'Loading...'}},
+      {label:'Fast',sub:'duration-fast',opts:{iconStart:true,style:{'--menu-btn-transition-duration':'var(--duration-fast)','--menu-btn-transition-easing':'var(--easing-in)'}}},
+      {label:'Slow bounce',sub:'duration-slow',opts:{iconStart:true,style:{'--menu-btn-transition-duration':'var(--duration-slow)','--menu-btn-transition-easing':'var(--easing-bounce)'}}}
+    ];
+    items.forEach(function(it){
+      var cd=document.createElement('div');cd.className='motion-card';
+      cd.appendChild(makeMB(curV,curS,it.opts));
+      var l=document.createElement('span');l.className='motion-label';l.textContent=it.sub;cd.appendChild(l);el.appendChild(cd);
+    });
+  }
+
+  /* ── Inspector ──────────────────────────────────────── */
+  var MB_TOKENS = {
+    height: {micro:'--spacing-24',tiny:'--spacing-28',small:'--spacing-32',base:'--spacing-36',medium:'--spacing-40',large:'--spacing-44',big:'--spacing-48',huge:'--spacing-56',mega:'--spacing-64',ultra:'--spacing-80'},
+    radius: {micro:'--radius-xs',tiny:'--radius-sm',small:'--radius-sm',base:'--radius-md',medium:'--radius-md',large:'--radius-DEFAULT',big:'--radius-DEFAULT',huge:'--radius-lg',mega:'--radius-xl',ultra:'--radius-xl'},
+    px: {micro:'--spacing-8',tiny:'--spacing-8',small:'--spacing-10',base:'--spacing-12',medium:'--spacing-14',large:'--spacing-16',big:'--spacing-18',huge:'--spacing-20',mega:'--spacing-24',ultra:'--spacing-28'},
+    chevronPe: {micro:'--spacing-2',tiny:'--spacing-2',small:'--spacing-3',base:'--spacing-3',medium:'--spacing-4',large:'--spacing-4',big:'--spacing-5',huge:'--spacing-6',mega:'--spacing-8',ultra:'--spacing-10'},
+    fs: {micro:'--font-size-10',tiny:'--font-size-11',small:'--font-size-12',base:'--font-size-14',medium:'--font-size-14',large:'--font-size-16',big:'--font-size-16',huge:'--font-size-18',mega:'--font-size-20',ultra:'--font-size-24'},
+    iconSize: {micro:'--spacing-10',tiny:'--spacing-12',small:'--spacing-13',base:'--spacing-16',medium:'--spacing-16',large:'--spacing-18',big:'--spacing-18',huge:'--spacing-20',mega:'--spacing-24',ultra:'--spacing-28'}
+  };
+
+  function updateInspector(){
+    var hero=document.querySelector('.hero-preview .menu-btn');
+    if(!hero)return;
+    var cs=getComputedStyle(hero);
+    var s=curS;
+    var tokens=[
+      ['--menu-btn-height-'+s, MB_TOKENS.height[s], cs.height],
+      [curRounded?'--menu-btn-radius-rounded':'--menu-btn-radius-'+s, curRounded?'--radius-full':MB_TOKENS.radius[s], cs.borderRadius],
+      ['--menu-btn-padding-x-'+s, MB_TOKENS.px[s], cs.paddingInlineStart||cs.paddingLeft||'\u2014'],
+      ['--menu-btn-chevron-pe-'+s, MB_TOKENS.chevronPe[s], cs.paddingInlineEnd||cs.paddingRight||'\u2014'],
+      ['--menu-btn-font-size-'+s, MB_TOKENS.fs[s], cs.fontSize||'\u2014'],
+      ['--menu-btn-icon-size-'+s, MB_TOKENS.iconSize[s], cs.getPropertyValue('--_mb-icon-size').trim()||'\u2014'],
+      ['--menu-btn-'+curV+'-bg', '\u2014', cs.backgroundColor],
+      ['--menu-btn-'+curV+'-fg', '\u2014', cs.color],
+      ['--menu-btn-'+curV+'-border-color', '\u2014', cs.borderColor],
+      ['--menu-btn-transition-duration', '--duration-normal', cs.transitionDuration||'\u2014']
+    ];
+    var ins=document.getElementById('heroInspector');
+    ins.innerHTML='<div class="inspector-title">Resolved Tokens ('+curV+' / '+s+(curRounded?' / rounded':'')+')</div>'+
+      tokens.map(function(t){
+        return '<div class="inspector-row"><span class="token-name">'+t[0]+'</span><span class="token-val">'+t[2]+(t[1]!=='\u2014'?'<br><span style="opacity:0.5;font-size:9px">\u2192 '+t[1]+'</span>':'')+'</span></div>';
+      }).join('');
+  }
+
+  /* ── Apply Globals ──────────────────────────────────── */
+  function applyGlobals(){
+    var hero=document.querySelector('.hero-preview .menu-btn');
+    if(hero){hero.dataset.variant=curV;hero.dataset.size=curS;if(curRounded)hero.dataset.rounded='';else delete hero.dataset.rounded}
+    document.querySelectorAll('.a11y-grid .synced-mb').forEach(function(mb){mb.dataset.size=curS;if(curRounded)mb.dataset.rounded='';else delete mb.dataset.rounded});
+    renderVariants();renderDensity();renderStates();renderSlots();renderSurface();
+    renderRadius();renderRounded();renderShadows();renderMotion();
+    requestAnimationFrame(updateInspector);
+  }
+
+  /* ── Global Controls ────────────────────────────────── */
+  document.getElementById('variantBar').addEventListener('click',function(e){
+    var pill=e.target.closest('.pill');if(!pill)return;
+    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
+    pill.setAttribute('aria-pressed','true');curV=pill.dataset.ctrlVariant;applyGlobals();
+  });
+
+  document.getElementById('sizeBar').addEventListener('click',function(e){
+    var pill=e.target.closest('.pill');if(!pill)return;
+    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
+    pill.setAttribute('aria-pressed','true');curS=pill.dataset.ctrlSize;applyGlobals();
+  });
+
+  document.getElementById('roundedBar').addEventListener('click',function(e){
+    var pill=e.target.closest('.pill');if(!pill)return;
+    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
+    pill.setAttribute('aria-pressed','true');curRounded=pill.dataset.ctrlRounded==='true';applyGlobals();
+  });
+
+  window.DTF.onThemeChange = updateInspector;
+
+  applyGlobals();
+
+  /* ── Context Playground ─────────────────────────────── */
+  var SURFACE_TOKENS=[
+    'bg','hover','pressed','outline','separator',
+    'ct-default','ct-strong','ct-subtle','ct-faint',
+    'cm-bg','cm-bg-hover','cm-bg-pressed',
+    'cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator'
+  ];
+  var ROLE_TOKENS=[
+    'content-default','content-strong','content-subtle','content-faint',
+    'component-bg-default','component-bg-hover','component-bg-pressed',
+    'component-outline-default','component-outline-hover','component-outline-pressed',
+    'component-separator',
+    'container-bg','container-hover','container-pressed',
+    'container-outline','container-separator',
+    'on-component','on-container'
+  ];
+
+  function applySurface(bodyEl,surfaceId){
+    if(surfaceId==='base'){
+      SURFACE_TOKENS.forEach(function(tok){bodyEl.style.removeProperty('--surface-base-'+tok);});
+      bodyEl.style.background='var(--surface-base-bg)';
+    } else {
+      SURFACE_TOKENS.forEach(function(tok){
+        bodyEl.style.setProperty('--surface-base-'+tok,'var(--surface-'+surfaceId+'-'+tok+')');
+      });
+      bodyEl.style.background='var(--surface-'+surfaceId+'-bg)';
+    }
+  }
+
+  function applyRole(bodyEl,roleId){
+    if(roleId==='primary'){
+      ROLE_TOKENS.forEach(function(tok){bodyEl.style.removeProperty('--primary-'+tok);});
+    } else {
+      ROLE_TOKENS.forEach(function(tok){
+        bodyEl.style.setProperty('--primary-'+tok,'var(--'+roleId+'-'+tok+')');
+      });
+    }
+  }
+
+  function pgApplyCard(card){
+    var body=document.getElementById('pgBody'+card);
+    var surfSel=document.querySelector('[data-pg-surface="'+card+'"]');
+    var roleSel=document.querySelector('[data-pg-role="'+card+'"]');
+    applySurface(body,surfSel.value);
+    applyRole(body,roleSel.value);
+  }
+
+  function pgApplyDensity(size){
+    document.querySelectorAll('.pg-mb').forEach(function(mb){mb.dataset.size=size});
+  }
+
+  function pgUpdateChain(){
+    var body=document.getElementById('pgBodyA');
+    var surfSel=document.querySelector('[data-pg-surface="A"]');
+    var roleSel=document.querySelector('[data-pg-role="A"]');
+    var mb=body.querySelector('.menu-btn[data-variant="primary"]');
+    if(!mb)return;
+    var cs=getComputedStyle(mb);
+    var chain=document.getElementById('pgChain');
+    var s=surfSel.value,r=roleSel.value;
+    var rows=[
+      {sec:'Primary (filled)'},
+      {label:'BG',token:'--menu-btn-primary-bg',via:'--'+r+'-component-bg-default',val:cs.backgroundColor},
+      {label:'BG Hover',token:'--menu-btn-primary-bg-hover',via:'--'+r+'-component-bg-hover'},
+      {label:'BG Active',token:'--menu-btn-primary-bg-active',via:'--'+r+'-component-bg-pressed'},
+      {label:'FG',token:'--menu-btn-primary-fg',via:'--'+r+'-on-component',val:cs.color},
+      {label:'Border',token:'--menu-btn-primary-border-color',via:'--'+r+'-component-bg-default'},
+      {sec:'Secondary (outlined)'},
+      {label:'BG Hover',token:'--menu-btn-secondary-bg-hover',via:'--'+r+'-container-bg'},
+      {label:'BG Active',token:'--menu-btn-secondary-bg-active',via:'--'+r+'-container-pressed'},
+      {label:'FG',token:'--menu-btn-secondary-fg',via:'--'+r+'-content-default'},
+      {label:'Border',token:'--menu-btn-secondary-border-color',via:'--'+r+'-component-outline-default'},
+      {label:'Border Hover',token:'--menu-btn-secondary-border-color-hover',via:'--'+r+'-component-outline-hover'},
+      {sec:'Ghost'},
+      {label:'BG Hover',token:'--menu-btn-ghost-bg-hover',via:'--surface-'+s+'-cm-bg-hover'},
+      {label:'BG Active',token:'--menu-btn-ghost-bg-active',via:'--surface-'+s+'-cm-bg-pressed'},
+      {label:'FG',token:'--menu-btn-ghost-fg',via:'--surface-'+s+'-ct-default'},
+      {label:'FG Hover',token:'--menu-btn-ghost-fg-hover',via:'--surface-'+s+'-ct-strong'},
+      {sec:'Neutral (surface)'},
+      {label:'BG',token:'--menu-btn-neutral-bg',via:'--surface-'+s+'-cm-bg'},
+      {label:'BG Hover',token:'--menu-btn-neutral-bg-hover',via:'--surface-'+s+'-cm-bg-hover'},
+      {label:'BG Active',token:'--menu-btn-neutral-bg-active',via:'--surface-'+s+'-cm-bg-pressed'},
+      {label:'FG',token:'--menu-btn-neutral-fg',via:'--surface-'+s+'-ct-default'},
+      {label:'FG Hover',token:'--menu-btn-neutral-fg-hover',via:'--surface-'+s+'-ct-strong'},
+      {label:'Border',token:'--menu-btn-neutral-border-color',via:'--surface-'+s+'-cm-outline'},
+      {label:'Border Hover',token:'--menu-btn-neutral-border-color-hover',via:'--surface-'+s+'-cm-outline-hover'},
+      {sec:'Focus / A11y'},
+      {label:'Focus Ring',token:'--menu-btn-focus-outline-color',via:'--'+r+'-component-outline-default'}
+    ];
+    var h='<div class="pg-chain-title">Token Resolution Chain (Card A: surface-'+s+' / '+r+')</div>';
+    rows.forEach(function(row){      if(row.sec){h+='<div class="pg-chain-sec">'+row.sec+'</div>';return;}      h+='<div class="pg-chain-row">';
+      if(row.val){h+='<span class="pg-swatch" style="background:'+row.val+'"></span>';}
+      h+='<span>'+row.label+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.token+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.via+'</span>';
+      if(row.val){h+=' <span class="pg-chain-arrow">\u2192</span> <span style="font-weight:600">'+row.val+'</span>';}
+      h+='</div>';
+    });
+    chain.innerHTML=h;
+  }
+
+  document.querySelectorAll('[data-pg-surface],[data-pg-role]').forEach(function(sel){
+    sel.addEventListener('change',function(){
+      var card=this.dataset.pgSurface||this.dataset.pgRole;
+      pgApplyCard(card);
+      requestAnimationFrame(pgUpdateChain);
+    });
+  });
+
+  document.getElementById('pgDensityBar').addEventListener('click',function(e){
+    var pill=e.target.closest('.pill');if(!pill)return;
+    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
+    pill.setAttribute('aria-pressed','true');
+    pgApplyDensity(pill.dataset.pgSize);
+    requestAnimationFrame(pgUpdateChain);
+  });
+
+  pgApplyCard('A');pgApplyCard('B');
+  requestAnimationFrame(pgUpdateChain);
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+/* ════════════════════════════════════════════════════════════════
+   Design Token Forge — Slider Token Defaults
+   Layer 0: System defaults for 120 slider variables.
+   All values reference global tokens — zero hardcoded visuals.
+   ════════════════════════════════════════════════════════════════ */
+
+.slider {
+
+  /* ────────────────────────────────────────────────────────────
+     📐 SHAPE  (16 vars)
+     ──────────────────────────────────────────────────────────── */
+
+  /* Track */
+  --slider-track-radius: var(--radius-full);
+  --slider-track-border-width: 0px;
+  --slider-track-border-style: solid;
+  --slider-track-shadow: var(--shadow-none);
+
+  /* Fill */
+  --slider-fill-radius: var(--slider-track-radius);
+
+  /* Thumb */
+  --slider-thumb-radius: var(--radius-full);
+  --slider-thumb-border-width: 0px;
+  --slider-thumb-border-style: solid;
+  --slider-thumb-shadow: var(--shadow-sm);
+  --slider-thumb-shadow-hover: var(--shadow-md);
+  --slider-thumb-shadow-active: var(--shadow-sm);
+
+  /* Outline */
+  --slider-outline-style: solid;
+  --slider-outline-width: 2px;
+
+  /* Tooltip */
+  --slider-tooltip-radius: var(--radius-md);
+  --slider-tooltip-shadow: var(--shadow-sm);
+
+  /* Clip */
+  --slider-clip-path: none;
+
+  /* ────────────────────────────────────────────────────────────
+     📏 DIMENSION  (39 vars)
+     ──────────────────────────────────────────────────────────── */
+
+  /* Track height (thickness) per density */
+  --slider-track-h-micro: 2px;
+  --slider-track-h-tiny: 3px;
+  --slider-track-h-small: 4px;
+  --slider-track-h-base: 6px;
+  --slider-track-h-medium: 8px;
+  --slider-track-h-large: 10px;
+  --slider-track-h-big: 14px;
+  --slider-track-h-huge: 18px;
+  --slider-track-h-mega: 24px;
+  --slider-track-h-ultra: 32px;
+
+  /* Thumb width per density */
+  --slider-thumb-w-micro: 10px;
+  --slider-thumb-w-tiny: 12px;
+  --slider-thumb-w-small: 14px;
+  --slider-thumb-w-base: 18px;
+  --slider-thumb-w-medium: 20px;
+  --slider-thumb-w-large: 24px;
+  --slider-thumb-w-big: 28px;
+  --slider-thumb-w-huge: 32px;
+  --slider-thumb-w-mega: 40px;
+  --slider-thumb-w-ultra: 48px;
+
+  /* Thumb height per density (separate for non-circular shapes) */
+  --slider-thumb-h-micro: 10px;
+  --slider-thumb-h-tiny: 12px;
+  --slider-thumb-h-small: 14px;
+  --slider-thumb-h-base: 18px;
+  --slider-thumb-h-medium: 20px;
+  --slider-thumb-h-large: 24px;
+  --slider-thumb-h-big: 28px;
+  --slider-thumb-h-huge: 32px;
+  --slider-thumb-h-mega: 40px;
+  --slider-thumb-h-ultra: 48px;
+
+  /* Track minimum width */
+  --slider-track-min-w: 120px;
+
+  /* Tick mark dimensions */
+  --slider-tick-w: 2px;
+  --slider-tick-h: 8px;
+
+  /* Tooltip dimensions */
+  --slider-tooltip-padding-x: var(--spacing-8);
+  --slider-tooltip-padding-y: var(--spacing-4);
+  --slider-tooltip-offset: var(--spacing-8);
+  --slider-tooltip-arrow-size: 5px;
+
+  /* Spacing */
+  --slider-tick-offset: var(--spacing-4);
+  --slider-label-offset: var(--spacing-2);
+  --slider-gap: var(--spacing-8);
+
+  /* ────────────────────────────────────────────────────────────
+     🎨 SURFACE  (27 vars)
+     ──────────────────────────────────────────────────────────── */
+
+  /* ── Track (unfilled rail) — use -hover variant for stronger contrast against bg ── */
+  --slider-track-bg: var(--surface-base-cm-outline-hover);
+  --slider-track-bg-hover: var(--surface-base-cm-outline-pressed, var(--surface-base-cm-outline-hover));
+  --slider-track-bg-disabled: var(--surface-base-cm-outline);
+  --slider-track-border-color: transparent;
+  --slider-track-border-color-disabled: transparent;
+
+  /* ── Fill (value indicator) ── */
+  --slider-fill-bg: var(--primary-component-bg-default);
+  --slider-fill-bg-hover: var(--primary-component-bg-hover);
+  --slider-fill-bg-active: var(--primary-component-bg-pressed);
+  --slider-fill-bg-disabled: var(--primary-component-bg-default);
+
+  /* ── Thumb ── */
+  --slider-thumb-bg: var(--primary-component-bg-default);
+  --slider-thumb-bg-hover: var(--primary-component-bg-hover);
+  --slider-thumb-bg-active: var(--primary-component-bg-pressed);
+  --slider-thumb-bg-disabled: var(--primary-component-bg-default);
+  --slider-thumb-border-color: var(--color-fixed-white);
+  --slider-thumb-border-color-hover: var(--color-fixed-white);
+  --slider-thumb-border-color-active: var(--color-fixed-white);
+
+  /* ── Halo (Material-style hover ring around thumb) ── */
+  --slider-thumb-halo-bg: var(--primary-container-bg);
+  --slider-thumb-halo-bg-active: var(--primary-container-pressed);
+  --slider-thumb-halo-size: 40px;
+  --slider-thumb-halo-opacity: 0.2;
+
+  /* ── Tick marks ── */
+  --slider-tick-color: var(--surface-base-cm-outline);
+  --slider-tick-color-active: var(--primary-component-bg-default);
+  --slider-tick-color-disabled: var(--surface-base-cm-outline);
+
+  /* ── Tooltip ── */
+  --slider-tooltip-bg: var(--primary-component-bg-default);
+  --slider-tooltip-fg: var(--primary-on-component);
+  --slider-tooltip-border-color: transparent;
+
+  /* ── Disabled ── */
+  --slider-opacity-disabled: 0.5;
+
+  /* ────────────────────────────────────────────────────────────
+     ✏️ TYPOGRAPHY  (11 vars)
+     ──────────────────────────────────────────────────────────── */
+
+  /* Label */
+  --slider-label-font-family: var(--font-family-sans);
+  --slider-label-font-size: var(--font-size-14);
+  --slider-label-font-weight: var(--font-weight-regular);
+  --slider-label-line-height: var(--line-height-normal);
+
+  /* Tooltip */
+  --slider-tooltip-font-family: var(--font-family-sans);
+  --slider-tooltip-font-size: var(--font-size-12);
+  --slider-tooltip-font-weight: var(--font-weight-medium);
+
+  /* Tick labels */
+  --slider-tick-label-font-size: var(--font-size-11);
+  --slider-tick-label-font-weight: var(--font-weight-regular);
+  --slider-tick-label-color: var(--surface-base-ct-subtle);
+
+  /* Value display */
+  --slider-value-font-size: var(--font-size-14);
+
+  /* ────────────────────────────────────────────────────────────
+     🧩 SLOTS  (8 vars)
+     ──────────────────────────────────────────────────────────── */
+
+  --slider-thumb-scale-active: 1.15;
+  --slider-thumb-icon-size: 0.6em;
+  --slider-thumb-icon-color: var(--primary-on-component);
+  --slider-tooltip-display: none;
+  --slider-ticks-display: none;
+  --slider-fill-display: block;
+  --slider-label-gap: var(--spacing-8);
+  --slider-thumb-content: none;
+
+  /* ────────────────────────────────────────────────────────────
+     ⚡ MOTION  (7 vars)
+     ──────────────────────────────────────────────────────────── */
+
+  --slider-transition-property: background-color, border-color, box-shadow, opacity;
+  --slider-transition-duration: var(--duration-normal);
+  --slider-transition-easing: var(--easing-in-out);
+  --slider-thumb-transition-duration: var(--duration-fast);
+  --slider-thumb-transition-easing: var(--easing-spring);
+  --slider-tooltip-transition-duration: var(--duration-fast);
+  --slider-animation-loading: none;
+
+  /* ────────────────────────────────────────────────────────────
+     ♿ ACCESSIBILITY  (9 vars)
+     ──────────────────────────────────────────────────────────── */
+
+  --slider-focus-outline-width: 2px;
+  --slider-focus-outline-color: var(--primary-component-outline-default);
+  --slider-focus-outline-offset: 2px;
+  --slider-min-tap-target: 44px;
+  --slider-label-color: var(--surface-base-ct-default);
+  --slider-label-color-disabled: var(--surface-base-ct-subtle);
+  --slider-required-indicator: '*';
+  --slider-required-color: var(--danger-content-default);
+  --slider-value-color: var(--surface-base-ct-default);
+}

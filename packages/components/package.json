@@ -1,0 +1,23 @@
+{
+  "name": "@design-token-forge/components",
+  "version": "0.0.1",
+  "private": true,
+  "description": "L1 component library — variable-exhaustive, framework-agnostic CSS + thin JS wrappers",
+  "type": "module",
+  "main": "src/index.css",
+  "style": "src/index.css",
+  "exports": {
+    ".": "./src/index.css",
+    "./tokens": "./src/index.css",
+    "./button": "./src/button/index.css",
+    "./button/tokens": "./src/button/button.tokens.css",
+    "./button/styles": "./src/button/button.css",
+    "./input": "./src/input/index.css",
+    "./input/tokens": "./src/input/input.tokens.css",
+    "./input/styles": "./src/input/input.css"
+  },
+  "scripts": {
+    "build": "echo 'TODO: configure build'",
+    "test": "echo 'TODO: configure tests'"
+  }
+}

@@ -1,0 +1,302 @@
+# /specs/components/menu-button.yaml
+# Design Token Forge — MenuButton Component Variable Specification
+# Variable-exhaustive L1 component: 139 CSS custom properties
+# covering all 7 axes (Shape, Dimension, Surface, Typography, Slots, Motion, A11y)
+
+component:
+  name: MenuButton
+  tag: button
+  prefix: menu-btn
+  description: >
+    Single-zone dropdown trigger button. Displays a label with a trailing
+    chevron indicator. Supports optional leading icon. Unlike SplitButton
+    (two zones), MenuButton is one clickable area that opens a dropdown.
+    Layouts: text+chevron, icon+text+chevron, icon-only+chevron.
+  category: inputs
+
+sizes: [micro, tiny, small, base, medium, large, big, huge, mega, ultra]
+
+variants:
+  semantic: [primary, secondary, ghost, neutral]
+
+states: [default, hover, active, focus-visible, disabled, loading]
+
+markup: |
+  <button class="menu-btn" data-variant="secondary" data-size="base"
+          type="button" aria-haspopup="true" aria-expanded="false">
+    <span class="menu-btn__icon">…</span>
+    <span class="menu-btn__label">Options</span>
+    <span class="menu-btn__chevron">▾</span>
+  </button>
+
+# ═══════════════════════════════════════════════════════════════
+# VARIABLES — 139 total
+# ═══════════════════════════════════════════════════════════════
+
+variables:
+
+  # ────────────────────────────────────────────────────────────
+  # 📐 SHAPE  (14 variables)
+  # ────────────────────────────────────────────────────────────
+  shape:
+    border-radius:
+      - name: "--menu-btn-radius-{size}"
+        description: "Border radius per density mode"
+        per_size:
+          micro: "var(--radius-xs)"
+          tiny: "var(--radius-sm)"
+          small: "var(--radius-sm)"
+          base: "var(--radius-md)"
+          medium: "var(--radius-md)"
+          large: "var(--radius-DEFAULT)"
+          big: "var(--radius-DEFAULT)"
+          huge: "var(--radius-lg)"
+          mega: "var(--radius-xl)"
+          ultra: "var(--radius-xl)"
+        count: 10
+
+    border:
+      - name: "--menu-btn-border-width"
+        default: "1px"
+        count: 1
+      - name: "--menu-btn-border-style"
+        default: "solid"
+        count: 1
+
+    shadow:
+      - name: "--menu-btn-shadow"
+        default: "var(--shadow-none)"
+        count: 1
+      - name: "--menu-btn-shadow-hover"
+        default: "var(--shadow-none)"
+        count: 1
+
+    total: 14
+
+  # ────────────────────────────────────────────────────────────
+  # 📏 DIMENSION  (40 variables)
+  # ────────────────────────────────────────────────────────────
+  dimension:
+    height:
+      - name: "--menu-btn-height-{size}"
+        description: "Container height per density mode"
+        per_size:
+          micro: "var(--spacing-24)"
+          tiny: "var(--spacing-28)"
+          small: "var(--spacing-32)"
+          base: "var(--spacing-36)"
+          medium: "var(--spacing-40)"
+          large: "var(--spacing-44)"
+          big: "var(--spacing-48)"
+          huge: "var(--spacing-56)"
+          mega: "var(--spacing-64)"
+          ultra: "var(--spacing-80)"
+        count: 10
+
+    padding-x:
+      - name: "--menu-btn-padding-x-{size}"
+        description: "Inline-start padding (left side of label)"
+        per_size:
+          micro: "var(--spacing-8)"
+          tiny: "var(--spacing-8)"
+          small: "var(--spacing-10)"
+          base: "var(--spacing-12)"
+          medium: "var(--spacing-14)"
+          large: "var(--spacing-16)"
+          big: "var(--spacing-18)"
+          huge: "var(--spacing-20)"
+          mega: "var(--spacing-24)"
+          ultra: "var(--spacing-28)"
+        count: 10
+
+    padding-y:
+      - name: "--menu-btn-padding-y-{size}"
+        description: "Block padding (vertical)"
+        per_size:
+          micro: "var(--spacing-2)"
+          tiny: "var(--spacing-3)"
+          small: "var(--spacing-4)"
+          base: "var(--spacing-6)"
+          medium: "var(--spacing-8)"
+          large: "var(--spacing-10)"
+          big: "var(--spacing-12)"
+          huge: "var(--spacing-14)"
+          mega: "var(--spacing-16)"
+          ultra: "var(--spacing-20)"
+        count: 10
+
+    chevron-padding-end:
+      - name: "--menu-btn-chevron-pe-{size}"
+        description: "Inline-end padding after chevron (right edge)"
+        per_size:
+          micro: "var(--spacing-2)"
+          tiny: "var(--spacing-2)"
+          small: "var(--spacing-3)"
+          base: "var(--spacing-3)"
+          medium: "var(--spacing-4)"
+          large: "var(--spacing-4)"
+          big: "var(--spacing-5)"
+          huge: "var(--spacing-6)"
+          mega: "var(--spacing-8)"
+          ultra: "var(--spacing-10)"
+        count: 10
+
+    total: 40
+
+  # ────────────────────────────────────────────────────────────
+  # 🎨 SURFACE  (48 variables = 4 variants × 12 properties)
+  # Pattern: --menu-btn-{variant}-{property}[-{state}]
+  # ────────────────────────────────────────────────────────────
+  surface:
+    primary:
+      - { name: "--menu-btn-primary-bg",                   default: "var(--primary-component-bg-default)" }
+      - { name: "--menu-btn-primary-bg-hover",             default: "var(--primary-component-bg-hover)" }
+      - { name: "--menu-btn-primary-bg-active",            default: "var(--primary-component-bg-pressed)" }
+      - { name: "--menu-btn-primary-bg-disabled",          default: "var(--primary-component-bg-default)" }
+      - { name: "--menu-btn-primary-fg",                   default: "var(--primary-on-component)" }
+      - { name: "--menu-btn-primary-fg-hover",             default: "var(--primary-on-component)" }
+      - { name: "--menu-btn-primary-fg-disabled",          default: "var(--primary-on-component)" }
+      - { name: "--menu-btn-primary-border-color",         default: "var(--primary-component-bg-default)" }
+      - { name: "--menu-btn-primary-border-color-hover",   default: "var(--primary-component-bg-hover)" }
+      - { name: "--menu-btn-primary-border-color-active",  default: "var(--primary-component-bg-pressed)" }
+      - { name: "--menu-btn-primary-border-color-disabled", default: "var(--primary-component-bg-default)" }
+      - { name: "--menu-btn-primary-opacity-disabled",     default: "0.5" }
+
+    secondary:
+      - { name: "--menu-btn-secondary-bg",                   default: "transparent" }
+      - { name: "--menu-btn-secondary-bg-hover",             default: "var(--primary-container-bg)" }
+      - { name: "--menu-btn-secondary-bg-active",            default: "var(--primary-container-pressed)" }
+      - { name: "--menu-btn-secondary-bg-disabled",          default: "transparent" }
+      - { name: "--menu-btn-secondary-fg",                   default: "var(--primary-content-default)" }
+      - { name: "--menu-btn-secondary-fg-hover",             default: "var(--primary-content-default)" }
+      - { name: "--menu-btn-secondary-fg-disabled",          default: "var(--primary-content-default)" }
+      - { name: "--menu-btn-secondary-border-color",         default: "var(--primary-component-outline-default)" }
+      - { name: "--menu-btn-secondary-border-color-hover",   default: "var(--primary-component-outline-hover)" }
+      - { name: "--menu-btn-secondary-border-color-active",  default: "var(--primary-component-outline-pressed)" }
+      - { name: "--menu-btn-secondary-border-color-disabled", default: "var(--primary-component-outline-default)" }
+      - { name: "--menu-btn-secondary-opacity-disabled",     default: "0.5" }
+
+    ghost:
+      - { name: "--menu-btn-ghost-bg",                   default: "transparent" }
+      - { name: "--menu-btn-ghost-bg-hover",             default: "var(--surface-base-cm-bg-hover)" }
+      - { name: "--menu-btn-ghost-bg-active",            default: "var(--surface-base-cm-bg-pressed)" }
+      - { name: "--menu-btn-ghost-bg-disabled",          default: "transparent" }
+      - { name: "--menu-btn-ghost-fg",                   default: "var(--surface-base-ct-default)" }
+      - { name: "--menu-btn-ghost-fg-hover",             default: "var(--surface-base-ct-strong)" }
+      - { name: "--menu-btn-ghost-fg-disabled",          default: "var(--surface-base-ct-default)" }
+      - { name: "--menu-btn-ghost-border-color",         default: "transparent" }
+      - { name: "--menu-btn-ghost-border-color-hover",   default: "transparent" }
+      - { name: "--menu-btn-ghost-border-color-active",  default: "transparent" }
+      - { name: "--menu-btn-ghost-border-color-disabled", default: "transparent" }
+      - { name: "--menu-btn-ghost-opacity-disabled",     default: "0.5" }
+
+    neutral:
+      - { name: "--menu-btn-neutral-bg",                   default: "var(--surface-base-cm-bg)" }
+      - { name: "--menu-btn-neutral-bg-hover",             default: "var(--surface-base-cm-bg-hover)" }
+      - { name: "--menu-btn-neutral-bg-active",            default: "var(--surface-base-cm-bg-pressed)" }
+      - { name: "--menu-btn-neutral-bg-disabled",          default: "var(--surface-base-cm-bg)" }
+      - { name: "--menu-btn-neutral-fg",                   default: "var(--surface-base-ct-default)" }
+      - { name: "--menu-btn-neutral-fg-hover",             default: "var(--surface-base-ct-strong)" }
+      - { name: "--menu-btn-neutral-fg-disabled",          default: "var(--surface-base-ct-default)" }
+      - { name: "--menu-btn-neutral-border-color",         default: "var(--surface-base-cm-outline)" }
+      - { name: "--menu-btn-neutral-border-color-hover",   default: "var(--surface-base-cm-outline-hover)" }
+      - { name: "--menu-btn-neutral-border-color-active",  default: "var(--surface-base-cm-outline-pressed)" }
+      - { name: "--menu-btn-neutral-border-color-disabled", default: "var(--surface-base-cm-outline)" }
+      - { name: "--menu-btn-neutral-opacity-disabled",     default: "0.5" }
+
+    total: 48
+
+  # ────────────────────────────────────────────────────────────
+  # ✏️ TYPOGRAPHY  (15 variables)
+  # ────────────────────────────────────────────────────────────
+  typography:
+    family:
+      - name: "--menu-btn-font-family"
+        default: "var(--font-family-sans)"
+        count: 1
+
+    size:
+      - name: "--menu-btn-font-size-{size}"
+        per_size:
+          micro: "var(--font-size-10)"
+          tiny: "var(--font-size-11)"
+          small: "var(--font-size-12)"
+          base: "var(--font-size-14)"
+          medium: "var(--font-size-14)"
+          large: "var(--font-size-16)"
+          big: "var(--font-size-16)"
+          huge: "var(--font-size-18)"
+          mega: "var(--font-size-20)"
+          ultra: "var(--font-size-24)"
+        count: 10
+
+    weight:
+      - name: "--menu-btn-font-weight"
+        default: "var(--font-weight-regular)"
+        count: 1
+
+    line-height:
+      - name: "--menu-btn-line-height"
+        default: "var(--line-height-normal)"
+        count: 1
+
+    letter-spacing:
+      - name: "--menu-btn-letter-spacing"
+        default: "var(--letter-spacing-normal)"
+        count: 1
+
+    text-transform:
+      - name: "--menu-btn-text-transform"
+        default: "none"
+        count: 1
+
+    total: 15
+
+  # ────────────────────────────────────────────────────────────
+  # 🧩 SLOTS  (12 variables)
+  # ────────────────────────────────────────────────────────────
+  slots:
+    icon-size:
+      - name: "--menu-btn-icon-size-{size}"
+        per_size:
+          micro: "var(--spacing-10)"
+          tiny: "var(--spacing-12)"
+          small: "var(--spacing-13)"
+          base: "var(--spacing-16)"
+          medium: "var(--spacing-16)"
+          large: "var(--spacing-18)"
+          big: "var(--spacing-18)"
+          huge: "var(--spacing-20)"
+          mega: "var(--spacing-24)"
+          ultra: "var(--spacing-28)"
+        count: 10
+
+    icon-color:
+      - { name: "--menu-btn-icon-color",       default: "currentColor" }
+      - { name: "--menu-btn-icon-color-hover",  default: "currentColor" }
+
+    total: 12
+
+  # ────────────────────────────────────────────────────────────
+  # ⚡ MOTION  (5 variables)
+  # ────────────────────────────────────────────────────────────
+  motion:
+    - { name: "--menu-btn-transition-property", default: "background-color, border-color, color, box-shadow, opacity" }
+    - { name: "--menu-btn-transition-duration", default: "var(--duration-normal)" }
+    - { name: "--menu-btn-transition-easing",   default: "var(--easing-in-out)" }
+    - { name: "--menu-btn-animation-enter",     default: "none" }
+    - { name: "--menu-btn-animation-exit",      default: "none" }
+    total: 5
+
+  # ────────────────────────────────────────────────────────────
+  # ♿ ACCESSIBILITY  (5 variables)
+  # ────────────────────────────────────────────────────────────
+  a11y:
+    - { name: "--menu-btn-focus-outline-width",  default: "2px" }
+    - { name: "--menu-btn-focus-outline-color",  default: "var(--primary-component-outline-default)" }
+    - { name: "--menu-btn-focus-outline-offset",  default: "2px" }
+    - { name: "--menu-btn-min-tap-target",       default: "44px" }
+    - { name: "--menu-btn-radius-rounded",       default: "var(--radius-full)" }
+    total: 5
+
+# Total: 14 + 40 + 48 + 15 + 12 + 5 + 5 = 139 variables
