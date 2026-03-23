@@ -10,9 +10,12 @@
   --radius-none: 0;
   --radius-xs: 3px;
   --radius-sm: 4px;
+  --radius-sm-md: 5px;
   --radius-md: 6px;
   --radius-DEFAULT: 8px;
+  --radius-md-lg: 10px;
   --radius-lg: 12px;
+  --radius-lg-xl: 14px;
   --radius-xl: 16px;
   --radius-2xl: 24px;
   --radius-3xl: 32px;

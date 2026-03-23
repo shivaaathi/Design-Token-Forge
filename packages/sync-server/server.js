@@ -408,14 +408,18 @@ function parseComponentTokens(filePath) {
  *   var(--spacing-36)    → spacing/36
  *   var(--radius-DEFAULT) → radius/DEFAULT
  *   var(--font-size-14)  → font/size-14
- *   var(--radius-xs)     → radius/xs
+ *   var(--radius-sm-md)  → radius/sm-md
  * Returns null if not a resolvable var() reference.
  */
+const EXTRAS_PREFIXES = new Set(['radius', 'shadow', 'opacity', 'z', 'duration', 'easing']);
 function cssVarToExtrasPath(value) {
   const m = value.match(/^var\(--([a-zA-Z0-9_-]+)\)$/);
   if (!m) return null;
-  const name = m[1]; // e.g. "spacing-36", "radius-DEFAULT", "font-size-14"
-  return primPath(name);   // reuse existing primPath() / extrasPath()
+  const name = m[1]; // e.g. "spacing-36", "radius-sm-md", "font-size-14"
+  const prefix = name.split('-')[0];
+  // Tokens from extras.css must use extrasPath (preserves compound suffixes)
+  if (EXTRAS_PREFIXES.has(prefix)) return extrasPath(name);
+  return primPath(name);
 }
 
 /**
