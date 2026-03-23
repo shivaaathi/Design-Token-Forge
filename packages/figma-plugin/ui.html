@@ -366,13 +366,15 @@
   function apiUrl(endpoint) {
     /* Static hosts serve .json files; live server uses clean paths */
     if (isStaticHost()) {
-      if (endpoint === '/status')  return SERVER + '/status.json';
-      if (endpoint === '/tokens')  return SERVER + '/tokens.json';
+      var cb = '_cb=' + Date.now();  /* cache-bust GitHub Pages CDN */
+      if (endpoint === '/status')  return SERVER + '/status.json?' + cb;
+      if (endpoint === '/tokens')  return SERVER + '/tokens.json?' + cb;
       return null; /* changelog, ack not available on static */
     }
     return SERVER + endpoint;
   }
   var POLL_MS = 3000;
+  function log(msg) { console.log('[DTF] ' + msg); }
   var VERIFY_MS = 2000;
   var pollTimer = null;
   var verifyTimer = null;
@@ -395,7 +397,7 @@
   }
 
   function poll() {
-    fetch(apiUrl('/status'))
+    fetch(apiUrl('/status'), { cache: 'no-store' })
       .then(function(r) { return r.json(); })
       .then(function(data) {
         if (!connected) {
@@ -478,9 +480,16 @@
   }
 
   function fetchTokenData() {
-    fetch(apiUrl('/tokens'))
+    fetch(apiUrl('/tokens'), { cache: 'no-store' })
       .then(function(r) { return r.json(); })
       .then(function(data) {
+        /* Verify fetched data hash matches the server status hash.
+           If not, the CDN served a stale tokens.json — retry once. */
+        if (serverStatus && data.contentHash && data.contentHash !== serverStatus.hash) {
+          log('Stale tokens.json (got ' + data.contentHash + ', expected ' + serverStatus.hash + ') — retrying...');
+          setTimeout(fetchTokenData, 1500);
+          return;
+        }
         tokenData = data;
         showChangeDetails(data);
       })
@@ -546,6 +555,25 @@
   /* ── Sync ────────────────────────────────────────────── */
   syncBtn.addEventListener('click', function() {
     if (!tokenData || syncing) return;
+
+    /* Guard: if tokenData hash doesn't match server hash, re-fetch first */
+    if (serverStatus && tokenData.contentHash && tokenData.contentHash !== serverStatus.hash) {
+      syncBtn.textContent = 'Fetching latest tokens\u2026';
+      syncBtn.disabled = true;
+      fetchTokenData();
+      /* Retry click after a short delay for fresh data */
+      setTimeout(function() {
+        syncBtn.disabled = false;
+        if (tokenData && tokenData.contentHash === serverStatus.hash) {
+          syncBtn.click();
+        } else {
+          syncBtn.textContent = 'Update Variables';
+          setStatus('Waited for fresh tokens — try again', 'err');
+        }
+      }, 3000);
+      return;
+    }
+
     syncing = true;
     syncBtn.disabled = true;
     syncBtn.textContent = 'Syncing\u2026';
