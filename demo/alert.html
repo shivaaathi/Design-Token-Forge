@@ -85,27 +85,35 @@
 </header>
 
 <!-- ─── GLOBAL CONTROLS ─────────────────────────────────── -->
-<div class="section-body" style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:20px">
-  <fieldset class="pill-bar" id="roleBar">
-    <legend>Role</legend>
-    <input type="radio" name="g-role" value="info"    id="gr-info" checked><label for="gr-info">Info</label>
-    <input type="radio" name="g-role" value="success" id="gr-success"><label for="gr-success">Success</label>
-    <input type="radio" name="g-role" value="warning" id="gr-warning"><label for="gr-warning">Warning</label>
-    <input type="radio" name="g-role" value="danger"  id="gr-danger"><label for="gr-danger">Danger</label>
-  </fieldset>
-  <fieldset class="pill-bar" id="sizeBar">
-    <legend>Size</legend>
-    <input type="radio" name="g-size" value="small" id="gs-sm"><label for="gs-sm">Small</label>
-    <input type="radio" name="g-size" value="base"  id="gs-base" checked><label for="gs-base">Base</label>
-    <input type="radio" name="g-size" value="large" id="gs-lg"><label for="gs-lg">Large</label>
-  </fieldset>
-  <fieldset class="pill-bar" id="variantBar">
-    <legend>Variant</legend>
-    <input type="radio" name="g-variant" value=""        id="gv-def" checked><label for="gv-def">Default</label>
-    <input type="radio" name="g-variant" value="filled"  id="gv-filled"><label for="gv-filled">Filled</label>
-    <input type="radio" name="g-variant" value="outline" id="gv-outline"><label for="gv-outline">Outline</label>
-  </fieldset>
-</div>
+<nav class="global-controls" aria-label="Global alert preview controls">
+  <div class="control-group">
+    <label>Role</label>
+    <div class="pill-bar" id="roleBar" role="radiogroup" aria-label="Role selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-role="info" type="button">Info</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="success" type="button">Success</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="warning" type="button">Warning</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="danger" type="button">Danger</button>
+    </div>
+  </div>
+  <div class="control-divider"></div>
+  <div class="control-group">
+    <label>Size</label>
+    <div class="pill-bar" id="sizeBar" role="radiogroup" aria-label="Size selector">
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="small" type="button">Small</button>
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-size="base" type="button">Base</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="large" type="button">Large</button>
+    </div>
+  </div>
+  <div class="control-divider"></div>
+  <div class="control-group">
+    <label>Variant</label>
+    <div class="pill-bar" id="variantBar" role="radiogroup" aria-label="Variant selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-variant="" type="button">Default</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="filled" type="button">Filled</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="outline" type="button">Outline</button>
+    </div>
+  </div>
+</nav>
 
 <main class="demo-main">
 
@@ -585,11 +593,17 @@
   function wirePillBar(id, cb) {
     var bar = document.getElementById(id);
     if (!bar) return;
-    bar.addEventListener('change', function(e) { if(e.target.name) cb(e.target.value) });
+    bar.addEventListener('click', function(e) {
+      var pill = e.target.closest('.pill');
+      if (!pill) return;
+      this.querySelectorAll('.pill').forEach(function(p) { p.setAttribute('aria-pressed','false') });
+      pill.setAttribute('aria-pressed','true');
+      cb(pill);
+    });
   }
-  wirePillBar('roleBar',    function(v) { G.role=v;    applyGlobals() });
-  wirePillBar('sizeBar',    function(v) { G.size=v;    applyGlobals() });
-  wirePillBar('variantBar', function(v) { G.variant=v; applyGlobals() });
+  wirePillBar('roleBar',    function(p) { G.role=p.dataset.ctrlRole;       applyGlobals() });
+  wirePillBar('sizeBar',    function(p) { G.size=p.dataset.ctrlSize;       applyGlobals() });
+  wirePillBar('variantBar', function(p) { G.variant=p.dataset.ctrlVariant; applyGlobals() });
 
   /* ── Reset dismiss ─────────────────────────────────── */
   document.getElementById('resetDismiss').addEventListener('click', function() { renderDismiss() });

@@ -94,36 +94,44 @@
 </header>
 
 <!-- ─── GLOBAL CONTROLS ─────────────────────────────────── -->
-<div class="section-body" style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:20px">
-  <fieldset class="pill-bar" id="shapeBar">
-    <legend>Shape</legend>
-    <input type="radio" name="g-shape" value="circle"         id="gsh-circle" checked><label for="gsh-circle">Circle</label>
-    <input type="radio" name="g-shape" value="squircle"       id="gsh-squircle"><label for="gsh-squircle">Squircle</label>
-    <input type="radio" name="g-shape" value="rounded-square" id="gsh-rs"><label for="gsh-rs">Rounded Sq</label>
-  </fieldset>
-  <fieldset class="pill-bar" id="sizeBar">
-    <legend>Size</legend>
-    <input type="radio" name="g-size" value="micro" id="gs-micro"><label for="gs-micro">Micro</label>
-    <input type="radio" name="g-size" value="tiny"  id="gs-tiny"><label for="gs-tiny">Tiny</label>
-    <input type="radio" name="g-size" value="small" id="gs-small"><label for="gs-small">Small</label>
-    <input type="radio" name="g-size" value="base"  id="gs-base" checked><label for="gs-base">Base</label>
-    <input type="radio" name="g-size" value="medium" id="gs-medium"><label for="gs-medium">Medium</label>
-    <input type="radio" name="g-size" value="large" id="gs-large"><label for="gs-large">Large</label>
-    <input type="radio" name="g-size" value="big"   id="gs-big"><label for="gs-big">Big</label>
-    <input type="radio" name="g-size" value="huge"  id="gs-huge"><label for="gs-huge">Huge</label>
-    <input type="radio" name="g-size" value="mega"  id="gs-mega"><label for="gs-mega">Mega</label>
-    <input type="radio" name="g-size" value="ultra" id="gs-ultra"><label for="gs-ultra">Ultra</label>
-  </fieldset>
-  <fieldset class="pill-bar" id="roleBar">
-    <legend>Role</legend>
-    <input type="radio" name="g-role" value=""        id="gr-def" checked><label for="gr-def">Default</label>
-    <input type="radio" name="g-role" value="primary" id="gr-primary"><label for="gr-primary">Primary</label>
-    <input type="radio" name="g-role" value="brand"   id="gr-brand"><label for="gr-brand">Brand</label>
-    <input type="radio" name="g-role" value="danger"  id="gr-danger"><label for="gr-danger">Danger</label>
-    <input type="radio" name="g-role" value="success" id="gr-success"><label for="gr-success">Success</label>
-    <input type="radio" name="g-role" value="warning" id="gr-warning"><label for="gr-warning">Warning</label>
-  </fieldset>
-</div>
+<nav class="global-controls" aria-label="Global avatar preview controls">
+  <div class="control-group">
+    <label>Shape</label>
+    <div class="pill-bar" id="shapeBar" role="radiogroup" aria-label="Shape selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-shape="circle" type="button">Circle</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-shape="squircle" type="button">Squircle</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-shape="rounded-square" type="button">Rounded Sq</button>
+    </div>
+  </div>
+  <div class="control-divider"></div>
+  <div class="control-group">
+    <label>Size</label>
+    <div class="pill-bar" id="sizeBar" role="radiogroup" aria-label="Size selector">
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="micro" type="button">Micro</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="tiny" type="button">Tiny</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="small" type="button">Small</button>
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-size="base" type="button">Base</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="medium" type="button">Medium</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="large" type="button">Large</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="big" type="button">Big</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="huge" type="button">Huge</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="mega" type="button">Mega</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="ultra" type="button">Ultra</button>
+    </div>
+  </div>
+  <div class="control-divider"></div>
+  <div class="control-group">
+    <label>Role</label>
+    <div class="pill-bar" id="roleBar" role="radiogroup" aria-label="Role selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-role="" type="button">Default</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="primary" type="button">Primary</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="brand" type="button">Brand</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="danger" type="button">Danger</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="success" type="button">Success</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="warning" type="button">Warning</button>
+    </div>
+  </div>
+</nav>
 
 <main class="demo-main">
 
@@ -601,11 +609,17 @@
   function wirePillBar(id, cb){
     var bar = document.getElementById(id);
     if(!bar) return;
-    bar.addEventListener('change', function(e){ if(e.target.name) cb(e.target.value) });
+    bar.addEventListener('click', function(e){
+      var pill = e.target.closest('.pill');
+      if(!pill) return;
+      this.querySelectorAll('.pill').forEach(function(p){ p.setAttribute('aria-pressed','false') });
+      pill.setAttribute('aria-pressed','true');
+      cb(pill);
+    });
   }
-  wirePillBar('shapeBar', function(v){ G.shape=v; applyGlobals() });
-  wirePillBar('sizeBar',  function(v){ G.size=v;  applyGlobals() });
-  wirePillBar('roleBar',  function(v){ G.role=v;  applyGlobals() });
+  wirePillBar('shapeBar', function(p){ G.shape=p.dataset.ctrlShape; applyGlobals() });
+  wirePillBar('sizeBar',  function(p){ G.size=p.dataset.ctrlSize;   applyGlobals() });
+  wirePillBar('roleBar',  function(p){ G.role=p.dataset.ctrlRole;   applyGlobals() });
 
   document.querySelectorAll('.fw-snippet-tabs').forEach(function(tabs){
     tabs.addEventListener('click',function(e){

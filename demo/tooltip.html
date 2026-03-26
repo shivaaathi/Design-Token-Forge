@@ -94,28 +94,36 @@
 </header>
 
 <!-- ─── GLOBAL CONTROLS ─────────────────────────────────── -->
-<div class="section-body" style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:20px">
-  <fieldset class="pill-bar" id="variantBar">
-    <legend>Variant</legend>
-    <input type="radio" name="g-variant" value=""        id="gv-def" checked><label for="gv-def">Default</label>
-    <input type="radio" name="g-variant" value="light"   id="gv-light"><label for="gv-light">Light</label>
-    <input type="radio" name="g-variant" value="error"   id="gv-error"><label for="gv-error">Error</label>
-    <input type="radio" name="g-variant" value="success" id="gv-success"><label for="gv-success">Success</label>
-  </fieldset>
-  <fieldset class="pill-bar" id="sizeBar">
-    <legend>Size</legend>
-    <input type="radio" name="g-size" value="small" id="gs-sm"><label for="gs-sm">Small</label>
-    <input type="radio" name="g-size" value="base"  id="gs-base" checked><label for="gs-base">Base</label>
-    <input type="radio" name="g-size" value="large" id="gs-lg"><label for="gs-lg">Large</label>
-  </fieldset>
-  <fieldset class="pill-bar" id="placementBar">
-    <legend>Placement</legend>
-    <input type="radio" name="g-placement" value="top"    id="gp-top" checked><label for="gp-top">Top</label>
-    <input type="radio" name="g-placement" value="bottom" id="gp-bottom"><label for="gp-bottom">Bottom</label>
-    <input type="radio" name="g-placement" value="left"   id="gp-left"><label for="gp-left">Left</label>
-    <input type="radio" name="g-placement" value="right"  id="gp-right"><label for="gp-right">Right</label>
-  </fieldset>
-</div>
+<nav class="global-controls" aria-label="Global tooltip preview controls">
+  <div class="control-group">
+    <label>Variant</label>
+    <div class="pill-bar" id="variantBar" role="radiogroup" aria-label="Variant selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-variant="" type="button">Default</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="light" type="button">Light</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="error" type="button">Error</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="success" type="button">Success</button>
+    </div>
+  </div>
+  <div class="control-divider"></div>
+  <div class="control-group">
+    <label>Size</label>
+    <div class="pill-bar" id="sizeBar" role="radiogroup" aria-label="Size selector">
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="small" type="button">Small</button>
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-size="base" type="button">Base</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="large" type="button">Large</button>
+    </div>
+  </div>
+  <div class="control-divider"></div>
+  <div class="control-group">
+    <label>Placement</label>
+    <div class="pill-bar" id="placementBar" role="radiogroup" aria-label="Placement selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-placement="top" type="button">Top</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-placement="bottom" type="button">Bottom</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-placement="left" type="button">Left</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-placement="right" type="button">Right</button>
+    </div>
+  </div>
+</nav>
 
 <main class="demo-main">
 
@@ -534,11 +542,17 @@
   function wirePillBar(id, cb) {
     var bar = document.getElementById(id);
     if (!bar) return;
-    bar.addEventListener('change', function(e) { if(e.target.name) cb(e.target.value) });
+    bar.addEventListener('click', function(e) {
+      var pill = e.target.closest('.pill');
+      if (!pill) return;
+      this.querySelectorAll('.pill').forEach(function(p) { p.setAttribute('aria-pressed','false') });
+      pill.setAttribute('aria-pressed','true');
+      cb(pill);
+    });
   }
-  wirePillBar('variantBar',   function(v) { G.variant=v;   applyGlobals() });
-  wirePillBar('sizeBar',      function(v) { G.size=v;      applyGlobals() });
-  wirePillBar('placementBar', function(v) { G.placement=v; applyGlobals() });
+  wirePillBar('variantBar',   function(p) { G.variant=p.dataset.ctrlVariant;     applyGlobals() });
+  wirePillBar('sizeBar',      function(p) { G.size=p.dataset.ctrlSize;           applyGlobals() });
+  wirePillBar('placementBar', function(p) { G.placement=p.dataset.ctrlPlacement; applyGlobals() });
 
   document.querySelectorAll('.fw-snippet-tabs').forEach(function(tabs) {
     tabs.addEventListener('click', function(e) {
