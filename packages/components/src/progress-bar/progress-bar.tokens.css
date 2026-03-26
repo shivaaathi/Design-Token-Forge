@@ -1,0 +1,81 @@
+/* ════════════════════════════════════════════════════════════════
+   Design Token Forge — Progress Bar Token Defaults
+   Layer 0: System defaults for ~60 progress-bar variables.
+   ════════════════════════════════════════════════════════════════ */
+
+.progress-bar {
+
+  /* ────────────────────────────────────────────────────────────
+     📐 SHAPE  (4 vars)
+     ──────────────────────────────────────────────────────────── */
+  --progress-radius: var(--radius-full);
+  --progress-fill-radius: var(--radius-full);
+  --progress-border-width: 0px;
+  --progress-border-color: transparent;
+
+  /* ────────────────────────────────────────────────────────────
+     📏 DIMENSION  (12 vars)
+     ──────────────────────────────────────────────────────────── */
+  --progress-height-micro: 2px;
+  --progress-height-tiny: 3px;
+  --progress-height-small: 4px;
+  --progress-height-base: 6px;
+  --progress-height-medium: 8px;
+  --progress-height-large: 10px;
+  --progress-height-big: 12px;
+  --progress-height-huge: 16px;
+  --progress-height-mega: 20px;
+  --progress-height-ultra: 24px;
+
+  --progress-gap: var(--spacing-6);
+  --progress-label-min-width: 32px;
+
+  /* ────────────────────────────────────────────────────────────
+     🎨 SURFACE  (14 vars)
+     ──────────────────────────────────────────────────────────── */
+  --progress-track-bg: var(--surface-base-cm-bg);
+  --progress-fill-bg: var(--primary-component-bg-default);
+
+  /* Role colors */
+  --progress-primary-fill: var(--primary-component-bg-default);
+  --progress-success-fill: var(--success-component-bg-default);
+  --progress-warning-fill: var(--warning-component-bg-default);
+  --progress-danger-fill: var(--danger-component-bg-default);
+  --progress-neutral-fill: var(--surface-base-ct-faint);
+
+  /* Stacked / segmented variant */
+  --progress-segment-gap: 2px;
+
+  /* Buffer (secondary fill for streaming/buffering) */
+  --progress-buffer-bg: var(--primary-container-bg);
+  --progress-buffer-opacity: 0.5;
+
+  /* Indeterminate pulse */
+  --progress-indeterminate-bg: var(--primary-component-bg-default);
+  --progress-indeterminate-width: 40%;
+
+  /* Stripe overlay */
+  --progress-stripe-opacity: 0.15;
+
+  /* ────────────────────────────────────────────────────────────
+     ✏️ TYPOGRAPHY  (4 vars)
+     ──────────────────────────────────────────────────────────── */
+  --progress-font-family: var(--font-family-sans);
+  --progress-font-size: var(--font-size-12);
+  --progress-font-weight: var(--font-weight-semibold);
+  --progress-label-color: var(--surface-base-ct-default);
+
+  /* ────────────────────────────────────────────────────────────
+     ⚡ MOTION  (4 vars)
+     ──────────────────────────────────────────────────────────── */
+  --progress-transition-duration: var(--duration-normal);
+  --progress-transition-easing: var(--easing-in-out);
+  --progress-indeterminate-duration: 1.5s;
+  --progress-stripe-duration: 1s;
+
+  /* ────────────────────────────────────────────────────────────
+     ♿ ACCESSIBILITY  (2 vars)
+     ──────────────────────────────────────────────────────────── */
+  --progress-focus-outline-width: 2px;
+  --progress-focus-outline-color: var(--primary-component-outline-default);
+}

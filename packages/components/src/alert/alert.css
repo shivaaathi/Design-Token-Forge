@@ -1,0 +1,237 @@
+/* ════════════════════════════════════════════════════════════════
+   Design Token Forge — Alert
+   Variable-driven rendering — reads only from --alert-* tokens.
+
+   Markup:
+   <div class="alert" data-role="info" data-size="base" role="alert">
+     <span class="alert__accent"></span>
+     <span class="alert__icon"><svg>…</svg></span>
+     <div class="alert__content">
+       <div class="alert__title">Title</div>
+       <div class="alert__body">Description text</div>
+     </div>
+     <button class="alert__close" aria-label="Dismiss">×</button>
+   </div>
+   ════════════════════════════════════════════════════════════════ */
+
+/* ────────────────────────────────────────────────────────────────
+   1.  BASE — Internal active variables (default = info)
+   ──────────────────────────────────────────────────────────────── */
+.alert {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  font-family: var(--alert-font-family);
+  font-size: var(--alert-font-size);
+  font-weight: var(--alert-font-weight);
+  line-height: var(--alert-line-height);
+
+  /* Dimension active vars */
+  --_al-py: var(--alert-padding-y-base);
+  --_al-px: var(--alert-padding-x-base);
+
+  /* Surface active vars (info default) */
+  --_al-bg: var(--alert-info-bg);
+  --_al-fg: var(--alert-info-fg);
+  --_al-accent: var(--alert-info-accent);
+  --_al-border: var(--alert-info-border);
+  --_al-icon-color: var(--alert-info-icon-color);
+  --_al-title-color: var(--alert-info-title-color);
+  --_al-link-color: var(--alert-info-link-color);
+  --_al-link-hover: var(--alert-info-link-hover);
+
+  min-height: var(--alert-min-height);
+  padding: var(--_al-py) var(--_al-px);
+  gap: var(--alert-gap);
+  color: var(--_al-fg);
+  background: var(--_al-bg);
+  border: var(--alert-border-width) var(--alert-border-style) var(--_al-border);
+  border-radius: var(--alert-radius);
+  box-shadow: var(--alert-shadow);
+  overflow: hidden;
+  transition-property: var(--alert-transition-property);
+  transition-duration: var(--alert-transition-duration);
+  transition-timing-function: var(--alert-transition-easing);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   2.  SIZE SELECTORS
+   ──────────────────────────────────────────────────────────────── */
+.alert[data-size="small"] {
+  --_al-py: var(--alert-padding-y-small);
+  --_al-px: var(--alert-padding-x-small);
+}
+.alert[data-size="large"] {
+  --_al-py: var(--alert-padding-y-large);
+  --_al-px: var(--alert-padding-x-large);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   3.  ROLE SELECTORS
+   ──────────────────────────────────────────────────────────────── */
+.alert[data-role="success"] {
+  --_al-bg: var(--alert-success-bg);
+  --_al-fg: var(--alert-success-fg);
+  --_al-accent: var(--alert-success-accent);
+  --_al-border: var(--alert-success-border);
+  --_al-icon-color: var(--alert-success-icon-color);
+  --_al-title-color: var(--alert-success-title-color);
+  --_al-link-color: var(--alert-success-link-color);
+  --_al-link-hover: var(--alert-success-link-hover);
+}
+.alert[data-role="warning"] {
+  --_al-bg: var(--alert-warning-bg);
+  --_al-fg: var(--alert-warning-fg);
+  --_al-accent: var(--alert-warning-accent);
+  --_al-border: var(--alert-warning-border);
+  --_al-icon-color: var(--alert-warning-icon-color);
+  --_al-title-color: var(--alert-warning-title-color);
+  --_al-link-color: var(--alert-warning-link-color);
+  --_al-link-hover: var(--alert-warning-link-hover);
+}
+.alert[data-role="danger"] {
+  --_al-bg: var(--alert-danger-bg);
+  --_al-fg: var(--alert-danger-fg);
+  --_al-accent: var(--alert-danger-accent);
+  --_al-border: var(--alert-danger-border);
+  --_al-icon-color: var(--alert-danger-icon-color);
+  --_al-title-color: var(--alert-danger-title-color);
+  --_al-link-color: var(--alert-danger-link-color);
+  --_al-link-hover: var(--alert-danger-link-hover);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   4.  LEFT ACCENT BAR
+   ──────────────────────────────────────────────────────────────── */
+.alert__accent {
+  position: absolute;
+  left: 0;
+  top: var(--_al-py);
+  bottom: var(--_al-py);
+  width: var(--alert-accent-width);
+  border-radius: var(--alert-accent-radius);
+  background: var(--_al-accent);
+}
+.alert:has(.alert__accent) {
+  padding-left: calc(var(--_al-px) + var(--alert-accent-width) + 4px);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   5.  ICON
+   ──────────────────────────────────────────────────────────────── */
+.alert__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--_al-icon-color);
+  margin-top: var(--alert-icon-offset);
+}
+.alert__icon svg {
+  width: var(--alert-icon-size);
+  height: var(--alert-icon-size);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   6.  CONTENT (title + body)
+   ──────────────────────────────────────────────────────────────── */
+.alert__content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--alert-content-gap);
+}
+.alert__title {
+  font-size: var(--alert-title-font-size);
+  font-weight: var(--alert-title-font-weight);
+  color: var(--_al-title-color);
+}
+.alert__body {
+  color: var(--_al-fg);
+}
+.alert__body a {
+  color: var(--_al-link-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.alert__body a:hover {
+  color: var(--_al-link-hover);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   7.  CLOSE BUTTON
+   ──────────────────────────────────────────────────────────────── */
+.alert__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--alert-close-size);
+  height: var(--alert-close-size);
+  padding: 0;
+  border: none;
+  border-radius: var(--alert-close-radius);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  opacity: var(--alert-close-opacity);
+  font-size: inherit;
+  line-height: 1;
+  transition: opacity var(--alert-transition-duration) var(--alert-transition-easing),
+              background var(--alert-transition-duration) var(--alert-transition-easing);
+}
+.alert__close:hover {
+  opacity: var(--alert-close-hover-opacity);
+  background: var(--alert-close-hover-bg);
+}
+.alert__close:focus-visible {
+  outline: var(--alert-focus-outline-width) solid var(--alert-focus-outline-color);
+  outline-offset: 2px;
+}
+.alert__close svg {
+  width: calc(var(--alert-close-size) - 4px);
+  height: calc(var(--alert-close-size) - 4px);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   8.  VARIANT: FILLED (solid bg role color)
+   ──────────────────────────────────────────────────────────────── */
+.alert[data-variant="filled"]                  { background:var(--alert-info-accent);   color:var(--primary-on-component);--_al-icon-color:currentColor;--_al-title-color:currentColor;--_al-accent:transparent }
+.alert[data-variant="filled"][data-role="success"]{ background:var(--alert-success-accent);color:var(--success-on-component);--_al-icon-color:currentColor;--_al-title-color:currentColor;--_al-accent:transparent }
+.alert[data-variant="filled"][data-role="warning"]{ background:var(--alert-warning-accent);color:var(--warning-on-component);--_al-icon-color:currentColor;--_al-title-color:currentColor;--_al-accent:transparent }
+.alert[data-variant="filled"][data-role="danger"] { background:var(--alert-danger-accent); color:var(--danger-on-component); --_al-icon-color:currentColor;--_al-title-color:currentColor;--_al-accent:transparent }
+
+/* ────────────────────────────────────────────────────────────────
+   9.  VARIANT: OUTLINE (border emphasis)
+   ──────────────────────────────────────────────────────────────── */
+.alert[data-variant="outline"] { background:transparent;border-color:var(--_al-accent) }
+
+/* ────────────────────────────────────────────────────────────────
+   10. DISMISS ANIMATION
+   ──────────────────────────────────────────────────────────────── */
+.alert[data-dismissing] {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   11. FORCED COLORS
+   ──────────────────────────────────────────────────────────────── */
+@media (forced-colors: active) {
+  .alert {
+    border: 1px solid CanvasText;
+  }
+  .alert__accent {
+    background: Highlight;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────
+   12. REDUCED MOTION
+   ──────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .alert, .alert__close {
+    transition-duration: 0.01ms !important;
+  }
+}

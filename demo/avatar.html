@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design Token Forge — Avatar Explorer</title>
+<link rel="stylesheet" href="../packages/tokens/src/index.css">
+<link rel="stylesheet" href="../packages/components/src/avatar/avatar.tokens.css">
+<link rel="stylesheet" href="../packages/components/src/avatar/avatar.css">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<nav class="explorer-nav" aria-label="Component navigation">
+  <div class="nav-crumb">
+    <a href="index.html" class="nav-home" aria-label="Component Explorer" title="Component Explorer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1v-9"/></svg></a>
+    <span class="nav-sep">/</span>
+    <div class="nav-switcher">
+      <button class="nav-switcher-btn" id="navSwitcher" aria-expanded="false" aria-haspopup="true" type="button">
+        Avatar
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="nav-dropdown" id="navDropdown" role="menu">
+        <div class="dd-group">Color System</div>
+        <a href="color-system.html" role="menuitem">Color System <span class="dd-hint">Live</span></a>
+        <a href="color-tokens.html" role="menuitem">Color Tokens <span class="dd-hint">~740 vars</span></a>
+        <div class="dd-sep" role="separator"></div>
+        <div class="dd-group">Guides</div>
+        <a href="frameworks.html" role="menuitem">Frameworks <span class="dd-hint">Integration</span></a>
+        <div class="dd-sep" role="separator"></div>
+        <div class="dd-group">Components</div>
+        <a href="button.html" role="menuitem">Button <span class="dd-hint">246 vars</span></a>
+        <a href="icon-button.html" role="menuitem">IconButton <span class="dd-hint">120 vars</span></a>
+        <a href="split-button.html" role="menuitem">SplitButton <span class="dd-hint">154 vars</span></a>
+        <a href="input.html" role="menuitem">Input <span class="dd-hint">172 vars</span></a>
+        <a href="textarea.html" role="menuitem">Textarea <span class="dd-hint">114 vars</span></a>
+        <a href="select.html" role="menuitem">Select <span class="dd-hint">120 vars</span></a>
+        <a href="menu-button.html" role="menuitem">MenuButton <span class="dd-hint">139 vars</span></a>
+        <a href="toggle.html" role="menuitem">Toggle <span class="dd-hint">93 vars</span></a>
+        <a href="checkbox.html" role="menuitem">Checkbox <span class="dd-hint">74 vars</span></a>
+        <a href="radio.html" role="menuitem">Radio <span class="dd-hint">73 vars</span></a>
+        <a href="slider.html" role="menuitem">Slider <span class="dd-hint">120 vars</span></a>
+        <a href="datepicker.html" role="menuitem">DatePicker <span class="dd-hint">~190 vars</span></a>
+        <a href="file-upload.html" role="menuitem">FileUpload <span class="dd-hint">~120 vars</span></a>
+        <a href="avatar.html" role="menuitem" aria-current="page">Avatar <span class="dd-hint">~80 vars</span></a>
+        <a href="badge.html" role="menuitem">Badge <span class="dd-hint">~90 vars</span></a>
+        <a href="tooltip.html" role="menuitem">Tooltip <span class="dd-hint">~60 vars</span></a>
+        <a href="alert.html" role="menuitem">Alert <span class="dd-hint">~80 vars</span></a>
+        <a href="toast.html" role="menuitem">Toast <span class="dd-hint">~90 vars</span></a>
+        <a href="progress-bar.html" role="menuitem">Progress Bar <span class="dd-hint">~60 vars</span></a>
+        <a href="progress-circle.html" role="menuitem">Progress Circle <span class="dd-hint">~50 vars</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle" type="button">Toggle Dark</button>
+  </div>
+</nav>
+
+<div class="page-layout">
+<aside class="sidebar-nav" id="sidebarNav" aria-label="Section navigation">
+  <a href="#sec-hero"><span class="sn-num">1</span>Hero Preview</a>
+  <a href="#sec-content"><span class="sn-num">2</span>Content Modes</a>
+  <a href="#sec-shapes"><span class="sn-num">3</span>Shape Gallery</a>
+  <a href="#sec-density"><span class="sn-num">4</span>Density Scale</a>
+  <a href="#sec-roles"><span class="sn-num">5</span>Role Colors</a>
+  <a href="#sec-badges"><span class="sn-num">6</span>Status Badges</a>
+  <a href="#sec-group"><span class="sn-num">7</span>Avatar Group</a>
+  <a href="#sec-a11y"><span class="sn-num">8</span>Accessibility</a>
+  <a href="#sec-framework"><span class="sn-num">9</span>Use in Framework</a>
+</aside>
+<div class="page-content">
+
+<header class="demo-header">
+  <h1>Avatar Explorer <span>— Design Token Forge</span></h1>
+  <div class="demo-meta">
+    <span class="demo-badge">~80 CSS Variables</span>
+    <span class="demo-badge">3 Shapes</span>
+    <span class="demo-badge">3 Content Modes</span>
+    <span class="demo-badge">10 Sizes</span>
+    <span class="demo-badge">7 Axes</span>
+  </div>
+</header>
+
+<nav class="global-controls" aria-label="Global avatar preview controls">
+  <div class="control-group">
+    <label>Shape</label>
+    <div class="pill-bar" id="shapeBar" role="radiogroup" aria-label="Shape selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-shape="circle" type="button">Circle</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-shape="squircle" type="button">Squircle</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-shape="rounded-square" type="button">Rounded Square</button>
+    </div>
+  </div>
+  <div class="control-divider"></div>
+  <div class="control-group">
+    <label>Size</label>
+    <div class="pill-bar" id="sizeBar" role="radiogroup" aria-label="Size selector">
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="micro" type="button">Micro</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="tiny" type="button">Tiny</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="small" type="button">Small</button>
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-size="base" type="button">Base</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="medium" type="button">Medium</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="large" type="button">Large</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="big" type="button">Big</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="huge" type="button">Huge</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="mega" type="button">Mega</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="ultra" type="button">Ultra</button>
+    </div>
+  </div>
+</nav>
+
+<main class="demo-main">
+
+  <!-- 1. HERO -->
+  <section class="section" id="sec-hero">
+    <div class="section-header"><h2>Hero Preview</h2><span class="section-tag">Live</span></div>
+    <p class="section-desc">Reflects global shape and size controls. All three content modes: image, initials, icon fallback.</p>
+    <div class="section-body">
+      <div class="hero">
+        <div class="hero-preview" id="heroPreview" style="gap:24px"></div>
+        <div class="hero-inspector" id="heroInspector"><div class="inspector-title">Resolved Tokens</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. CONTENT MODES -->
+  <section class="section" id="sec-content">
+    <div class="section-header"><h2>Content Modes</h2><span class="section-tag">Slots</span></div>
+    <p class="section-desc">Image, initials, and icon fallback. Each mode inherits shape and size tokens identically.</p>
+    <div class="section-body"><div class="preview-grid" id="contentModes" style="gap:32px"></div></div>
+  </section>
+
+  <!-- 3. SHAPES -->
+  <section class="section" id="sec-shapes">
+    <div class="section-header"><h2>Shape Gallery</h2><span class="section-tag">Shape</span></div>
+    <p class="section-desc">Circle (default), squircle (25% radius), and rounded-square. Each at the current size.</p>
+    <div class="section-body"><div class="preview-grid" id="shapeGallery" style="gap:32px"></div></div>
+  </section>
+
+  <!-- 4. DENSITY SCALE -->
+  <section class="section" id="sec-density">
+    <div class="section-header"><h2>Density Scale</h2><span class="section-tag">Dimension</span></div>
+    <p class="section-desc">All 10 density modes. Size, font-size, and icon-size scale proportionally.</p>
+    <div class="section-body"><div class="density-strip" id="densityScale"></div></div>
+  </section>
+
+  <!-- 5. ROLE COLORS -->
+  <section class="section" id="sec-roles">
+    <div class="section-header"><h2>Role Colors</h2><span class="section-tag">Surface</span></div>
+    <p class="section-desc">Semantic role colors for the initials/icon fallback background.</p>
+    <div class="section-body"><div class="preview-grid" id="roleGallery" style="gap:24px"></div></div>
+  </section>
+
+  <!-- 6. STATUS BADGES -->
+  <section class="section" id="sec-badges">
+    <div class="section-header"><h2>Status Badges</h2><span class="section-tag">Slots</span></div>
+    <p class="section-desc">Online, offline, busy, and away indicators. Badge scales with avatar size.</p>
+    <div class="section-body"><div class="preview-grid" id="badgeDemo" style="gap:24px"></div></div>
+  </section>
+
+  <!-- 7. GROUP -->
+  <section class="section" id="sec-group">
+    <div class="section-header"><h2>Avatar Group</h2><span class="section-tag">Layout</span></div>
+    <p class="section-desc">Overlapping avatars with ring border. Offset scales per density.</p>
+    <div class="section-body"><div class="preview-grid" id="groupDemo" style="gap:32px;flex-direction:column"></div></div>
+  </section>
+
+  <!-- 8. ACCESSIBILITY -->
+  <section class="section" id="sec-a11y">
+    <div class="section-header"><h2>Accessibility</h2><span class="section-tag">A11y</span></div>
+    <p class="section-desc">Focus ring, alt text on images, role="img" with aria-label for initials.</p>
+    <div class="section-body">
+      <div class="a11y-grid">
+        <div class="a11y-card">
+          <div class="a11y-card-title">Image Alt</div>
+          <p class="a11y-card-desc">Image avatars require <code>alt</code> attribute with user's name.</p>
+          <div style="display:flex;gap:8px;margin-top:4px" id="a11yAltDemo"></div>
+        </div>
+        <div class="a11y-card">
+          <div class="a11y-card-title">Initials ARIA</div>
+          <p class="a11y-card-desc">Use <code>role="img" aria-label="Name"</code> on the avatar container.</p>
+          <div style="display:flex;gap:8px;margin-top:4px" id="a11yAriaDemo"></div>
+        </div>
+        <div class="a11y-card">
+          <div class="a11y-card-title">Forced Colors</div>
+          <p class="a11y-card-desc">High Contrast shows a visible border on all avatars.</p>
+          <div style="display:flex;gap:8px;margin-top:4px" id="a11yHcDemo"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. FRAMEWORK -->
+  <section class="section" id="sec-framework">
+    <div class="section-header"><h2>Use in Your Framework</h2><span class="section-tag">Integration</span></div>
+    <p class="section-desc">Wrap this component in your framework. Props become data attributes — our CSS does the rest.</p>
+    <div class="section-body">
+      <div class="fw-snippet">
+        <div class="fw-snippet-head">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>Avatar Wrapper</h3>
+          <a class="fw-snippet-link" href="frameworks.html">Full guide <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
+        </div>
+        <div class="fw-snippet-tabs">
+          <button class="fw-snippet-tab" aria-selected="true" data-tab="react" type="button">React</button>
+          <button class="fw-snippet-tab" aria-selected="false" data-tab="vue" type="button">Vue</button>
+          <button class="fw-snippet-tab" aria-selected="false" data-tab="html" type="button">HTML</button>
+          <button class="fw-snippet-tab" aria-selected="false" data-tab="css" type="button">CSS Tokens</button>
+        </div>
+        <div class="fw-snippet-code" data-panel="react" data-active>&lt;div
+  className="avatar"
+  data-size={size}           {/* micro … ultra */}
+  data-shape={shape}         {/* circle | squircle | rounded-square */}
+  data-role={role}           {/* primary | brand | danger | success | warning */}
+  role="img"
+  aria-label={name}
+&gt;
+  {src ? (
+    &lt;img className="avatar__image" src={src} alt={name} /&gt;
+  ) : initials ? (
+    &lt;span className="avatar__initials"&gt;{initials}&lt;/span&gt;
+  ) : (
+    &lt;span className="avatar__icon"&gt;{icon}&lt;/span&gt;
+  )}
+  {status &amp;&amp; &lt;span className="avatar__badge" data-status={status} /&gt;}
+&lt;/div&gt;</div>
+        <div class="fw-snippet-code" data-panel="vue">&lt;div
+  class="avatar"
+  :data-size="size ?? 'base'"
+  :data-shape="shape ?? 'circle'"
+  :data-role="role || undefined"
+  role="img"
+  :aria-label="name"
+&gt;
+  &lt;img v-if="src" class="avatar__image" :src="src" :alt="name" /&gt;
+  &lt;span v-else-if="initials" class="avatar__initials"&gt;{{ initials }}&lt;/span&gt;
+  &lt;span v-else class="avatar__icon"&gt;&lt;slot name="icon" /&gt;&lt;/span&gt;
+  &lt;span v-if="status" class="avatar__badge" :data-status="status" /&gt;
+&lt;/div&gt;</div>
+        <div class="fw-snippet-code" data-panel="html">&lt;div class="avatar" data-size="base" data-shape="circle" role="img" aria-label="Jane Doe"&gt;
+  &lt;span class="avatar__initials"&gt;JD&lt;/span&gt;
+  &lt;span class="avatar__badge" data-status="online"&gt;&lt;/span&gt;
+&lt;/div&gt;</div>
+        <div class="fw-snippet-code" data-panel="css">/* Shape */
+--avatar-radius-{size}          /* border radius per density (circle default) */
+--avatar-radius-squircle        /* 25% for squircle shape */
+--avatar-radius-rounded-square  /* rounded-square shape */
+--avatar-border-width / -style / -color
+
+/* Dimension */
+--avatar-size-{size}            /* width & height per density */
+--avatar-group-offset-{size}    /* overlap for avatar groups */
+
+/* Surface */
+--avatar-bg / -bg-hover / -fg
+--avatar-{role}-bg / -fg        /* primary, brand, danger, success, warning */
+--avatar-ring-width / -color / -offset
+
+/* Typography */
+--avatar-font-family / -weight
+--avatar-font-size-{size}       /* initials font size per density */
+
+/* Slots */
+--avatar-icon-size-{size}       /* fallback icon size per density */
+--avatar-badge-*                /* status badge tokens */
+
+/* Motion */
+--avatar-transition-duration / -easing
+
+/* A11y */
+--avatar-focus-outline-width / -color</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</div></div>
+
+<script src="shared.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  var SHAPES=['circle','squircle','rounded-square'];
+  var SIZES=['micro','tiny','small','base','medium','large','big','huge','mega','ultra'];
+  var SIZE_PX={micro:'20',tiny:'24',small:'28',base:'32',medium:'36',large:'40',big:'48',huge:'56',mega:'64',ultra:'80'};
+  var ROLES=['primary','brand','danger','success','warning'];
+  var STATUSES=['online','offline','busy','away'];
+  var ICON_USER='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+
+  var SAMPLE_NAMES=['Alice Chen','Bob Rivera','Carla Kim','David Park','Eva Singh','Frank Lee'];
+  var SAMPLE_COLORS=['primary','brand','danger','success','warning','primary'];
+  function getInitials(name){return name.split(' ').map(function(w){return w[0]}).join('')}
+
+  var curShape='circle', curS='base';
+
+  function makeAvatar(opts){
+    opts=opts||{};
+    var av=document.createElement('div');
+    av.className='avatar';
+    if(!opts.noSync)av.classList.add('synced-av');
+    av.dataset.size=opts.size||curS;
+    if(opts.shape&&opts.shape!=='circle')av.dataset.shape=opts.shape;
+    else if(curShape!=='circle'&&!opts.forceCircle)av.dataset.shape=curShape;
+    if(opts.role)av.dataset.role=opts.role;
+    av.setAttribute('role','img');
+    av.setAttribute('aria-label',opts.name||'User');
+
+    if(opts.image){
+      var img=document.createElement('img');img.className='avatar__image';
+      img.src='data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="hsl('+(opts.hue||200)+',50%,60%)"/><text x="40" y="44" text-anchor="middle" fill="white" font-size="28" font-family="system-ui">'+(opts.initials||'?')+'</text></svg>');
+      img.alt=opts.name||'User';av.appendChild(img);
+    } else if(opts.initials){
+      var sp=document.createElement('span');sp.className='avatar__initials';sp.textContent=opts.initials;av.appendChild(sp);
+    } else {
+      var ic=document.createElement('span');ic.className='avatar__icon';ic.innerHTML=ICON_USER;av.appendChild(ic);
+    }
+
+    if(opts.status){
+      var badge=document.createElement('span');badge.className='avatar__badge';badge.dataset.status=opts.status;av.appendChild(badge);
+    }
+
+    return av;
+  }
+
+  function wrapCard(el,label){
+    var d=document.createElement('div');d.className='variant-card';
+    d.appendChild(el);
+    if(label){var l=document.createElement('span');l.className='variant-label';l.textContent=label;d.appendChild(l)}
+    return d;
+  }
+  function clr(id){var e=document.getElementById(id);e.innerHTML='';return e}
+  function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+
+  function renderHero(){
+    var el=clr('heroPreview');
+    el.appendChild(makeAvatar({name:'Alice Chen',image:true,initials:'AC',hue:220}));
+    el.appendChild(makeAvatar({name:'Bob Rivera',initials:'BR',role:'primary'}));
+    el.appendChild(makeAvatar({name:'User'}));
+  }
+
+  function renderContent(){
+    var el=clr('contentModes');
+    el.appendChild(wrapCard(makeAvatar({name:'Alice',image:true,initials:'AC',hue:220,noSync:true,size:'large'}),'Image'));
+    el.appendChild(wrapCard(makeAvatar({name:'Bob',initials:'BR',role:'primary',noSync:true,size:'large'}),'Initials'));
+    el.appendChild(wrapCard(makeAvatar({name:'User',noSync:true,size:'large'}),'Icon Fallback'));
+  }
+
+  function renderShapes(){
+    var el=clr('shapeGallery');
+    SHAPES.forEach(function(sh){
+      el.appendChild(wrapCard(makeAvatar({shape:sh,name:'User',initials:'JD',role:'primary',noSync:true,forceCircle:true,size:'large'}),sh));
+    });
+  }
+
+  function renderDensity(){
+    var el=clr('densityScale');
+    SIZES.forEach(function(s){
+      var it=document.createElement('div');it.className='density-item';
+      it.appendChild(makeAvatar({size:s,name:'User',initials:'JD',role:'primary',noSync:true}));
+      var m=document.createElement('div');m.className='density-meta';m.textContent=SIZE_PX[s]+'px';it.appendChild(m);el.appendChild(it);
+    });
+  }
+
+  function renderRoles(){
+    var el=clr('roleGallery');
+    el.appendChild(wrapCard(makeAvatar({name:'Neutral',initials:'NU',noSync:true,size:'large'}),'Default'));
+    ROLES.forEach(function(r){
+      el.appendChild(wrapCard(makeAvatar({name:cap(r),initials:r.substring(0,2).toUpperCase(),role:r,noSync:true,size:'large'}),cap(r)));
+    });
+  }
+
+  function renderBadges(){
+    var el=clr('badgeDemo');
+    STATUSES.forEach(function(st){
+      el.appendChild(wrapCard(makeAvatar({name:'User',initials:'JD',role:'primary',status:st,noSync:true,size:'large'}),cap(st)));
+    });
+  }
+
+  function renderGroup(){
+    var el=clr('groupDemo');
+    [curS,'large','huge'].forEach(function(sz){
+      var row=document.createElement('div');row.className='preview-col';
+      var lbl=document.createElement('span');lbl.className='col-label';lbl.textContent='Size: '+sz;row.appendChild(lbl);
+      var grp=document.createElement('div');grp.className='avatar-group';grp.dataset.size=sz;
+      SAMPLE_NAMES.slice(0,4).forEach(function(name,i){
+        grp.appendChild(makeAvatar({size:sz,name:name,initials:getInitials(name),role:SAMPLE_COLORS[i],noSync:true}));
+      });
+      var more=makeAvatar({size:sz,name:'3 more',initials:'+3',noSync:true});
+      more.classList.add('avatar--count');grp.appendChild(more);
+      row.appendChild(grp);el.appendChild(row);
+    });
+  }
+
+  function renderA11y(){
+    clr('a11yAltDemo').appendChild(makeAvatar({name:'Alice Chen',image:true,initials:'AC',hue:220,noSync:true}));
+    var ar=makeAvatar({name:'Bob Rivera',initials:'BR',role:'brand',noSync:true});
+    clr('a11yAriaDemo').appendChild(ar);
+    clr('a11yHcDemo').appendChild(makeAvatar({name:'User',noSync:true}));
+  }
+
+  function updateInspector(){
+    var av=document.querySelector('#heroPreview .avatar');
+    if(!av)return;
+    var cs=getComputedStyle(av);
+    var rows=[
+      ['--avatar-size-'+curS, '—', cs.width],
+      ['--avatar-radius', '—', cs.borderRadius],
+      ['--avatar-font-size-'+curS, '—', cs.fontSize],
+      ['--avatar-bg', '—', cs.backgroundColor],
+      ['--avatar-fg', '—', cs.color],
+      ['--avatar-border', '—', cs.borderWidth+' '+cs.borderStyle],
+      ['--avatar-transition', '—', cs.transitionDuration]
+    ];
+    var ins=document.getElementById('heroInspector');
+    ins.innerHTML='<div class="inspector-title">Resolved Tokens ('+curShape+' / '+curS+')</div>'+
+      rows.map(function(t){return '<div class="inspector-row"><span class="token-name">'+t[0]+'</span><span class="token-val">'+t[2]+'</span></div>'}).join('');
+  }
+
+  function applyGlobals(){
+    renderHero();renderContent();renderShapes();renderDensity();
+    renderRoles();renderBadges();renderGroup();renderA11y();
+    requestAnimationFrame(updateInspector);
+  }
+
+  document.getElementById('shapeBar').addEventListener('click',function(e){
+    var pill=e.target.closest('.pill');if(!pill)return;
+    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
+    pill.setAttribute('aria-pressed','true');curShape=pill.dataset.ctrlShape;applyGlobals();
+  });
+
+  document.getElementById('sizeBar').addEventListener('click',function(e){
+    var pill=e.target.closest('.pill');if(!pill)return;
+    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
+    pill.setAttribute('aria-pressed','true');curS=pill.dataset.ctrlSize;applyGlobals();
+  });
+
+  window.DTF.onThemeChange = updateInspector;
+  applyGlobals();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design Token Forge — Alert Explorer</title>
+<link rel="stylesheet" href="../packages/tokens/src/index.css">
+<link rel="stylesheet" href="../packages/components/src/alert/alert.tokens.css">
+<link rel="stylesheet" href="../packages/components/src/alert/alert.css">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .alert-stack { display:flex;flex-direction:column;gap:16px;width:100%; }
+</style>
+</head>
+<body>
+
+<nav class="explorer-nav" aria-label="Component navigation">
+  <div class="nav-crumb">
+    <a href="index.html" class="nav-home" aria-label="Component Explorer" title="Component Explorer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1v-9"/></svg></a>
+    <span class="nav-sep">/</span>
+    <div class="nav-switcher">
+      <button class="nav-switcher-btn" id="navSwitcher" aria-expanded="false" aria-haspopup="true" type="button">
+        Alert
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="nav-dropdown" id="navDropdown" role="menu">
+        <div class="dd-group">Color System</div>
+        <a href="color-system.html" role="menuitem">Color System <span class="dd-hint">Live</span></a>
+        <a href="color-tokens.html" role="menuitem">Color Tokens <span class="dd-hint">~740 vars</span></a>
+        <div class="dd-sep" role="separator"></div>
+        <div class="dd-group">Guides</div>
+        <a href="frameworks.html" role="menuitem">Frameworks <span class="dd-hint">Integration</span></a>
+        <div class="dd-sep" role="separator"></div>
+        <div class="dd-group">Components</div>
+        <a href="button.html" role="menuitem">Button <span class="dd-hint">246 vars</span></a>
+        <a href="icon-button.html" role="menuitem">IconButton <span class="dd-hint">120 vars</span></a>
+        <a href="split-button.html" role="menuitem">SplitButton <span class="dd-hint">154 vars</span></a>
+        <a href="input.html" role="menuitem">Input <span class="dd-hint">172 vars</span></a>
+        <a href="textarea.html" role="menuitem">Textarea <span class="dd-hint">114 vars</span></a>
+        <a href="select.html" role="menuitem">Select <span class="dd-hint">120 vars</span></a>
+        <a href="menu-button.html" role="menuitem">MenuButton <span class="dd-hint">139 vars</span></a>
+        <a href="toggle.html" role="menuitem">Toggle <span class="dd-hint">93 vars</span></a>
+        <a href="checkbox.html" role="menuitem">Checkbox <span class="dd-hint">74 vars</span></a>
+        <a href="radio.html" role="menuitem">Radio <span class="dd-hint">73 vars</span></a>
+        <a href="slider.html" role="menuitem">Slider <span class="dd-hint">120 vars</span></a>
+        <a href="datepicker.html" role="menuitem">DatePicker <span class="dd-hint">~190 vars</span></a>
+        <a href="file-upload.html" role="menuitem">FileUpload <span class="dd-hint">~120 vars</span></a>
+        <a href="avatar.html" role="menuitem">Avatar <span class="dd-hint">~80 vars</span></a>
+        <a href="badge.html" role="menuitem">Badge <span class="dd-hint">~90 vars</span></a>
+        <a href="tooltip.html" role="menuitem">Tooltip <span class="dd-hint">~60 vars</span></a>
+        <a href="alert.html" role="menuitem" aria-current="page">Alert <span class="dd-hint">~80 vars</span></a>
+        <a href="toast.html" role="menuitem">Toast <span class="dd-hint">~90 vars</span></a>
+        <a href="progress-bar.html" role="menuitem">Progress Bar <span class="dd-hint">~60 vars</span></a>
+        <a href="progress-circle.html" role="menuitem">Progress Circle <span class="dd-hint">~50 vars</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="nav-actions">
+    <button class="theme-toggle" id="themeToggle" type="button">Toggle Dark</button>
+  </div>
+</nav>
+
+<div class="page-layout">
+<aside class="sidebar-nav" id="sidebarNav" aria-label="Section navigation">
+  <a href="#sec-hero"><span class="sn-num">1</span>Hero Preview</a>
+  <a href="#sec-roles"><span class="sn-num">2</span>Semantic Roles</a>
+  <a href="#sec-variants"><span class="sn-num">3</span>Variants</a>
+  <a href="#sec-sizes"><span class="sn-num">4</span>Sizes</a>
+  <a href="#sec-accent"><span class="sn-num">5</span>Accent Bar</a>
+  <a href="#sec-dismiss"><span class="sn-num">6</span>Dismissible</a>
+  <a href="#sec-a11y"><span class="sn-num">7</span>Accessibility</a>
+  <a href="#sec-framework"><span class="sn-num">8</span>Use in Framework</a>
+</aside>
+<div class="page-content">
+
+<header class="demo-header">
+  <h1>Alert Explorer <span>— Design Token Forge</span></h1>
+  <div class="demo-meta">
+    <span class="demo-badge">~80 CSS Variables</span>
+    <span class="demo-badge">4 Roles</span>
+    <span class="demo-badge">3 Variants</span>
+    <span class="demo-badge">3 Sizes</span>
+    <span class="demo-badge">7 Axes</span>
+  </div>
+</header>
+
+<main class="demo-main">
+
+  <!-- 1. HERO -->
+  <section class="section" id="sec-hero">
+    <div class="section-header"><h2>Hero Preview</h2><span class="section-tag">Live</span></div>
+    <p class="section-desc">All four semantic roles with icon, title, body, and accent bar. Dismiss to remove.</p>
+    <div class="section-body">
+      <div class="hero" style="flex-direction:column;gap:0">
+        <div class="hero-preview" id="heroPreview" style="flex-direction:column;gap:12px;width:100%"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. SEMANTIC ROLES -->
+  <section class="section" id="sec-roles">
+    <div class="section-header"><h2>Semantic Roles</h2><span class="section-tag">Surface</span></div>
+    <p class="section-desc">Info (default), success, warning, danger. Each role maps to a unique bg, fg, accent, and icon color.</p>
+    <div class="section-body"><div class="alert-stack" id="roleGallery"></div></div>
+  </section>
+
+  <!-- 3. VARIANTS -->
+  <section class="section" id="sec-variants">
+    <div class="section-header"><h2>Variants</h2><span class="section-tag">Surface</span></div>
+    <p class="section-desc">Default (soft container bg), filled (solid role bg), outline (transparent + border). Shown for each role.</p>
+    <div class="section-body"><div id="variantGallery" style="display:flex;flex-direction:column;gap:24px"></div></div>
+  </section>
+
+  <!-- 4. SIZES -->
+  <section class="section" id="sec-sizes">
+    <div class="section-header"><h2>Sizes</h2><span class="section-tag">Dimension</span></div>
+    <p class="section-desc">Three density tiers — small, base, large. Padding scales proportionally.</p>
+    <div class="section-body"><div class="alert-stack" id="sizeGallery"></div></div>
+  </section>
+
+  <!-- 5. ACCENT BAR -->
+  <section class="section" id="sec-accent">
+    <div class="section-header"><h2>Accent Bar</h2><span class="section-tag">Shape</span></div>
+    <p class="section-desc">Left-border accent pattern with rounded cap. Uses <code>--alert-accent-width</code> and role-specific <code>--alert-*-accent</code> colors.</p>
+    <div class="section-body"><div class="alert-stack" id="accentGallery"></div></div>
+  </section>
+
+  <!-- 6. DISMISSIBLE -->
+  <section class="section" id="sec-dismiss">
+    <div class="section-header"><h2>Dismissible</h2><span class="section-tag">Interactive</span></div>
+    <p class="section-desc">Click × to dismiss. Alert animates out with opacity and translateY transition.</p>
+    <div class="section-body"><div class="alert-stack" id="dismissDemo"></div></div>
+  </section>
+
+  <!-- 7. ACCESSIBILITY -->
+  <section class="section" id="sec-a11y">
+    <div class="section-header"><h2>Accessibility</h2><span class="section-tag">A11y</span></div>
+    <p class="section-desc"><code>role="alert"</code> for assertive live region (danger/warning). <code>role="status"</code> for polite (info/success).</p>
+    <div class="section-body">
+      <div class="a11y-grid">
+        <div class="a11y-card">
+          <div class="a11y-card-title">ARIA Roles</div>
+          <p class="a11y-card-desc">Danger/warning use <code>role="alert"</code> (assertive). Info/success use <code>role="status"</code> (polite).</p>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px" id="a11yRoleDemo"></div>
+        </div>
+        <div class="a11y-card">
+          <div class="a11y-card-title">Forced Colors</div>
+          <p class="a11y-card-desc">High Contrast mode shows CanvasText border. Accent bar uses Highlight.</p>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px" id="a11yHcDemo"></div>
+        </div>
+        <div class="a11y-card">
+          <div class="a11y-card-title">Close Button</div>
+          <p class="a11y-card-desc">Dismiss button includes <code>aria-label="Dismiss"</code> and visible focus ring.</p>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px" id="a11yCloseDemo"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FRAMEWORK -->
+  <section class="section" id="sec-framework">
+    <div class="section-header"><h2>Use in Your Framework</h2><span class="section-tag">Integration</span></div>
+    <p class="section-desc">Wrap this component in your framework. Props become data attributes — our CSS does the rest.</p>
+    <div class="section-body">
+      <div class="fw-snippet">
+        <div class="fw-snippet-head">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>Alert Wrapper</h3>
+          <a class="fw-snippet-link" href="frameworks.html">Full guide <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
+        </div>
+        <div class="fw-snippet-tabs">
+          <button class="fw-snippet-tab" aria-selected="true" data-tab="react" type="button">React</button>
+          <button class="fw-snippet-tab" aria-selected="false" data-tab="vue" type="button">Vue</button>
+          <button class="fw-snippet-tab" aria-selected="false" data-tab="html" type="button">HTML</button>
+          <button class="fw-snippet-tab" aria-selected="false" data-tab="css" type="button">CSS Tokens</button>
+        </div>
+        <div class="fw-snippet-code" data-panel="react" data-active>&lt;div
+  className="alert"
+  data-role={role}           {/* info | success | warning | danger */}
+  data-variant={variant}     {/* default | filled | outline */}
+  data-size={size}           {/* small | base | large */}
+  role={role === 'danger' || role === 'warning' ? 'alert' : 'status'}
+&gt;
+  {accent &amp;&amp; &lt;span className="alert__accent" /&gt;}
+  {icon &amp;&amp; &lt;span className="alert__icon"&gt;{icon}&lt;/span&gt;}
+  &lt;div className="alert__content"&gt;
+    {title &amp;&amp; &lt;div className="alert__title"&gt;{title}&lt;/div&gt;}
+    &lt;div className="alert__body"&gt;{children}&lt;/div&gt;
+  &lt;/div&gt;
+  {dismissible &amp;&amp; (
+    &lt;button className="alert__close" aria-label="Dismiss" onClick={onDismiss}&gt;
+      &lt;svg viewBox="0 0 24 24"&gt;&lt;path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"/&gt;&lt;/svg&gt;
+    &lt;/button&gt;
+  )}
+&lt;/div&gt;</div>
+        <div class="fw-snippet-code" data-panel="vue">&lt;div
+  class="alert"
+  :data-role="role ?? 'info'"
+  :data-variant="variant || undefined"
+  :data-size="size ?? 'base'"
+  :role="['danger','warning'].includes(role) ? 'alert' : 'status'"
+&gt;
+  &lt;span v-if="accent" class="alert__accent" /&gt;
+  &lt;span v-if="$slots.icon" class="alert__icon"&gt;&lt;slot name="icon" /&gt;&lt;/span&gt;
+  &lt;div class="alert__content"&gt;
+    &lt;div v-if="title" class="alert__title"&gt;{{ title }}&lt;/div&gt;
+    &lt;div class="alert__body"&gt;&lt;slot /&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button v-if="dismissible" class="alert__close" aria-label="Dismiss" @click="$emit('dismiss')"&gt;
+    &lt;svg viewBox="0 0 24 24"&gt;&lt;path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"/&gt;&lt;/svg&gt;
+  &lt;/button&gt;
+&lt;/div&gt;</div>
+        <div class="fw-snippet-code" data-panel="html">&lt;div class="alert" data-role="info" role="status"&gt;
+  &lt;span class="alert__accent"&gt;&lt;/span&gt;
+  &lt;span class="alert__icon"&gt;&lt;svg&gt;…&lt;/svg&gt;&lt;/span&gt;
+  &lt;div class="alert__content"&gt;
+    &lt;div class="alert__title"&gt;Information&lt;/div&gt;
+    &lt;div class="alert__body"&gt;This is a helpful message.&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button class="alert__close" aria-label="Dismiss"&gt;×&lt;/button&gt;
+&lt;/div&gt;</div>
+        <div class="fw-snippet-code" data-panel="css">/* Shape */
+--alert-radius                 /* border radius */
+--alert-border-width / -style / -color
+--alert-accent-width / -radius /* left accent bar */
+
+/* Dimension */
+--alert-padding-y-{size}       /* vertical padding per density */
+--alert-padding-x-{size}       /* horizontal padding per density */
+--alert-gap / -content-gap
+--alert-min-height / -icon-offset
+
+/* Surface (per role) */
+--alert-{role}-bg / -fg / -accent / -border
+--alert-{role}-icon-color / -title-color
+--alert-{role}-link-color / -link-hover
+--alert-shadow
+
+/* Typography */
+--alert-font-family / -size / -weight / -line-height
+--alert-title-font-size / -font-weight
+
+/* Slots */
+--alert-icon-size
+--alert-close-size / -radius / -opacity / -hover-opacity / -hover-bg
+
+/* Motion */
+--alert-transition-property / -duration / -easing
+
+/* A11y */
+--alert-focus-outline-width / -color</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</div></div>
+
+<script src="shared.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  var ROLES=['info','success','warning','danger'];
+  var VARIANTS=['','filled','outline'];
+  var SIZES=['small','base','large'];
+  var ICONS={
+    info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+    success:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    warning:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
+    danger:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6"/><path d="M9 9l6 6"/></svg>'
+  };
+  var CLOSE_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>';
+  var TITLES={info:'Information',success:'Success',warning:'Warning',danger:'Error'};
+  var BODIES={
+    info:'This is an informational message to help guide the user.',
+    success:'Your changes have been saved successfully.',
+    warning:'Please review the settings before proceeding.',
+    danger:'Something went wrong. Please try again or contact support.'
+  };
+
+  function makeAlert(opts){
+    opts=opts||{};
+    var el=document.createElement('div');
+    el.className='alert';
+    var role=opts.role||'info';
+    el.dataset.role=role;
+    if(opts.variant)el.dataset.variant=opts.variant;
+    if(opts.size)el.dataset.size=opts.size;
+    el.setAttribute('role',role==='danger'||role==='warning'?'alert':'status');
+
+    if(opts.accent!==false){
+      var acc=document.createElement('span');acc.className='alert__accent';el.appendChild(acc);
+    }
+    if(opts.icon!==false){
+      var ic=document.createElement('span');ic.className='alert__icon';ic.innerHTML=ICONS[role];el.appendChild(ic);
+    }
+    var content=document.createElement('div');content.className='alert__content';
+    if(opts.title!==false){
+      var t=document.createElement('div');t.className='alert__title';t.textContent=opts.title||TITLES[role];content.appendChild(t);
+    }
+    var b=document.createElement('div');b.className='alert__body';b.textContent=opts.body||BODIES[role];content.appendChild(b);
+    el.appendChild(content);
+
+    if(opts.dismiss){
+      var btn=document.createElement('button');btn.className='alert__close';btn.setAttribute('aria-label','Dismiss');
+      btn.innerHTML=CLOSE_ICON;el.appendChild(btn);
+      btn.addEventListener('click',function(){
+        el.dataset.dismissing='';
+        setTimeout(function(){el.remove()},300);
+      });
+    }
+    return el;
+  }
+  function clr(id){var e=document.getElementById(id);e.innerHTML='';return e}
+  function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+
+  /* ── Renderers ─────────────────────────────────────── */
+
+  function renderHero(){
+    var el=clr('heroPreview');
+    ROLES.forEach(function(r){
+      el.appendChild(makeAlert({role:r,dismiss:true}));
+    });
+  }
+
+  function renderRoles(){
+    var el=clr('roleGallery');
+    ROLES.forEach(function(r){
+      el.appendChild(makeAlert({role:r}));
+    });
+  }
+
+  function renderVariants(){
+    var el=clr('variantGallery');
+    VARIANTS.forEach(function(v){
+      var label=document.createElement('div');label.style.fontWeight='600';label.style.fontSize='13px';label.style.marginBottom='4px';
+      label.textContent=v?cap(v):'Default (Soft)';el.appendChild(label);
+      var stack=document.createElement('div');stack.className='alert-stack';
+      ROLES.forEach(function(r){
+        stack.appendChild(makeAlert({role:r,variant:v||undefined,accent:v!=='outline'}));
+      });
+      el.appendChild(stack);
+    });
+  }
+
+  function renderSizes(){
+    var el=clr('sizeGallery');
+    SIZES.forEach(function(s){
+      el.appendChild(makeAlert({role:'info',size:s,title:cap(s)+' size',body:'Padding scales with the size token.'}));
+    });
+  }
+
+  function renderAccent(){
+    var el=clr('accentGallery');
+    ROLES.forEach(function(r){
+      el.appendChild(makeAlert({role:r,title:cap(r)+' accent',body:'Left border accent bar with rounded cap.'}));
+    });
+  }
+
+  function renderDismiss(){
+    var el=clr('dismissDemo');
+    ROLES.forEach(function(r){
+      el.appendChild(makeAlert({role:r,dismiss:true,title:'Dismissible '+cap(r),body:'Click × to dismiss this alert.'}));
+    });
+  }
+
+  function renderA11y(){
+    var roleEl=clr('a11yRoleDemo');
+    roleEl.appendChild(makeAlert({role:'info',title:'role="status"',body:'Polite live region for info.'}));
+    roleEl.appendChild(makeAlert({role:'danger',title:'role="alert"',body:'Assertive live region for danger.'}));
+
+    var hcEl=clr('a11yHcDemo');
+    hcEl.appendChild(makeAlert({role:'info',title:'Forced Colors',body:'Visible border in High Contrast.'}));
+
+    var closeEl=clr('a11yCloseDemo');
+    closeEl.appendChild(makeAlert({role:'warning',dismiss:true,title:'Focus the × button',body:'Tab to the close button to see the focus ring.'}));
+  }
+
+  renderHero();renderRoles();renderVariants();renderSizes();
+  renderAccent();renderDismiss();renderA11y();
+  window.DTF.onThemeChange = function(){ renderHero(); };
+})();
+</script>
+</body>
+</html>

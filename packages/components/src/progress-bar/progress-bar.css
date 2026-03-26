@@ -1,0 +1,161 @@
+/* ════════════════════════════════════════════════════════════════
+   Design Token Forge — Progress Bar
+   Variable-driven rendering — reads only from --progress-* tokens.
+
+   Markup:
+   <div class="progress-bar" data-size="base" data-role="primary"
+        role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
+     <div class="progress-bar__track">
+       <div class="progress-bar__fill" style="--progress: 60%"></div>
+     </div>
+     <span class="progress-bar__label">60%</span>
+   </div>
+   ════════════════════════════════════════════════════════════════ */
+
+/* ────────────────────────────────────────────────────────────────
+   1.  BASE
+   ──────────────────────────────────────────────────────────────── */
+.progress-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--progress-gap);
+  width: 100%;
+  font-family: var(--progress-font-family);
+  font-size: var(--progress-font-size);
+  font-weight: var(--progress-font-weight);
+  color: var(--progress-label-color);
+
+  --_pg-h: var(--progress-height-base);
+  --_pg-fill: var(--progress-fill-bg);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   2.  SIZE SELECTORS
+   ──────────────────────────────────────────────────────────────── */
+.progress-bar[data-size="micro"]{--_pg-h:var(--progress-height-micro)}
+.progress-bar[data-size="tiny"]{--_pg-h:var(--progress-height-tiny)}
+.progress-bar[data-size="small"]{--_pg-h:var(--progress-height-small)}
+.progress-bar[data-size="base"]{--_pg-h:var(--progress-height-base)}
+.progress-bar[data-size="medium"]{--_pg-h:var(--progress-height-medium)}
+.progress-bar[data-size="large"]{--_pg-h:var(--progress-height-large)}
+.progress-bar[data-size="big"]{--_pg-h:var(--progress-height-big)}
+.progress-bar[data-size="huge"]{--_pg-h:var(--progress-height-huge)}
+.progress-bar[data-size="mega"]{--_pg-h:var(--progress-height-mega)}
+.progress-bar[data-size="ultra"]{--_pg-h:var(--progress-height-ultra)}
+
+/* ────────────────────────────────────────────────────────────────
+   3.  ROLE SELECTORS
+   ──────────────────────────────────────────────────────────────── */
+.progress-bar[data-role="primary"]{--_pg-fill:var(--progress-primary-fill)}
+.progress-bar[data-role="success"]{--_pg-fill:var(--progress-success-fill)}
+.progress-bar[data-role="warning"]{--_pg-fill:var(--progress-warning-fill)}
+.progress-bar[data-role="danger"]{--_pg-fill:var(--progress-danger-fill)}
+.progress-bar[data-role="neutral"]{--_pg-fill:var(--progress-neutral-fill)}
+
+/* ────────────────────────────────────────────────────────────────
+   4.  TRACK
+   ──────────────────────────────────────────────────────────────── */
+.progress-bar__track {
+  flex: 1;
+  height: var(--_pg-h);
+  background: var(--progress-track-bg);
+  border-radius: var(--progress-radius);
+  border: var(--progress-border-width) solid var(--progress-border-color);
+  overflow: hidden;
+  position: relative;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   5.  FILL
+   ──────────────────────────────────────────────────────────────── */
+.progress-bar__fill {
+  height: 100%;
+  width: var(--progress, 0%);
+  background: var(--_pg-fill);
+  border-radius: var(--progress-fill-radius);
+  transition: width var(--progress-transition-duration) var(--progress-transition-easing);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   6.  BUFFER (secondary fill)
+   ──────────────────────────────────────────────────────────────── */
+.progress-bar__buffer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: var(--buffer, 0%);
+  background: var(--progress-buffer-bg);
+  opacity: var(--progress-buffer-opacity);
+  border-radius: var(--progress-fill-radius);
+  transition: width var(--progress-transition-duration) var(--progress-transition-easing);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   7.  LABEL
+   ──────────────────────────────────────────────────────────────── */
+.progress-bar__label {
+  min-width: var(--progress-label-min-width);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   8.  STRIPED VARIANT
+   ──────────────────────────────────────────────────────────────── */
+.progress-bar[data-striped] .progress-bar__fill {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255,255,255,var(--progress-stripe-opacity)) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255,255,255,var(--progress-stripe-opacity)) 50%,
+    rgba(255,255,255,var(--progress-stripe-opacity)) 75%,
+    transparent 75%
+  );
+  background-size: var(--_pg-h) var(--_pg-h);
+}
+.progress-bar[data-striped][data-animated] .progress-bar__fill {
+  animation: progress-stripe var(--progress-stripe-duration) linear infinite;
+}
+
+@keyframes progress-stripe {
+  from { background-position: var(--_pg-h) 0; }
+  to   { background-position: 0 0; }
+}
+
+/* ────────────────────────────────────────────────────────────────
+   9.  INDETERMINATE
+   ──────────────────────────────────────────────────────────────── */
+.progress-bar[data-indeterminate] .progress-bar__fill {
+  width: var(--progress-indeterminate-width);
+  background: var(--progress-indeterminate-bg);
+  animation: progress-indeterminate var(--progress-indeterminate-duration) var(--progress-transition-easing) infinite;
+}
+
+@keyframes progress-indeterminate {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(calc(100% / var(--progress-indeterminate-width) * 100%)); }
+}
+
+/* ────────────────────────────────────────────────────────────────
+   10. FORCED COLORS
+   ──────────────────────────────────────────────────────────────── */
+@media (forced-colors: active) {
+  .progress-bar__track {
+    border: 1px solid CanvasText;
+  }
+  .progress-bar__fill {
+    background: Highlight;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────
+   11. REDUCED MOTION
+   ──────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .progress-bar__fill {
+    transition-duration: 0.01ms !important;
+    animation: none !important;
+  }
+}

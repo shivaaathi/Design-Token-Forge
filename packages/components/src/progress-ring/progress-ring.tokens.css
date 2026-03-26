@@ -1,0 +1,84 @@
+/* ════════════════════════════════════════════════════════════════
+   Design Token Forge — Progress Ring Token Defaults
+   Layer 0: System defaults for ~50 progress-ring variables.
+   SVG-driven circular progress indicator.
+   ════════════════════════════════════════════════════════════════ */
+
+.progress-ring {
+
+  /* ────────────────────────────────────────────────────────────
+     📐 SHAPE  (4 vars)
+     ──────────────────────────────────────────────────────────── */
+  --ring-stroke-linecap: round;
+  --ring-bg-opacity: 1;
+  --ring-rotation: -90deg;
+  --ring-direction: normal;
+
+  /* ────────────────────────────────────────────────────────────
+     📏 DIMENSION  (22 vars)
+     ──────────────────────────────────────────────────────────── */
+  /* Size (diameter) per density */
+  --ring-size-micro: 16px;
+  --ring-size-tiny: 20px;
+  --ring-size-small: 24px;
+  --ring-size-base: 32px;
+  --ring-size-medium: 40px;
+  --ring-size-large: 48px;
+  --ring-size-big: 56px;
+  --ring-size-huge: 64px;
+  --ring-size-mega: 80px;
+  --ring-size-ultra: 96px;
+
+  /* Stroke width per density */
+  --ring-stroke-micro: 2px;
+  --ring-stroke-tiny: 2.5px;
+  --ring-stroke-small: 3px;
+  --ring-stroke-base: 3.5px;
+  --ring-stroke-medium: 4px;
+  --ring-stroke-large: 4.5px;
+  --ring-stroke-big: 5px;
+  --ring-stroke-huge: 5.5px;
+  --ring-stroke-mega: 6px;
+  --ring-stroke-ultra: 7px;
+
+  /* Label gap */
+  --ring-label-gap: var(--spacing-6);
+
+  /* ────────────────────────────────────────────────────────────
+     🎨 SURFACE  (8 vars)
+     ──────────────────────────────────────────────────────────── */
+  --ring-track-color: var(--surface-base-cm-bg);
+  --ring-fill-color: var(--primary-component-bg-default);
+
+  /* Roles */
+  --ring-primary-fill: var(--primary-component-bg-default);
+  --ring-success-fill: var(--success-component-bg-default);
+  --ring-warning-fill: var(--warning-component-bg-default);
+  --ring-danger-fill: var(--danger-component-bg-default);
+  --ring-neutral-fill: var(--surface-base-ct-faint);
+
+  /* Indeterminate */
+  --ring-indeterminate-fill: var(--primary-component-bg-default);
+
+  /* ────────────────────────────────────────────────────────────
+     ✏️ TYPOGRAPHY  (4 vars)
+     ──────────────────────────────────────────────────────────── */
+  --ring-font-family: var(--font-family-sans);
+  --ring-font-size: var(--font-size-11);
+  --ring-font-weight: var(--font-weight-semibold);
+  --ring-label-color: var(--surface-base-ct-default);
+
+  /* ────────────────────────────────────────────────────────────
+     ⚡ MOTION  (4 vars)
+     ──────────────────────────────────────────────────────────── */
+  --ring-transition-duration: var(--duration-normal);
+  --ring-transition-easing: var(--easing-in-out);
+  --ring-indeterminate-duration: 1.4s;
+  --ring-indeterminate-easing: linear;
+
+  /* ────────────────────────────────────────────────────────────
+     ♿ ACCESSIBILITY  (2 vars)
+     ──────────────────────────────────────────────────────────── */
+  --ring-focus-outline-width: 2px;
+  --ring-focus-outline-color: var(--primary-component-outline-default);
+}

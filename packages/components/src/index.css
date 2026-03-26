@@ -15,16 +15,16 @@
 /* @import './select/index.css'; */
 /* @import './slider/index.css'; */
 /* @import './datepicker/index.css'; */
-/* @import './file-upload/index.css'; */
+@import './file-upload/index.css';
 
 /* Display & Feedback */
-/* @import './avatar/index.css'; */
-/* @import './badge/index.css'; */
-/* @import './tooltip/index.css'; */
-/* @import './alert/index.css'; */
-/* @import './toast/index.css'; */
-/* @import './progress-bar/index.css'; */
-/* @import './progress-ring/index.css'; */
+@import './avatar/index.css';
+@import './badge/index.css';
+@import './tooltip/index.css';
+@import './alert/index.css';
+@import './toast/index.css';
+@import './progress-bar/index.css';
+@import './progress-ring/index.css';
 /* @import './spinner/index.css'; */
 /* @import './skeleton/index.css'; */
 /* @import './kbd/index.css'; */
