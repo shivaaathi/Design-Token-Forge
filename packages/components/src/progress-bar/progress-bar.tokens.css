@@ -1,21 +1,39 @@
 /* ════════════════════════════════════════════════════════════════
    Design Token Forge — Progress Bar Token Defaults
-   Layer 0: System defaults for ~60 progress-bar variables.
+   Layer 0: System defaults for ~110 progress-bar variables.
+   All values reference global tokens — zero hardcoded visuals.
    ════════════════════════════════════════════════════════════════ */
 
 .progress-bar {
 
   /* ────────────────────────────────────────────────────────────
-     📐 SHAPE  (4 vars)
+     📐 SHAPE  (14 vars)
      ──────────────────────────────────────────────────────────── */
-  --progress-radius: var(--radius-full);
-  --progress-fill-radius: var(--radius-full);
+
+  /* Border radius per density — pill by default for rounded bars */
+  --progress-radius-micro: var(--radius-full);
+  --progress-radius-tiny: var(--radius-full);
+  --progress-radius-small: var(--radius-full);
+  --progress-radius-base: var(--radius-full);
+  --progress-radius-medium: var(--radius-full);
+  --progress-radius-large: var(--radius-full);
+  --progress-radius-big: var(--radius-full);
+  --progress-radius-huge: var(--radius-full);
+  --progress-radius-mega: var(--radius-full);
+  --progress-radius-ultra: var(--radius-full);
+
   --progress-border-width: 0px;
-  --progress-border-color: transparent;
+  --progress-border-style: solid;
+
+  /* Shape overrides */
+  --progress-radius-rounded: var(--radius-full);
+  --progress-radius-square: 0px;
 
   /* ────────────────────────────────────────────────────────────
-     📏 DIMENSION  (12 vars)
+     📏 DIMENSION  (32 vars)
      ──────────────────────────────────────────────────────────── */
+
+  /* Track height per density mode */
   --progress-height-micro: 2px;
   --progress-height-tiny: 3px;
   --progress-height-small: 4px;
@@ -27,55 +45,146 @@
   --progress-height-mega: 20px;
   --progress-height-ultra: 24px;
 
-  --progress-gap: var(--spacing-6);
-  --progress-label-min-width: 32px;
+  /* Gap between track and label per density */
+  --progress-gap-micro: var(--spacing-2);
+  --progress-gap-tiny: var(--spacing-3);
+  --progress-gap-small: var(--spacing-4);
+  --progress-gap-base: var(--spacing-6);
+  --progress-gap-medium: var(--spacing-6);
+  --progress-gap-large: var(--spacing-8);
+  --progress-gap-big: var(--spacing-10);
+  --progress-gap-huge: var(--spacing-12);
+  --progress-gap-mega: var(--spacing-14);
+  --progress-gap-ultra: var(--spacing-16);
 
-  /* ────────────────────────────────────────────────────────────
-     🎨 SURFACE  (14 vars)
-     ──────────────────────────────────────────────────────────── */
-  --progress-track-bg: var(--surface-base-cm-bg);
-  --progress-fill-bg: var(--primary-component-bg-default);
+  /* Label min-width per density */
+  --progress-label-width-micro: var(--spacing-16);
+  --progress-label-width-tiny: var(--spacing-20);
+  --progress-label-width-small: var(--spacing-24);
+  --progress-label-width-base: var(--spacing-28);
+  --progress-label-width-medium: var(--spacing-32);
+  --progress-label-width-large: var(--spacing-36);
+  --progress-label-width-big: var(--spacing-40);
+  --progress-label-width-huge: var(--spacing-44);
+  --progress-label-width-mega: var(--spacing-48);
+  --progress-label-width-ultra: var(--spacing-56);
 
-  /* Role colors */
-  --progress-primary-fill: var(--primary-component-bg-default);
-  --progress-success-fill: var(--success-component-bg-default);
-  --progress-warning-fill: var(--warning-component-bg-default);
-  --progress-danger-fill: var(--danger-component-bg-default);
-  --progress-neutral-fill: var(--surface-base-ct-faint);
+  /* Width model */
+  --progress-max-width: none;
 
-  /* Stacked / segmented variant */
+  /* Segmented gap */
   --progress-segment-gap: 2px;
 
-  /* Buffer (secondary fill for streaming/buffering) */
+  /* ────────────────────────────────────────────────────────────
+     🎨 SURFACE  (28 vars)
+     Pattern: --progress-{role}-{property}
+     ──────────────────────────────────────────────────────────── */
+
+  /* ── Track base ── */
+  --progress-track-bg: var(--surface-base-cm-bg);
+  --progress-track-border-color: transparent;
+
+  /* ── PRIMARY role ── */
+  --progress-primary-fill: var(--primary-component-bg-default);
+  --progress-primary-soft-track: var(--primary-container-bg);
+  --progress-primary-label: var(--primary-content-default);
+
+  /* ── SUCCESS role ── */
+  --progress-success-fill: var(--success-component-bg-default);
+  --progress-success-soft-track: var(--success-container-bg);
+  --progress-success-label: var(--success-content-default);
+
+  /* ── WARNING role ── */
+  --progress-warning-fill: var(--warning-component-bg-default);
+  --progress-warning-soft-track: var(--warning-container-bg);
+  --progress-warning-label: var(--warning-content-default);
+
+  /* ── DANGER role ── */
+  --progress-danger-fill: var(--danger-component-bg-default);
+  --progress-danger-soft-track: var(--danger-container-bg);
+  --progress-danger-label: var(--danger-content-default);
+
+  /* ── NEUTRAL role ── */
+  --progress-neutral-fill: var(--surface-base-ct-faint);
+  --progress-neutral-soft-track: var(--surface-base-hover);
+  --progress-neutral-label: var(--surface-base-ct-default);
+
+  /* ── Outline variant ── */
+  --progress-outline-track-bg: transparent;
+  --progress-outline-border-color: var(--surface-base-outline);
+  --progress-outline-border-width: 1px;
+
+  /* ── Buffer (streaming / video buffering) ── */
   --progress-buffer-bg: var(--primary-container-bg);
   --progress-buffer-opacity: 0.5;
 
-  /* Indeterminate pulse */
-  --progress-indeterminate-bg: var(--primary-component-bg-default);
+  /* ── Indeterminate ── */
   --progress-indeterminate-width: 40%;
 
-  /* Stripe overlay */
+  /* ── Stripe overlay ── */
   --progress-stripe-opacity: 0.15;
 
-  /* ────────────────────────────────────────────────────────────
-     ✏️ TYPOGRAPHY  (4 vars)
-     ──────────────────────────────────────────────────────────── */
-  --progress-font-family: var(--font-family-sans);
-  --progress-font-size: var(--font-size-12);
-  --progress-font-weight: var(--font-weight-semibold);
+  /* ── Disabled ── */
+  --progress-opacity-disabled: 0.5;
+
+  /* ── Label ── */
   --progress-label-color: var(--surface-base-ct-default);
+  --progress-helper-color: var(--surface-base-ct-subtle);
 
   /* ────────────────────────────────────────────────────────────
-     ⚡ MOTION  (4 vars)
+     ✏️ TYPOGRAPHY  (14 vars)
      ──────────────────────────────────────────────────────────── */
+  --progress-font-family: var(--font-family-sans);
+
+  /* Font size per density mode */
+  --progress-font-size-micro: var(--font-size-10);
+  --progress-font-size-tiny: var(--font-size-10);
+  --progress-font-size-small: var(--font-size-10);
+  --progress-font-size-base: var(--font-size-12);
+  --progress-font-size-medium: var(--font-size-13);
+  --progress-font-size-large: var(--font-size-14);
+  --progress-font-size-big: var(--font-size-16);
+  --progress-font-size-huge: var(--font-size-18);
+  --progress-font-size-mega: var(--font-size-20);
+  --progress-font-size-ultra: var(--font-size-24);
+
+  --progress-font-weight: var(--font-weight-semibold);
+  --progress-line-height: var(--line-height-normal);
+  --progress-letter-spacing: var(--letter-spacing-normal);
+
+  /* ────────────────────────────────────────────────────────────
+     🧩 SLOTS  (12 vars)
+     ──────────────────────────────────────────────────────────── */
+
+  /* Icon size per density (status icon at completion / error) */
+  --progress-icon-size-micro: var(--spacing-10);
+  --progress-icon-size-tiny: var(--spacing-12);
+  --progress-icon-size-small: var(--spacing-14);
+  --progress-icon-size-base: var(--spacing-16);
+  --progress-icon-size-medium: var(--spacing-18);
+  --progress-icon-size-large: var(--spacing-20);
+  --progress-icon-size-big: var(--spacing-22);
+  --progress-icon-size-huge: var(--spacing-24);
+  --progress-icon-size-mega: var(--spacing-28);
+  --progress-icon-size-ultra: var(--spacing-32);
+
+  --progress-icon-color: currentColor;
+  --progress-helper-font-size: var(--font-size-11);
+
+  /* ────────────────────────────────────────────────────────────
+     ⚡ MOTION  (6 vars)
+     ──────────────────────────────────────────────────────────── */
+  --progress-transition-property: width, background-color, opacity;
   --progress-transition-duration: var(--duration-normal);
   --progress-transition-easing: var(--easing-in-out);
   --progress-indeterminate-duration: 1.5s;
   --progress-stripe-duration: 1s;
+  --progress-enter-duration: var(--duration-normal);
 
   /* ────────────────────────────────────────────────────────────
-     ♿ ACCESSIBILITY  (2 vars)
+     ♿ ACCESSIBILITY  (3 vars)
      ──────────────────────────────────────────────────────────── */
   --progress-focus-outline-width: 2px;
   --progress-focus-outline-color: var(--primary-component-outline-default);
+  --progress-focus-outline-offset: 2px;
 }
