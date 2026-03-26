@@ -93,6 +93,16 @@ grep -c '\-\-_' {component}.css | head -1
 - [ ] ALL demo pages have identical nav dropdown link list (except aria-current differs)
 - [ ] Link order is consistent across ALL pages
 
+### Pill-bar pattern consistency
+- [ ] ALL demo pages use the SAME pill-bar HTML pattern
+- [ ] Correct pattern: `<button class="pill" role="radio" aria-pressed="true/false" data-ctrl-{axis}="{value}">`
+- [ ] ❌ No `<fieldset>` / `<input type="radio">` / `<label>` pill bars — shared.css doesn't style them
+- [ ] JS wiring: `.closest('.pill')` + `aria-pressed` toggle (NOT `change` event on radios)
+
+### Default selection consistency
+- [ ] Size "base" is default (`aria-pressed="true"`) on EVERY page's size bar
+- [ ] Default variant matches component type convention (outline for inputs, primary for buttons)
+
 ### Section consistency
 - [ ] Every demo has at minimum: Hero, Variants/Roles, Density, A11y, Framework
 - [ ] A11y section always has 4 cards (Focus, Disabled, Reduced Motion, Forced Colors)

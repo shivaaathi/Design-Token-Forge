@@ -8,10 +8,12 @@ Every demo page should match the visual quality, interactivity, and section dept
 
 ### 1. Hero Preview with Inspector (`#sec-hero`)
 - [ ] Split layout: preview (left) + inspector (right)
-- [ ] Inspector shows resolved token values in monospace
+- [ ] Inspector shows **3 columns**: token name → alias source → computed value
+- [ ] Inspector uses `getComputedStyle(targetEl).getPropertyValue(tokenName)` for live values
 - [ ] Inspector updates LIVE when pill-bar controls change
-- [ ] Inspector shows: height, padding-x, padding-y, border-radius, gap, font-size, bg-color, border-color, shadow, transition-duration
-- [ ] Inspector title reflects current variant/size state
+- [ ] Shows 10-12 representative tokens: height, padding-x, padding-y, radius, gap, font-size, icon-size, bg, border-color, shadow, transition-duration
+- [ ] Classes: `.inspector-row > .inspector-token + .inspector-alias + .inspector-computed`
+- [ ] ❌ NOT 2-column abbreviated names — must show full `--{comp}-{property}-{size}` names
 
 ### 2. Variant/Role Gallery (`#sec-variants` or `#sec-roles`)
 - [ ] Shows ALL variants/roles side by side in cards
@@ -22,8 +24,9 @@ Every demo page should match the visual quality, interactivity, and section dept
 ### 3. Density Scale (`#sec-density`)
 - [ ] All 10 sizes shown: micro, tiny, small, base, medium, large, big, huge, mega, ultra
 - [ ] Uses `.density-strip` + `.density-item` + `.density-meta` pattern
-- [ ] Meta label shows actual resolved dimension (px value or size name)
-- [ ] Visual progression is clear (small → large flow)
+- [ ] Meta label shows size name AND resolved px dimension (e.g., "base — 40px")
+- [ ] Resolved px comes from `getComputedStyle` reading the height/size token
+- [ ] Visual progression is clear (small → large flow, left to right)
 
 ### 4. State Matrix (`#sec-states`) — CRITICAL, COMMONLY MISSED
 - [ ] CSS grid layout: variant/role labels as rows, states as columns
@@ -78,10 +81,24 @@ Every demo page should match the visual quality, interactivity, and section dept
 
 ## Global Controls (Pill Bars)
 
+### Pill Bar Visual Rendering (⚠️ #1 Visual Bug)
+- [ ] Pills render as styled rounded buttons in a tinted bar — NOT raw native radio buttons
+- [ ] Active pill has filled background + subtle shadow (`.pill[aria-pressed="true"]`)
+- [ ] Inactive pills have transparent background, subtle text
+- [ ] Hover shows text color change
+- [ ] If you see native `● ○` radio circles or `<fieldset>` borders, the HTML pattern is WRONG
+- [ ] Verify: no `<input type="radio">` or `<fieldset>` in pill-bar markup — use `<button class="pill">` only
+
+### Default Selection
+- [ ] Size bar: "Base" has `aria-pressed="true"` (not Micro, not first in DOM order)
+- [ ] Variant bar: default variant has `aria-pressed="true"`
+- [ ] On initial page load, hero shows "base" size component (not micro-sized)
+- [ ] All other pills show `aria-pressed="false"`
+
+### Reactivity
 - [ ] All pill bars are REACTIVE — changing a pill re-renders ALL sections
 - [ ] `applyGlobals()` function calls every render function
-- [ ] Pill bar listeners use `data-ctrl-{axis}` pattern
-- [ ] Default pill has `aria-pressed="true"`
+- [ ] Pill bar listeners use `.closest('.pill')` + `aria-pressed` toggle
 - [ ] Controls include at minimum: variant/role + size
 - [ ] Shape control if component supports `data-rounded`/`data-shape`
 

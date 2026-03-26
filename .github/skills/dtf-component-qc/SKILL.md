@@ -104,6 +104,8 @@ DEMO PAGE (match button.html quality bar)
  ✓ Framework section with 4 tabs: React, Vue, HTML, CSS Tokens
  ✓ Context Playground — interactive role/surface switcher (if applicable)
  ✓ Global pill-bar controls REACTIVE across all sections
+ ✓ Pill-bar uses BUTTON+aria-pressed pattern (NOT fieldset+radio)
+ ✓ Default size selection = "base" (aria-pressed="true" on Base pill)
  ✓ IIFE pattern, DTF.onThemeChange hook
 
 UI QUALITY
@@ -130,3 +132,37 @@ INTEGRATION
  ✓ ALL existing demo pages: nav dropdown updated with new link
  ✓ No corrupted HTML from sed operations — verify with grep
 ```
+
+## Known Anti-Patterns (Lessons from 8-Component Rebuild)
+
+These bugs were discovered during QC of real component rebuilds. Check for them explicitly.
+
+### ❌ Fieldset + Radio Input Pill Bars
+**Bug**: Using `<fieldset class="pill-bar"><input type="radio"><label>` instead of `<button class="pill">`.
+**Result**: Raw unstyled native radio buttons with visible fieldset borders. shared.css has NO styles for radio inputs inside pill bars.
+**Fix**: Always use `<button class="pill" role="radio" aria-pressed="true/false" data-ctrl-{axis}="{value}">`.
+
+### ❌ Default Size = Micro
+**Bug**: First pill (Micro) gets `aria-pressed="true"` or `checked` instead of Base.
+**Result**: Hero preview shows micro-sized component on page load — looks broken.
+**Fix**: `aria-pressed="true"` MUST be on the Base size pill. Verify DOM order doesn't auto-select first pill.
+
+### ❌ 2-Column Inspector
+**Bug**: Inspector shows abbreviated token names in 2 columns (name + value) instead of 3.
+**Result**: Missing alias context — designers can't trace token → source.
+**Fix**: 3 columns: `--{comp}-height-base` → `--spacing-40` → `40px`. Use `getComputedStyle` for column 3.
+
+### ❌ wirePillBar() with Change Events
+**Bug**: Using `addEventListener('change', ...)` on radio inputs instead of `click` on buttons.
+**Result**: Works differently from gold standard, breaks if pill-bar markup changes.
+**Fix**: Always use `click` listener on the `.pill-bar` container with `.closest('.pill')` delegation.
+
+### ❌ Missing `type="button"` on pills
+**Bug**: Omitting `type="button"` on pill `<button>` elements inside a form context.
+**Result**: Buttons may trigger form submission instead of toggling.
+**Fix**: Always include `type="button"` on every pill button.
+
+### ❌ Inspector targeting wrong element
+**Bug**: Running `getComputedStyle` on the wrapper instead of the interactive sub-element.
+**Result**: Inspector shows inherited/default values, not the actual rendered ones.
+**Fix**: Target the zone/trigger/track element where internal `--_` vars resolve.
