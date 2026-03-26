@@ -1,107 +1,152 @@
 /* ════════════════════════════════════════════════════════════════
    Design Token Forge — Toast Token Defaults
-   Layer 0: System defaults for ~90 toast variables.
+   Layer 0: System defaults for ~89 toast variables.
    All values reference global tokens — zero hardcoded visuals.
+   7-axis coverage: Shape · Dimension · Surface · Typography · Slots · Motion · A11y
    ════════════════════════════════════════════════════════════════ */
 
 .toast {
 
   /* ────────────────────────────────────────────────────────────
-     📐 SHAPE  (4 vars)
+     1 · SHAPE  (6 vars)
      ──────────────────────────────────────────────────────────── */
-  --toast-radius: var(--radius-lg);
-  --toast-border-width: 1px;
-  --toast-border-style: solid;
-  --toast-border-color: var(--surface-base-cm-outline);
+  --toast-radius:        var(--radius-lg);
+  --toast-border-width:  1px;
+  --toast-border-style:  solid;
+  --toast-border-color:  var(--surface-base-cm-outline);
+  --toast-accent-width:  4px;
+  --toast-accent-radius: var(--radius-full);
 
   /* ────────────────────────────────────────────────────────────
-     📏 DIMENSION  (10 vars)
+     2 · PER-SIZE: SM  (8 vars)
      ──────────────────────────────────────────────────────────── */
-  --toast-padding-y: var(--spacing-14);
-  --toast-padding-x: var(--spacing-16);
-  --toast-gap: var(--spacing-12);
-  --toast-content-gap: var(--spacing-4);
-  --toast-min-width: 300px;
-  --toast-max-width: 480px;
-  --toast-min-height: 48px;
+  --toast-padding-y-sm:       var(--spacing-8);
+  --toast-padding-x-sm:       var(--spacing-12);
+  --toast-gap-sm:             var(--spacing-8);
+  --toast-content-gap-sm:     var(--spacing-2);
+  --toast-font-size-sm:       var(--font-size-13);
+  --toast-title-font-size-sm: var(--font-size-13);
+  --toast-icon-size-sm:       var(--spacing-16);
+  --toast-close-size-sm:      var(--spacing-16);
 
-  /* Container (stack) */
-  --toast-container-gap: var(--spacing-10);
+  /* ────────────────────────────────────────────────────────────
+     2 · PER-SIZE: MD  (8 vars)  ← default
+     ──────────────────────────────────────────────────────────── */
+  --toast-padding-y-md:       var(--spacing-14);
+  --toast-padding-x-md:       var(--spacing-16);
+  --toast-gap-md:             var(--spacing-12);
+  --toast-content-gap-md:     var(--spacing-4);
+  --toast-font-size-md:       var(--font-size-14);
+  --toast-title-font-size-md: var(--font-size-14);
+  --toast-icon-size-md:       var(--spacing-20);
+  --toast-close-size-md:      var(--spacing-20);
+
+  /* ────────────────────────────────────────────────────────────
+     2 · PER-SIZE: LG  (8 vars)
+     ──────────────────────────────────────────────────────────── */
+  --toast-padding-y-lg:       var(--spacing-18);
+  --toast-padding-x-lg:       var(--spacing-20);
+  --toast-gap-lg:             var(--spacing-14);
+  --toast-content-gap-lg:     var(--spacing-6);
+  --toast-font-size-lg:       var(--font-size-16);
+  --toast-title-font-size-lg: var(--font-size-16);
+  --toast-icon-size-lg:       var(--spacing-24);
+  --toast-close-size-lg:      var(--spacing-24);
+
+  /* ────────────────────────────────────────────────────────────
+     3 · DIMENSION  (6 vars)
+     ──────────────────────────────────────────────────────────── */
+  --toast-min-width:         300px;
+  --toast-max-width:         480px;
+  --toast-min-height:        48px;
+  --toast-container-gap:     var(--spacing-10);
   --toast-container-padding: var(--spacing-16);
   --toast-container-z-index: 9999;
 
   /* ────────────────────────────────────────────────────────────
-     🎨 SURFACE  (20 vars = 4 roles × 5)
+     4 · SURFACE — default  (3 vars)
      ──────────────────────────────────────────────────────────── */
-
-  /* ── DEFAULT (neutral bg) ───────────────────────────── */
-  --toast-bg: var(--surface-base-cn-bg);
-  --toast-fg: var(--surface-base-ct-default);
+  --toast-bg:     var(--surface-base-cn-bg);
+  --toast-fg:     var(--surface-base-ct-default);
   --toast-shadow: var(--shadow-lg);
 
-  /* ── INFO ───────────────────────────────────────────── */
-  --toast-info-accent: var(--primary-component-bg-default);
-  --toast-info-icon-color: var(--primary-component-bg-default);
-  --toast-info-title-color: var(--primary-content-strong);
+  /* ── per-role accents  (4 roles × 3 = 12 vars) ──── */
+  --toast-info-accent:        var(--primary-component-bg-default);
+  --toast-info-icon-color:    var(--primary-component-bg-default);
+  --toast-info-title-color:   var(--primary-content-strong);
 
-  /* ── SUCCESS ────────────────────────────────────────── */
-  --toast-success-accent: var(--success-component-bg-default);
-  --toast-success-icon-color: var(--success-component-bg-default);
+  --toast-success-accent:      var(--success-component-bg-default);
+  --toast-success-icon-color:  var(--success-component-bg-default);
   --toast-success-title-color: var(--success-content-strong);
 
-  /* ── WARNING ────────────────────────────────────────── */
-  --toast-warning-accent: var(--warning-component-bg-default);
-  --toast-warning-icon-color: var(--warning-component-bg-default);
+  --toast-warning-accent:      var(--warning-component-bg-default);
+  --toast-warning-icon-color:  var(--warning-component-bg-default);
   --toast-warning-title-color: var(--warning-content-strong);
 
-  /* ── DANGER ─────────────────────────────────────────── */
-  --toast-danger-accent: var(--danger-component-bg-default);
-  --toast-danger-icon-color: var(--danger-component-bg-default);
-  --toast-danger-title-color: var(--danger-content-strong);
+  --toast-danger-accent:       var(--danger-component-bg-default);
+  --toast-danger-icon-color:   var(--danger-component-bg-default);
+  --toast-danger-title-color:  var(--danger-content-strong);
 
-  /* Accent bar */
-  --toast-accent-width: 4px;
-  --toast-accent-radius: var(--radius-full);
+  /* ── soft variant bg  (4 vars) ──────────────────── */
+  --toast-info-soft-bg:    var(--primary-container-bg);
+  --toast-success-soft-bg: var(--success-container-bg);
+  --toast-warning-soft-bg: var(--warning-container-bg);
+  --toast-danger-soft-bg:  var(--danger-container-bg);
+
+  /* ── filled variant  (4 roles × 2 = 8 vars) ───── */
+  --toast-info-filled-bg:     var(--primary-component-bg-default);
+  --toast-info-filled-fg:     var(--primary-on-component);
+  --toast-success-filled-bg:  var(--success-component-bg-default);
+  --toast-success-filled-fg:  var(--success-on-component);
+  --toast-warning-filled-bg:  var(--warning-component-bg-default);
+  --toast-warning-filled-fg:  var(--warning-on-component);
+  --toast-danger-filled-bg:   var(--danger-component-bg-default);
+  --toast-danger-filled-fg:   var(--danger-on-component);
+
+  /* ── outline variant border  (4 vars) ──────────── */
+  --toast-info-outline-border:    var(--primary-component-bg-default);
+  --toast-success-outline-border: var(--success-component-bg-default);
+  --toast-warning-outline-border: var(--warning-component-bg-default);
+  --toast-danger-outline-border:  var(--danger-component-bg-default);
 
   /* ────────────────────────────────────────────────────────────
-     ✏️ TYPOGRAPHY  (6 vars)
+     5 · TYPOGRAPHY  (4 vars)
      ──────────────────────────────────────────────────────────── */
-  --toast-font-family: var(--font-family-sans);
-  --toast-font-size: var(--font-size-14);
-  --toast-font-weight: var(--font-weight-normal);
-  --toast-line-height: 1.45;
-  --toast-title-font-size: var(--font-size-14);
+  --toast-font-family:       var(--font-family-sans);
+  --toast-font-weight:       var(--font-weight-normal);
+  --toast-line-height:       1.45;
   --toast-title-font-weight: var(--font-weight-semibold);
 
   /* ────────────────────────────────────────────────────────────
-     🧩 SLOTS  (8 vars)
+     6 · SLOTS  (6 vars)
      ──────────────────────────────────────────────────────────── */
-  --toast-icon-size: var(--spacing-20);
-  --toast-close-size: var(--spacing-20);
-  --toast-close-radius: var(--radius-sm);
-  --toast-close-opacity: 0.5;
+  --toast-close-radius:        var(--radius-sm);
+  --toast-close-opacity:       0.5;
   --toast-close-hover-opacity: 1;
-  --toast-close-hover-bg: rgba(0,0,0,0.06);
-  --toast-action-font-size: var(--font-size-13);
-  --toast-action-font-weight: var(--font-weight-semibold);
+  --toast-close-hover-bg:      rgba(0,0,0,0.06);
+  --toast-action-font-size:    var(--font-size-13);
+  --toast-action-font-weight:  var(--font-weight-semibold);
 
   /* ────────────────────────────────────────────────────────────
-     ⚡ MOTION  (8 vars)
+     7 · MOTION  (9 vars)
      ──────────────────────────────────────────────────────────── */
   --toast-transition-property: opacity, transform;
   --toast-transition-duration: var(--duration-normal);
-  --toast-transition-easing: var(--easing-in-out);
-  --toast-enter-translate-y: 16px;
-  --toast-exit-translate-y: -8px;
-  --toast-enter-scale: 0.96;
-  --toast-auto-dismiss: 5000ms;
-
-  /* Progress bar (auto-dismiss timer) */
-  --toast-progress-height: 3px;
-  --toast-progress-radius: var(--radius-full);
+  --toast-transition-easing:   var(--easing-in-out);
+  --toast-enter-translate-y:   16px;
+  --toast-exit-translate-y:    -8px;
+  --toast-enter-scale:         0.96;
+  --toast-auto-dismiss:        5000ms;
+  --toast-progress-height:     3px;
+  --toast-progress-radius:     var(--radius-full);
 
   /* ────────────────────────────────────────────────────────────
-     ♿ ACCESSIBILITY  (2 vars)
+     8 · STATE  (1 var)
+     ──────────────────────────────────────────────────────────── */
+  --toast-disabled-opacity: 0.5;
+
+  /* ────────────────────────────────────────────────────────────
+     9 · ACCESSIBILITY  (2 vars)
      ──────────────────────────────────────────────────────────── */
   --toast-focus-outline-width: 2px;
   --toast-focus-outline-color: var(--primary-component-outline-default);

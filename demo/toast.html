@@ -8,6 +8,13 @@
 <link rel="stylesheet" href="../packages/components/src/toast/toast.tokens.css">
 <link rel="stylesheet" href="../packages/components/src/toast/toast.css">
 <link rel="stylesheet" href="shared.css">
+<style>
+  .pos-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px }
+  .pos-card { position:relative; border:1px dashed var(--surface-base-cm-outline); border-radius:8px; height:110px; overflow:hidden }
+  .pos-card-label { position:absolute; bottom:4px; left:0; right:0; text-align:center; font-size:11px; opacity:.6 }
+  .pos-dot { position:absolute; width:60px; height:18px; border-radius:4px; background:var(--primary-component-bg-default); opacity:.55 }
+  .toast-stack { display:flex; flex-direction:column; gap:12px; width:100% }
+</style>
 </head>
 <body>
 
@@ -46,9 +53,9 @@
         <a href="badge.html" role="menuitem">Badge <span class="dd-hint">~90 vars</span></a>
         <a href="tooltip.html" role="menuitem">Tooltip <span class="dd-hint">~60 vars</span></a>
         <a href="alert.html" role="menuitem">Alert <span class="dd-hint">~80 vars</span></a>
-        <a href="toast.html" role="menuitem" aria-current="page">Toast <span class="dd-hint">~90 vars</span></a>
-        <a href="progress-bar.html" role="menuitem">Progress Bar <span class="dd-hint">~60 vars</span></a>
-        <a href="progress-circle.html" role="menuitem">Progress Circle <span class="dd-hint">~50 vars</span></a>
+        <a href="toast.html" role="menuitem" aria-current="page">Toast <span class="dd-hint">89 vars</span></a>
+        <a href="progress-bar.html" role="menuitem">Progress Bar <span class="dd-hint">~110 vars</span></a>
+        <a href="progress-circle.html" role="menuitem">Progress Circle <span class="dd-hint">~86 vars</span></a>
       </div>
     </div>
   </div>
@@ -59,98 +66,155 @@
 
 <div class="page-layout">
 <aside class="sidebar-nav" id="sidebarNav" aria-label="Section navigation">
-  <a href="#sec-hero"><span class="sn-num">1</span>Hero Preview</a>
-  <a href="#sec-roles"><span class="sn-num">2</span>Semantic Roles</a>
-  <a href="#sec-anatomy"><span class="sn-num">3</span>Anatomy</a>
-  <a href="#sec-positions"><span class="sn-num">4</span>Positions</a>
-  <a href="#sec-actions"><span class="sn-num">5</span>Actions</a>
-  <a href="#sec-progress"><span class="sn-num">6</span>Auto-Dismiss</a>
-  <a href="#sec-a11y"><span class="sn-num">7</span>Accessibility</a>
-  <a href="#sec-framework"><span class="sn-num">8</span>Use in Framework</a>
+  <a href="#sec-hero"><span class="sn-num">01</span>Hero Inspector</a>
+  <a href="#sec-variants"><span class="sn-num">02</span>Variant Gallery</a>
+  <a href="#sec-density"><span class="sn-num">03</span>Density</a>
+  <a href="#sec-state"><span class="sn-num">04</span>State Matrix</a>
+  <a href="#sec-surface"><span class="sn-num">05</span>Surface Context</a>
+  <a href="#sec-positions"><span class="sn-num">06</span>Positions</a>
+  <a href="#sec-slots"><span class="sn-num">07</span>Slots &amp; Anatomy</a>
+  <a href="#sec-motion"><span class="sn-num">08</span>Motion</a>
+  <a href="#sec-a11y"><span class="sn-num">09</span>Accessibility</a>
+  <a href="#sec-framework"><span class="sn-num">10</span>Use in Framework</a>
 </aside>
 <div class="page-content">
 
 <header class="demo-header">
   <h1>Toast Explorer <span>— Design Token Forge</span></h1>
   <div class="demo-meta">
-    <span class="demo-badge">~90 CSS Variables</span>
+    <span class="demo-badge">89 CSS Variables</span>
     <span class="demo-badge">4 Roles</span>
+    <span class="demo-badge">3 Sizes</span>
+    <span class="demo-badge">4 Variants</span>
     <span class="demo-badge">6 Positions</span>
-    <span class="demo-badge">Auto-Dismiss</span>
     <span class="demo-badge">7 Axes</span>
   </div>
 </header>
 
+<!-- ─── GLOBAL CONTROLS ─────────────────────────────────── -->
+<div class="section-body" style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:20px">
+  <fieldset class="pill-bar" id="roleBar">
+    <legend>Role</legend>
+    <input type="radio" name="g-role" value="info"    id="gr-info" checked><label for="gr-info">Info</label>
+    <input type="radio" name="g-role" value="success" id="gr-success"><label for="gr-success">Success</label>
+    <input type="radio" name="g-role" value="warning" id="gr-warning"><label for="gr-warning">Warning</label>
+    <input type="radio" name="g-role" value="danger"  id="gr-danger"><label for="gr-danger">Danger</label>
+  </fieldset>
+  <fieldset class="pill-bar" id="sizeBar">
+    <legend>Size</legend>
+    <input type="radio" name="g-size" value="sm" id="gs-sm"><label for="gs-sm">SM</label>
+    <input type="radio" name="g-size" value="md" id="gs-md" checked><label for="gs-md">MD</label>
+    <input type="radio" name="g-size" value="lg" id="gs-lg"><label for="gs-lg">LG</label>
+  </fieldset>
+  <fieldset class="pill-bar" id="variantBar">
+    <legend>Variant</legend>
+    <input type="radio" name="g-variant" value=""        id="gv-def" checked><label for="gv-def">Default</label>
+    <input type="radio" name="g-variant" value="soft"    id="gv-soft"><label for="gv-soft">Soft</label>
+    <input type="radio" name="g-variant" value="filled"  id="gv-filled"><label for="gv-filled">Filled</label>
+    <input type="radio" name="g-variant" value="outline" id="gv-outline"><label for="gv-outline">Outline</label>
+  </fieldset>
+</div>
+
 <main class="demo-main">
 
-  <!-- 1. HERO -->
+  <!-- ─── 1. HERO + INSPECTOR ─────────────────────────── -->
   <section class="section" id="sec-hero">
-    <div class="section-header"><h2>Hero Preview</h2><span class="section-tag">Live</span></div>
-    <p class="section-desc">Click buttons to fire live toasts. They stack, auto-dismiss with progress bar, and can be manually closed.</p>
+    <div class="section-header"><h2>Hero Inspector</h2><span class="section-tag">Live</span></div>
+    <p class="section-desc">Live toast reflecting global controls. Inspector shows resolved token → alias → computed value.</p>
     <div class="section-body">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px" id="heroTriggers"></div>
-      <div class="toast-container" data-position="top-right" id="liveContainer"></div>
+      <div class="hero">
+        <div class="hero-preview" id="heroPreview" style="min-height:80px"></div>
+        <div class="hero-inspector" id="heroInspector"></div>
+      </div>
     </div>
   </section>
 
-  <!-- 2. SEMANTIC ROLES -->
-  <section class="section" id="sec-roles">
-    <div class="section-header"><h2>Semantic Roles</h2><span class="section-tag">Surface</span></div>
-    <p class="section-desc">Info, success, warning, danger. Each role colors the icon, accent bar, progress, and title.</p>
-    <div class="section-body"><div class="toast-container" data-demo id="roleGallery" style="gap:12px"></div></div>
+  <!-- ─── 2. VARIANT GALLERY ──────────────────────────── -->
+  <section class="section" id="sec-variants">
+    <div class="section-header"><h2>Variant Gallery</h2><span class="section-tag">4 × 4</span></div>
+    <p class="section-desc">Every variant crossed with every role. Default = neutral surface + role accent. Soft = tinted role bg. Filled = solid role bg. Outline = transparent + role border.</p>
+    <div class="section-body" id="variantGallery"></div>
   </section>
 
-  <!-- 3. ANATOMY -->
-  <section class="section" id="sec-anatomy">
-    <div class="section-header"><h2>Anatomy</h2><span class="section-tag">Slots</span></div>
-    <p class="section-desc">Accent bar, icon, title, body, action button, close button, and progress bar — all optional slots.</p>
-    <div class="section-body"><div class="toast-container" data-demo id="anatomyGallery" style="gap:12px"></div></div>
+  <!-- ─── 3. DENSITY ──────────────────────────────────── -->
+  <section class="section" id="sec-density">
+    <div class="section-header"><h2>Density</h2><span class="section-tag">3 Sizes</span></div>
+    <p class="section-desc">SM, MD, LG. Padding, gap, font-size, icon, and close button all scale per-size.</p>
+    <div class="section-body"><div class="toast-stack" id="densityGallery"></div></div>
   </section>
 
-  <!-- 4. POSITIONS -->
+  <!-- ─── 4. STATE MATRIX ─────────────────────────────── -->
+  <section class="section" id="sec-state">
+    <div class="section-header"><h2>State Matrix</h2><span class="section-tag">Variant × State</span></div>
+    <p class="section-desc">Each variant shown in visible, entering, exiting, and disabled states.</p>
+    <div class="section-body" id="stateMatrix"></div>
+  </section>
+
+  <!-- ─── 5. SURFACE CONTEXT ──────────────────────────── -->
+  <section class="section" id="sec-surface">
+    <div class="section-header"><h2>Surface Context</h2><span class="section-tag">3 BG Levels</span></div>
+    <p class="section-desc">Toasts rendered on base, elevated, and sunken surfaces to verify contrast and shadow.</p>
+    <div class="section-body">
+      <div class="surface-strip" id="surfaceStrip"></div>
+    </div>
+  </section>
+
+  <!-- ─── 6. POSITIONS ────────────────────────────────── -->
   <section class="section" id="sec-positions">
-    <div class="section-header"><h2>Positions</h2><span class="section-tag">Layout</span></div>
-    <p class="section-desc">Six fixed positions for the toast container. Container is a flex column that stacks toasts.</p>
-    <div class="section-body"><div class="preview-grid" id="positionGallery" style="gap:16px;flex-wrap:wrap"></div></div>
+    <div class="section-header"><h2>Positions</h2><span class="section-tag">6 Fixed</span></div>
+    <p class="section-desc">Six container positions for fixed-panel stacking. Click any card to fire a live toast at that position.</p>
+    <div class="section-body">
+      <div class="pos-grid" id="positionGrid"></div>
+    </div>
+    <div id="liveContainers"></div>
   </section>
 
-  <!-- 5. ACTIONS -->
-  <section class="section" id="sec-actions">
-    <div class="section-header"><h2>Actions</h2><span class="section-tag">Interactive</span></div>
-    <p class="section-desc">Toasts can include an inline action button (e.g. "Undo") styled with the role's accent color.</p>
-    <div class="section-body"><div class="toast-container" data-demo id="actionGallery" style="gap:12px"></div></div>
+  <!-- ─── 7. SLOTS & ANATOMY ──────────────────────────── -->
+  <section class="section" id="sec-slots">
+    <div class="section-header"><h2>Slots &amp; Anatomy</h2><span class="section-tag">7 Sub-elements</span></div>
+    <p class="section-desc">Every optional slot: accent bar, icon, title, body, action button, close button, progress bar.</p>
+    <div class="section-body"><div class="toast-stack" id="slotsGallery"></div></div>
   </section>
 
-  <!-- 6. AUTO-DISMISS -->
-  <section class="section" id="sec-progress">
-    <div class="section-header"><h2>Auto-Dismiss</h2><span class="section-tag">Motion</span></div>
-    <p class="section-desc">Progress bar shrinks over <code>--toast-auto-dismiss</code> duration (5s default). Click the progress demo to start.</p>
-    <div class="section-body"><div class="toast-container" data-demo id="progressDemo" style="gap:12px"></div></div>
+  <!-- ─── 8. MOTION ───────────────────────────────────── -->
+  <section class="section" id="sec-motion">
+    <div class="section-header"><h2>Motion</h2><span class="section-tag">Enter / Exit / Timer</span></div>
+    <p class="section-desc">Live enter/exit transition demo and auto-dismiss progress bar animation.</p>
+    <div class="section-body">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+        <button class="tooltip-trigger" style="padding:8px 16px;font:inherit;font-size:13px;font-weight:600;border-radius:6px;border:1px solid var(--surface-base-cm-outline);background:var(--surface-base-cn-bg);color:var(--surface-base-ct-default);cursor:pointer" id="motionFireBtn" type="button">Fire Toast (enter → auto-dismiss → exit)</button>
+      </div>
+      <div class="toast-container" data-demo id="motionContainer" style="gap:12px"></div>
+    </div>
   </section>
 
-  <!-- 7. ACCESSIBILITY -->
+  <!-- ─── 9. ACCESSIBILITY ────────────────────────────── -->
   <section class="section" id="sec-a11y">
     <div class="section-header"><h2>Accessibility</h2><span class="section-tag">A11y</span></div>
-    <p class="section-desc">Toasts use <code>role="status"</code> for polite announcements. Danger uses <code>role="alert"</code> for assertive.</p>
+    <p class="section-desc">ARIA roles, keyboard navigation, forced colors, and reduced motion behavior.</p>
     <div class="section-body">
       <div class="a11y-grid">
         <div class="a11y-card">
-          <div class="a11y-card-title">ARIA Roles</div>
-          <p class="a11y-card-desc">Info/success/warning = <code>role="status"</code>. Danger = <code>role="alert"</code>.</p>
+          <div class="a11y-card-title">ARIA Live Regions</div>
+          <p class="a11y-card-desc">Info/success/warning use <code>role="status"</code> (polite). Danger uses <code>role="alert"</code> (assertive). Screen readers announce toast content automatically.</p>
         </div>
         <div class="a11y-card">
           <div class="a11y-card-title">Keyboard</div>
-          <p class="a11y-card-desc">Close button is focusable. Action button is tabbable.</p>
+          <p class="a11y-card-desc">Close button and action button are focusable and tabbable. <code>Escape</code> can be wired to dismiss all. Focus ring via <code>:focus-visible</code>.</p>
         </div>
         <div class="a11y-card">
           <div class="a11y-card-title">Forced Colors</div>
-          <p class="a11y-card-desc">Border + accent bar visible. Progress bar uses Highlight.</p>
+          <p class="a11y-card-desc">High Contrast mode: border falls back to <code>CanvasText</code>. Accent bar and progress bar use <code>Highlight</code> for visibility.</p>
+        </div>
+        <div class="a11y-card">
+          <div class="a11y-card-title">Reduced Motion</div>
+          <p class="a11y-card-desc">When <code>prefers-reduced-motion: reduce</code> is active, all transitions and animations resolve to near-instant (0.01ms).</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 8. FRAMEWORK -->
+  <!-- ─── 10. FRAMEWORK ───────────────────────────────── -->
   <section class="section" id="sec-framework">
     <div class="section-header"><h2>Use in Your Framework</h2><span class="section-tag">Integration</span></div>
     <p class="section-desc">Wrap this component in your framework. Props become data attributes — our CSS does the rest.</p>
@@ -171,7 +235,9 @@
     &lt;div
       key={t.id}
       className="toast"
-      data-role={t.role}
+      data-role={t.role}           {/* info | success | warning | danger */}
+      data-size={t.size}           {/* sm | md | lg */}
+      data-variant={t.variant}     {/* soft | filled | outline */}
       data-state={t.state}
       role={t.role === 'danger' ? 'alert' : 'status'}
     &gt;
@@ -183,11 +249,14 @@
       &lt;/div&gt;
       {t.action &amp;&amp; (
         &lt;div className="toast__actions"&gt;
-          &lt;button className="toast__action" onClick={t.action.onClick}&gt;{t.action.label}&lt;/button&gt;
+          &lt;button className="toast__action" onClick={t.action.onClick}&gt;
+            {t.action.label}
+          &lt;/button&gt;
         &lt;/div&gt;
       )}
-      &lt;button className="toast__close" aria-label="Dismiss" onClick={() =&gt; dismiss(t.id)}&gt;×&lt;/button&gt;
-      {t.autoDismiss &amp;&amp; &lt;div className="toast__progress" /&gt;}
+      &lt;button className="toast__close" aria-label="Dismiss"
+              onClick={() =&gt; dismiss(t.id)}&gt;×&lt;/button&gt;
+      {t.autoDismiss &amp;&amp; &lt;div className="toast__progress" data-animate /&gt;}
     &lt;/div&gt;
   ))}
 &lt;/div&gt;</div>
@@ -196,6 +265,8 @@
     v-for="t in toasts" :key="t.id"
     class="toast"
     :data-role="t.role"
+    :data-size="t.size || undefined"
+    :data-variant="t.variant || undefined"
     :data-state="t.state"
     :role="t.role === 'danger' ? 'alert' : 'status'"
   &gt;
@@ -206,53 +277,71 @@
       &lt;div class="toast__body"&gt;{{ t.message }}&lt;/div&gt;
     &lt;/div&gt;
     &lt;div v-if="t.action" class="toast__actions"&gt;
-      &lt;button class="toast__action" @click="t.action.onClick"&gt;{{ t.action.label }}&lt;/button&gt;
+      &lt;button class="toast__action" @click="t.action.onClick"&gt;
+        {{ t.action.label }}
+      &lt;/button&gt;
     &lt;/div&gt;
-    &lt;button class="toast__close" aria-label="Dismiss" @click="dismiss(t.id)"&gt;×&lt;/button&gt;
-    &lt;div v-if="t.autoDismiss" class="toast__progress" /&gt;
+    &lt;button class="toast__close" aria-label="Dismiss"
+            @click="dismiss(t.id)"&gt;×&lt;/button&gt;
+    &lt;div v-if="t.autoDismiss" class="toast__progress" data-animate /&gt;
   &lt;/div&gt;
 &lt;/div&gt;</div>
         <div class="fw-snippet-code" data-panel="html">&lt;div class="toast-container" data-position="top-right"&gt;
-  &lt;div class="toast" data-role="success" role="status"&gt;
+  &lt;div class="toast" data-role="success" data-size="md"
+       data-variant="soft" role="status"&gt;
     &lt;span class="toast__accent"&gt;&lt;/span&gt;
     &lt;span class="toast__icon"&gt;&lt;svg&gt;…&lt;/svg&gt;&lt;/span&gt;
     &lt;div class="toast__content"&gt;
       &lt;div class="toast__title"&gt;Saved&lt;/div&gt;
       &lt;div class="toast__body"&gt;Your changes were saved.&lt;/div&gt;
     &lt;/div&gt;
+    &lt;div class="toast__actions"&gt;
+      &lt;button class="toast__action"&gt;Undo&lt;/button&gt;
+    &lt;/div&gt;
     &lt;button class="toast__close" aria-label="Dismiss"&gt;×&lt;/button&gt;
-    &lt;div class="toast__progress"&gt;&lt;/div&gt;
+    &lt;div class="toast__progress" data-animate&gt;&lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;</div>
-        <div class="fw-snippet-code" data-panel="css">/* Shape */
---toast-radius / -border-width / -style / -color
-
-/* Dimension */
---toast-padding-y / -padding-x / -gap / -content-gap
---toast-min-width / -max-width / -min-height
---toast-container-gap / -padding / -z-index
-
-/* Surface */
---toast-bg / -fg / -shadow
---toast-{role}-accent / -icon-color / -title-color
+        <div class="fw-snippet-code" data-panel="css">/* ── Shape ── */
+--toast-radius              /* border-radius (default: radius-lg) */
+--toast-border-width / -style / -color
 --toast-accent-width / -radius
 
-/* Typography */
---toast-font-family / -size / -weight / -line-height
---toast-title-font-size / -font-weight
+/* ── Per-Size (sm / md / lg) ── */
+--toast-padding-y-{size}    /* vertical padding */
+--toast-padding-x-{size}    /* horizontal padding */
+--toast-gap-{size}           /* main flex gap */
+--toast-content-gap-{size}   /* title↔body gap */
+--toast-font-size-{size}     /* body font-size */
+--toast-title-font-size-{size}
+--toast-icon-size-{size}     /* icon dimensions */
+--toast-close-size-{size}    /* close button dimensions */
 
-/* Slots */
---toast-icon-size / -close-size / -close-radius
---toast-close-opacity / -hover-opacity / -hover-bg
+/* ── Surface ── */
+--toast-bg / -fg / -shadow   /* default neutral surface */
+--toast-{role}-accent / -icon-color / -title-color
+--toast-{role}-soft-bg       /* soft variant tinted bg */
+--toast-{role}-filled-bg / -filled-fg
+--toast-{role}-outline-border
+
+/* ── Typography ── */
+--toast-font-family / -font-weight / -line-height
+--toast-title-font-weight
+
+/* ── Slots ── */
+--toast-close-radius / -opacity / -hover-opacity / -hover-bg
 --toast-action-font-size / -font-weight
 
-/* Motion */
+/* ── Motion ── */
 --toast-transition-property / -duration / -easing
 --toast-enter-translate-y / -exit-translate-y / -enter-scale
---toast-auto-dismiss
+--toast-auto-dismiss         /* auto-dismiss duration (5s) */
 --toast-progress-height / -radius
 
-/* A11y */
+/* ── State ── */
+--toast-disabled-opacity
+
+/* ── A11y ── */
 --toast-focus-outline-width / -color</div>
       </div>
     </div>
@@ -266,144 +355,377 @@
 (function(){
   'use strict';
 
-  var ROLES=['info','success','warning','danger'];
-  var POSITIONS=['top-right','top-left','top-center','bottom-right','bottom-left','bottom-center'];
-  var ICONS={
-    info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
-    success:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
-    warning:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
-    danger:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6"/><path d="M9 9l6 6"/></svg>'
+  /* ── Constants ─────────────────────────────────────── */
+  var ROLES    = ['info','success','warning','danger'];
+  var SIZES    = ['sm','md','lg'];
+  var VARIANTS = ['','soft','filled','outline'];
+  var VLABELS  = ['Default','Soft','Filled','Outline'];
+  var POSITIONS= ['top-left','top-center','top-right','bottom-left','bottom-center','bottom-right'];
+
+  var ICONS = {
+    info:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
+    danger:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6"/><path d="M9 9l6 6"/></svg>'
   };
-  var CLOSE_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>';
-  var TITLES={info:'New Update',success:'Saved',warning:'Warning',danger:'Error'};
-  var BODIES={info:'A new version is available.',success:'Your changes have been saved.',warning:'Storage is almost full.',danger:'Failed to save. Please retry.'};
+  var CLOSE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>';
+  var TITLES = { info:'New Update', success:'Saved', warning:'Warning', danger:'Error' };
+  var BODIES = {
+    info:    'A new version is available for download.',
+    success: 'Your changes have been saved successfully.',
+    warning: 'Storage is almost full. Free up space soon.',
+    danger:  'Failed to save changes. Please retry.'
+  };
 
-  function makeToast(opts){
-    opts=opts||{};
-    var role=opts.role||'info';
-    var el=document.createElement('div');
-    el.className='toast';
-    el.dataset.role=role;
-    el.setAttribute('role',role==='danger'?'alert':'status');
-    if(opts.state)el.dataset.state=opts.state;
+  /* ── Global state ──────────────────────────────────── */
+  var G = { role:'info', size:'md', variant:'' };
 
-    if(opts.accent!==false){
-      el.appendChild(Object.assign(document.createElement('span'),{className:'toast__accent'}));
+  /* ── Helpers ───────────────────────────────────────── */
+  function cap(s) { return s.charAt(0).toUpperCase()+s.slice(1) }
+  function clr(id) { var e=document.getElementById(id); if(e) e.innerHTML=''; return e }
+
+  function makeToast(opts) {
+    opts = opts || {};
+    var role = opts.role || 'info';
+    var el = document.createElement('div');
+    el.className = 'toast';
+    el.dataset.role = role;
+    if (opts.size)    el.dataset.size = opts.size;
+    if (opts.variant) el.dataset.variant = opts.variant;
+    if (opts.state)   el.dataset.state = opts.state;
+    if (opts.disabled) el.dataset.disabled = '';
+    el.setAttribute('role', role === 'danger' ? 'alert' : 'status');
+
+    if (opts.accent !== false && opts.variant !== 'filled') {
+      el.appendChild(Object.assign(document.createElement('span'), { className:'toast__accent' }));
     }
-    if(opts.icon!==false){
-      var ic=document.createElement('span');ic.className='toast__icon';ic.innerHTML=ICONS[role];el.appendChild(ic);
+    if (opts.icon !== false) {
+      var ic = document.createElement('span');
+      ic.className = 'toast__icon';
+      ic.innerHTML = ICONS[role];
+      el.appendChild(ic);
     }
-    var content=document.createElement('div');content.className='toast__content';
-    if(opts.title!==false){
-      var t=document.createElement('div');t.className='toast__title';t.textContent=opts.title||TITLES[role];content.appendChild(t);
+    var content = document.createElement('div');
+    content.className = 'toast__content';
+    if (opts.title !== false) {
+      var t = document.createElement('div');
+      t.className = 'toast__title';
+      t.textContent = opts.title || TITLES[role];
+      content.appendChild(t);
     }
-    var b=document.createElement('div');b.className='toast__body';b.textContent=opts.body||BODIES[role];content.appendChild(b);
+    var b = document.createElement('div');
+    b.className = 'toast__body';
+    b.textContent = opts.body || BODIES[role];
+    content.appendChild(b);
     el.appendChild(content);
 
-    if(opts.action){
-      var actions=document.createElement('div');actions.className='toast__actions';
-      var btn=document.createElement('button');btn.className='toast__action';btn.textContent=opts.action;
-      btn.addEventListener('click',function(){});
-      actions.appendChild(btn);el.appendChild(actions);
+    if (opts.action) {
+      var actions = document.createElement('div');
+      actions.className = 'toast__actions';
+      var btn = document.createElement('button');
+      btn.className = 'toast__action';
+      btn.textContent = opts.action;
+      btn.type = 'button';
+      actions.appendChild(btn);
+      el.appendChild(actions);
     }
-
-    if(opts.close!==false){
-      var cls=document.createElement('button');cls.className='toast__close';cls.setAttribute('aria-label','Dismiss');
-      cls.innerHTML=CLOSE_ICON;el.appendChild(cls);
-      cls.addEventListener('click',function(){
-        el.dataset.state='exiting';
-        setTimeout(function(){el.remove()},300);
+    if (opts.close !== false) {
+      var cls = document.createElement('button');
+      cls.className = 'toast__close';
+      cls.setAttribute('aria-label', 'Dismiss');
+      cls.type = 'button';
+      cls.innerHTML = CLOSE_SVG;
+      el.appendChild(cls);
+      cls.addEventListener('click', function() {
+        el.dataset.state = 'exiting';
+        setTimeout(function() { el.remove() }, 300);
       });
     }
-
-    if(opts.progress){
-      var prog=document.createElement('div');prog.className='toast__progress';
+    if (opts.progress) {
+      var prog = document.createElement('div');
+      prog.className = 'toast__progress';
+      if (opts.animate) prog.dataset.animate = '';
       el.appendChild(prog);
-      if(opts.animate){
-        requestAnimationFrame(function(){
-          prog.style.transition='transform 5s linear';
-          prog.style.transform='scaleX(0)';
-        });
-        setTimeout(function(){
-          el.dataset.state='exiting';
-          setTimeout(function(){el.remove()},300);
-        },5000);
-      }
     }
-
     return el;
   }
 
-  function clr(id){var e=document.getElementById(id);e.innerHTML='';return e}
-  function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+  /* ── Inspector data ────────────────────────────────── */
+  var INSPECT = [
+    ['--toast-radius',            '--radius-lg'],
+    ['--toast-padding-y-md',      '--spacing-14'],
+    ['--toast-padding-x-md',      '--spacing-16'],
+    ['--toast-gap-md',            '--spacing-12'],
+    ['--toast-font-size-md',      '--font-size-14'],
+    ['--toast-icon-size-md',      '--spacing-20'],
+    ['--toast-close-size-md',     '--spacing-20'],
+    ['--toast-bg',                '--surface-base-cn-bg'],
+    ['--toast-fg',                '--surface-base-ct-default'],
+    ['--toast-shadow',            '--shadow-lg'],
+    ['--toast-info-accent',       '--primary-component-bg-default'],
+    ['--toast-accent-width',      '4px'],
+    ['--toast-transition-duration','--duration-normal']
+  ];
 
-  // Hero — live toast triggers
-  (function(){
-    var triggers=document.getElementById('heroTriggers');
-    var container=document.getElementById('liveContainer');
-    ROLES.forEach(function(role){
-      var btn=document.createElement('button');
-      btn.className='tooltip-trigger';
-      btn.style.cssText='padding:8px 16px;font:inherit;font-size:13px;font-weight:600;border-radius:6px;border:1px solid var(--surface-base-cm-outline);background:var(--surface-base-cn-bg);color:var(--surface-base-ct-default);cursor:pointer';
-      btn.textContent='Fire '+cap(role);
-      btn.addEventListener('click',function(){
-        var toast=makeToast({role:role,progress:true,animate:true});
-        container.appendChild(toast);
+  function renderInspector() {
+    var el = clr('heroInspector');
+    var target = document.querySelector('#heroPreview .toast');
+    if (!el || !target) return;
+    var cs = getComputedStyle(target);
+    INSPECT.forEach(function(row) {
+      var r = document.createElement('div');
+      r.className = 'inspector-row';
+      var v = cs.getPropertyValue(row[0]).trim() || '—';
+      r.innerHTML = '<span class="inspector-token">'+row[0]+'</span>' +
+                    '<span class="inspector-alias">'+row[1]+'</span>' +
+                    '<span class="inspector-computed">'+v+'</span>';
+      el.appendChild(r);
+    });
+  }
+
+  /* ── Section renderers ─────────────────────────────── */
+
+  function renderHero() {
+    var el = clr('heroPreview');
+    var container = document.createElement('div');
+    container.className = 'toast-container';
+    container.dataset.demo = '';
+    var toast = makeToast({ role:G.role, size:G.size, variant:G.variant||undefined, progress:true });
+    container.appendChild(toast);
+    el.appendChild(container);
+    renderInspector();
+  }
+
+  function renderVariantGallery() {
+    var el = clr('variantGallery');
+    VARIANTS.forEach(function(v, vi) {
+      var label = document.createElement('div');
+      label.style.cssText = 'font-weight:600;font-size:13px;margin-bottom:6px;margin-top:'+(vi?'20px':'0');
+      label.textContent = VLABELS[vi];
+      el.appendChild(label);
+      var stack = document.createElement('div');
+      stack.className = 'toast-stack';
+      ROLES.forEach(function(r) {
+        var container = document.createElement('div');
+        container.className = 'toast-container';
+        container.dataset.demo = '';
+        container.appendChild(makeToast({ role:r, variant:v||undefined, close:false }));
+        stack.appendChild(container);
       });
-      triggers.appendChild(btn);
+      el.appendChild(stack);
     });
-  })();
+  }
 
-  // Roles gallery (static)
-  (function(){
-    var el=document.getElementById('roleGallery');
-    ROLES.forEach(function(r){
-      el.appendChild(makeToast({role:r,close:false}));
+  function renderDensity() {
+    var el = clr('densityGallery');
+    SIZES.forEach(function(sz) {
+      var label = document.createElement('div');
+      label.className = 'variant-label';
+      label.textContent = sz.toUpperCase();
+      el.appendChild(label);
+      var container = document.createElement('div');
+      container.className = 'toast-container';
+      container.dataset.demo = '';
+      container.appendChild(makeToast({
+        role: G.role,
+        size: sz,
+        variant: G.variant||undefined,
+        title: cap(sz)+' toast',
+        body: 'Padding, gap, font, icon, and close all scale with the size token.'
+      }));
+      el.appendChild(container);
     });
-  })();
+  }
 
-  // Anatomy
-  (function(){
-    var el=document.getElementById('anatomyGallery');
-    el.appendChild(makeToast({role:'success',title:'Full Anatomy',body:'Accent + icon + title + body + close + progress.',progress:true,close:true}));
-    el.appendChild(makeToast({role:'info',title:false,body:'Body only — minimal toast.',accent:false,icon:false,close:true}));
-    el.appendChild(makeToast({role:'warning',body:'With action button.',action:'Undo',close:true}));
-  })();
-
-  // Positions
-  (function(){
-    var el=document.getElementById('positionGallery');
-    POSITIONS.forEach(function(pos){
-      var card=document.createElement('div');card.className='variant-card';
-      card.style.cssText='border:1px dashed var(--surface-base-cm-outline);border-radius:8px;padding:12px;min-width:160px;text-align:center';
-      var code=document.createElement('code');code.style.fontSize='12px';code.textContent=pos;
-      card.appendChild(code);el.appendChild(card);
-    });
-  })();
-
-  // Actions
-  (function(){
-    var el=document.getElementById('actionGallery');
-    el.appendChild(makeToast({role:'info',body:'Email archived.',action:'Undo'}));
-    el.appendChild(makeToast({role:'danger',body:'Item deleted permanently.',action:'Restore'}));
-  })();
-
-  // Progress
-  (function(){
-    var el=document.getElementById('progressDemo');
-    var toast=makeToast({role:'success',progress:true,close:false});
-    el.appendChild(toast);
-    var prog=toast.querySelector('.toast__progress');
-    el.style.cursor='pointer';
-    el.addEventListener('click',function(){
-      prog.style.transition='none';prog.style.transform='scaleX(1)';
-      requestAnimationFrame(function(){
-        prog.style.transition='transform 5s linear';prog.style.transform='scaleX(0)';
+  function renderStateMatrix() {
+    var el = clr('stateMatrix');
+    var states = [
+      { label:'Visible',  state:'visible' },
+      { label:'Entering', state:'entering' },
+      { label:'Exiting',  state:'exiting' },
+      { label:'Disabled', disabled:true }
+    ];
+    // header
+    var hdr = document.createElement('div');
+    hdr.style.cssText = 'display:grid;grid-template-columns:100px repeat('+states.length+',1fr);gap:8px;margin-bottom:8px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;opacity:.6';
+    hdr.innerHTML = '<span></span>';
+    states.forEach(function(s) { hdr.innerHTML += '<span>'+s.label+'</span>' });
+    el.appendChild(hdr);
+    // rows
+    VARIANTS.forEach(function(v, vi) {
+      var row = document.createElement('div');
+      row.style.cssText = 'display:grid;grid-template-columns:100px repeat('+states.length+',1fr);gap:8px;align-items:start;margin-bottom:12px';
+      var rl = document.createElement('span');
+      rl.style.cssText = 'font-size:12px;font-weight:600;padding-top:12px';
+      rl.textContent = VLABELS[vi];
+      row.appendChild(rl);
+      states.forEach(function(s) {
+        var cell = document.createElement('div');
+        cell.className = 'toast-container';
+        cell.dataset.demo = '';
+        cell.appendChild(makeToast({
+          role: G.role,
+          variant: v||undefined,
+          state: s.state||undefined,
+          disabled: s.disabled||false,
+          close: false,
+          title: s.label,
+          body: VLABELS[vi]+' variant'
+        }));
+        row.appendChild(cell);
       });
-    },{once:false});
-  })();
+      el.appendChild(row);
+    });
+  }
 
-  window.DTF.onThemeChange = function(){};
+  function renderSurfaceContext() {
+    var el = clr('surfaceStrip');
+    var surfaces = [
+      { label:'Base',     bg:'var(--surface-base-bg)' },
+      { label:'Elevated', bg:'var(--surface-base-cm-bg)' },
+      { label:'Sunken',   bg:'var(--surface-base-cm-bg-pressed)' }
+    ];
+    surfaces.forEach(function(s) {
+      var panel = document.createElement('div');
+      panel.className = 'surface-panel';
+      panel.style.background = s.bg;
+      var lbl = document.createElement('div');
+      lbl.className = 'surface-label';
+      lbl.textContent = s.label;
+      panel.appendChild(lbl);
+      var container = document.createElement('div');
+      container.className = 'toast-container';
+      container.dataset.demo = '';
+      container.appendChild(makeToast({ role:G.role, variant:G.variant||undefined }));
+      panel.appendChild(container);
+      el.appendChild(panel);
+    });
+  }
+
+  function renderPositions() {
+    var el = clr('positionGrid');
+    var containers = clr('liveContainers');
+    POSITIONS.forEach(function(pos) {
+      // visual card
+      var card = document.createElement('div');
+      card.className = 'pos-card';
+      card.style.cursor = 'pointer';
+      card.title = 'Click to fire at '+pos;
+      var dot = document.createElement('div');
+      dot.className = 'pos-dot';
+      // position the dot visually
+      var parts = pos.split('-');
+      dot.style[parts[0]] = '8px';
+      if (parts[1]==='left') dot.style.left='8px';
+      else if (parts[1]==='right') dot.style.right='8px';
+      else { dot.style.left='50%'; dot.style.transform='translateX(-50%)' }
+      card.appendChild(dot);
+      var lbl = document.createElement('div');
+      lbl.className = 'pos-card-label';
+      lbl.textContent = pos;
+      card.appendChild(lbl);
+      el.appendChild(card);
+      // live container
+      var lc = document.createElement('div');
+      lc.className = 'toast-container';
+      lc.dataset.position = pos;
+      lc.id = 'pos-'+pos;
+      containers.appendChild(lc);
+      // click handler
+      card.addEventListener('click', function() {
+        var toast = makeToast({ role:G.role, progress:true, animate:true, state:'entering' });
+        lc.appendChild(toast);
+        requestAnimationFrame(function() { toast.dataset.state='visible' });
+        setTimeout(function() {
+          toast.dataset.state='exiting';
+          setTimeout(function() { toast.remove() }, 400);
+        }, 3500);
+      });
+    });
+  }
+
+  function renderSlots() {
+    var el = clr('slotsGallery');
+    var demos = [
+      { label:'Full anatomy', opts:{ progress:true } },
+      { label:'Minimal (body only)', opts:{ title:false, accent:false, icon:false, close:true, body:'Body-only toast — minimal configuration.' } },
+      { label:'With action button', opts:{ action:'Undo', body:'Email archived.' } },
+      { label:'No accent bar', opts:{ accent:false, body:'Toast without the left accent bar.' } },
+      { label:'No icon', opts:{ icon:false, body:'Toast without the icon slot.' } },
+      { label:'No close button', opts:{ close:false, body:'Non-dismissible toast. Auto-dismiss only.' } },
+      { label:'Title + body only', opts:{ accent:false, icon:false, close:false } }
+    ];
+    demos.forEach(function(d) {
+      var lbl = document.createElement('div');
+      lbl.className = 'variant-label';
+      lbl.textContent = d.label;
+      el.appendChild(lbl);
+      var container = document.createElement('div');
+      container.className = 'toast-container';
+      container.dataset.demo = '';
+      var opts = Object.assign({ role:G.role }, d.opts);
+      container.appendChild(makeToast(opts));
+      el.appendChild(container);
+    });
+  }
+
+  function renderMotion() {
+    // handled by click handler below
+  }
+
+  /* ── Master render ─────────────────────────────────── */
+  function applyGlobals() {
+    renderHero();
+    renderVariantGallery();
+    renderDensity();
+    renderStateMatrix();
+    renderSurfaceContext();
+    renderPositions();
+    renderSlots();
+  }
+
+  /* ── Pill-bar wiring ───────────────────────────────── */
+  function wirePillBar(id, cb) {
+    var bar = document.getElementById(id);
+    if (!bar) return;
+    bar.addEventListener('change', function(e) {
+      if (e.target.name) cb(e.target.value);
+    });
+  }
+  wirePillBar('roleBar',    function(v) { G.role=v;    applyGlobals() });
+  wirePillBar('sizeBar',    function(v) { G.size=v;    applyGlobals() });
+  wirePillBar('variantBar', function(v) { G.variant=v; applyGlobals() });
+
+  /* ── Motion fire button ────────────────────────────── */
+  document.getElementById('motionFireBtn').addEventListener('click', function() {
+    var container = document.getElementById('motionContainer');
+    var toast = makeToast({ role:G.role, size:G.size, variant:G.variant||undefined, progress:true, animate:true, state:'entering' });
+    container.appendChild(toast);
+    requestAnimationFrame(function() { toast.dataset.state = 'visible' });
+    setTimeout(function() {
+      toast.dataset.state = 'exiting';
+      setTimeout(function() { toast.remove() }, 400);
+    }, 5000);
+  });
+
+  /* ── Framework tabs ────────────────────────────────── */
+  document.querySelectorAll('.fw-snippet-tabs').forEach(function(tabs) {
+    tabs.addEventListener('click', function(e) {
+      var btn = e.target.closest('.fw-snippet-tab');
+      if (!btn) return;
+      var panel = btn.dataset.tab;
+      var snippet = tabs.closest('.fw-snippet');
+      snippet.querySelectorAll('.fw-snippet-tab').forEach(function(t) { t.setAttribute('aria-selected','false') });
+      btn.setAttribute('aria-selected','true');
+      snippet.querySelectorAll('.fw-snippet-code').forEach(function(c) { delete c.dataset.active });
+      var target = snippet.querySelector('[data-panel="'+panel+'"]');
+      if (target) target.dataset.active = '';
+    });
+  });
+
+  /* ── Init ─────────────────────────────────────────── */
+  applyGlobals();
+  window.DTF.onThemeChange = function() { applyGlobals() };
 })();
 </script>
 </body>
