@@ -9,16 +9,14 @@
 <link rel="stylesheet" href="../packages/components/src/tooltip/tooltip.css">
 <link rel="stylesheet" href="shared.css">
 <style>
-  .tooltip-trigger { display:inline-flex;align-items:center;justify-content:center;padding:8px 16px;font:inherit;font-size:13px;font-weight:600;border-radius:6px;border:1px solid var(--surface-base-cm-outline);background:var(--surface-base-cn-bg);color:var(--surface-base-ct-default);cursor:default;position:relative; }
-  .tooltip-stage { display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start;justify-content:center;padding:48px 24px; }
-  .tooltip-wrap { position:relative;display:inline-flex;flex-direction:column;align-items:center;gap:8px; }
-  .tooltip-wrap .tooltip { position:absolute;white-space:nowrap; }
-  .tooltip-wrap[data-p="top"] .tooltip { bottom:calc(100% + 8px);left:50%;transform:translateX(-50%); }
-  .tooltip-wrap[data-p="bottom"] .tooltip { top:calc(100% + 8px);left:50%;transform:translateX(-50%); }
-  .tooltip-wrap[data-p="left"] .tooltip { right:calc(100% + 8px);top:50%;transform:translateY(-50%); }
-  .tooltip-wrap[data-p="right"] .tooltip { left:calc(100% + 8px);top:50%;transform:translateY(-50%); }
-  .role-matrix-row { display:flex;gap:24px;align-items:center;padding:8px 0; }
-  .role-matrix-label { width:72px;font-weight:600;font-size:13px; }
+  .tooltip-trigger{display:inline-flex;align-items:center;justify-content:center;padding:8px 16px;font:inherit;font-size:13px;font-weight:600;border-radius:6px;border:1px solid var(--surface-base-cm-outline);background:var(--surface-base-cn-bg);color:var(--surface-base-ct-default);cursor:default;position:relative}
+  .tooltip-stage{display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start;justify-content:center;padding:48px 24px}
+  .tooltip-wrap{position:relative;display:inline-flex;flex-direction:column;align-items:center;gap:8px}
+  .tooltip-wrap .tooltip{position:absolute;white-space:nowrap}
+  .tooltip-wrap[data-p="top"] .tooltip{bottom:calc(100% + 8px);left:50%;transform:translateX(-50%)}
+  .tooltip-wrap[data-p="bottom"] .tooltip{top:calc(100% + 8px);left:50%;transform:translateX(-50%)}
+  .tooltip-wrap[data-p="left"] .tooltip{right:calc(100% + 8px);top:50%;transform:translateY(-50%)}
+  .tooltip-wrap[data-p="right"] .tooltip{left:calc(100% + 8px);top:50%;transform:translateY(-50%)}
 </style>
 </head>
 <body>
@@ -56,11 +54,11 @@
         <a href="file-upload.html" role="menuitem">FileUpload <span class="dd-hint">~120 vars</span></a>
         <a href="avatar.html" role="menuitem">Avatar <span class="dd-hint">~80 vars</span></a>
         <a href="badge.html" role="menuitem">Badge <span class="dd-hint">~90 vars</span></a>
-        <a href="tooltip.html" role="menuitem" aria-current="page">Tooltip <span class="dd-hint">~60 vars</span></a>
-        <a href="alert.html" role="menuitem">Alert <span class="dd-hint">~80 vars</span></a>
-        <a href="toast.html" role="menuitem">Toast <span class="dd-hint">~90 vars</span></a>
-        <a href="progress-bar.html" role="menuitem">Progress Bar <span class="dd-hint">~60 vars</span></a>
-        <a href="progress-circle.html" role="menuitem">Progress Circle <span class="dd-hint">~50 vars</span></a>
+        <a href="tooltip.html" role="menuitem" aria-current="page">Tooltip <span class="dd-hint">66 vars</span></a>
+        <a href="alert.html" role="menuitem">Alert <span class="dd-hint">91 vars</span></a>
+        <a href="toast.html" role="menuitem">Toast <span class="dd-hint">89 vars</span></a>
+        <a href="progress-bar.html" role="menuitem">Progress Bar <span class="dd-hint">~110 vars</span></a>
+        <a href="progress-circle.html" role="menuitem">Progress Circle <span class="dd-hint">~86 vars</span></a>
       </div>
     </div>
   </div>
@@ -71,20 +69,23 @@
 
 <div class="page-layout">
 <aside class="sidebar-nav" id="sidebarNav" aria-label="Section navigation">
-  <a href="#sec-hero"><span class="sn-num">1</span>Hero Preview</a>
-  <a href="#sec-variants"><span class="sn-num">2</span>Variants</a>
-  <a href="#sec-placement"><span class="sn-num">3</span>Placement</a>
-  <a href="#sec-sizes"><span class="sn-num">4</span>Sizes</a>
-  <a href="#sec-rich"><span class="sn-num">5</span>Rich Content</a>
-  <a href="#sec-a11y"><span class="sn-num">6</span>Accessibility</a>
-  <a href="#sec-framework"><span class="sn-num">7</span>Use in Framework</a>
+  <a href="#sec-hero"><span class="sn-num">01</span>Hero Inspector</a>
+  <a href="#sec-variants"><span class="sn-num">02</span>Variant Gallery</a>
+  <a href="#sec-density"><span class="sn-num">03</span>Density</a>
+  <a href="#sec-state"><span class="sn-num">04</span>State Matrix</a>
+  <a href="#sec-surface"><span class="sn-num">05</span>Surface Context</a>
+  <a href="#sec-placement"><span class="sn-num">06</span>Placement</a>
+  <a href="#sec-slots"><span class="sn-num">07</span>Slots &amp; Anatomy</a>
+  <a href="#sec-rich"><span class="sn-num">08</span>Rich Content</a>
+  <a href="#sec-a11y"><span class="sn-num">09</span>Accessibility</a>
+  <a href="#sec-framework"><span class="sn-num">10</span>Use in Framework</a>
 </aside>
 <div class="page-content">
 
 <header class="demo-header">
   <h1>Tooltip Explorer <span>— Design Token Forge</span></h1>
   <div class="demo-meta">
-    <span class="demo-badge">~60 CSS Variables</span>
+    <span class="demo-badge">66 CSS Variables</span>
     <span class="demo-badge">4 Variants</span>
     <span class="demo-badge">4 Placements</span>
     <span class="demo-badge">3 Sizes</span>
@@ -92,74 +93,120 @@
   </div>
 </header>
 
+<!-- ─── GLOBAL CONTROLS ─────────────────────────────────── -->
+<div class="section-body" style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:20px">
+  <fieldset class="pill-bar" id="variantBar">
+    <legend>Variant</legend>
+    <input type="radio" name="g-variant" value=""        id="gv-def" checked><label for="gv-def">Default</label>
+    <input type="radio" name="g-variant" value="light"   id="gv-light"><label for="gv-light">Light</label>
+    <input type="radio" name="g-variant" value="error"   id="gv-error"><label for="gv-error">Error</label>
+    <input type="radio" name="g-variant" value="success" id="gv-success"><label for="gv-success">Success</label>
+  </fieldset>
+  <fieldset class="pill-bar" id="sizeBar">
+    <legend>Size</legend>
+    <input type="radio" name="g-size" value="small" id="gs-sm"><label for="gs-sm">Small</label>
+    <input type="radio" name="g-size" value="base"  id="gs-base" checked><label for="gs-base">Base</label>
+    <input type="radio" name="g-size" value="large" id="gs-lg"><label for="gs-lg">Large</label>
+  </fieldset>
+  <fieldset class="pill-bar" id="placementBar">
+    <legend>Placement</legend>
+    <input type="radio" name="g-placement" value="top"    id="gp-top" checked><label for="gp-top">Top</label>
+    <input type="radio" name="g-placement" value="bottom" id="gp-bottom"><label for="gp-bottom">Bottom</label>
+    <input type="radio" name="g-placement" value="left"   id="gp-left"><label for="gp-left">Left</label>
+    <input type="radio" name="g-placement" value="right"  id="gp-right"><label for="gp-right">Right</label>
+  </fieldset>
+</div>
+
 <main class="demo-main">
 
-  <!-- 1. HERO -->
+  <!-- ─── 1. HERO + INSPECTOR ─────────────────────────── -->
   <section class="section" id="sec-hero">
-    <div class="section-header"><h2>Hero Preview</h2><span class="section-tag">Live</span></div>
-    <p class="section-desc">Hover triggers to preview default, light, error, and success tooltip variants. Arrow points toward the trigger.</p>
+    <div class="section-header"><h2>Hero Inspector</h2><span class="section-tag">Live</span></div>
+    <p class="section-desc">Live tooltip reflecting global controls. Inspector shows resolved token → alias → computed value.</p>
     <div class="section-body">
       <div class="hero">
-        <div class="hero-preview" id="heroPreview" style="gap:48px;flex-wrap:wrap;padding:48px 24px;justify-content:center"></div>
-        <div class="hero-inspector" id="heroInspector"><div class="inspector-title">Resolved Tokens</div></div>
+        <div class="hero-preview" id="heroPreview" style="padding:56px 24px;justify-content:center"></div>
+        <div class="hero-inspector" id="heroInspector"></div>
       </div>
     </div>
   </section>
 
-  <!-- 2. VARIANTS -->
+  <!-- ─── 2. VARIANT GALLERY ──────────────────────────── -->
   <section class="section" id="sec-variants">
-    <div class="section-header"><h2>Variants</h2><span class="section-tag">Surface</span></div>
-    <p class="section-desc">Default (dark), light (bordered), error, and success. Each variant sets bg, fg, and arrow color tokens.</p>
+    <div class="section-header"><h2>Variant Gallery</h2><span class="section-tag">4 Variants</span></div>
+    <p class="section-desc">Default (dark bg), Light (bordered), Error, and Success. Each sets bg, fg, arrow, and optionally border + shadow.</p>
     <div class="section-body"><div class="tooltip-stage" id="variantGallery"></div></div>
   </section>
 
-  <!-- 3. PLACEMENT -->
+  <!-- ─── 3. DENSITY ──────────────────────────────────── -->
+  <section class="section" id="sec-density">
+    <div class="section-header"><h2>Density</h2><span class="section-tag">3 Sizes</span></div>
+    <p class="section-desc">Small, Base, Large. Padding, font-size, max-width, icon-size, and gap all scale per size.</p>
+    <div class="section-body"><div class="tooltip-stage" id="densityGallery"></div></div>
+  </section>
+
+  <!-- ─── 4. STATE MATRIX ─────────────────────────────── -->
+  <section class="section" id="sec-state">
+    <div class="section-header"><h2>State Matrix</h2><span class="section-tag">Variant × State</span></div>
+    <p class="section-desc">Each variant shown in visible, hidden, and disabled states.</p>
+    <div class="section-body" id="stateMatrix"></div>
+  </section>
+
+  <!-- ─── 5. SURFACE CONTEXT ──────────────────────────── -->
+  <section class="section" id="sec-surface">
+    <div class="section-header"><h2>Surface Context</h2><span class="section-tag">3 BG Levels</span></div>
+    <p class="section-desc">Tooltips on base, elevated, and sunken backgrounds to verify contrast and shadow visibility.</p>
+    <div class="section-body"><div class="surface-strip" id="surfaceStrip"></div></div>
+  </section>
+
+  <!-- ─── 6. PLACEMENT ────────────────────────────────── -->
   <section class="section" id="sec-placement">
-    <div class="section-header"><h2>Placement</h2><span class="section-tag">Layout</span></div>
-    <p class="section-desc">Four cardinal placements: top, bottom, left, right. Arrow auto-rotates per placement.</p>
+    <div class="section-header"><h2>Placement</h2><span class="section-tag">4 Directions</span></div>
+    <p class="section-desc">Top, Bottom, Left, Right. Arrow auto-positions per placement.</p>
     <div class="section-body"><div class="tooltip-stage" id="placementGallery"></div></div>
   </section>
 
-  <!-- 4. SIZES -->
-  <section class="section" id="sec-sizes">
-    <div class="section-header"><h2>Sizes</h2><span class="section-tag">Dimension</span></div>
-    <p class="section-desc">Three density tiers — small, base, large. Padding, font-size, max-width, and icon-size scale together.</p>
-    <div class="section-body"><div class="tooltip-stage" id="sizeGallery"></div></div>
+  <!-- ─── 7. SLOTS & ANATOMY ──────────────────────────── -->
+  <section class="section" id="sec-slots">
+    <div class="section-header"><h2>Slots &amp; Anatomy</h2><span class="section-tag">4 Sub-elements</span></div>
+    <p class="section-desc">Icon, title, body, and arrow. All optional except body.</p>
+    <div class="section-body"><div class="tooltip-stage" id="slotsGallery"></div></div>
   </section>
 
-  <!-- 5. RICH CONTENT -->
+  <!-- ─── 8. RICH CONTENT ─────────────────────────────── -->
   <section class="section" id="sec-rich">
-    <div class="section-header"><h2>Rich Content</h2><span class="section-tag">Slots</span></div>
-    <p class="section-desc">Tooltip supports icon, title, and multi-line body slots for richer contextual help.</p>
+    <div class="section-header"><h2>Rich Content</h2><span class="section-tag">Composition</span></div>
+    <p class="section-desc">Multi-line body, icon + title combos, long text wrapping with max-width.</p>
     <div class="section-body"><div class="tooltip-stage" id="richGallery"></div></div>
   </section>
 
-  <!-- 6. ACCESSIBILITY -->
+  <!-- ─── 9. ACCESSIBILITY ────────────────────────────── -->
   <section class="section" id="sec-a11y">
     <div class="section-header"><h2>Accessibility</h2><span class="section-tag">A11y</span></div>
-    <p class="section-desc">Tooltip uses <code>role="tooltip"</code>, pairs with <code>aria-describedby</code> on trigger. Forced Colors shows visible border.</p>
+    <p class="section-desc">ARIA pairing, keyboard, forced colors, and reduced motion.</p>
     <div class="section-body">
       <div class="a11y-grid">
         <div class="a11y-card">
           <div class="a11y-card-title">ARIA Pairing</div>
-          <p class="a11y-card-desc">Trigger has <code>aria-describedby</code> pointing to tooltip <code>id</code>. Tooltip has <code>role="tooltip"</code>.</p>
-          <div style="display:flex;gap:8px;margin-top:8px" id="a11yAriaDemo"></div>
+          <p class="a11y-card-desc">Trigger uses <code>aria-describedby</code> → tooltip <code>id</code>. Tooltip has <code>role="tooltip"</code>. Screen readers announce tooltip content when trigger is focused.</p>
+        </div>
+        <div class="a11y-card">
+          <div class="a11y-card-title">Keyboard</div>
+          <p class="a11y-card-desc">Show on focus, hide on <code>Escape</code>. Tooltip has <code>pointer-events: none</code> so it never traps focus or steals clicks.</p>
         </div>
         <div class="a11y-card">
           <div class="a11y-card-title">Forced Colors</div>
-          <p class="a11y-card-desc">High Contrast mode shows a 1px CanvasText border. Arrow also visible.</p>
-          <div style="display:flex;gap:8px;margin-top:8px" id="a11yHcDemo"></div>
+          <p class="a11y-card-desc">Border falls back to <code>CanvasText</code>. Arrow background uses <code>CanvasText</code> for visibility in High Contrast mode.</p>
         </div>
         <div class="a11y-card">
           <div class="a11y-card-title">Reduced Motion</div>
-          <p class="a11y-card-desc">Scale/opacity animation collapses to instant when <code>prefers-reduced-motion</code> is set.</p>
-          <div style="display:flex;gap:8px;margin-top:8px" id="a11yMotionDemo"></div>
+          <p class="a11y-card-desc">Scale/opacity transition resolves to near-instant (0.01ms) when <code>prefers-reduced-motion: reduce</code> is active.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 7. FRAMEWORK -->
+  <!-- ─── 10. FRAMEWORK ───────────────────────────────── -->
   <section class="section" id="sec-framework">
     <div class="section-header"><h2>Use in Your Framework</h2><span class="section-tag">Integration</span></div>
     <p class="section-desc">Wrap this component in your framework. Props become data attributes — our CSS does the rest.</p>
@@ -179,7 +226,7 @@
   className="tooltip"
   data-placement={placement}   {/* top | bottom | left | right */}
   data-size={size}             {/* small | base | large */}
-  data-variant={variant}       {/* default | light | error | success */}
+  data-variant={variant}       {/* light | error | success (omit for default) */}
   data-state={visible ? 'visible' : 'hidden'}
   role="tooltip"
   id={tooltipId}
@@ -207,48 +254,46 @@
   &lt;/div&gt;
   &lt;span class="tooltip__arrow" /&gt;
 &lt;/div&gt;</div>
-        <div class="fw-snippet-code" data-panel="html">&lt;!-- Trigger --&gt;
-&lt;button aria-describedby="tip1"&gt;Hover me&lt;/button&gt;
+        <div class="fw-snippet-code" data-panel="html">&lt;button aria-describedby="tip1"&gt;Hover me&lt;/button&gt;
 
-&lt;!-- Tooltip --&gt;
-&lt;div class="tooltip" data-placement="top" data-state="visible" role="tooltip" id="tip1"&gt;
+&lt;div class="tooltip" data-placement="top" data-size="base"
+     data-state="visible" role="tooltip" id="tip1"&gt;
+  &lt;span class="tooltip__icon"&gt;&lt;svg&gt;…&lt;/svg&gt;&lt;/span&gt;
   &lt;div class="tooltip__content"&gt;
-    &lt;div class="tooltip__body"&gt;Helpful hint&lt;/div&gt;
+    &lt;div class="tooltip__title"&gt;Shortcut&lt;/div&gt;
+    &lt;div class="tooltip__body"&gt;Press Ctrl+S to save&lt;/div&gt;
   &lt;/div&gt;
   &lt;span class="tooltip__arrow"&gt;&lt;/span&gt;
 &lt;/div&gt;</div>
-        <div class="fw-snippet-code" data-panel="css">/* Shape */
---tooltip-radius             /* border radius */
+        <div class="fw-snippet-code" data-panel="css">/* ── Shape ── */
+--tooltip-radius              /* border-radius */
 --tooltip-arrow-size / -offset
 --tooltip-border-width / -style / -color
 
-/* Dimension */
---tooltip-padding-y-{size}   /* vertical padding per density */
---tooltip-padding-x-{size}   /* horizontal padding per density */
---tooltip-max-width-{size}   /* max width per density */
---tooltip-gap                /* gap between icon and content */
---tooltip-offset             /* distance from trigger */
+/* ── Per-Size (small / base / large) ── */
+--tooltip-padding-y-{size}   --tooltip-padding-x-{size}
+--tooltip-max-width-{size}    --tooltip-font-size-{size}
+--tooltip-icon-size-{size}    --tooltip-gap-{size}
 
-/* Surface */
+/* ── Surface ── */
 --tooltip-bg / -fg / -arrow-color
 --tooltip-light-bg / -fg / -border-color / -arrow-color
 --tooltip-error-bg / -fg / -arrow-color
---tooltip-success-bg / -fg
+--tooltip-success-bg / -fg / -arrow-color
 --tooltip-shadow / -light-shadow
 
-/* Typography */
+/* ── Typography ── */
 --tooltip-font-family / -weight / -line-height / -letter-spacing
---tooltip-font-size-{size}
---tooltip-title-font-weight
+--tooltip-title-font-weight   --tooltip-content-gap
 
-/* Slots */
---tooltip-icon-size-{size} / -icon-color
-
-/* Motion */
+/* ── Motion ── */
 --tooltip-transition-property / -duration / -easing
 --tooltip-enter-scale / -show-delay / -hide-delay
 
-/* A11y */
+/* ── State ── */
+--tooltip-disabled-opacity
+
+/* ── A11y ── */
 --tooltip-z-index / -pointer-events</div>
       </div>
     </div>
@@ -262,145 +307,255 @@
 (function(){
   'use strict';
 
-  var PLACEMENTS=['top','bottom','left','right'];
-  var VARIANTS=[{key:'',label:'Default'},{key:'light',label:'Light'},{key:'error',label:'Error'},{key:'success',label:'Success'}];
-  var SIZES=['small','base','large'];
-  var INFO_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>';
-  var WARN_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
-  var CHECK_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  var PLACEMENTS = ['top','bottom','left','right'];
+  var VARIANTS   = [{key:'',label:'Default'},{key:'light',label:'Light'},{key:'error',label:'Error'},{key:'success',label:'Success'}];
+  var SIZES      = ['small','base','large'];
+  var SLABELS    = ['Small','Base','Large'];
 
-  function makeTooltip(opts){
-    opts=opts||{};
-    var el=document.createElement('div');
-    el.className='tooltip';
-    el.setAttribute('role','tooltip');
-    el.dataset.demo='';
-    if(opts.placement)el.dataset.placement=opts.placement;
-    if(opts.size)el.dataset.size=opts.size;
-    if(opts.variant)el.dataset.variant=opts.variant;
-    if(opts.state)el.dataset.state=opts.state;
+  var INFO_ICON  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>';
+  var WARN_ICON  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
+  var CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
-    if(opts.icon){
-      var ic=document.createElement('span');ic.className='tooltip__icon';ic.innerHTML=opts.icon;el.appendChild(ic);
+  var G = { variant:'', size:'base', placement:'top' };
+
+  function cap(s) { return s.charAt(0).toUpperCase()+s.slice(1) }
+  function clr(id) { var e=document.getElementById(id); if(e) e.innerHTML=''; return e }
+
+  function makeTooltip(opts) {
+    opts = opts || {};
+    var el = document.createElement('div');
+    el.className = 'tooltip';
+    el.setAttribute('role', 'tooltip');
+    el.dataset.demo = '';
+    if (opts.placement) el.dataset.placement = opts.placement;
+    if (opts.size && opts.size !== 'base') el.dataset.size = opts.size;
+    if (opts.variant) el.dataset.variant = opts.variant;
+    if (opts.state) el.dataset.state = opts.state;
+    if (opts.disabled) el.dataset.disabled = '';
+    if (opts.icon) {
+      var ic = document.createElement('span');
+      ic.className = 'tooltip__icon';
+      ic.innerHTML = opts.icon;
+      el.appendChild(ic);
     }
-    var content=document.createElement('div');content.className='tooltip__content';
-    if(opts.title){
-      var t=document.createElement('div');t.className='tooltip__title';t.textContent=opts.title;content.appendChild(t);
+    var content = document.createElement('div');
+    content.className = 'tooltip__content';
+    if (opts.title) {
+      var t = document.createElement('div');
+      t.className = 'tooltip__title';
+      t.textContent = opts.title;
+      content.appendChild(t);
     }
-    if(opts.body){
-      var b=document.createElement('div');b.className='tooltip__body';b.textContent=opts.body;content.appendChild(b);
+    if (opts.body) {
+      var b = document.createElement('div');
+      b.className = 'tooltip__body';
+      b.textContent = opts.body;
+      content.appendChild(b);
     }
     el.appendChild(content);
-
-    if(opts.arrow!==false){
-      var arrow=document.createElement('span');arrow.className='tooltip__arrow';el.appendChild(arrow);
+    if (opts.arrow !== false) {
+      el.appendChild(Object.assign(document.createElement('span'), { className:'tooltip__arrow' }));
     }
     return el;
   }
 
-  function makeWrap(placement,tooltipOpts,triggerLabel){
-    var wrap=document.createElement('div');wrap.className='tooltip-wrap';wrap.dataset.p=placement;
-    var trigger=document.createElement('div');trigger.className='tooltip-trigger';trigger.textContent=triggerLabel||'Trigger';
+  function makeWrap(placement, tooltipOpts, triggerLabel) {
+    var wrap = document.createElement('div');
+    wrap.className = 'tooltip-wrap';
+    wrap.dataset.p = placement;
+    var trigger = document.createElement('div');
+    trigger.className = 'tooltip-trigger';
+    trigger.textContent = triggerLabel || 'Trigger';
     wrap.appendChild(trigger);
-    tooltipOpts.placement=placement;
+    tooltipOpts.placement = placement;
     wrap.appendChild(makeTooltip(tooltipOpts));
     return wrap;
   }
 
-  function wrapCard(el,label){
-    var d=document.createElement('div');d.className='variant-card';
-    d.appendChild(el);
-    if(label){var l=document.createElement('span');l.className='variant-label';l.textContent=label;d.appendChild(l)}
-    return d;
+  /* ── Inspector ─────────────────────────────────────── */
+  var INSPECT = [
+    ['--tooltip-radius',           '--radius-sm'],
+    ['--tooltip-padding-y-base',   '--spacing-6'],
+    ['--tooltip-padding-x-base',   '--spacing-10'],
+    ['--tooltip-font-size-base',   '--font-size-12'],
+    ['--tooltip-max-width-base',   '240px'],
+    ['--tooltip-gap-base',         '--spacing-6'],
+    ['--tooltip-icon-size-base',   '--spacing-16'],
+    ['--tooltip-bg',               '--surface-base-ct-default'],
+    ['--tooltip-fg',               '--surface-base-cn-bg'],
+    ['--tooltip-shadow',           '--shadow-sm'],
+    ['--tooltip-arrow-size',       '6px'],
+    ['--tooltip-transition-duration','--duration-fast']
+  ];
+
+  function renderInspector() {
+    var el = clr('heroInspector');
+    var target = document.querySelector('#heroPreview .tooltip');
+    if (!el || !target) return;
+    var cs = getComputedStyle(target);
+    INSPECT.forEach(function(row) {
+      var r = document.createElement('div');
+      r.className = 'inspector-row';
+      var v = cs.getPropertyValue(row[0]).trim() || '—';
+      r.innerHTML = '<span class="inspector-token">'+row[0]+'</span>' +
+                    '<span class="inspector-alias">'+row[1]+'</span>' +
+                    '<span class="inspector-computed">'+v+'</span>';
+      el.appendChild(r);
+    });
   }
-  function clr(id){var e=document.getElementById(id);e.innerHTML='';return e}
-  function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
 
   /* ── Renderers ─────────────────────────────────────── */
 
-  function renderHero(){
-    var el=clr('heroPreview');
-    el.appendChild(makeWrap('top',{body:'Default tooltip'},'Default'));
-    el.appendChild(makeWrap('top',{variant:'light',body:'Light variant'},'Light'));
-    el.appendChild(makeWrap('top',{variant:'error',body:'Error message',icon:WARN_ICON},'Error'));
-    el.appendChild(makeWrap('top',{variant:'success',body:'Saved!',icon:CHECK_ICON},'Success'));
+  function renderHero() {
+    var el = clr('heroPreview');
+    el.appendChild(makeWrap(G.placement, {
+      variant: G.variant || undefined,
+      size: G.size,
+      body: 'Tooltip content',
+      icon: G.variant === 'error' ? WARN_ICON : (G.variant === 'success' ? CHECK_ICON : undefined)
+    }, cap(G.variant || 'Default')));
+    renderInspector();
+  }
 
-    // Inspector
-    var tt=el.querySelector('.tooltip');
-    if(!tt)return;
-    var cs=getComputedStyle(tt);
-    var rows=[
-      ['background', cs.backgroundColor],
-      ['color', cs.color],
-      ['padding', cs.padding],
-      ['font-size', cs.fontSize],
-      ['border-radius', cs.borderRadius],
-      ['box-shadow', cs.boxShadow!=='none'?cs.boxShadow:'—'],
-      ['max-width', cs.maxWidth]
+  function renderVariantGallery() {
+    var el = clr('variantGallery');
+    VARIANTS.forEach(function(v) {
+      var opts = { body:'Tooltip content' };
+      if (v.key) opts.variant = v.key;
+      if (v.key === 'error') opts.icon = WARN_ICON;
+      if (v.key === 'success') opts.icon = CHECK_ICON;
+      el.appendChild(makeWrap('top', opts, v.label));
+    });
+  }
+
+  function renderDensity() {
+    var el = clr('densityGallery');
+    SIZES.forEach(function(sz, si) {
+      el.appendChild(makeWrap('top', {
+        size: sz,
+        variant: G.variant || undefined,
+        body: SLABELS[si]+' tooltip'
+      }, SLABELS[si]));
+    });
+  }
+
+  function renderStateMatrix() {
+    var el = clr('stateMatrix');
+    var states = [
+      { label:'Visible', state:'visible' },
+      { label:'Hidden',  state:'hidden' },
+      { label:'Disabled', disabled:true }
     ];
-    var ins=document.getElementById('heroInspector');
-    ins.innerHTML='<div class="inspector-title">Resolved Tokens</div>'+
-      rows.map(function(t){return '<div class="inspector-row"><span class="token-name">'+t[0]+'</span><span class="token-val">'+t[1]+'</span></div>'}).join('');
-  }
-
-  function renderVariants(){
-    var el=clr('variantGallery');
-    VARIANTS.forEach(function(v){
-      var opts={body:'Tooltip content here'};
-      if(v.key)opts.variant=v.key;
-      if(v.key==='error')opts.icon=WARN_ICON;
-      if(v.key==='success')opts.icon=CHECK_ICON;
-      el.appendChild(makeWrap('top',opts,v.label));
+    var hdr = document.createElement('div');
+    hdr.style.cssText = 'display:grid;grid-template-columns:100px repeat('+states.length+',1fr);gap:12px;margin-bottom:8px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;opacity:.6';
+    hdr.innerHTML = '<span></span>';
+    states.forEach(function(s) { hdr.innerHTML += '<span>'+s.label+'</span>' });
+    el.appendChild(hdr);
+    VARIANTS.forEach(function(v) {
+      var row = document.createElement('div');
+      row.style.cssText = 'display:grid;grid-template-columns:100px repeat('+states.length+',1fr);gap:12px;align-items:center;margin-bottom:12px;padding:12px 0';
+      var rl = document.createElement('span');
+      rl.style.cssText = 'font-size:12px;font-weight:600';
+      rl.textContent = v.label;
+      row.appendChild(rl);
+      states.forEach(function(s) {
+        var cell = document.createElement('div');
+        var tt = makeTooltip({
+          variant: v.key || undefined,
+          body: s.label,
+          state: s.state || undefined,
+          disabled: s.disabled || false,
+          placement: 'top'
+        });
+        cell.appendChild(tt);
+        row.appendChild(cell);
+      });
+      el.appendChild(row);
     });
   }
 
-  function renderPlacement(){
-    var el=clr('placementGallery');
-    PLACEMENTS.forEach(function(p){
-      el.appendChild(makeWrap(p,{body:'Placed '+p},cap(p)));
+  function renderSurfaceContext() {
+    var el = clr('surfaceStrip');
+    var surfaces = [
+      { label:'Base',     bg:'var(--surface-base-bg)' },
+      { label:'Elevated', bg:'var(--surface-base-cm-bg)' },
+      { label:'Sunken',   bg:'var(--surface-base-cm-bg-pressed)' }
+    ];
+    surfaces.forEach(function(s) {
+      var panel = document.createElement('div');
+      panel.className = 'surface-panel';
+      panel.style.background = s.bg;
+      panel.style.paddingTop = '48px';
+      var lbl = document.createElement('div');
+      lbl.className = 'surface-label';
+      lbl.textContent = s.label;
+      panel.appendChild(lbl);
+      panel.appendChild(makeWrap('top', { variant:G.variant||undefined, body:'On '+s.label }, 'Trigger'));
+      el.appendChild(panel);
     });
   }
 
-  function renderSizes(){
-    var el=clr('sizeGallery');
-    SIZES.forEach(function(s){
-      el.appendChild(makeWrap('top',{size:s,body:'Size: '+s},cap(s)));
+  function renderPlacement() {
+    var el = clr('placementGallery');
+    PLACEMENTS.forEach(function(p) {
+      el.appendChild(makeWrap(p, { variant:G.variant||undefined, body:'Placed '+p }, cap(p)));
     });
   }
 
-  function renderRich(){
-    var el=clr('richGallery');
-    // Icon + title + body
-    el.appendChild(makeWrap('top',{icon:INFO_ICON,title:'Keyboard Shortcut',body:'Press Ctrl+S to save your work.'},'Rich'));
-    // Multiline
-    el.appendChild(makeWrap('top',{title:'Permissions',body:'You need admin access to modify this setting. Contact your team lead.',size:'large'},'Multiline'));
-    // Icon only
-    el.appendChild(makeWrap('top',{icon:CHECK_ICON,body:'Copied!',variant:'success',size:'small'},'Feedback'));
+  function renderSlots() {
+    var el = clr('slotsGallery');
+    el.appendChild(makeWrap('top', { body:'Body only' }, 'Body only'));
+    el.appendChild(makeWrap('top', { icon:INFO_ICON, body:'Icon + body' }, 'Icon + Body'));
+    el.appendChild(makeWrap('top', { title:'Title', body:'Title + body' }, 'Title + Body'));
+    el.appendChild(makeWrap('top', { icon:INFO_ICON, title:'All slots', body:'Icon + title + body' }, 'Full'));
+    el.appendChild(makeWrap('top', { body:'No arrow', arrow:false }, 'No Arrow'));
   }
 
-  function renderA11y(){
-    // ARIA pairing
-    var ariaEl=clr('a11yAriaDemo');
-    var trigger=document.createElement('button');trigger.className='tooltip-trigger';trigger.textContent='Hover for help';
-    trigger.setAttribute('aria-describedby','demo-tip-aria');
-    ariaEl.appendChild(trigger);
-    var tip=makeTooltip({body:'Accessible tooltip',placement:'top'});
-    tip.id='demo-tip-aria';tip.dataset.demo='';
-    ariaEl.appendChild(tip);
-
-    // HC demo
-    var hcEl=clr('a11yHcDemo');
-    hcEl.appendChild(makeTooltip({body:'Visible in HC',placement:'top'}));
-    var ltip=makeTooltip({variant:'light',body:'Light in HC',placement:'top'});
-    hcEl.appendChild(ltip);
-
-    // Motion demo
-    var motionEl=clr('a11yMotionDemo');
-    motionEl.appendChild(makeTooltip({body:'Instant in reduced motion',placement:'top'}));
+  function renderRich() {
+    var el = clr('richGallery');
+    el.appendChild(makeWrap('top', { icon:INFO_ICON, title:'Keyboard Shortcut', body:'Press Ctrl+S to save your work.', size:'large' }, 'Rich'));
+    el.appendChild(makeWrap('top', { title:'Permissions', body:'You need admin access to modify this setting. Contact your team lead for access.', size:'large' }, 'Multiline'));
+    el.appendChild(makeWrap('top', { icon:CHECK_ICON, body:'Copied!', variant:'success', size:'small' }, 'Feedback'));
+    el.appendChild(makeWrap('top', { icon:WARN_ICON, body:'This field is required', variant:'error' }, 'Validation'));
   }
 
-  renderHero();renderVariants();renderPlacement();renderSizes();renderRich();renderA11y();
-  window.DTF.onThemeChange = renderHero;
+  /* ── Master render ─────────────────────────────────── */
+  function applyGlobals() {
+    renderHero();
+    renderVariantGallery();
+    renderDensity();
+    renderStateMatrix();
+    renderSurfaceContext();
+    renderPlacement();
+    renderSlots();
+    renderRich();
+  }
+
+  function wirePillBar(id, cb) {
+    var bar = document.getElementById(id);
+    if (!bar) return;
+    bar.addEventListener('change', function(e) { if(e.target.name) cb(e.target.value) });
+  }
+  wirePillBar('variantBar',   function(v) { G.variant=v;   applyGlobals() });
+  wirePillBar('sizeBar',      function(v) { G.size=v;      applyGlobals() });
+  wirePillBar('placementBar', function(v) { G.placement=v; applyGlobals() });
+
+  document.querySelectorAll('.fw-snippet-tabs').forEach(function(tabs) {
+    tabs.addEventListener('click', function(e) {
+      var btn = e.target.closest('.fw-snippet-tab');
+      if (!btn) return;
+      var panel = btn.dataset.tab;
+      var snippet = tabs.closest('.fw-snippet');
+      snippet.querySelectorAll('.fw-snippet-tab').forEach(function(t) { t.setAttribute('aria-selected','false') });
+      btn.setAttribute('aria-selected','true');
+      snippet.querySelectorAll('.fw-snippet-code').forEach(function(c) { delete c.dataset.active });
+      var target = snippet.querySelector('[data-panel="'+panel+'"]');
+      if (target) target.dataset.active = '';
+    });
+  });
+
+  applyGlobals();
+  window.DTF.onThemeChange = function() { applyGlobals() };
 })();
 </script>
 </body>

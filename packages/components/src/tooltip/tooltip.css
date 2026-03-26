@@ -36,6 +36,7 @@
   --_tt-fs: var(--tooltip-font-size-base);
   --_tt-max-w: var(--tooltip-max-width-base);
   --_tt-icon-size: var(--tooltip-icon-size-base);
+  --_tt-gap: var(--tooltip-gap-base);
 
   /* Surface active vars */
   --_tt-bg: var(--tooltip-bg);
@@ -45,7 +46,7 @@
   --_tt-shadow: var(--tooltip-shadow);
 
   padding: var(--_tt-py) var(--_tt-px);
-  gap: var(--tooltip-gap);
+  gap: var(--_tt-gap);
   font-size: var(--_tt-fs);
   color: var(--_tt-fg);
   background: var(--_tt-bg);
@@ -66,6 +67,7 @@
   --_tt-fs: var(--tooltip-font-size-small);
   --_tt-max-w: var(--tooltip-max-width-small);
   --_tt-icon-size: var(--tooltip-icon-size-small);
+  --_tt-gap: var(--tooltip-gap-small);
 }
 .tooltip[data-size="large"] {
   --_tt-py: var(--tooltip-padding-y-large);
@@ -73,6 +75,7 @@
   --_tt-fs: var(--tooltip-font-size-large);
   --_tt-max-w: var(--tooltip-max-width-large);
   --_tt-icon-size: var(--tooltip-icon-size-large);
+  --_tt-gap: var(--tooltip-gap-large);
 }
 
 /* ────────────────────────────────────────────────────────────────
@@ -93,7 +96,7 @@
 .tooltip[data-variant="success"] {
   --_tt-bg: var(--tooltip-success-bg);
   --_tt-fg: var(--tooltip-success-fg);
-  --_tt-arrow-color: var(--tooltip-success-bg);
+  --_tt-arrow-color: var(--tooltip-success-arrow-color);
 }
 
 /* ────────────────────────────────────────────────────────────────
@@ -154,7 +157,7 @@
 .tooltip__content {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--tooltip-content-gap);
   min-width: 0;
 }
 .tooltip__title {
@@ -184,6 +187,14 @@
 .tooltip[data-demo] {
   position: relative;
   pointer-events: auto;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   9.  DISABLED
+   ────────────────────────────────────────────────────────────────── */
+.tooltip[data-disabled] {
+  opacity: var(--tooltip-disabled-opacity);
+  pointer-events: none;
 }
 
 /* ────────────────────────────────────────────────────────────────

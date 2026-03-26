@@ -36,7 +36,12 @@
   --tooltip-max-width-large: 320px;
 
   /* Gap between icon and label */
-  --tooltip-gap: var(--spacing-6);
+  --tooltip-gap-small: var(--spacing-4);
+  --tooltip-gap-base:  var(--spacing-6);
+  --tooltip-gap-large: var(--spacing-8);
+
+  /* Content gap (title ↔ body) */
+  --tooltip-content-gap: 2px;
 
   /* Offset from trigger */
   --tooltip-offset: var(--spacing-8);
@@ -64,6 +69,7 @@
   /* ── SUCCESS ────────────────────────────────────────── */
   --tooltip-success-bg: var(--success-component-bg-default);
   --tooltip-success-fg: var(--success-on-component);
+  --tooltip-success-arrow-color: var(--success-component-bg-default);
 
   /* ────────────────────────────────────────────────────────────
      ✏️ TYPOGRAPHY  (8 vars)
@@ -103,6 +109,11 @@
      ──────────────────────────────────────────────────────────── */
   --tooltip-z-index: 1000;
   --tooltip-pointer-events: none;
+
+  /* ────────────────────────────────────────────────────────────
+     🚫 STATE  (1 var)
+     ──────────────────────────────────────────────────────────── */
+  --tooltip-disabled-opacity: 0.5;
 
   /* ────────────────────────────────────────────────────────────
      🖼️ SHADOW  (2 vars)
