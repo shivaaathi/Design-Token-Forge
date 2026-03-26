@@ -10,7 +10,7 @@
      📐 SHAPE  (6 vars)
      ──────────────────────────────────────────────────────────── */
   --tooltip-radius: var(--radius-sm);
-  --tooltip-border-width: 0px;
+  --tooltip-border-width: 1px;
   --tooltip-border-style: solid;
   --tooltip-border-color: transparent;
 

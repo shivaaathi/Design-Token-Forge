@@ -27,7 +27,7 @@
   --badge-radius-square: var(--radius-xs);
 
   /* Border */
-  --badge-border-width: 0px;
+  --badge-border-width: 1px;
   --badge-border-style: solid;
 
   /* ────────────────────────────────────────────────────────────

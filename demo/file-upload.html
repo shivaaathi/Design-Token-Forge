@@ -573,29 +573,33 @@
       { label:'Error',     st:{error:true} },
       { label:'Disabled',  st:{disabled:true} }
     ];
+    var cols = states.length;
     var hdr = document.createElement('div');
-    hdr.style.cssText = 'display:grid;grid-template-columns:80px repeat('+states.length+',1fr);gap:12px;margin-bottom:8px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;opacity:.6';
+    hdr.style.cssText = 'display:grid;grid-template-columns:120px repeat('+cols+',1fr);gap:12px;margin-bottom:8px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;opacity:.6';
     hdr.innerHTML = '<span></span>';
     states.forEach(function(s) { hdr.innerHTML += '<span>'+s.label+'</span>' });
     el.appendChild(hdr);
 
     VARIANTS.forEach(function(v) {
-      var row = document.createElement('div');
-      row.style.cssText = 'display:grid;grid-template-columns:80px repeat('+states.length+',1fr);gap:12px;align-items:start;margin-bottom:12px;padding:8px 0';
-      var rl = document.createElement('span');
-      rl.style.cssText = 'font-size:12px;font-weight:600;padding-top:12px';
-      rl.textContent = cap(v);
-      row.appendChild(rl);
-      states.forEach(function(s) {
-        var cell = document.createElement('div');
-        var opts = { variant:v, mode:'button', label:false };
-        if (s.st.dragover) opts.dragover = true;
-        if (s.st.error) opts.error = true;
-        if (s.st.disabled) opts.disabled = true;
-        cell.appendChild(makeFU(opts));
-        row.appendChild(cell);
+      MODES.forEach(function(m) {
+        var row = document.createElement('div');
+        row.style.cssText = 'display:grid;grid-template-columns:120px repeat('+cols+',1fr);gap:12px;align-items:start;margin-bottom:12px;padding:8px 0';
+        var rl = document.createElement('span');
+        rl.style.cssText = 'font-size:12px;font-weight:600;padding-top:12px';
+        rl.textContent = cap(v)+' / '+cap(m);
+        row.appendChild(rl);
+        states.forEach(function(s) {
+          var cell = document.createElement('div');
+          var opts = { variant:v, mode:m, label:false,
+            style:m==='dropzone'?{'max-width':'280px','--file-upload-inline-size':'100%'}:undefined };
+          if (s.st.dragover) opts.dragover = true;
+          if (s.st.error) opts.error = true;
+          if (s.st.disabled) opts.disabled = true;
+          cell.appendChild(makeFU(opts));
+          row.appendChild(cell);
+        });
+        el.appendChild(row);
       });
-      el.appendChild(row);
     });
   }
 

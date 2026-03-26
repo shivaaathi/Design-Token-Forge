@@ -304,6 +304,11 @@
   cursor: default;
 }
 
+.file-upload[data-dragover] .file-upload__trigger {
+  background: var(--_fu-bg-dragover);
+  border-color: var(--_fu-border-color-dragover);
+}
+
 .file-upload[data-error] .file-upload__trigger {
   border-color: var(--file-upload-outline-border-color-error);
 }
