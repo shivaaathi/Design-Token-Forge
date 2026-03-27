@@ -1,13 +1,13 @@
 /* ════════════════════════════════════════════════════════════════
    Design Token Forge — Toggle / Switch Token Defaults
-   Layer 0: System defaults for 94 toggle variables.
+   Layer 0: System defaults for 128 toggle variables.
    All values reference global tokens — zero hardcoded visuals.
    ════════════════════════════════════════════════════════════════ */
 
 .switch {
 
   /* ────────────────────────────────────────────────────────────
-     📐 SHAPE  (6 vars)
+     📐 SHAPE  (6 vars)      ─ 6 total
      ──────────────────────────────────────────────────────────── */
 
   /* Track + Thumb radii */
@@ -23,7 +23,7 @@
   --switch-thumb-shadow-active: var(--shadow-md);
 
   /* ────────────────────────────────────────────────────────────
-     📏 DIMENSION  (30 vars)
+     📏 DIMENSION  (30 vars)   ─ 36 cumulative
      ──────────────────────────────────────────────────────────── */
 
   /* Track width per density (~1.75× height) */
@@ -66,7 +66,7 @@
   --switch-thumb-size-ultra: 44px;
 
   /* ────────────────────────────────────────────────────────────
-     🎨 SURFACE  (20 vars)
+     🎨 SURFACE  (21 vars)    ─ 57 cumulative
      ──────────────────────────────────────────────────────────── */
 
   /* ── Track: unchecked (off) ── */
@@ -82,8 +82,8 @@
   --switch-track-border-color-on-hover: var(--primary-component-bg-hover);
 
   /* ── Thumb ── */
-  --switch-thumb-bg: var(--color-fixed-white);
-  --switch-thumb-bg-hover: var(--color-fixed-white);
+  --switch-thumb-bg: var(--color-white);
+  --switch-thumb-bg-hover: var(--color-white);
   --switch-thumb-border-color: transparent;
   --switch-thumb-border-color-checked: transparent;
 
@@ -91,7 +91,8 @@
   --switch-track-bg-disabled: var(--surface-base-cm-outline);
   --switch-track-bg-on-disabled: var(--primary-component-bg-default);
   --switch-track-border-color-disabled: var(--surface-base-cm-outline);
-  --switch-thumb-bg-disabled: var(--color-fixed-white);
+  --switch-thumb-bg-disabled: var(--color-white);
+  --switch-thumb-shadow-disabled: none;
   --switch-opacity-disabled: 0.5;
 
   /* ── Thumb icon (optional check / x) ── */
@@ -100,7 +101,7 @@
   --switch-thumb-icon-size: 0.65em;
 
   /* ────────────────────────────────────────────────────────────
-     🎨 SURFACE — DANGER / ERROR  (8 vars)
+     🎨 SURFACE — DANGER / ERROR  (10 vars) ─ 67 cumulative
      ──────────────────────────────────────────────────────────── */
 
   /* danger — canonical name */
@@ -115,8 +116,12 @@
   --switch-track-border-color-on-error: var(--switch-track-border-color-on-danger);
   --switch-track-border-color-on-error-hover: var(--switch-track-border-color-on-danger-hover);
 
+  /* error off-state: unchecked + invalid (border treatment) */
+  --switch-track-border-color-error-off: var(--danger-component-outline-default);
+  --switch-track-border-color-error-off-hover: var(--danger-component-outline-hover);
+
   /* ────────────────────────────────────────────────────────────
-     🎨 SURFACE — OUTLINE VARIANT  (16 vars)
+     🎨 SURFACE — OUTLINE VARIANT  (17 vars) ─ 84 cumulative
      ──────────────────────────────────────────────────────────── */
 
   /* ── Outline track: unchecked (off) — transparent + outline ── */
@@ -132,8 +137,8 @@
   --switch-outline-track-border-color-on-hover: var(--primary-component-bg-hover);
 
   /* ── Outline thumb ── */
-  --switch-outline-thumb-bg: var(--color-fixed-white);
-  --switch-outline-thumb-bg-hover: var(--color-fixed-white);
+  --switch-outline-thumb-bg: var(--color-white);
+  --switch-outline-thumb-bg-hover: var(--color-white);
   --switch-outline-thumb-border-color: var(--surface-base-cm-outline);
   --switch-outline-thumb-border-color-checked: transparent;
 
@@ -141,10 +146,11 @@
   --switch-outline-track-border-width: 2px;
   --switch-outline-track-bg-disabled: transparent;
   --switch-outline-track-bg-on-disabled: var(--primary-component-bg-default);
+  --switch-outline-thumb-bg-disabled: var(--color-white);
   --switch-outline-opacity-disabled: 0.5;
 
   /* ────────────────────────────────────────────────────────────
-     ✏️ TYPOGRAPHY  (14 vars — label text)
+     ✏️ TYPOGRAPHY  (14 vars)  ─ 98 cumulative
      ──────────────────────────────────────────────────────────── */
   --switch-label-font-family: var(--font-family-sans);
   --switch-label-font-size: var(--font-size-14);
@@ -164,24 +170,41 @@
   --switch-label-font-size-ultra: var(--font-size-24);
 
   /* ────────────────────────────────────────────────────────────
-     🧩 SLOTS  (3 vars)
+     🧩 SLOTS  (13 vars)     ─ 111 cumulative
      ──────────────────────────────────────────────────────────── */
   --switch-gap: var(--spacing-8);
+
+  /* Per-size label gap — consumed by .switch-label :has() selectors;
+     to override, set on .switch-label or any ancestor */
+  --switch-gap-micro: var(--spacing-4);
+  --switch-gap-tiny: var(--spacing-4);
+  --switch-gap-small: var(--spacing-6);
+  --switch-gap-base: var(--spacing-8);
+  --switch-gap-medium: var(--spacing-8);
+  --switch-gap-large: var(--spacing-10);
+  --switch-gap-big: var(--spacing-10);
+  --switch-gap-huge: var(--spacing-12);
+  --switch-gap-mega: var(--spacing-14);
+  --switch-gap-ultra: var(--spacing-16);
+
   --switch-thumb-scale-active: 1.1;
   --switch-thumb-border-width: 0px;
 
   /* ────────────────────────────────────────────────────────────
-     ⚡ MOTION  (6 vars)
+     ⚡ MOTION  (9 vars)      ─ 120 cumulative
      ──────────────────────────────────────────────────────────── */
   --switch-transition-property: background-color, border-color, box-shadow, opacity;
   --switch-transition-duration: var(--duration-normal);
   --switch-transition-easing: var(--easing-in-out);
   --switch-thumb-transition-duration: var(--duration-normal);
   --switch-thumb-transition-easing: var(--easing-spring);
+  --switch-track-transition-property: background-color, border-color;
+  --switch-thumb-transition-property: left, transform, box-shadow, background-color, border-color;
+  --switch-loader-speed: 1.5s;
   --switch-animation-loading: none;
 
   /* ────────────────────────────────────────────────────────────
-     ♿ ACCESSIBILITY  (9 vars)
+     ♿ ACCESSIBILITY  (8 vars) ─ 128 total
      ──────────────────────────────────────────────────────────── */
   --switch-focus-outline-width: 2px;
   --switch-focus-outline-color: var(--primary-component-outline-default);

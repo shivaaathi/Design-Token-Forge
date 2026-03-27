@@ -1,6 +1,6 @@
 /* ════════════════════════════════════════════════════════════════
    Design Token Forge — Toggle / Switch Component CSS
-   Variable-driven rendering. Zero hardcoded visual values.
+   Variable-driven rendering. All visual values tokenized.
    Compound component: track (rail) + thumb (sliding indicator).
    Uses internal (--_sw-*) vars set by size selectors.
    Checked state via [aria-checked="true"].
@@ -67,7 +67,7 @@
   border-color: var(--_sw-track-border-off);
 
   /* Motion */
-  transition-property: background-color, border-color;
+  transition-property: var(--switch-track-transition-property);
   transition-duration: var(--switch-transition-duration);
   transition-timing-function: var(--switch-transition-easing);
 
@@ -100,7 +100,7 @@
   left: var(--_sw-inset);
 
   /* Motion — thumb slides with spring easing */
-  transition-property: left, transform, box-shadow, background-color, border-color;
+  transition-property: var(--switch-thumb-transition-property);
   transition-duration: var(--switch-thumb-transition-duration);
   transition-timing-function: var(--switch-thumb-transition-easing);
 }
@@ -232,7 +232,68 @@
   --_sw-opacity-disabled: var(--switch-outline-opacity-disabled);
   --_sw-track-bg-disabled: var(--switch-outline-track-bg-disabled);
   --_sw-track-bg-on-disabled: var(--switch-outline-track-bg-on-disabled);
-  --_sw-thumb-bg-disabled: var(--switch-outline-thumb-bg);
+  --_sw-thumb-bg-disabled: var(--switch-outline-thumb-bg-disabled);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   ROLE SELECTORS — palette-level remapping
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── data-role="primary" (no-op, already default) ─────────── */
+.switch[data-role="primary"] {
+  /* explicit primary — no-op */
+}
+
+/* ── data-role="danger" ─────────────────────────────────── */
+.switch[data-role="danger"] {
+  --primary-component-bg-default: var(--danger-component-bg-default);
+  --primary-component-bg-hover: var(--danger-component-bg-hover);
+  --primary-component-bg-pressed: var(--danger-component-bg-pressed);
+  --primary-on-component: var(--danger-on-component);
+  --primary-content-default: var(--danger-content-default);
+  --primary-container-bg: var(--danger-container-bg);
+  --primary-container-hover: var(--danger-container-hover);
+  --primary-container-pressed: var(--danger-container-pressed);
+  --primary-component-outline-default: var(--danger-component-outline-default);
+}
+
+/* ── data-role="success" ────────────────────────────────── */
+.switch[data-role="success"] {
+  --primary-component-bg-default: var(--success-component-bg-default);
+  --primary-component-bg-hover: var(--success-component-bg-hover);
+  --primary-component-bg-pressed: var(--success-component-bg-pressed);
+  --primary-on-component: var(--success-on-component);
+  --primary-content-default: var(--success-content-default);
+  --primary-container-bg: var(--success-container-bg);
+  --primary-container-hover: var(--success-container-hover);
+  --primary-container-pressed: var(--success-container-pressed);
+  --primary-component-outline-default: var(--success-component-outline-default);
+}
+
+/* ── data-role="warning" ────────────────────────────────── */
+.switch[data-role="warning"] {
+  --primary-component-bg-default: var(--warning-component-bg-default);
+  --primary-component-bg-hover: var(--warning-component-bg-hover);
+  --primary-component-bg-pressed: var(--warning-component-bg-pressed);
+  --primary-on-component: var(--warning-on-component);
+  --primary-content-default: var(--warning-content-default);
+  --primary-container-bg: var(--warning-container-bg);
+  --primary-container-hover: var(--warning-container-hover);
+  --primary-container-pressed: var(--warning-container-pressed);
+  --primary-component-outline-default: var(--warning-component-outline-default);
+}
+
+/* ── data-role="neutral" ────────────────────────────────── */
+.switch[data-role="neutral"] {
+  --primary-component-bg-default: var(--surface-base-cm-bg);
+  --primary-component-bg-hover: var(--surface-base-cm-bg-hover);
+  --primary-component-bg-pressed: var(--surface-base-cm-bg-pressed);
+  --primary-on-component: var(--surface-base-ct-default);
+  --primary-content-default: var(--surface-base-ct-default);
+  --primary-container-bg: var(--surface-base-hover);
+  --primary-container-hover: var(--surface-base-pressed);
+  --primary-container-pressed: var(--surface-base-pressed);
+  --primary-component-outline-default: var(--surface-base-cm-outline);
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -308,16 +369,17 @@
 .switch:disabled .switch__thumb,
 .switch[data-disabled] .switch__thumb {
   background-color: var(--_sw-thumb-bg-disabled);
+  box-shadow: var(--switch-thumb-shadow-disabled);
 }
 
 /* Error — [data-error] or [aria-invalid] */
 .switch[data-error] .switch__track,
 .switch[aria-invalid="true"] .switch__track {
-  border-color: var(--danger-component-outline-default);
+  border-color: var(--switch-track-border-color-error-off);
 }
 .switch[data-error]:hover .switch__track,
 .switch[aria-invalid="true"]:hover .switch__track {
-  border-color: var(--danger-component-outline-hover);
+  border-color: var(--switch-track-border-color-error-off-hover);
 }
 .switch[data-error][aria-checked="true"] .switch__track,
 .switch[aria-invalid="true"][aria-checked="true"] .switch__track {
@@ -334,7 +396,7 @@
 .switch[data-loading] {
   cursor: wait;
   pointer-events: none;
-  animation: switch-pulse 1.5s ease-in-out infinite;
+  animation: switch-pulse var(--switch-loader-speed) ease-in-out infinite;
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -344,7 +406,7 @@
 .switch-label {
   display: inline-flex;
   align-items: center;
-  gap: var(--switch-gap);
+  gap: var(--switch-gap, var(--spacing-8));
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
@@ -364,6 +426,19 @@
 .switch-label:has(.switch:disabled) .switch-label__text {
   color: var(--switch-label-color-disabled);
 }
+
+/* Per-size label gap via :has() */
+.switch-label:has(.switch:not([data-size])),
+.switch-label:has(.switch[data-size="base"])    { gap: var(--switch-gap-base, var(--spacing-8)); }
+.switch-label:has(.switch[data-size="micro"])   { gap: var(--switch-gap-micro, var(--spacing-4)); }
+.switch-label:has(.switch[data-size="tiny"])    { gap: var(--switch-gap-tiny, var(--spacing-4)); }
+.switch-label:has(.switch[data-size="small"])   { gap: var(--switch-gap-small, var(--spacing-6)); }
+.switch-label:has(.switch[data-size="medium"])  { gap: var(--switch-gap-medium, var(--spacing-8)); }
+.switch-label:has(.switch[data-size="large"])   { gap: var(--switch-gap-large, var(--spacing-10)); }
+.switch-label:has(.switch[data-size="big"])     { gap: var(--switch-gap-big, var(--spacing-10)); }
+.switch-label:has(.switch[data-size="huge"])    { gap: var(--switch-gap-huge, var(--spacing-12)); }
+.switch-label:has(.switch[data-size="mega"])    { gap: var(--switch-gap-mega, var(--spacing-14)); }
+.switch-label:has(.switch[data-size="ultra"])   { gap: var(--switch-gap-ultra, var(--spacing-16)); }
 
 /* ════════════════════════════════════════════════════════════════
    THUMB ICON SLOT (optional ✓/✕ inside thumb)
