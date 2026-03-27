@@ -2,6 +2,25 @@
    Design Token Forge — MenuButton Token Defaults
    Layer 0: System defaults for 139 menu-button variables.
    All values reference global tokens — zero hardcoded visuals.
+
+   ORTHOGONAL MODEL
+   ────────────────
+   Structure (data-variant): filled | outlined | soft | ghost
+   Role (data-role):         primary | danger | success | warning | brand | info | neutral
+
+   Token groups below use legacy names for backward compatibility:
+     primary  ≡ filled   (solid background, role-colored)
+     secondary ≡ outlined (border emphasis, role-colored)
+     tertiary ≡ soft     (tinted container, role-colored)
+     ghost    = ghost    (transparent, neutral by default)
+
+   All primary/secondary/tertiary tokens reference --primary-* semantic palette.
+   CSS role selectors remap --primary-* → --{role}-* at the element level,
+   so every structural variant × every role composes automatically.
+
+   danger/success/warning/neutral/outline/brand token groups below are
+   LEGACY shortcuts for filled+danger, filled+success, etc. They remain
+   for backward compatibility with data-variant="danger" syntax.
    ════════════════════════════════════════════════════════════════ */
 
 .menu-btn {
@@ -87,7 +106,7 @@
      Pattern: --menu-btn-{variant}-{property}[-{state}]
      ──────────────────────────────────────────────────────────── */
 
-  /* ── PRIMARY (filled, blue) ─────────────────────────────── */
+  /* ── PRIMARY ≡ FILLED (solid bg, reads --primary-* palette) ─────────────────────────────── */
   --menu-btn-primary-bg: var(--primary-component-bg-default);
   --menu-btn-primary-bg-hover: var(--primary-component-bg-hover);
   --menu-btn-primary-bg-active: var(--primary-component-bg-pressed);
@@ -101,7 +120,7 @@
   --menu-btn-primary-border-color-disabled: var(--primary-component-bg-default);
   --menu-btn-primary-opacity-disabled: 0.5;
 
-  /* ── SECONDARY (outlined, primary color border) ─────────── */
+  /* ── SECONDARY ≡ OUTLINED (border emphasis, --primary-* palette) ─────────── */
   --menu-btn-secondary-bg: transparent;
   --menu-btn-secondary-bg-hover: var(--primary-container-bg);
   --menu-btn-secondary-bg-active: var(--primary-container-pressed);
@@ -115,7 +134,7 @@
   --menu-btn-secondary-border-color-disabled: var(--primary-component-outline-default);
   --menu-btn-secondary-opacity-disabled: 0.5;
 
-  /* ── GHOST (borderless, transparent) ────────────────────── */
+  /* ── GHOST (transparent bg, --surface-* by default) ────────────────────── */
   --menu-btn-ghost-bg: transparent;
   --menu-btn-ghost-bg-hover: var(--surface-base-cm-bg-hover);
   --menu-btn-ghost-bg-active: var(--surface-base-cm-bg-pressed);
@@ -129,7 +148,7 @@
   --menu-btn-ghost-border-color-disabled: transparent;
   --menu-btn-ghost-opacity-disabled: 0.5;
 
-  /* ── NEUTRAL (filled, surface-context) ──────────────────── */
+  /* ── NEUTRAL (legacy: filled + neutral/surface context) ──────────────────── */
   --menu-btn-neutral-bg: var(--surface-base-cm-bg);
   --menu-btn-neutral-bg-hover: var(--surface-base-cm-bg-hover);
   --menu-btn-neutral-bg-active: var(--surface-base-cm-bg-pressed);
@@ -143,7 +162,7 @@
   --menu-btn-neutral-border-color-disabled: var(--surface-base-cm-outline);
   --menu-btn-neutral-opacity-disabled: 0.5;
 
-  /* ── TERTIARY (soft, tinted fill) ────────────────────────── */
+  /* ── TERTIARY ≡ SOFT (tinted container, --primary-* palette) ────────────────────────── */
   --menu-btn-tertiary-bg: var(--primary-container-bg);
   --menu-btn-tertiary-bg-hover: var(--primary-container-hover);
   --menu-btn-tertiary-bg-active: var(--primary-container-pressed);
@@ -157,7 +176,7 @@
   --menu-btn-tertiary-border-color-disabled: transparent;
   --menu-btn-tertiary-opacity-disabled: 0.5;
 
-  /* ── DANGER (filled, red) ───────────────────────────────── */
+  /* ── DANGER (legacy: filled + danger role) ───────────────────────────────── */
   --menu-btn-danger-bg: var(--danger-component-bg-default);
   --menu-btn-danger-bg-hover: var(--danger-component-bg-hover);
   --menu-btn-danger-bg-active: var(--danger-component-bg-pressed);
@@ -171,7 +190,7 @@
   --menu-btn-danger-border-color-disabled: var(--danger-component-bg-default);
   --menu-btn-danger-opacity-disabled: 0.5;
 
-  /* ── SUCCESS (filled, green) ─────────────────────────────── */
+  /* ── SUCCESS (legacy: filled + success role) ─────────────────────────────── */
   --menu-btn-success-bg: var(--success-component-bg-default);
   --menu-btn-success-bg-hover: var(--success-component-bg-hover);
   --menu-btn-success-bg-active: var(--success-component-bg-pressed);
@@ -185,7 +204,7 @@
   --menu-btn-success-border-color-disabled: var(--success-component-bg-default);
   --menu-btn-success-opacity-disabled: 0.5;
 
-  /* ── WARNING (filled, amber) ─────────────────────────────── */
+  /* ── WARNING (legacy: filled + warning role) ─────────────────────────────── */
   --menu-btn-warning-bg: var(--warning-component-bg-default);
   --menu-btn-warning-bg-hover: var(--warning-component-bg-hover);
   --menu-btn-warning-bg-active: var(--warning-component-bg-pressed);
@@ -199,7 +218,7 @@
   --menu-btn-warning-border-color-disabled: var(--warning-component-bg-default);
   --menu-btn-warning-opacity-disabled: 0.5;
 
-  /* ── OUTLINE (outlined, surface-context border) ───────── */
+  /* ── OUTLINE (legacy: outlined + neutral/surface context) ───────── */
   --menu-btn-outline-bg: transparent;
   --menu-btn-outline-bg-hover: var(--surface-base-hover);
   --menu-btn-outline-bg-active: var(--surface-base-pressed);
@@ -213,7 +232,7 @@
   --menu-btn-outline-border-color-disabled: var(--surface-base-outline);
   --menu-btn-outline-opacity-disabled: 0.5;
 
-  /* ── BRAND (filled, brand palette) ───────────────────────── */
+  /* ── BRAND (legacy: filled + brand role) ───────────────────────── */
   --menu-btn-brand-bg: var(--brand-component-bg-default);
   --menu-btn-brand-bg-hover: var(--brand-component-bg-hover);
   --menu-btn-brand-bg-active: var(--brand-component-bg-pressed);

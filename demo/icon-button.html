@@ -60,7 +60,7 @@
 <div class="page-layout">
 <aside class="sidebar-nav" id="sidebarNav" aria-label="Section navigation">
   <a href="#sec-hero"><span class="sn-num">1</span>Hero Preview</a>
-  <a href="#sec-variants"><span class="sn-num">2</span>Variant Gallery</a>
+  <a href="#sec-variants"><span class="sn-num">2</span>Structure × Role</a>
   <a href="#sec-density"><span class="sn-num">3</span>Density Scale</a>
   <a href="#sec-states"><span class="sn-num">4</span>State Matrix</a>
   <a href="#sec-surface"><span class="sn-num">5</span>Surface Context</a>
@@ -76,7 +76,7 @@
   <h1>IconButton Explorer <span>— Design Token Forge</span></h1>
   <div class="demo-meta">
     <span class="demo-badge">120 CSS Variables</span>
-    <span class="demo-badge">6 Variants</span>
+    <span class="demo-badge">4 Structures × 7 Roles</span>
     <span class="demo-badge">10 Sizes</span>
     <span class="demo-badge">7 Axes</span>
   </div>
@@ -84,14 +84,25 @@
 
 <nav class="global-controls" aria-label="Global icon-button preview controls">
   <div class="control-group">
-    <label>Variant</label>
-    <div class="pill-bar" id="variantBar" role="radiogroup" aria-label="Variant selector">
-      <button class="pill" role="radio" aria-pressed="true" data-ctrl-variant="primary" type="button">Primary</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="secondary" type="button">Secondary</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="ghost" type="button">Ghost</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="danger" type="button">Danger</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="neutral" type="button">Neutral</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="outline" type="button">Outline</button>
+    <label>Structure</label>
+    <div class="pill-bar" id="structBar" role="radiogroup" aria-label="Structure selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-struct="filled" type="button">Filled</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-struct="outlined" type="button">Outlined</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-struct="soft" type="button">Soft</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-struct="ghost" type="button">Ghost</button>
+    </div>
+  </div>
+  <div class="control-divider"></div>
+  <div class="control-group">
+    <label>Role</label>
+    <div class="pill-bar" id="roleBar" role="radiogroup" aria-label="Role selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-role="primary" type="button">Primary</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="danger" type="button">Danger</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="success" type="button">Success</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="warning" type="button">Warning</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="brand" type="button">Brand</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="info" type="button">Info</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="neutral" type="button">Neutral</button>
     </div>
   </div>
   <div class="control-divider"></div>
@@ -129,7 +140,7 @@
     <div class="section-body">
       <div class="hero">
         <div class="hero-preview">
-          <button class="icon-btn synced-btn" data-variant="primary" data-size="base" type="button" aria-label="Add item">
+          <button class="icon-btn synced-btn" data-variant="filled" data-size="base" type="button" aria-label="Add item">
             <span class="icon-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg></span>
           </button>
         </div>
@@ -140,9 +151,15 @@
 
   <!-- 2. VARIANT GALLERY -->
   <section class="section" id="sec-variants">
-    <div class="section-header"><h2>Variant Gallery</h2><span class="section-tag">Surface</span></div>
-    <p class="section-desc">All 6 variants at the globally selected size. Primary, secondary, ghost (semantic) and danger, neutral, outline (context).</p>
-    <div class="section-body"><div class="preview-grid" id="variantGallery"></div></div>
+    <div class="section-header"><h2>Structure × Role</h2><span class="section-tag">Orthogonal</span></div>
+    <p class="section-desc"><strong>Structural variants</strong> define the surface treatment. <strong>Roles</strong> provide semantic color. Top row: all structures in the selected role. Bottom row: all roles in the selected structure.</p>
+    <div class="section-body">
+      <div class="sub-label">Structural Variants (in selected role)</div>
+      <div class="preview-grid" id="structGallery"></div>
+      <div style="border-top:1px solid var(--demo-border);margin:12px 0"></div>
+      <div class="sub-label">Role Gallery (in selected structure)</div>
+      <div class="preview-grid" id="roleGallery"></div>
+    </div>
   </section>
 
   <!-- 3. DENSITY SCALE -->
@@ -155,14 +172,14 @@
   <!-- 4. STATE MATRIX -->
   <section class="section" id="sec-states">
     <div class="section-header"><h2>State Matrix</h2><span class="section-tag">States</span></div>
-    <p class="section-desc">Every variant in every interactive state. Hover and focus buttons to see live transitions.</p>
+    <p class="section-desc">Every structural variant in every interactive state, using the selected role. Hover and focus to see live transitions.</p>
     <div class="section-body"><div class="state-grid" id="stateMatrix"></div></div>
   </section>
 
   <!-- 5. SURFACE CONTEXT -->
   <section class="section" id="sec-surface">
     <div class="section-header"><h2>Surface Context</h2><span class="section-tag">Surface</span></div>
-    <p class="section-desc">Surface-context variants (neutral, outline) on three background levels.</p>
+    <p class="section-desc">All four structural variants on three background levels, using the selected role.</p>
     <div class="section-body">
       <div class="surface-strip">
         <div class="surface-panel surface-panel--base" id="surfaceBase"><span class="surface-panel-label">surface-base-bg</span></div>
@@ -260,30 +277,30 @@
           <div class="a11y-card-title">Focus Ring</div>
           <p class="a11y-card-desc">Tab to buttons. <code>:focus-visible</code> shows keyboard-only ring.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <button class="icon-btn synced-btn" data-variant="primary" data-size="base" type="button" aria-label="Add"><span class="icon-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg></span></button>
-            <button class="icon-btn synced-btn" data-variant="secondary" data-size="base" type="button" aria-label="Edit"><span class="icon-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.5l2 2M2 11l7-7 2 2-7 7H2v-2z"/></svg></span></button>
+            <button class="icon-btn synced-btn" data-variant="filled" data-size="base" type="button" aria-label="Add"><span class="icon-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg></span></button>
+            <button class="icon-btn synced-btn" data-variant="filled" data-size="base" type="button" aria-label="Edit"><span class="icon-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.5l2 2M2 11l7-7 2 2-7 7H2v-2z"/></svg></span></button>
           </div>
         </div>
         <div class="a11y-card">
           <div class="a11y-card-title">Disabled</div>
           <p class="a11y-card-desc"><code>disabled</code> and <code>data-disabled</code> apply per-variant opacity.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <button class="icon-btn synced-btn" data-variant="primary" data-size="base" disabled type="button" aria-label="Disabled add"><span class="icon-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg></span></button>
-            <button class="icon-btn synced-btn" data-variant="danger" data-size="base" data-disabled type="button" aria-label="Disabled delete"><span class="icon-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h10M6 4V3h4v1M5 4v9h6V4"/></svg></span></button>
+            <button class="icon-btn synced-btn" data-variant="filled" data-size="base" disabled type="button" aria-label="Disabled add"><span class="icon-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg></span></button>
+            <button class="icon-btn synced-btn" data-variant="filled" data-size="base" data-disabled type="button" aria-label="Disabled delete"><span class="icon-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h10M6 4V3h4v1M5 4v9h6V4"/></svg></span></button>
           </div>
         </div>
         <div class="a11y-card">
           <div class="a11y-card-title">Aria Label</div>
           <p class="a11y-card-desc">Icon-only buttons <strong>must</strong> have <code>aria-label</code> for screen readers.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <button class="icon-btn synced-btn" data-variant="primary" data-size="base" type="button" aria-label="Add new item"><span class="icon-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg></span></button>
+            <button class="icon-btn synced-btn" data-variant="filled" data-size="base" type="button" aria-label="Add new item"><span class="icon-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg></span></button>
           </div>
         </div>
         <div class="a11y-card">
           <div class="a11y-card-title">Forced Colors</div>
           <p class="a11y-card-desc">High Contrast uses <code>ButtonText</code>, <code>Highlight</code>, <code>GrayText</code>.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <button class="icon-btn synced-btn" data-variant="primary" data-size="base" type="button" aria-label="HC test"><span class="icon-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg></span></button>
+            <button class="icon-btn synced-btn" data-variant="filled" data-size="base" type="button" aria-label="HC test"><span class="icon-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg></span></button>
           </div>
         </div>
       </div>
@@ -308,7 +325,8 @@
         </div>
         <div class="fw-snippet-code" data-panel="react" data-active>&lt;button
   className="icon-btn"
-  data-variant={variant}   {/* primary | secondary | ghost | danger | neutral | outline */}
+  data-variant={variant}   {/* filled | outlined | soft | ghost */}
+  data-role={role}          {/* primary | danger | success | warning | brand | info | neutral */}
   data-size={size}
   data-shape={shape}       {/* square | circle */}
   data-rounded={rounded || undefined}
@@ -321,6 +339,7 @@
         <div class="fw-snippet-code" data-panel="vue">&lt;button
   class="icon-btn"
   :data-variant="variant ?? 'primary'"
+  :data-role="role ?? 'primary'"
   :data-size="size ?? 'base'"
   :data-shape="shape ?? 'square'"
   :data-rounded="rounded || undefined"
@@ -330,7 +349,7 @@
 &gt;
   &lt;span class="icon-btn__icon"&gt;&lt;slot /&gt;&lt;/span&gt;
 &lt;/button&gt;</div>
-        <div class="fw-snippet-code" data-panel="html">&lt;button class="icon-btn" data-variant="primary" data-size="base" data-shape="square" aria-label="Settings"&gt;
+        <div class="fw-snippet-code" data-panel="html">&lt;button class="icon-btn" data-variant="filled" data-role="primary" data-size="base" data-shape="square" aria-label="Settings"&gt;
   &lt;span class="icon-btn__icon"&gt;⚙&lt;/span&gt;
 &lt;/button&gt;</div>
         <div class="fw-snippet-code" data-panel="css">/* Shape */
@@ -345,10 +364,10 @@
 --icon-btn-min-tap-target
 
 /* Surface */
---icon-btn-{variant}-bg / -hover / -active / -disabled
---icon-btn-{variant}-fg / -hover / -disabled
---icon-btn-{variant}-border-color / -hover / -active
---icon-btn-{variant}-opacity-disabled
+--icon-btn-{structure}-bg / -hover / -active / -disabled
+--icon-btn-{structure}-fg / -hover / -disabled
+--icon-btn-{structure}-border-color / -hover / -active
+--icon-btn-{structure}-opacity-disabled
 
 /* Motion */
 --icon-btn-transition-duration / -easing / -property
@@ -370,37 +389,49 @@
 (function(){
   'use strict';
 
-  var VARIANTS=['primary','secondary','ghost','danger','neutral','outline'];
-  var SIZES=['micro','tiny','small','base','medium','large','big','huge','mega','ultra'];
-  var SIZE_HT={micro:'24px',tiny:'28px',small:'32px',base:'36px',medium:'40px',large:'44px',big:'48px',huge:'56px',mega:'64px',ultra:'80px'};
-  var SHADOWS=['none','xs','sm','DEFAULT','md','lg','xl','2xl'];
+  var STRUCTS = ['filled','outlined','soft','ghost'];
+  var ROLES   = ['primary','danger','success','warning','brand','info','neutral'];
+  var SIZES   = ['micro','tiny','small','base','medium','large','big','huge','mega','ultra'];
+  var SIZE_HT = {micro:'24px',tiny:'28px',small:'32px',base:'36px',medium:'40px',large:'44px',big:'48px',huge:'56px',mega:'64px',ultra:'80px'};
+  var SHADOWS = ['none','xs','sm','DEFAULT','md','lg','xl','2xl'];
 
-  /* SVG icons */
   var ICON_PLUS='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg>';
   var ICON_EDIT='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.5l2 2M2 11l7-7 2 2-7 7H2v-2z"/></svg>';
   var ICON_TRASH='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h10M6 4V3h4v1M5 4v9h6V4"/></svg>';
   var ICON_DOTS='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="3" r="0.5"/><circle cx="8" cy="8" r="0.5"/><circle cx="8" cy="13" r="0.5"/></svg>';
   var ICON_GEAR='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg>';
   var ICON_CLOSE='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>';
+  var ICON_CHECK='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.5 3.5 6.5-7"/></svg>';
 
-  var VARIANT_ICONS={primary:ICON_PLUS,secondary:ICON_EDIT,ghost:ICON_DOTS,danger:ICON_TRASH,neutral:ICON_GEAR,outline:ICON_CLOSE};
-  var VARIANT_LABELS={primary:'Add',secondary:'Edit',ghost:'More',danger:'Delete',neutral:'Settings',outline:'Close'};
+  var STRUCT_ICONS={filled:ICON_PLUS,outlined:ICON_EDIT,soft:ICON_GEAR,ghost:ICON_DOTS};
+  var ROLE_LABELS={
+    primary:{filled:'Add',outlined:'Edit',soft:'Settings',ghost:'More'},
+    danger:{filled:'Delete',outlined:'Remove',soft:'Archive',ghost:'Undo'},
+    success:{filled:'Confirm',outlined:'Approve',soft:'Review',ghost:'OK'},
+    warning:{filled:'Alert',outlined:'Warn',soft:'Caution',ghost:'Skip'},
+    brand:{filled:'Start',outlined:'Learn',soft:'Try',ghost:'Skip'},
+    info:{filled:'Info',outlined:'Details',soft:'Help',ghost:'Tip'},
+    neutral:{filled:'Menu',outlined:'Close',soft:'Options',ghost:'More'}
+  };
 
-  var curV='primary', curS='base', curRounded=false;
+  var curStruct='filled',curRole='primary',curS='base',curRounded=false;
 
-  function makeBtn(v,s,o){
+  function makeBtn(struct,role,s,o){
     o=o||{};
     var b=document.createElement('button');
     b.type='button'; b.className='icon-btn';
     if(!o.noSync) b.classList.add('synced-btn');
-    b.dataset.variant=v; b.dataset.size=s;
-    b.setAttribute('aria-label', o.label||VARIANT_LABELS[v]||v);
+    b.dataset.variant=struct;
+    if(role&&role!=='primary'||struct==='ghost')b.dataset.role=role||'primary';
+    b.dataset.size=s;
+    var lbl=ROLE_LABELS[role||'primary'];
+    b.setAttribute('aria-label', o.label||(lbl&&lbl[struct])||struct);
     if(o.disabled) b.disabled=true;
     if(o.loading) b.dataset.loading='';
-    if(o.rounded || (curRounded && !o.noRounded)) b.dataset.rounded='';
+    if(o.rounded||(curRounded&&!o.noRounded)) b.dataset.rounded='';
     var ic=document.createElement('span');
     ic.className='icon-btn__icon';
-    ic.innerHTML=o.svg||VARIANT_ICONS[v]||ICON_PLUS;
+    ic.innerHTML=o.svg||STRUCT_ICONS[struct]||ICON_PLUS;
     b.appendChild(ic);
     if(o.style){for(var k in o.style){if(o.style.hasOwnProperty(k))b.style.setProperty(k,o.style[k])}}
     return b;
@@ -409,20 +440,21 @@
   function wrapCard(b,t){var d=document.createElement('div');d.className='variant-card';d.appendChild(b);var l=document.createElement('span');l.className='variant-label';l.textContent=t;d.appendChild(l);return d}
   function clr(id){var e=document.getElementById(id);e.innerHTML='';return e}
   function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
-  function cell(p,c){var d=document.createElement('div');d.appendChild(c);p.appendChild(d)}
 
-  /* ── Section Renderers ──────────────────────────────── */
-
-  function renderVariants(){
-    var el=clr('variantGallery');
-    VARIANTS.forEach(function(v){el.appendChild(wrapCard(makeBtn(v,curS,{noSync:true}),v))});
+  function renderStructGallery(){
+    var el=clr('structGallery');
+    STRUCTS.forEach(function(st){el.appendChild(wrapCard(makeBtn(st,curRole,curS,{noSync:true}),st))});
+  }
+  function renderRoleGallery(){
+    var el=clr('roleGallery');
+    ROLES.forEach(function(r){el.appendChild(wrapCard(makeBtn(curStruct,r,curS,{noSync:true}),r))});
   }
 
   function renderDensity(){
     var el=clr('densityScale');
     SIZES.forEach(function(s){
       var it=document.createElement('div');it.className='density-item';
-      it.appendChild(makeBtn(curV,s,{noSync:true}));
+      it.appendChild(makeBtn(curStruct,curRole,s,{noSync:true}));
       var m=document.createElement('div');m.className='density-meta';m.textContent=SIZE_HT[s];it.appendChild(m);el.appendChild(it);
     });
   }
@@ -432,23 +464,19 @@
     var sts=['Default','Hover','Active','Focus','Disabled','Loading'];
     var corner=document.createElement('div');corner.className='state-header';el.appendChild(corner);
     sts.forEach(function(s){var h=document.createElement('div');h.className='state-header';h.textContent=s;el.appendChild(h)});
-    VARIANTS.forEach(function(v){
-      var rl=document.createElement('div');rl.className='state-row-label';rl.textContent=v;el.appendChild(rl);
-      cell(el,makeBtn(v,curS,{noSync:true}));
-      var hb=makeBtn(v,curS,{noSync:true});hb.title='Hover me';cell(el,hb);
-      var ab=makeBtn(v,curS,{noSync:true});ab.title='Click & hold';cell(el,ab);
-      var fb=makeBtn(v,curS,{noSync:true});fb.title='Tab to focus';cell(el,fb);
-      cell(el,makeBtn(v,curS,{disabled:true,noSync:true}));
-      cell(el,makeBtn(v,curS,{loading:true,noSync:true}));
+    STRUCTS.forEach(function(st){
+      var rl=document.createElement('div');rl.className='state-row-label';rl.textContent=st;el.appendChild(rl);
+      for(var i=0;i<4;i++){var c=document.createElement('div');c.appendChild(makeBtn(st,curRole,curS,{noSync:true}));el.appendChild(c)}
+      var dc=document.createElement('div');dc.appendChild(makeBtn(st,curRole,curS,{disabled:true,noSync:true}));el.appendChild(dc);
+      var lc=document.createElement('div');lc.appendChild(makeBtn(st,curRole,curS,{loading:true,noSync:true}));el.appendChild(lc);
     });
   }
 
   function renderSurface(){
-    var sv=['neutral','outline'];
     ['surfaceBase','surfaceAlt','surfaceDeep'].forEach(function(id){
       var p=document.getElementById(id);
-      while(p.children.length>1)p.removeChild(p.lastChild);
-      sv.forEach(function(v){p.appendChild(makeBtn(v,curS,{noSync:true}))});
+      while(p.children.length>1) p.removeChild(p.lastChild);
+      STRUCTS.forEach(function(st){p.appendChild(makeBtn(st,curRole,curS,{}))});
     });
   }
 
@@ -456,7 +484,7 @@
     var el=clr('radiusScale');
     SIZES.forEach(function(s){
       var it=document.createElement('div');it.className='density-item';
-      it.appendChild(makeBtn(curV,s,{noSync:true,noRounded:true}));
+      it.appendChild(makeBtn(curStruct,curRole,s,{noSync:true}));
       var m=document.createElement('div');m.className='density-meta';m.textContent=s;it.appendChild(m);el.appendChild(it);
     });
   }
@@ -465,8 +493,8 @@
     var el=clr('roundedScale');
     SIZES.forEach(function(s){
       var it=document.createElement('div');it.className='density-item';
-      it.appendChild(makeBtn(curV,s,{noSync:true,rounded:true}));
-      var m=document.createElement('div');m.className='density-meta';m.textContent=s+' (circle)';it.appendChild(m);el.appendChild(it);
+      it.appendChild(makeBtn(curStruct,curRole,s,{rounded:true,noSync:true}));
+      var m=document.createElement('div');m.className='density-meta';m.textContent=s;it.appendChild(m);el.appendChild(it);
     });
   }
 
@@ -474,218 +502,170 @@
     var el=clr('shadowStrip');
     SHADOWS.forEach(function(s){
       var it=document.createElement('div');it.className='density-item';
-      it.appendChild(makeBtn(curV,curS,{noSync:true,style:{'--icon-btn-shadow':'var(--shadow-'+s+')','--icon-btn-shadow-hover':'var(--shadow-'+s+')'}}));
+      it.appendChild(makeBtn(curStruct,curRole,curS,{noSync:true,style:{'--icon-btn-shadow':'var(--shadow-'+s+')','--icon-btn-shadow-hover':'var(--shadow-'+s+')'}}));
       var m=document.createElement('div');m.className='density-meta';m.textContent='--shadow-'+s;it.appendChild(m);el.appendChild(it);
     });
   }
 
   function renderMotion(){
     var el=clr('motionDemo');
-    var items=[
-      {label:'Normal',sub:'duration-normal',opts:{}},
-      {label:'Loading...',sub:'1.5s pulse',opts:{loading:true}},
-      {label:'Fast',sub:'duration-fast',opts:{style:{'--icon-btn-transition-duration':'var(--duration-fast)','--icon-btn-transition-easing':'var(--easing-in)'}}},
-      {label:'Slow bounce',sub:'duration-slow',opts:{style:{'--icon-btn-transition-duration':'var(--duration-slow)','--icon-btn-transition-easing':'var(--easing-bounce)'}}}
-    ];
-    items.forEach(function(it){
+    [{label:'Normal',sub:'duration-normal',opts:{}},{label:'Loading...',sub:'1.5s pulse',opts:{loading:true}},{label:'Fast',sub:'duration-fast',opts:{style:{'--icon-btn-transition-duration':'var(--duration-fast)','--icon-btn-transition-easing':'var(--easing-in)'}}},{label:'Slow bounce',sub:'duration-slow',opts:{style:{'--icon-btn-transition-duration':'var(--duration-slow)','--icon-btn-transition-easing':'var(--easing-bounce)'}}}].forEach(function(it){
       var cd=document.createElement('div');cd.className='motion-card';
-      var btn=makeBtn(curV,curS,it.opts);
-      cd.appendChild(btn);
+      cd.appendChild(makeBtn(curStruct,curRole,curS,it.opts));
       var l=document.createElement('span');l.className='motion-label';l.textContent=it.sub;cd.appendChild(l);el.appendChild(cd);
     });
   }
 
-  /* ── Inspector ──────────────────────────────────────── */
-  var IB_TOKENS = {
-    size: {micro:'--spacing-24',tiny:'--spacing-28',small:'--spacing-32',base:'--spacing-36',medium:'--spacing-40',large:'--spacing-44',big:'--spacing-48',huge:'--spacing-56',mega:'--spacing-64',ultra:'--spacing-80'},
-    iconSize: {micro:'--spacing-12',tiny:'--spacing-14',small:'--spacing-16',base:'--spacing-18',medium:'--spacing-20',large:'--spacing-22',big:'--spacing-24',huge:'--spacing-28',mega:'--spacing-32',ultra:'--spacing-40'},
-    radius: {micro:'--radius-xs',tiny:'--radius-sm',small:'--radius-sm',base:'--radius-md',medium:'--radius-md',large:'--radius-DEFAULT',big:'--radius-DEFAULT',huge:'--radius-lg',mega:'--radius-xl',ultra:'--radius-xl'}
+  /* ── Inspector ──────────────────────────────────── */
+  var IB_TOKENS={
+    size:{micro:'--spacing-24',tiny:'--spacing-28',small:'--spacing-32',base:'--spacing-36',medium:'--spacing-40',large:'--spacing-44',big:'--spacing-48',huge:'--spacing-56',mega:'--spacing-64',ultra:'--spacing-80'},
+    iconSize:{micro:'--spacing-12',tiny:'--spacing-14',small:'--spacing-16',base:'--spacing-18',medium:'--spacing-20',large:'--spacing-22',big:'--spacing-24',huge:'--spacing-28',mega:'--spacing-32',ultra:'--spacing-40'},
+    radius:{micro:'--radius-xs',tiny:'--radius-sm',small:'--radius-sm',base:'--radius-md',medium:'--radius-md',large:'--radius-DEFAULT',big:'--radius-DEFAULT',huge:'--radius-lg',mega:'--radius-xl',ultra:'--radius-xl'}
   };
+  var STRUCT_TOKEN={filled:'primary',outlined:'secondary',soft:'tertiary',ghost:'ghost'};
+  var ROLE_PREFIX={primary:'primary',danger:'danger',success:'success',warning:'warning',brand:'brand',info:'info',neutral:'surface-base'};
 
   function updateInspector(){
-    var hb=document.querySelector('.hero-preview .icon-btn');
-    if(!hb)return;
-    var cs=getComputedStyle(hb);
-    var s=curS;
-    var tokens=[
+    var hb=document.querySelector('.hero-preview .icon-btn');if(!hb)return;
+    var cs=getComputedStyle(hb),s=curS,tg=STRUCT_TOKEN[curStruct]||'primary';
+    var isN=curRole==='neutral';
+    var rows=[
       ['--icon-btn-size-'+s, IB_TOKENS.size[s], cs.width],
-      ['height (=width)', '—', cs.height],
+      ['--icon-btn-icon-size-'+s, IB_TOKENS.iconSize[s], cs.getPropertyValue('--_ib-icon-size').trim()||'\u2014'],
       [curRounded?'--icon-btn-radius-rounded':'--icon-btn-radius-'+s, curRounded?'--radius-full':IB_TOKENS.radius[s], cs.borderRadius],
-      ['--icon-btn-icon-size-'+s, IB_TOKENS.iconSize[s], cs.getPropertyValue('--_ib-icon-size').trim()||'—'],
-      ['--icon-btn-'+curV+'-bg', '—', cs.backgroundColor],
-      ['--icon-btn-'+curV+'-fg', '—', cs.color],
-      ['--icon-btn-'+curV+'-border-color', '—', cs.borderColor],
-      ['--icon-btn-shadow', '—', cs.boxShadow==='none'?'none':cs.boxShadow],
-      ['--icon-btn-border-width', '—', cs.borderWidth],
+      ['--icon-btn-'+tg+'-bg', isN?'--surface-base-cm-bg':'--primary-component-bg-default', cs.backgroundColor],
+      ['--icon-btn-'+tg+'-fg', isN?'--surface-base-ct-default':'--primary-on-component', cs.color],
+      ['--icon-btn-'+tg+'-border-color', '\u2014', cs.borderColor],
+      ['--icon-btn-shadow', '\u2014', cs.boxShadow==='none'?'none':cs.boxShadow],
       ['--icon-btn-transition-duration', '--duration-normal', cs.transitionDuration]
     ];
     var ins=document.getElementById('heroInspector');
-    ins.innerHTML='<div class="inspector-title">Resolved Tokens ('+curV+' / '+s+(curRounded?' / rounded':'')+')</div>'+
-      tokens.map(function(t){
-        return '<div class="inspector-row"><span class="token-name">'+t[0]+'</span><span class="token-val">'+t[2]+(t[1]!=='—'?'<br><span style="opacity:0.5;font-size:9px">\u2192 '+t[1]+'</span>':'')+'</span></div>';
-      }).join('');
+    ins.innerHTML='<div class="inspector-title">Resolved Tokens ('+curStruct+' / '+curRole+' / '+s+')</div>'+
+      rows.map(function(t){return '<div class="inspector-row"><span class="token-name">'+t[0]+'</span><span class="token-val">'+t[2]+(t[1]!=='\u2014'?'<br><span style="opacity:0.5;font-size:9px">\u2192 '+t[1]+'</span>':'')+'</span></div>'}).join('');
   }
 
-  /* ── Apply Globals ──────────────────────────────────── */
+  /* ── Apply Global Controls ──────────────────────── */
   function applyGlobals(){
     var hb=document.querySelector('.hero-preview .icon-btn');
-    if(hb){hb.dataset.variant=curV;hb.dataset.size=curS;if(curRounded)hb.dataset.rounded='';else delete hb.dataset.rounded}
-    document.querySelectorAll('.a11y-grid .synced-btn').forEach(function(b){b.dataset.size=curS;if(curRounded)b.dataset.rounded='';else delete b.dataset.rounded});
-    renderVariants();renderDensity();renderStates();renderSurface();
-    renderRadius();renderRounded();renderShadows();renderMotion();
+    if(hb){
+      hb.dataset.variant=curStruct;
+      if(curRole!=='primary'||curStruct==='ghost'){hb.dataset.role=curRole}else{delete hb.dataset.role}
+      hb.dataset.size=curS;
+      if(curRounded)hb.dataset.rounded='';else delete hb.dataset.rounded;
+    }
+    document.querySelectorAll('.a11y-grid .synced-btn').forEach(function(b){
+      b.dataset.variant=curStruct;
+      if(curRole!=='primary'||curStruct==='ghost'){b.dataset.role=curRole}else{delete b.dataset.role}
+      b.dataset.size=curS;
+      if(curRounded)b.dataset.rounded='';else delete b.dataset.rounded;
+    });
+    renderStructGallery();renderRoleGallery();renderDensity();renderStates();
+    renderSurface();renderRadius();renderRounded();renderShadows();renderMotion();
     requestAnimationFrame(updateInspector);
   }
 
-  /* ── Global Controls ────────────────────────────────── */
-  document.getElementById('variantBar').addEventListener('click',function(e){
-    var pill=e.target.closest('.pill');if(!pill)return;
-    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
-    pill.setAttribute('aria-pressed','true');curV=pill.dataset.ctrlVariant;applyGlobals();
-  });
+  function wirePill(barId,attr,cb){
+    document.getElementById(barId).addEventListener('click',function(e){
+      var pill=e.target.closest('.pill');if(!pill)return;
+      this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
+      pill.setAttribute('aria-pressed','true');cb(pill.dataset[attr]);
+    });
+  }
 
-  document.getElementById('sizeBar').addEventListener('click',function(e){
-    var pill=e.target.closest('.pill');if(!pill)return;
-    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
-    pill.setAttribute('aria-pressed','true');curS=pill.dataset.ctrlSize;applyGlobals();
-  });
+  wirePill('structBar','ctrlStruct',function(v){curStruct=v;applyGlobals()});
+  wirePill('roleBar','ctrlRole',function(v){curRole=v;applyGlobals()});
+  wirePill('sizeBar','ctrlSize',function(v){curS=v;applyGlobals()});
+  wirePill('roundedBar','ctrlRounded',function(v){curRounded=v==='true';applyGlobals()});
 
-  document.getElementById('roundedBar').addEventListener('click',function(e){
-    var pill=e.target.closest('.pill');if(!pill)return;
-    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
-    pill.setAttribute('aria-pressed','true');curRounded=pill.dataset.ctrlRounded==='true';applyGlobals();
-  });
-
-  window.DTF.onThemeChange = updateInspector;
-
+  window.DTF.onThemeChange=updateInspector;
   applyGlobals();
 
-  /* ── Context Playground ─────────────────────────────── */
-  var SURFACE_TOKENS=[
-    'bg','hover','pressed','outline','separator',
-    'ct-default','ct-strong','ct-subtle','ct-faint',
-    'cm-bg','cm-bg-hover','cm-bg-pressed',
-    'cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator'
-  ];
-  var ROLE_TOKENS=[
-    'content-default','content-strong','content-subtle','content-faint',
-    'component-bg-default','component-bg-hover','component-bg-pressed',
-    'component-outline-default','component-outline-hover','component-outline-pressed',
-    'component-separator',
-    'container-bg','container-hover','container-pressed',
-    'container-outline','container-separator',
-    'on-component','on-container'
-  ];
+  /* ── Context Playground ─────────────────────────── */
+  var SURFACE_TOKENS=['bg','hover','pressed','outline','separator','ct-default','ct-strong','ct-subtle','ct-faint','cm-bg','cm-bg-hover','cm-bg-pressed','cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator'];
+  var ROLE_REMAP=['component-bg-default','component-bg-hover','component-bg-pressed','on-component','content-default','content-strong','content-subtle','content-faint','component-outline-default','component-outline-hover','component-outline-pressed','component-separator','container-bg','container-hover','container-pressed','container-outline','container-separator','on-container'];
+  var pgSize='base';
 
-  function applySurface(bodyEl,surfaceId){
-    if(surfaceId==='base'){
-      SURFACE_TOKENS.forEach(function(tok){bodyEl.style.removeProperty('--surface-base-'+tok);});
-      bodyEl.style.background='var(--surface-base-bg)';
+  function applySurface(el,sid){
+    if(sid==='base'){SURFACE_TOKENS.forEach(function(t){el.style.removeProperty('--surface-base-'+t)});el.style.background='var(--surface-base-bg)'}
+    else{SURFACE_TOKENS.forEach(function(t){el.style.setProperty('--surface-base-'+t,'var(--surface-'+sid+'-'+t+')')});el.style.background='var(--surface-'+sid+'-bg)'}
+  }
+
+  function applyRole(el,rid){
+    if(rid==='primary'){ROLE_REMAP.forEach(function(t){el.style.removeProperty('--primary-'+t)})}
+    else if(rid==='neutral'){
+      el.style.setProperty('--primary-component-bg-default','var(--surface-base-cm-bg)');
+      el.style.setProperty('--primary-component-bg-hover','var(--surface-base-cm-bg-hover)');
+      el.style.setProperty('--primary-component-bg-pressed','var(--surface-base-cm-bg-pressed)');
+      el.style.setProperty('--primary-on-component','var(--surface-base-ct-default)');
+      el.style.setProperty('--primary-content-default','var(--surface-base-ct-default)');
+      el.style.setProperty('--primary-container-bg','var(--surface-base-hover)');
+      el.style.setProperty('--primary-container-hover','var(--surface-base-pressed)');
+      el.style.setProperty('--primary-container-pressed','var(--surface-base-pressed)');
+      el.style.setProperty('--primary-component-outline-default','var(--surface-base-cm-outline)');
+      el.style.setProperty('--primary-component-outline-hover','var(--surface-base-cm-outline-hover)');
+      el.style.setProperty('--primary-component-outline-pressed','var(--surface-base-cm-outline-pressed)');
     } else {
-      SURFACE_TOKENS.forEach(function(tok){
-        bodyEl.style.setProperty('--surface-base-'+tok,'var(--surface-'+surfaceId+'-'+tok+')');
-      });
-      bodyEl.style.background='var(--surface-'+surfaceId+'-bg)';
+      ROLE_REMAP.forEach(function(t){el.style.setProperty('--primary-'+t,'var(--'+rid+'-'+t+')')});
     }
   }
 
-  function applyRole(bodyEl,roleId){
-    if(roleId==='primary'){
-      ROLE_TOKENS.forEach(function(tok){bodyEl.style.removeProperty('--primary-'+tok);});
-    } else {
-      ROLE_TOKENS.forEach(function(tok){
-        bodyEl.style.setProperty('--primary-'+tok,'var(--'+roleId+'-'+tok+')');
-      });
-    }
+  function pgBuildCard(card){
+    var body=document.getElementById('pgBody'+card);body.innerHTML='';
+    var role=document.querySelector('[data-pg-role="'+card+'"]').value;
+    STRUCTS.forEach(function(st){
+      var row=document.createElement('div');row.className='pg-variant-row';
+      var lbl=document.createElement('span');lbl.className='pg-variant-label';lbl.textContent=cap(st);row.appendChild(lbl);
+      row.appendChild(makeBtn(st,'primary',pgSize,{noSync:true}));
+      body.appendChild(row);
+    });
+    var drow=document.createElement('div');drow.className='pg-variant-row';
+    var dlbl=document.createElement('span');dlbl.className='pg-variant-label';dlbl.textContent='Disabled';drow.appendChild(dlbl);
+    drow.appendChild(makeBtn('filled','primary',pgSize,{disabled:true,noSync:true}));
+    body.appendChild(drow);
   }
-
   function pgApplyCard(card){
     var body=document.getElementById('pgBody'+card);
-    var surfSel=document.querySelector('[data-pg-surface="'+card+'"]');
-    var roleSel=document.querySelector('[data-pg-role="'+card+'"]');
-    applySurface(body,surfSel.value);
-    applyRole(body,roleSel.value);
+    applySurface(body,document.querySelector('[data-pg-surface="'+card+'"]').value);
+    applyRole(body,document.querySelector('[data-pg-role="'+card+'"]').value);
+    pgBuildCard(card);
   }
-
-  function pgApplyDensity(size){
-    document.querySelectorAll('.pg-btn').forEach(function(b){b.dataset.size=size});
-  }
-
   function pgUpdateChain(){
-    var body=document.getElementById('pgBodyA');
-    var surfSel=document.querySelector('[data-pg-surface="A"]');
-    var roleSel=document.querySelector('[data-pg-role="A"]');
-    var btn=body.querySelector('.icon-btn[data-variant="primary"]');
-    if(!btn)return;
-    var cs=getComputedStyle(btn);
     var chain=document.getElementById('pgChain');
-    var s=surfSel.value,r=roleSel.value;
+    var s=document.querySelector('[data-pg-surface="A"]').value;
+    var r=document.querySelector('[data-pg-role="A"]').value;
+    var isN=(r==='neutral'),rp=isN?'surface-'+s:r;
     var rows=[
-      {sec:'Primary (filled)'},
-      {label:'BG',token:'--icon-btn-primary-bg',via:'--'+r+'-component-bg-default',val:cs.backgroundColor},
-      {label:'BG Hover',token:'--icon-btn-primary-bg-hover',via:'--'+r+'-component-bg-hover'},
-      {label:'BG Active',token:'--icon-btn-primary-bg-active',via:'--'+r+'-component-bg-pressed'},
-      {label:'FG',token:'--icon-btn-primary-fg',via:'--'+r+'-on-component',val:cs.color},
-      {label:'Border',token:'--icon-btn-primary-border-color',via:'--'+r+'-component-bg-default'},
-      {sec:'Secondary (outlined)'},
-      {label:'BG Hover',token:'--icon-btn-secondary-bg-hover',via:'--'+r+'-container-bg'},
-      {label:'BG Active',token:'--icon-btn-secondary-bg-active',via:'--'+r+'-container-pressed'},
-      {label:'FG',token:'--icon-btn-secondary-fg',via:'--'+r+'-content-default'},
-      {label:'Border',token:'--icon-btn-secondary-border-color',via:'--'+r+'-component-outline-default'},
-      {label:'Border Hover',token:'--icon-btn-secondary-border-color-hover',via:'--'+r+'-component-outline-hover'},
-      {sec:'Ghost (transparent)'},
-      {label:'BG Hover',token:'--icon-btn-ghost-bg-hover',via:'--surface-'+s+'-hover'},
-      {label:'BG Active',token:'--icon-btn-ghost-bg-active',via:'--surface-'+s+'-pressed'},
-      {label:'FG',token:'--icon-btn-ghost-fg',via:'--surface-'+s+'-ct-default'},
-      {sec:'Danger'},
-      {label:'BG',token:'--icon-btn-danger-bg',via:'--danger-component-bg-default'},
-      {label:'FG',token:'--icon-btn-danger-fg',via:'--danger-on-component'},
-      {sec:'Neutral (surface)'},
-      {label:'BG',token:'--icon-btn-neutral-bg',via:'--surface-'+s+'-cm-bg'},
-      {label:'BG Hover',token:'--icon-btn-neutral-bg-hover',via:'--surface-'+s+'-cm-bg-hover'},
-      {label:'BG Active',token:'--icon-btn-neutral-bg-active',via:'--surface-'+s+'-cm-bg-pressed'},
-      {label:'FG',token:'--icon-btn-neutral-fg',via:'--surface-'+s+'-ct-default'},
-      {label:'FG Hover',token:'--icon-btn-neutral-fg-hover',via:'--surface-'+s+'-ct-strong'},
-      {label:'Border',token:'--icon-btn-neutral-border-color',via:'--surface-'+s+'-cm-outline'},
-      {label:'Border Hover',token:'--icon-btn-neutral-border-color-hover',via:'--surface-'+s+'-cm-outline-hover'},
-      {sec:'Outline (surface border)'},
-      {label:'BG Hover',token:'--icon-btn-outline-bg-hover',via:'--surface-'+s+'-hover'},
-      {label:'BG Active',token:'--icon-btn-outline-bg-active',via:'--surface-'+s+'-pressed'},
-      {label:'FG',token:'--icon-btn-outline-fg',via:'--surface-'+s+'-ct-default'},
-      {label:'FG Hover',token:'--icon-btn-outline-fg-hover',via:'--surface-'+s+'-ct-strong'},
-      {label:'Border',token:'--icon-btn-outline-border-color',via:'--surface-'+s+'-outline'},
-      {label:'Border Hover',token:'--icon-btn-outline-border-color-hover',via:'--surface-'+s+'-cm-outline-hover'},
-      {sec:'Focus / A11y'},
-      {label:'Focus Ring',token:'--icon-btn-focus-outline-color',via:'--'+r+'-component-outline-default'}
+      {sec:'Filled ('+r+')'},
+      {label:'BG',token:'--icon-btn-primary-bg',via:'--'+rp+(isN?'-cm-bg':'-component-bg-default')},
+      {label:'FG',token:'--icon-btn-primary-fg',via:'--'+rp+(isN?'-ct-default':'-on-component')},
+      {sec:'Outlined ('+r+')'},
+      {label:'BG Hover',token:'--icon-btn-secondary-bg-hover',via:'--'+rp+(isN?'-hover':'-container-bg')},
+      {label:'FG',token:'--icon-btn-secondary-fg',via:'--'+rp+(isN?'-ct-default':'-content-default')},
+      {sec:'Soft ('+r+')'},
+      {label:'BG',token:'--icon-btn-tertiary-bg',via:'--'+rp+(isN?'-hover':'-container-bg')},
+      {label:'FG',token:'--icon-btn-tertiary-fg',via:'--'+rp+(isN?'-ct-default':'-content-default')},
+      {sec:'Ghost ('+r+')'},
+      {label:'BG Hover',token:'--icon-btn-ghost-bg-hover',via:isN?'--surface-'+s+'-hover':'--'+r+'-container-bg'},
+      {label:'FG',token:'--icon-btn-ghost-fg',via:isN?'--surface-'+s+'-ct-default':'--'+r+'-content-default'}
     ];
     var h='<div class="pg-chain-title">Token Resolution Chain (Card A: surface-'+s+' / '+r+')</div>';
-    rows.forEach(function(row){      if(row.sec){h+='<div class="pg-chain-sec">'+row.sec+'</div>';return;}      h+='<div class="pg-chain-row">';
-      if(row.val){h+='<span class="pg-swatch" style="background:'+row.val+'"></span>';}
-      h+='<span>'+row.label+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.token+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.via+'</span>';
-      if(row.val){h+=' <span class="pg-chain-arrow">\u2192</span> <span style="font-weight:600">'+row.val+'</span>';}
-      h+='</div>';
+    rows.forEach(function(row){
+      if(row.sec){h+='<div class="pg-chain-sec">'+row.sec+'</div>';return}
+      h+='<div class="pg-chain-row"><span>'+row.label+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.token+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.via+'</span></div>';
     });
     chain.innerHTML=h;
   }
 
   document.querySelectorAll('[data-pg-surface],[data-pg-role]').forEach(function(sel){
-    sel.addEventListener('change',function(){
-      var card=this.dataset.pgSurface||this.dataset.pgRole;
-      pgApplyCard(card);
-      requestAnimationFrame(pgUpdateChain);
-    });
+    sel.addEventListener('change',function(){var card=this.dataset.pgSurface||this.dataset.pgRole;pgApplyCard(card);requestAnimationFrame(pgUpdateChain)});
   });
-
   document.getElementById('pgDensityBar').addEventListener('click',function(e){
     var pill=e.target.closest('.pill');if(!pill)return;
     this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
-    pill.setAttribute('aria-pressed','true');
-    pgApplyDensity(pill.dataset.pgSize);
-    requestAnimationFrame(pgUpdateChain);
+    pill.setAttribute('aria-pressed','true');pgSize=pill.dataset.pgSize;
+    pgApplyCard('A');pgApplyCard('B');requestAnimationFrame(pgUpdateChain);
   });
-
-  pgApplyCard('A');
-  pgApplyCard('B');
-  requestAnimationFrame(pgUpdateChain);
+  pgApplyCard('A');pgApplyCard('B');requestAnimationFrame(pgUpdateChain);
 
 })();
 </script>

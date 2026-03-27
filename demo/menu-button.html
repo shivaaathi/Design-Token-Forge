@@ -60,7 +60,7 @@
 <div class="page-layout">
 <aside class="sidebar-nav" id="sidebarNav" aria-label="Section navigation">
   <a href="#sec-hero"><span class="sn-num">1</span>Hero Preview</a>
-  <a href="#sec-variants"><span class="sn-num">2</span>Variant Gallery</a>
+  <a href="#sec-variants"><span class="sn-num">2</span>Structure × Role</a>
   <a href="#sec-density"><span class="sn-num">3</span>Density Scale</a>
   <a href="#sec-states"><span class="sn-num">4</span>State Matrix</a>
   <a href="#sec-anatomy"><span class="sn-num">5</span>Slots &amp; Anatomy</a>
@@ -77,7 +77,7 @@
   <h1>MenuButton Explorer <span>— Design Token Forge</span></h1>
   <div class="demo-meta">
     <span class="demo-badge">139 CSS Variables</span>
-    <span class="demo-badge">4 Variants</span>
+    <span class="demo-badge">4 Structures × 7 Roles</span>
     <span class="demo-badge">10 Sizes</span>
     <span class="demo-badge">7 Axes</span>
   </div>
@@ -85,12 +85,25 @@
 
 <nav class="global-controls" aria-label="Global menu-button preview controls">
   <div class="control-group">
-    <label>Variant</label>
-    <div class="pill-bar" id="variantBar" role="radiogroup" aria-label="Variant selector">
-      <button class="pill" role="radio" aria-pressed="true" data-ctrl-variant="primary" type="button">Primary</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="secondary" type="button">Secondary</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="ghost" type="button">Ghost</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="neutral" type="button">Neutral</button>
+    <label>Structure</label>
+    <div class="pill-bar" id="structBar" role="radiogroup" aria-label="Structure selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-struct="filled" type="button">Filled</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-struct="outlined" type="button">Outlined</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-struct="soft" type="button">Soft</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-struct="ghost" type="button">Ghost</button>
+    </div>
+  </div>
+  <div class="control-divider"></div>
+  <div class="control-group">
+    <label>Role</label>
+    <div class="pill-bar" id="roleBar" role="radiogroup" aria-label="Role selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-role="primary" type="button">Primary</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="danger" type="button">Danger</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="success" type="button">Success</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="warning" type="button">Warning</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="brand" type="button">Brand</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="info" type="button">Info</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="neutral" type="button">Neutral</button>
     </div>
   </div>
   <div class="control-divider"></div>
@@ -128,7 +141,7 @@
     <div class="section-body">
       <div class="hero">
         <div class="hero-preview">
-          <button class="menu-btn synced-mb" data-variant="primary" data-size="base" type="button" aria-haspopup="true" aria-expanded="false">
+          <button class="menu-btn synced-btn" data-variant="filled" data-size="base" type="button" aria-haspopup="true" aria-expanded="false">
             <span class="menu-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg></span>
             <span class="menu-btn__label">Actions</span>
             <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
@@ -141,9 +154,15 @@
 
   <!-- 2. VARIANT GALLERY -->
   <section class="section" id="sec-variants">
-    <div class="section-header"><h2>Variant Gallery</h2><span class="section-tag">Surface</span></div>
-    <p class="section-desc">All 4 variants at the globally selected size. Primary (filled), secondary (outlined), ghost (transparent), neutral (surface-context).</p>
-    <div class="section-body"><div class="preview-grid" id="variantGallery"></div></div>
+    <div class="section-header"><h2>Structure × Role</h2><span class="section-tag">Orthogonal</span></div>
+    <p class="section-desc"><strong>Structural variants</strong> define the surface treatment. <strong>Roles</strong> provide semantic color. Top row: all structures in the selected role. Bottom row: all roles in the selected structure.</p>
+    <div class="section-body">
+      <div class="sub-label">Structural Variants (in selected role)</div>
+      <div class="preview-grid" id="structGallery"></div>
+      <div style="border-top:1px solid var(--demo-border);margin:12px 0"></div>
+      <div class="sub-label">Role Gallery (in selected structure)</div>
+      <div class="preview-grid" id="roleGallery"></div>
+    </div>
   </section>
 
   <!-- 3. DENSITY SCALE -->
@@ -156,7 +175,7 @@
   <!-- 4. STATE MATRIX -->
   <section class="section" id="sec-states">
     <div class="section-header"><h2>State Matrix</h2><span class="section-tag">States</span></div>
-    <p class="section-desc">Every variant in every interactive state. Hover to see transitions.</p>
+    <p class="section-desc">Every structural variant in every interactive state, using the selected role. Hover and focus to see live transitions.</p>
     <div class="section-body"><div id="stateMatrix" style="display:flex;flex-direction:column"></div></div>
   </section>
 
@@ -170,7 +189,7 @@
   <!-- 6. SURFACE CONTEXT -->
   <section class="section" id="sec-surface">
     <div class="section-header"><h2>Surface Context</h2><span class="section-tag">Surface</span></div>
-    <p class="section-desc">All variants on three background levels. Ghost and neutral variants adapt to surface context.</p>
+    <p class="section-desc">All four structural variants on three background levels, using the selected role.</p>
     <div class="section-body">
       <div class="surface-strip">
         <div class="surface-panel surface-panel--base" id="surfaceBase"><span class="surface-panel-label">surface-base-bg</span></div>
@@ -314,7 +333,7 @@
           <div class="a11y-card-title">Focus Ring</div>
           <p class="a11y-card-desc">Tab to the button. <code>:focus-visible</code> ring appears.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <button class="menu-btn synced-mb" data-variant="primary" data-size="base" type="button" aria-haspopup="true">
+            <button class="menu-btn synced-btn" data-variant="filled" data-size="base" type="button" aria-haspopup="true">
               <span class="menu-btn__label">Focus me</span>
               <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
             </button>
@@ -324,7 +343,7 @@
           <div class="a11y-card-title">Disabled</div>
           <p class="a11y-card-desc"><code>disabled</code> attribute applies per-variant opacity.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <button class="menu-btn synced-mb" data-variant="primary" data-size="base" type="button" disabled aria-haspopup="true">
+            <button class="menu-btn synced-btn" data-variant="filled" data-size="base" type="button" disabled aria-haspopup="true">
               <span class="menu-btn__label">Disabled</span>
               <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
             </button>
@@ -334,7 +353,7 @@
           <div class="a11y-card-title">ARIA Attributes</div>
           <p class="a11y-card-desc"><code>aria-haspopup="true"</code> and <code>aria-expanded</code> for screen readers.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <button class="menu-btn synced-mb" data-variant="secondary" data-size="base" type="button" aria-haspopup="true" aria-expanded="false">
+            <button class="menu-btn synced-btn" data-variant="filled" data-size="base" type="button" aria-haspopup="true" aria-expanded="false">
               <span class="menu-btn__label">ARIA demo</span>
               <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
             </button>
@@ -344,7 +363,7 @@
           <div class="a11y-card-title">Forced Colors</div>
           <p class="a11y-card-desc">High Contrast uses <code>ButtonText</code>, <code>Highlight</code>, <code>GrayText</code>.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <button class="menu-btn synced-mb" data-variant="primary" data-size="base" type="button" aria-haspopup="true">
+            <button class="menu-btn synced-btn" data-variant="filled" data-size="base" type="button" aria-haspopup="true">
               <span class="menu-btn__label">HC Mode</span>
               <span class="menu-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span>
             </button>
@@ -372,7 +391,8 @@
         </div>
         <div class="fw-snippet-code" data-panel="react" data-active>&lt;button
   className="menu-btn"
-  data-variant={variant}   {/* primary | secondary | ghost | neutral */}
+  data-variant={variant}   {/* filled | outlined | soft | ghost */}
+  data-role={role}          {/* primary | danger | success | warning | brand | info | neutral */}
   data-size={size}
   data-rounded={rounded || undefined}
   data-loading={loading || undefined}
@@ -387,6 +407,7 @@
         <div class="fw-snippet-code" data-panel="vue">&lt;button
   class="menu-btn"
   :data-variant="variant ?? 'primary'"
+  :data-role="role ?? 'primary'"
   :data-size="size ?? 'base'"
   :data-rounded="rounded || undefined"
   :data-loading="loading || undefined"
@@ -398,7 +419,7 @@
   &lt;span class="menu-btn__label"&gt;&lt;slot /&gt;&lt;/span&gt;
   &lt;span class="menu-btn__chevron"&gt;▾&lt;/span&gt;
 &lt;/button&gt;</div>
-        <div class="fw-snippet-code" data-panel="html">&lt;button class="menu-btn" data-variant="primary" data-size="base" aria-expanded="false" aria-haspopup="true"&gt;
+        <div class="fw-snippet-code" data-panel="html">&lt;button class="menu-btn" data-variant="filled" data-role="primary" data-size="base" aria-expanded="false" aria-haspopup="true"&gt;
   &lt;span class="menu-btn__label"&gt;Options&lt;/span&gt;
   &lt;span class="menu-btn__chevron"&gt;▾&lt;/span&gt;
 &lt;/button&gt;</div>
@@ -414,10 +435,10 @@
 --menu-btn-icon-size-{size}    /* chevron icon */
 
 /* Surface */
---menu-btn-{variant}-bg / -hover / -active / -disabled
---menu-btn-{variant}-fg / -hover / -disabled
---menu-btn-{variant}-border-color / -hover / -active
---menu-btn-{variant}-opacity-disabled
+--menu-btn-{structure}-bg / -hover / -active / -disabled
+--menu-btn-{structure}-fg / -hover / -disabled
+--menu-btn-{structure}-border-color / -hover / -active
+--menu-btn-{structure}-opacity-disabled
 
 /* Typography */
 --menu-btn-font-family / -weight
@@ -445,123 +466,93 @@
 (function(){
   'use strict';
 
-  var VARIANTS=['primary','secondary','ghost','neutral'];
-  var SIZES=['micro','tiny','small','base','medium','large','big','huge','mega','ultra'];
-  var SIZE_HT={micro:'24px',tiny:'28px',small:'32px',base:'36px',medium:'40px',large:'44px',big:'48px',huge:'56px',mega:'64px',ultra:'80px'};
-  var SHADOWS=['none','xs','sm','DEFAULT','md','lg','xl','2xl'];
-  var VARIANT_LABELS={primary:'Actions',secondary:'Export',ghost:'Options',neutral:'Settings'};
+  var STRUCTS = ['filled','outlined','soft','ghost'];
+  var ROLES   = ['primary','danger','success','warning','brand','info','neutral'];
+  var SIZES   = ['micro','tiny','small','base','medium','large','big','huge','mega','ultra'];
+  var SIZE_HT = {micro:'24px',tiny:'28px',small:'32px',base:'36px',medium:'40px',large:'44px',big:'48px',huge:'56px',mega:'64px',ultra:'80px'};
+  var SHADOWS = ['none','xs','sm','DEFAULT','md','lg','xl','2xl'];
 
-  /* SVG fragments */
-  var ICON_PLUS='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg>';
-  var ICON_CHEVRON='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg>';
-  var ICON_MENU='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h12M2 8h12M2 12h12"/></svg>';
-  var ICON_DOWNLOAD='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M5 8l3 3 3-3M3 13h10"/></svg>';
-  var ICON_SETTINGS='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2.5"/><path d="M13.3 9.7a1.1 1.1 0 0 0 .2 1.2l.04.04a1.33 1.33 0 1 1-1.88 1.88l-.04-.04a1.1 1.1 0 0 0-1.2-.2 1.1 1.1 0 0 0-.67 1.01v.12a1.33 1.33 0 1 1-2.67 0v-.06a1.1 1.1 0 0 0-.72-1.01 1.1 1.1 0 0 0-1.2.2l-.04.04a1.33 1.33 0 1 1-1.88-1.88l.04-.04a1.1 1.1 0 0 0 .2-1.2 1.1 1.1 0 0 0-1.01-.67h-.12a1.33 1.33 0 1 1 0-2.67h.06A1.1 1.1 0 0 0 3.4 5.6a1.1 1.1 0 0 0-.2-1.2l-.04-.04A1.33 1.33 0 1 1 5.04 2.5l.04.04a1.1 1.1 0 0 0 1.2.2h.05a1.1 1.1 0 0 0 .67-1.01v-.12a1.33 1.33 0 1 1 2.67 0v.06a1.1 1.1 0 0 0 .67 1.07 1.1 1.1 0 0 0 1.2-.2l.04-.04a1.33 1.33 0 1 1 1.88 1.88l-.04.04a1.1 1.1 0 0 0-.2 1.2v.05a1.1 1.1 0 0 0 1.01.67h.12a1.33 1.33 0 0 1 0 2.67h-.06a1.1 1.1 0 0 0-1.07.67z"/></svg>';
-  var ICON_FILTER='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h12l-4.5 5.3V13l-3-1.5V8.3L2 3z"/></svg>';
+  var ICON_CHEVRON='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 6 8 10 11 6"/></svg>';
+  var ICON_MENU='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h10M3 8h10M3 12h10"/></svg>';
+  var ICON_DOWNLOAD='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 8l4 4 4-4M3 13h10"/></svg>';
+  var ICON_SETTINGS='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg>';
+  var ICON_FILTER='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h12l-4.5 5.5V13l-3-1.5V8.5L2 3z"/></svg>';
 
-  var VARIANT_ICONS={primary:ICON_MENU,secondary:ICON_DOWNLOAD,ghost:ICON_FILTER,neutral:ICON_SETTINGS};
+  var STRUCT_ICONS={filled:ICON_MENU,outlined:ICON_DOWNLOAD,soft:ICON_SETTINGS,ghost:ICON_FILTER};
+  var ROLE_LABELS={
+    primary:{filled:'Actions',outlined:'Options',soft:'Select',ghost:'Menu'},
+    danger:{filled:'Delete',outlined:'Remove',soft:'Manage',ghost:'More'},
+    success:{filled:'Confirm',outlined:'Approve',soft:'Review',ghost:'Options'},
+    warning:{filled:'Alerts',outlined:'Warnings',soft:'Cautions',ghost:'More'},
+    brand:{filled:'Get Started',outlined:'Learn More',soft:'Features',ghost:'Menu'},
+    info:{filled:'Help',outlined:'Docs',soft:'FAQ',ghost:'Tips'},
+    neutral:{filled:'Actions',outlined:'Options',soft:'Select',ghost:'More'}
+  };
 
-  var curV='primary', curS='base', curRounded=false;
+  var curStruct='filled',curRole='primary',curS='base',curRounded=false;
 
-  function makeMB(v,s,o){
+  function makeMB(struct,role,s,label,o){
     o=o||{};
     var b=document.createElement('button');
-    b.type='button'; b.className='menu-btn';
-    if(!o.noSync) b.classList.add('synced-mb');
-    b.dataset.variant=v; b.dataset.size=s;
-    b.setAttribute('aria-haspopup','true');
-    if(o.disabled){b.disabled=true}
+    b.type='button';b.className='menu-btn';
+    if(!o.noSync) b.classList.add('synced-btn');
+    b.dataset.variant=struct;
+    if(role&&role!=='primary'||struct==='ghost')b.dataset.role=role||'primary';
+    b.dataset.size=s;
+    b.setAttribute('aria-haspopup','true');b.setAttribute('aria-expanded','false');
+    if(o.disabled) b.disabled=true;
     if(o.loading) b.dataset.loading='';
-    if(o.rounded || (curRounded && !o.noRounded)) b.dataset.rounded='';
+    if(curRounded&&!o.noRounded) b.dataset.rounded='';
 
-    /* Leading icon */
-    if(o.iconStart){
-      var ic=document.createElement('span');ic.className='menu-btn__icon';
-      ic.innerHTML=o.iconSvg||VARIANT_ICONS[v]||ICON_MENU;b.appendChild(ic);
-    }
-
-    /* Label */
-    var label=o.label!==undefined?o.label:VARIANT_LABELS[v]||'Menu';
-    if(label!==false){
-      var lb=document.createElement('span');lb.className='menu-btn__label';lb.textContent=label;b.appendChild(lb);
-    }
-
-    /* Chevron */
-    if(o.noChevron!==true){
-      var ch=document.createElement('span');ch.className='menu-btn__chevron';ch.innerHTML=ICON_CHEVRON;
-      b.appendChild(ch);
-    }
+    if(o.iconStart){var ic=document.createElement('span');ic.className='menu-btn__icon';ic.innerHTML=o.iconSvg||STRUCT_ICONS[struct]||ICON_MENU;b.appendChild(ic)}
+    if(label!==false){var l=document.createElement('span');l.className='menu-btn__label';l.textContent=label||'Menu';b.appendChild(l)}
+    var chev=document.createElement('span');chev.className='menu-btn__chevron';chev.innerHTML=ICON_CHEVRON;b.appendChild(chev);
 
     if(o.style){for(var k in o.style){if(o.style.hasOwnProperty(k))b.style.setProperty(k,o.style[k])}}
     return b;
   }
 
-  function wrapCard(el,t){var d=document.createElement('div');d.className='variant-card';d.appendChild(el);var l=document.createElement('span');l.className='variant-label';l.textContent=t;d.appendChild(l);return d}
+  function wrapCard(b,t){var d=document.createElement('div');d.className='variant-card';d.appendChild(b);var l=document.createElement('span');l.className='variant-label';l.textContent=t;d.appendChild(l);return d}
   function clr(id){var e=document.getElementById(id);e.innerHTML='';return e}
   function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+  function labelFor(st,r){var l=ROLE_LABELS[r];return l&&l[st]?l[st]:cap(st)}
 
-  /* ── Section Renderers ──────────────────────────────── */
-
-  function renderVariants(){
-    var el=clr('variantGallery');
-    VARIANTS.forEach(function(v){el.appendChild(wrapCard(makeMB(v,curS,{iconStart:true,noSync:true}),v))});
+  function renderStructGallery(){
+    var el=clr('structGallery');
+    STRUCTS.forEach(function(st){el.appendChild(wrapCard(makeMB(st,curRole,curS,labelFor(st,curRole),{iconStart:true,noSync:true}),st))});
+  }
+  function renderRoleGallery(){
+    var el=clr('roleGallery');
+    ROLES.forEach(function(r){el.appendChild(wrapCard(makeMB(curStruct,r,curS,labelFor(curStruct,r),{iconStart:true,noSync:true}),r))});
   }
 
   function renderDensity(){
     var el=clr('densityScale');
     SIZES.forEach(function(s){
       var it=document.createElement('div');it.className='density-item';
-      it.appendChild(makeMB(curV,s,{iconStart:true,noSync:true}));
+      it.appendChild(makeMB(curStruct,curRole,s,cap(s),{iconStart:true,noSync:true}));
       var m=document.createElement('div');m.className='density-meta';m.textContent=SIZE_HT[s];it.appendChild(m);el.appendChild(it);
     });
   }
 
   function renderStates(){
     var el=clr('stateMatrix');
-    VARIANTS.forEach(function(v){
-      var row=document.createElement('div');row.className='state-row';
-      var lbl=document.createElement('span');lbl.className='state-label';lbl.textContent=v;row.appendChild(lbl);
-
-      /* Default */
-      var dc=document.createElement('div');dc.className='variant-card';
-      dc.appendChild(makeMB(v,curS,{iconStart:true,noSync:true}));
-      var dl=document.createElement('span');dl.className='variant-label';dl.textContent='Default';dc.appendChild(dl);
-      row.appendChild(dc);
-
-      /* Hover */
-      var hc=document.createElement('div');hc.className='variant-card';
-      hc.appendChild(makeMB(v,curS,{iconStart:true,noSync:true}));
-      var hl=document.createElement('span');hl.className='variant-label';hl.textContent='Hover';hc.appendChild(hl);
-      row.appendChild(hc);
-
-      /* Disabled */
-      var xc=document.createElement('div');xc.className='variant-card';
-      xc.appendChild(makeMB(v,curS,{iconStart:true,disabled:true,noSync:true}));
-      var xl=document.createElement('span');xl.className='variant-label';xl.textContent='Disabled';xc.appendChild(xl);
-      row.appendChild(xc);
-
-      /* Loading */
-      var lc=document.createElement('div');lc.className='variant-card';
-      lc.appendChild(makeMB(v,curS,{iconStart:true,loading:true,label:'Loading...',noSync:true}));
-      var ll=document.createElement('span');ll.className='variant-label';ll.textContent='Loading';lc.appendChild(ll);
-      row.appendChild(lc);
-
+    STRUCTS.forEach(function(st){
+      var row=document.createElement('div');row.className='state-row';row.style.cssText='display:flex;gap:12px;align-items:center;padding:8px 0';
+      var lbl=document.createElement('span');lbl.className='sub-label';lbl.style.width='80px';lbl.textContent=cap(st);row.appendChild(lbl);
+      row.appendChild(makeMB(st,curRole,curS,cap(st),{iconStart:true,noSync:true}));
+      row.appendChild(makeMB(st,curRole,curS,cap(st),{iconStart:true,noSync:true}));
+      row.appendChild(makeMB(st,curRole,curS,'Disabled',{disabled:true,iconStart:true,noSync:true}));
+      row.appendChild(makeMB(st,curRole,curS,'Loading...',{loading:true,iconStart:true,noSync:true}));
       el.appendChild(row);
     });
   }
 
   function renderSlots(){
     var el=clr('slotsDemo');
-    var combos=[
-      {label:'Label + Chevron',opts:{label:'Actions'}},
-      {label:'Icon + Label + Chevron',opts:{iconStart:true,label:'Actions'}},
-      {label:'Label only (no chevron)',opts:{label:'Menu',noChevron:true}},
-      {label:'Icon + Label (ghost)',opts:{iconStart:true,label:'Filter',variant:'ghost'}},
-      {label:'Icon + Chevron (no label)',opts:{iconStart:true,label:false}},
-    ];
-    combos.forEach(function(c){
+    [{label:'Icon + Label + Chevron',text:'Actions',opts:{iconStart:true}},{label:'Label + Chevron',text:'Options',opts:{}},{label:'Icon + Chevron',text:false,opts:{iconStart:true}}].forEach(function(c){
       var cd=document.createElement('div');cd.className='slot-card';
-      cd.appendChild(makeMB(c.opts.variant||curV,curS,{iconStart:c.opts.iconStart,label:c.opts.label,noChevron:c.opts.noChevron,noSync:true}));
+      cd.appendChild(makeMB(curStruct,curRole,curS,c.text,c.opts));
       var l=document.createElement('span');l.className='slot-label';l.textContent=c.label;cd.appendChild(l);el.appendChild(cd);
     });
   }
@@ -569,8 +560,8 @@
   function renderSurface(){
     ['surfaceBase','surfaceAlt','surfaceDeep'].forEach(function(id){
       var p=document.getElementById(id);
-      while(p.children.length>1)p.removeChild(p.lastChild);
-      VARIANTS.forEach(function(v){p.appendChild(makeMB(v,curS,{iconStart:true,noSync:true}))});
+      while(p.children.length>1) p.removeChild(p.lastChild);
+      STRUCTS.forEach(function(st){p.appendChild(makeMB(st,curRole,curS,cap(st),{iconStart:true}))});
     });
   }
 
@@ -578,7 +569,7 @@
     var el=clr('radiusScale');
     SIZES.forEach(function(s){
       var it=document.createElement('div');it.className='density-item';
-      it.appendChild(makeMB(curV,s,{noSync:true,noRounded:true}));
+      it.appendChild(makeMB(curStruct,curRole,s,cap(s),{noSync:true}));
       var m=document.createElement('div');m.className='density-meta';m.textContent=s;it.appendChild(m);el.appendChild(it);
     });
   }
@@ -587,8 +578,8 @@
     var el=clr('roundedScale');
     SIZES.forEach(function(s){
       var it=document.createElement('div');it.className='density-item';
-      it.appendChild(makeMB(curV,s,{noSync:true,rounded:true}));
-      var m=document.createElement('div');m.className='density-meta';m.textContent=s+' (pill)';it.appendChild(m);el.appendChild(it);
+      it.appendChild(makeMB(curStruct,curRole,s,cap(s),{noSync:true,noRounded:true}));
+      var m=document.createElement('div');m.className='density-meta';m.textContent=s;it.appendChild(m);el.appendChild(it);
     });
   }
 
@@ -596,210 +587,166 @@
     var el=clr('shadowStrip');
     SHADOWS.forEach(function(s){
       var it=document.createElement('div');it.className='density-item';
-      it.appendChild(makeMB(curV,curS,{noSync:true,style:{'--menu-btn-shadow':'var(--shadow-'+s+')','--menu-btn-shadow-hover':'var(--shadow-'+s+')'}}));
+      it.appendChild(makeMB(curStruct,curRole,curS,s==='DEFAULT'?'default':s,{noSync:true,style:{'--menu-btn-shadow':'var(--shadow-'+s+')','--menu-btn-shadow-hover':'var(--shadow-'+s+')'}}));
       var m=document.createElement('div');m.className='density-meta';m.textContent='--shadow-'+s;it.appendChild(m);el.appendChild(it);
     });
   }
 
   function renderMotion(){
     var el=clr('motionDemo');
-    var items=[
-      {label:'Normal',sub:'duration-normal',opts:{iconStart:true}},
-      {label:'Loading...',sub:'1.5s pulse',opts:{loading:true,label:'Loading...'}},
-      {label:'Fast',sub:'duration-fast',opts:{iconStart:true,style:{'--menu-btn-transition-duration':'var(--duration-fast)','--menu-btn-transition-easing':'var(--easing-in)'}}},
-      {label:'Slow bounce',sub:'duration-slow',opts:{iconStart:true,style:{'--menu-btn-transition-duration':'var(--duration-slow)','--menu-btn-transition-easing':'var(--easing-bounce)'}}}
-    ];
-    items.forEach(function(it){
+    [{label:'Normal',sub:'duration-normal',opts:{iconStart:true}},{label:'Loading...',sub:'1.5s linear pulse',opts:{loading:true,iconStart:true}},{label:'Fast',sub:'duration-fast',opts:{iconStart:true,style:{'--menu-btn-transition-duration':'var(--duration-fast)','--menu-btn-transition-easing':'var(--easing-in)'}}},{label:'Slow bounce',sub:'duration-slow',opts:{iconStart:true,style:{'--menu-btn-transition-duration':'var(--duration-slow)','--menu-btn-transition-easing':'var(--easing-bounce)'}}}].forEach(function(it){
       var cd=document.createElement('div');cd.className='motion-card';
-      cd.appendChild(makeMB(curV,curS,it.opts));
+      cd.appendChild(makeMB(curStruct,curRole,curS,it.label,it.opts));
       var l=document.createElement('span');l.className='motion-label';l.textContent=it.sub;cd.appendChild(l);el.appendChild(cd);
     });
   }
 
-  /* ── Inspector ──────────────────────────────────────── */
-  var MB_TOKENS = {
-    height: {micro:'--spacing-24',tiny:'--spacing-28',small:'--spacing-32',base:'--spacing-36',medium:'--spacing-40',large:'--spacing-44',big:'--spacing-48',huge:'--spacing-56',mega:'--spacing-64',ultra:'--spacing-80'},
-    radius: {micro:'--radius-xs',tiny:'--radius-sm',small:'--radius-sm',base:'--radius-md',medium:'--radius-md',large:'--radius-DEFAULT',big:'--radius-DEFAULT',huge:'--radius-lg',mega:'--radius-xl',ultra:'--radius-xl'},
-    px: {micro:'--spacing-8',tiny:'--spacing-8',small:'--spacing-10',base:'--spacing-12',medium:'--spacing-14',large:'--spacing-16',big:'--spacing-18',huge:'--spacing-20',mega:'--spacing-24',ultra:'--spacing-28'},
-    chevronPe: {micro:'--spacing-2',tiny:'--spacing-2',small:'--spacing-3',base:'--spacing-3',medium:'--spacing-4',large:'--spacing-4',big:'--spacing-5',huge:'--spacing-6',mega:'--spacing-8',ultra:'--spacing-10'},
-    fs: {micro:'--font-size-10',tiny:'--font-size-11',small:'--font-size-12',base:'--font-size-14',medium:'--font-size-14',large:'--font-size-16',big:'--font-size-16',huge:'--font-size-18',mega:'--font-size-20',ultra:'--font-size-24'},
-    iconSize: {micro:'--spacing-10',tiny:'--spacing-12',small:'--spacing-13',base:'--spacing-16',medium:'--spacing-16',large:'--spacing-18',big:'--spacing-18',huge:'--spacing-20',mega:'--spacing-24',ultra:'--spacing-28'}
+  /* ── Inspector ──────────────────────────────────── */
+  var MB_TOKENS={
+    height:{micro:'--spacing-24',tiny:'--spacing-28',small:'--spacing-32',base:'--spacing-36',medium:'--spacing-40',large:'--spacing-44',big:'--spacing-48',huge:'--spacing-56',mega:'--spacing-64',ultra:'--spacing-80'},
+    radius:{micro:'--radius-sm',tiny:'--radius-sm-md',small:'--radius-md',base:'--radius-md',medium:'--radius-DEFAULT',large:'--radius-DEFAULT',big:'--radius-md-lg',huge:'--radius-lg',mega:'--radius-lg-xl',ultra:'--radius-xl'},
+    px:{micro:'--spacing-8',tiny:'--spacing-10',small:'--spacing-12',base:'--spacing-16',medium:'--spacing-18',large:'--spacing-20',big:'--spacing-24',huge:'--spacing-28',mega:'--spacing-32',ultra:'--spacing-40'},
+    fs:{micro:'--font-size-10',tiny:'--font-size-11',small:'--font-size-12',base:'--font-size-13',medium:'--font-size-14',large:'--font-size-16',big:'--font-size-18',huge:'--font-size-20',mega:'--font-size-24',ultra:'--font-size-28'},
+    iconSize:{micro:'--spacing-12',tiny:'--spacing-14',small:'--spacing-16',base:'--spacing-18',medium:'--spacing-20',large:'--spacing-22',big:'--spacing-24',huge:'--spacing-28',mega:'--spacing-32',ultra:'--spacing-36'}
   };
+  var STRUCT_TOKEN={filled:'primary',outlined:'secondary',soft:'tertiary',ghost:'ghost'};
 
   function updateInspector(){
-    var hero=document.querySelector('.hero-preview .menu-btn');
-    if(!hero)return;
-    var cs=getComputedStyle(hero);
-    var s=curS;
-    var tokens=[
+    var hb=document.querySelector('.hero-preview .menu-btn');if(!hb)return;
+    var cs=getComputedStyle(hb),s=curS,tg=STRUCT_TOKEN[curStruct]||'primary';
+    var isN=curRole==='neutral';
+    var rows=[
       ['--menu-btn-height-'+s, MB_TOKENS.height[s], cs.height],
       [curRounded?'--menu-btn-radius-rounded':'--menu-btn-radius-'+s, curRounded?'--radius-full':MB_TOKENS.radius[s], cs.borderRadius],
-      ['--menu-btn-padding-x-'+s, MB_TOKENS.px[s], cs.paddingInlineStart||cs.paddingLeft||'\u2014'],
-      ['--menu-btn-chevron-pe-'+s, MB_TOKENS.chevronPe[s], cs.paddingInlineEnd||cs.paddingRight||'\u2014'],
-      ['--menu-btn-font-size-'+s, MB_TOKENS.fs[s], cs.fontSize||'\u2014'],
-      ['--menu-btn-icon-size-'+s, MB_TOKENS.iconSize[s], cs.getPropertyValue('--_mb-icon-size').trim()||'\u2014'],
-      ['--menu-btn-'+curV+'-bg', '\u2014', cs.backgroundColor],
-      ['--menu-btn-'+curV+'-fg', '\u2014', cs.color],
-      ['--menu-btn-'+curV+'-border-color', '\u2014', cs.borderColor],
-      ['--menu-btn-transition-duration', '--duration-normal', cs.transitionDuration||'\u2014']
+      ['--menu-btn-padding-x-'+s, MB_TOKENS.px[s], cs.paddingInlineStart],
+      ['--menu-btn-font-size-'+s, MB_TOKENS.fs[s], cs.fontSize],
+      ['--menu-btn-icon-size-'+s, MB_TOKENS.iconSize[s], ''],
+      ['--menu-btn-'+tg+'-bg', isN?'--surface-base-cm-bg':'--primary-component-bg-default', cs.backgroundColor],
+      ['--menu-btn-'+tg+'-fg', isN?'--surface-base-ct-default':'--primary-on-component', cs.color],
+      ['--menu-btn-'+tg+'-border-color', '\u2014', cs.borderColor],
+      ['--menu-btn-shadow', '\u2014', cs.boxShadow==='none'?'none':cs.boxShadow]
     ];
     var ins=document.getElementById('heroInspector');
-    ins.innerHTML='<div class="inspector-title">Resolved Tokens ('+curV+' / '+s+(curRounded?' / rounded':'')+')</div>'+
-      tokens.map(function(t){
-        return '<div class="inspector-row"><span class="token-name">'+t[0]+'</span><span class="token-val">'+t[2]+(t[1]!=='\u2014'?'<br><span style="opacity:0.5;font-size:9px">\u2192 '+t[1]+'</span>':'')+'</span></div>';
-      }).join('');
+    ins.innerHTML='<div class="inspector-title">Resolved Tokens ('+curStruct+' / '+curRole+' / '+s+')</div>'+
+      rows.map(function(t){return '<div class="inspector-row"><span class="token-name">'+t[0]+'</span><span class="token-val">'+(t[2]||'\u2014')+(t[1]!=='\u2014'?'<br><span style="opacity:0.5;font-size:9px">\u2192 '+t[1]+'</span>':'')+'</span></div>'}).join('');
   }
 
-  /* ── Apply Globals ──────────────────────────────────── */
+  /* ── Apply Global Controls ──────────────────────── */
   function applyGlobals(){
-    var hero=document.querySelector('.hero-preview .menu-btn');
-    if(hero){hero.dataset.variant=curV;hero.dataset.size=curS;if(curRounded)hero.dataset.rounded='';else delete hero.dataset.rounded}
-    document.querySelectorAll('.a11y-grid .synced-mb').forEach(function(mb){mb.dataset.size=curS;if(curRounded)mb.dataset.rounded='';else delete mb.dataset.rounded});
-    renderVariants();renderDensity();renderStates();renderSlots();renderSurface();
-    renderRadius();renderRounded();renderShadows();renderMotion();
+    var hb=document.querySelector('.hero-preview .menu-btn');
+    if(hb){
+      hb.dataset.variant=curStruct;
+      if(curRole!=='primary'||curStruct==='ghost'){hb.dataset.role=curRole}else{delete hb.dataset.role}
+      hb.dataset.size=curS;
+      if(curRounded)hb.dataset.rounded='';else delete hb.dataset.rounded;
+    }
+    document.querySelectorAll('.a11y-grid .synced-btn').forEach(function(b){
+      b.dataset.variant=curStruct;
+      if(curRole!=='primary'||curStruct==='ghost'){b.dataset.role=curRole}else{delete b.dataset.role}
+      b.dataset.size=curS;
+      if(curRounded)b.dataset.rounded='';else delete b.dataset.rounded;
+    });
+    renderStructGallery();renderRoleGallery();renderDensity();renderStates();
+    renderSlots();renderSurface();renderRadius();renderRounded();renderShadows();renderMotion();
     requestAnimationFrame(updateInspector);
   }
 
-  /* ── Global Controls ────────────────────────────────── */
-  document.getElementById('variantBar').addEventListener('click',function(e){
-    var pill=e.target.closest('.pill');if(!pill)return;
-    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
-    pill.setAttribute('aria-pressed','true');curV=pill.dataset.ctrlVariant;applyGlobals();
-  });
+  function wirePill(barId,attr,cb){
+    document.getElementById(barId).addEventListener('click',function(e){
+      var pill=e.target.closest('.pill');if(!pill)return;
+      this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
+      pill.setAttribute('aria-pressed','true');cb(pill.dataset[attr]);
+    });
+  }
 
-  document.getElementById('sizeBar').addEventListener('click',function(e){
-    var pill=e.target.closest('.pill');if(!pill)return;
-    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
-    pill.setAttribute('aria-pressed','true');curS=pill.dataset.ctrlSize;applyGlobals();
-  });
+  wirePill('structBar','ctrlStruct',function(v){curStruct=v;applyGlobals()});
+  wirePill('roleBar','ctrlRole',function(v){curRole=v;applyGlobals()});
+  wirePill('sizeBar','ctrlSize',function(v){curS=v;applyGlobals()});
+  wirePill('roundedBar','ctrlRounded',function(v){curRounded=v==='true';applyGlobals()});
 
-  document.getElementById('roundedBar').addEventListener('click',function(e){
-    var pill=e.target.closest('.pill');if(!pill)return;
-    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
-    pill.setAttribute('aria-pressed','true');curRounded=pill.dataset.ctrlRounded==='true';applyGlobals();
-  });
-
-  window.DTF.onThemeChange = updateInspector;
-
+  window.DTF.onThemeChange=updateInspector;
   applyGlobals();
 
-  /* ── Context Playground ─────────────────────────────── */
-  var SURFACE_TOKENS=[
-    'bg','hover','pressed','outline','separator',
-    'ct-default','ct-strong','ct-subtle','ct-faint',
-    'cm-bg','cm-bg-hover','cm-bg-pressed',
-    'cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator'
-  ];
-  var ROLE_TOKENS=[
-    'content-default','content-strong','content-subtle','content-faint',
-    'component-bg-default','component-bg-hover','component-bg-pressed',
-    'component-outline-default','component-outline-hover','component-outline-pressed',
-    'component-separator',
-    'container-bg','container-hover','container-pressed',
-    'container-outline','container-separator',
-    'on-component','on-container'
-  ];
+  /* ── Context Playground ─────────────────────────── */
+  var SURFACE_TOKENS=['bg','hover','pressed','outline','separator','ct-default','ct-strong','ct-subtle','ct-faint','cm-bg','cm-bg-hover','cm-bg-pressed','cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator'];
+  var ROLE_REMAP=['component-bg-default','component-bg-hover','component-bg-pressed','on-component','content-default','content-strong','content-subtle','content-faint','component-outline-default','component-outline-hover','component-outline-pressed','component-separator','container-bg','container-hover','container-pressed','container-outline','container-separator','on-container'];
+  var pgSize='base';
 
-  function applySurface(bodyEl,surfaceId){
-    if(surfaceId==='base'){
-      SURFACE_TOKENS.forEach(function(tok){bodyEl.style.removeProperty('--surface-base-'+tok);});
-      bodyEl.style.background='var(--surface-base-bg)';
+  function applySurface(el,sid){
+    if(sid==='base'){SURFACE_TOKENS.forEach(function(t){el.style.removeProperty('--surface-base-'+t)});el.style.background='var(--surface-base-bg)'}
+    else{SURFACE_TOKENS.forEach(function(t){el.style.setProperty('--surface-base-'+t,'var(--surface-'+sid+'-'+t+')')});el.style.background='var(--surface-'+sid+'-bg)'}
+  }
+  function applyRole(el,rid){
+    if(rid==='primary'){ROLE_REMAP.forEach(function(t){el.style.removeProperty('--primary-'+t)})}
+    else if(rid==='neutral'){
+      el.style.setProperty('--primary-component-bg-default','var(--surface-base-cm-bg)');
+      el.style.setProperty('--primary-component-bg-hover','var(--surface-base-cm-bg-hover)');
+      el.style.setProperty('--primary-component-bg-pressed','var(--surface-base-cm-bg-pressed)');
+      el.style.setProperty('--primary-on-component','var(--surface-base-ct-default)');
+      el.style.setProperty('--primary-content-default','var(--surface-base-ct-default)');
+      el.style.setProperty('--primary-container-bg','var(--surface-base-hover)');
+      el.style.setProperty('--primary-container-hover','var(--surface-base-pressed)');
+      el.style.setProperty('--primary-container-pressed','var(--surface-base-pressed)');
+      el.style.setProperty('--primary-component-outline-default','var(--surface-base-cm-outline)');
+      el.style.setProperty('--primary-component-outline-hover','var(--surface-base-cm-outline-hover)');
+      el.style.setProperty('--primary-component-outline-pressed','var(--surface-base-cm-outline-pressed)');
     } else {
-      SURFACE_TOKENS.forEach(function(tok){
-        bodyEl.style.setProperty('--surface-base-'+tok,'var(--surface-'+surfaceId+'-'+tok+')');
-      });
-      bodyEl.style.background='var(--surface-'+surfaceId+'-bg)';
+      ROLE_REMAP.forEach(function(t){el.style.setProperty('--primary-'+t,'var(--'+rid+'-'+t+')')});
     }
   }
 
-  function applyRole(bodyEl,roleId){
-    if(roleId==='primary'){
-      ROLE_TOKENS.forEach(function(tok){bodyEl.style.removeProperty('--primary-'+tok);});
-    } else {
-      ROLE_TOKENS.forEach(function(tok){
-        bodyEl.style.setProperty('--primary-'+tok,'var(--'+roleId+'-'+tok+')');
-      });
-    }
+  function pgBuildCard(card){
+    var body=document.getElementById('pgBody'+card);body.innerHTML='';
+    var role=document.querySelector('[data-pg-role="'+card+'"]').value;
+    var labels=ROLE_LABELS[role]||ROLE_LABELS.primary;
+    STRUCTS.forEach(function(st){
+      var row=document.createElement('div');row.className='pg-variant-row';
+      var lbl=document.createElement('span');lbl.className='pg-variant-label';lbl.textContent=cap(st);row.appendChild(lbl);
+      row.appendChild(makeMB(st,'primary',pgSize,labels[st]||cap(st),{iconStart:true,noSync:true}));
+      body.appendChild(row);
+    });
   }
-
   function pgApplyCard(card){
     var body=document.getElementById('pgBody'+card);
-    var surfSel=document.querySelector('[data-pg-surface="'+card+'"]');
-    var roleSel=document.querySelector('[data-pg-role="'+card+'"]');
-    applySurface(body,surfSel.value);
-    applyRole(body,roleSel.value);
+    applySurface(body,document.querySelector('[data-pg-surface="'+card+'"]').value);
+    applyRole(body,document.querySelector('[data-pg-role="'+card+'"]').value);
+    pgBuildCard(card);
   }
-
-  function pgApplyDensity(size){
-    document.querySelectorAll('.pg-mb').forEach(function(mb){mb.dataset.size=size});
-  }
-
   function pgUpdateChain(){
-    var body=document.getElementById('pgBodyA');
-    var surfSel=document.querySelector('[data-pg-surface="A"]');
-    var roleSel=document.querySelector('[data-pg-role="A"]');
-    var mb=body.querySelector('.menu-btn[data-variant="primary"]');
-    if(!mb)return;
-    var cs=getComputedStyle(mb);
     var chain=document.getElementById('pgChain');
-    var s=surfSel.value,r=roleSel.value;
+    var s=document.querySelector('[data-pg-surface="A"]').value;
+    var r=document.querySelector('[data-pg-role="A"]').value;
+    var isN=(r==='neutral'),rp=isN?'surface-'+s:r;
     var rows=[
-      {sec:'Primary (filled)'},
-      {label:'BG',token:'--menu-btn-primary-bg',via:'--'+r+'-component-bg-default',val:cs.backgroundColor},
-      {label:'BG Hover',token:'--menu-btn-primary-bg-hover',via:'--'+r+'-component-bg-hover'},
-      {label:'BG Active',token:'--menu-btn-primary-bg-active',via:'--'+r+'-component-bg-pressed'},
-      {label:'FG',token:'--menu-btn-primary-fg',via:'--'+r+'-on-component',val:cs.color},
-      {label:'Border',token:'--menu-btn-primary-border-color',via:'--'+r+'-component-bg-default'},
-      {sec:'Secondary (outlined)'},
-      {label:'BG Hover',token:'--menu-btn-secondary-bg-hover',via:'--'+r+'-container-bg'},
-      {label:'BG Active',token:'--menu-btn-secondary-bg-active',via:'--'+r+'-container-pressed'},
-      {label:'FG',token:'--menu-btn-secondary-fg',via:'--'+r+'-content-default'},
-      {label:'Border',token:'--menu-btn-secondary-border-color',via:'--'+r+'-component-outline-default'},
-      {label:'Border Hover',token:'--menu-btn-secondary-border-color-hover',via:'--'+r+'-component-outline-hover'},
-      {sec:'Ghost'},
-      {label:'BG Hover',token:'--menu-btn-ghost-bg-hover',via:'--surface-'+s+'-cm-bg-hover'},
-      {label:'BG Active',token:'--menu-btn-ghost-bg-active',via:'--surface-'+s+'-cm-bg-pressed'},
-      {label:'FG',token:'--menu-btn-ghost-fg',via:'--surface-'+s+'-ct-default'},
-      {label:'FG Hover',token:'--menu-btn-ghost-fg-hover',via:'--surface-'+s+'-ct-strong'},
-      {sec:'Neutral (surface)'},
-      {label:'BG',token:'--menu-btn-neutral-bg',via:'--surface-'+s+'-cm-bg'},
-      {label:'BG Hover',token:'--menu-btn-neutral-bg-hover',via:'--surface-'+s+'-cm-bg-hover'},
-      {label:'BG Active',token:'--menu-btn-neutral-bg-active',via:'--surface-'+s+'-cm-bg-pressed'},
-      {label:'FG',token:'--menu-btn-neutral-fg',via:'--surface-'+s+'-ct-default'},
-      {label:'FG Hover',token:'--menu-btn-neutral-fg-hover',via:'--surface-'+s+'-ct-strong'},
-      {label:'Border',token:'--menu-btn-neutral-border-color',via:'--surface-'+s+'-cm-outline'},
-      {label:'Border Hover',token:'--menu-btn-neutral-border-color-hover',via:'--surface-'+s+'-cm-outline-hover'},
-      {sec:'Focus / A11y'},
-      {label:'Focus Ring',token:'--menu-btn-focus-outline-color',via:'--'+r+'-component-outline-default'}
+      {sec:'Filled ('+r+')'},
+      {label:'BG',token:'--menu-btn-primary-bg',via:'--'+rp+(isN?'-cm-bg':'-component-bg-default')},
+      {label:'FG',token:'--menu-btn-primary-fg',via:'--'+rp+(isN?'-ct-default':'-on-component')},
+      {sec:'Outlined ('+r+')'},
+      {label:'Border',token:'--menu-btn-secondary-border-color',via:'--'+rp+(isN?'-outline':'-component-outline-default')},
+      {label:'FG',token:'--menu-btn-secondary-fg',via:'--'+rp+(isN?'-ct-default':'-content-default')},
+      {sec:'Soft ('+r+')'},
+      {label:'BG',token:'--menu-btn-tertiary-bg',via:'--'+rp+(isN?'-hover':'-container-bg')},
+      {sec:'Ghost ('+r+')'},
+      {label:'FG',token:'--menu-btn-ghost-fg',via:isN?'--surface-'+s+'-ct-default':'--'+r+'-content-default'}
     ];
     var h='<div class="pg-chain-title">Token Resolution Chain (Card A: surface-'+s+' / '+r+')</div>';
-    rows.forEach(function(row){      if(row.sec){h+='<div class="pg-chain-sec">'+row.sec+'</div>';return;}      h+='<div class="pg-chain-row">';
-      if(row.val){h+='<span class="pg-swatch" style="background:'+row.val+'"></span>';}
-      h+='<span>'+row.label+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.token+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.via+'</span>';
-      if(row.val){h+=' <span class="pg-chain-arrow">\u2192</span> <span style="font-weight:600">'+row.val+'</span>';}
-      h+='</div>';
+    rows.forEach(function(row){
+      if(row.sec){h+='<div class="pg-chain-sec">'+row.sec+'</div>';return}
+      h+='<div class="pg-chain-row"><span>'+row.label+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.token+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.via+'</span></div>';
     });
     chain.innerHTML=h;
   }
 
   document.querySelectorAll('[data-pg-surface],[data-pg-role]').forEach(function(sel){
-    sel.addEventListener('change',function(){
-      var card=this.dataset.pgSurface||this.dataset.pgRole;
-      pgApplyCard(card);
-      requestAnimationFrame(pgUpdateChain);
-    });
+    sel.addEventListener('change',function(){var card=this.dataset.pgSurface||this.dataset.pgRole;pgApplyCard(card);requestAnimationFrame(pgUpdateChain)});
   });
-
   document.getElementById('pgDensityBar').addEventListener('click',function(e){
     var pill=e.target.closest('.pill');if(!pill)return;
     this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
-    pill.setAttribute('aria-pressed','true');
-    pgApplyDensity(pill.dataset.pgSize);
-    requestAnimationFrame(pgUpdateChain);
+    pill.setAttribute('aria-pressed','true');pgSize=pill.dataset.pgSize;
+    pgApplyCard('A');pgApplyCard('B');requestAnimationFrame(pgUpdateChain);
   });
-
-  pgApplyCard('A');pgApplyCard('B');
-  requestAnimationFrame(pgUpdateChain);
+  pgApplyCard('A');pgApplyCard('B');requestAnimationFrame(pgUpdateChain);
 
 })();
 </script>

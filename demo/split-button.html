@@ -60,7 +60,7 @@
 <div class="page-layout">
 <aside class="sidebar-nav" id="sidebarNav" aria-label="Section navigation">
   <a href="#sec-hero"><span class="sn-num">1</span>Hero Preview</a>
-  <a href="#sec-variants"><span class="sn-num">2</span>Variant Gallery</a>
+  <a href="#sec-variants"><span class="sn-num">2</span>Structure × Role</a>
   <a href="#sec-density"><span class="sn-num">3</span>Density Scale</a>
   <a href="#sec-states"><span class="sn-num">4</span>State Matrix</a>
   <a href="#sec-anatomy"><span class="sn-num">5</span>Slots &amp; Anatomy</a>
@@ -77,7 +77,7 @@
   <h1>SplitButton Explorer <span>— Design Token Forge</span></h1>
   <div class="demo-meta">
     <span class="demo-badge">141 CSS Variables</span>
-    <span class="demo-badge">4 Variants</span>
+    <span class="demo-badge">4 Structures × 7 Roles</span>
     <span class="demo-badge">10 Sizes</span>
     <span class="demo-badge">7 Axes</span>
   </div>
@@ -85,12 +85,25 @@
 
 <nav class="global-controls" aria-label="Global split-button preview controls">
   <div class="control-group">
-    <label>Variant</label>
-    <div class="pill-bar" id="variantBar" role="radiogroup" aria-label="Variant selector">
-      <button class="pill" role="radio" aria-pressed="true" data-ctrl-variant="primary" type="button">Primary</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="secondary" type="button">Secondary</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="danger" type="button">Danger</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-variant="neutral" type="button">Neutral</button>
+    <label>Structure</label>
+    <div class="pill-bar" id="structBar" role="radiogroup" aria-label="Structure selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-struct="filled" type="button">Filled</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-struct="outlined" type="button">Outlined</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-struct="soft" type="button">Soft</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-struct="ghost" type="button">Ghost</button>
+    </div>
+  </div>
+  <div class="control-divider"></div>
+  <div class="control-group">
+    <label>Role</label>
+    <div class="pill-bar" id="roleBar" role="radiogroup" aria-label="Role selector">
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-role="primary" type="button">Primary</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="danger" type="button">Danger</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="success" type="button">Success</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="warning" type="button">Warning</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="brand" type="button">Brand</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="info" type="button">Info</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-role="neutral" type="button">Neutral</button>
     </div>
   </div>
   <div class="control-divider"></div>
@@ -128,7 +141,7 @@
     <div class="section-body">
       <div class="hero">
         <div class="hero-preview">
-          <div class="split-btn synced-sb" data-variant="primary" data-size="base">
+          <div class="split-btn synced-btn" data-variant="filled" data-size="base">
             <button class="split-btn__action" type="button">
               <span class="split-btn__icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg></span>
               <span class="split-btn__label">Save</span>
@@ -146,9 +159,15 @@
 
   <!-- 2. VARIANT GALLERY -->
   <section class="section" id="sec-variants">
-    <div class="section-header"><h2>Variant Gallery</h2><span class="section-tag">Surface</span></div>
-    <p class="section-desc">All 4 variants at the globally selected size. Primary (filled), secondary (outlined), danger (filled red), neutral (surface-context).</p>
-    <div class="section-body"><div class="preview-grid" id="variantGallery"></div></div>
+    <div class="section-header"><h2>Structure × Role</h2><span class="section-tag">Orthogonal</span></div>
+    <p class="section-desc"><strong>Structural variants</strong> define the surface treatment. <strong>Roles</strong> provide semantic color. Top row: all structures in the selected role. Bottom row: all roles in the selected structure.</p>
+    <div class="section-body">
+      <div class="sub-label">Structural Variants (in selected role)</div>
+      <div class="preview-grid" id="structGallery"></div>
+      <div style="border-top:1px solid var(--demo-border);margin:12px 0"></div>
+      <div class="sub-label">Role Gallery (in selected structure)</div>
+      <div class="preview-grid" id="roleGallery"></div>
+    </div>
   </section>
 
   <!-- 3. DENSITY SCALE -->
@@ -161,7 +180,7 @@
   <!-- 4. STATE MATRIX -->
   <section class="section" id="sec-states">
     <div class="section-header"><h2>State Matrix</h2><span class="section-tag">States</span></div>
-    <p class="section-desc">Every variant in every interactive state. Hover each zone independently to see transitions.</p>
+    <p class="section-desc">Every structural variant in every interactive state, using the selected role. Hover and focus to see live transitions.</p>
     <div class="section-body"><div id="stateMatrix" style="display:flex;flex-direction:column"></div></div>
   </section>
 
@@ -175,7 +194,7 @@
   <!-- 6. SURFACE CONTEXT -->
   <section class="section" id="sec-surface">
     <div class="section-header"><h2>Surface Context</h2><span class="section-tag">Surface</span></div>
-    <p class="section-desc">All variants on three background levels. Secondary and neutral variants adapt to surface context via border color.</p>
+    <p class="section-desc">All four structural variants on three background levels, using the selected role.</p>
     <div class="section-body">
       <div class="surface-strip">
         <div class="surface-panel surface-panel--base" id="surfaceBase"><span class="surface-panel-label">surface-base-bg</span></div>
@@ -329,7 +348,7 @@
           <div class="a11y-card-title">Independent Focus</div>
           <p class="a11y-card-desc">Tab between action and trigger. Each has its own <code>:focus-visible</code> ring.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <div class="split-btn synced-sb" data-variant="primary" data-size="base">
+            <div class="split-btn synced-btn" data-variant="filled" data-size="base">
               <button class="split-btn__action" type="button"><span class="split-btn__label">Focus me</span></button>
               <span class="split-btn__divider"></span>
               <button class="split-btn__trigger" type="button" aria-label="Options" aria-haspopup="true"><span class="split-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span></button>
@@ -340,7 +359,7 @@
           <div class="a11y-card-title">Disabled</div>
           <p class="a11y-card-desc"><code>data-disabled</code> on container applies per-variant opacity.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <div class="split-btn synced-sb" data-variant="primary" data-size="base" data-disabled>
+            <div class="split-btn synced-btn" data-variant="filled" data-size="base" data-disabled>
               <button class="split-btn__action" type="button" disabled><span class="split-btn__label">Disabled</span></button>
               <span class="split-btn__divider"></span>
               <button class="split-btn__trigger" type="button" disabled aria-label="Options"><span class="split-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span></button>
@@ -351,7 +370,7 @@
           <div class="a11y-card-title">Trigger ARIA</div>
           <p class="a11y-card-desc">Trigger has <code>aria-haspopup="true"</code> and <code>aria-label</code> for screen readers.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <div class="split-btn synced-sb" data-variant="secondary" data-size="base">
+            <div class="split-btn synced-btn" data-variant="filled" data-size="base">
               <button class="split-btn__action" type="button"><span class="split-btn__label">ARIA demo</span></button>
               <span class="split-btn__divider"></span>
               <button class="split-btn__trigger" type="button" aria-label="More options" aria-haspopup="true" aria-expanded="false"><span class="split-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span></button>
@@ -362,7 +381,7 @@
           <div class="a11y-card-title">Forced Colors</div>
           <p class="a11y-card-desc">High Contrast uses <code>ButtonText</code>, <code>Highlight</code>, <code>GrayText</code>.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-            <div class="split-btn synced-sb" data-variant="primary" data-size="base">
+            <div class="split-btn synced-btn" data-variant="filled" data-size="base">
               <button class="split-btn__action" type="button"><span class="split-btn__label">HC Mode</span></button>
               <span class="split-btn__divider"></span>
               <button class="split-btn__trigger" type="button" aria-label="Options"><span class="split-btn__chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></span></button>
@@ -391,7 +410,8 @@
         </div>
         <div class="fw-snippet-code" data-panel="react" data-active>&lt;div
   className="split-btn"
-  data-variant={variant}
+  data-variant={variant}   {/* filled | outlined | soft | ghost */}
+  data-role={role}          {/* primary | danger | success | warning | brand | info | neutral */}
   data-size={size}
   data-rounded={rounded || undefined}
   data-loading={loading || undefined}
@@ -408,6 +428,7 @@
         <div class="fw-snippet-code" data-panel="vue">&lt;div
   class="split-btn"
   :data-variant="variant"
+  :data-role="role ?? 'primary'"
   :data-size="size"
   :data-rounded="rounded || undefined"
   :data-loading="loading || undefined"
@@ -421,7 +442,7 @@
     &lt;span class="split-btn__chevron"&gt;▾&lt;/span&gt;
   &lt;/button&gt;
 &lt;/div&gt;</div>
-        <div class="fw-snippet-code" data-panel="html">&lt;div class="split-btn" data-variant="primary" data-size="base"&gt;
+        <div class="fw-snippet-code" data-panel="html">&lt;div class="split-btn" data-variant="filled" data-role="primary" data-size="base"&gt;
   &lt;button class="split-btn__action"&gt;&lt;span class="split-btn__label"&gt;Save&lt;/span&gt;&lt;/button&gt;
   &lt;span class="split-btn__divider"&gt;&lt;/span&gt;
   &lt;button class="split-btn__trigger" aria-haspopup="true"&gt;&lt;span class="split-btn__chevron"&gt;▾&lt;/span&gt;&lt;/button&gt;
@@ -439,10 +460,10 @@
 --split-btn-icon-size-{size}
 
 /* Surface */
---split-btn-{variant}-bg / -hover / -active / -disabled
---split-btn-{variant}-fg / -hover / -disabled
---split-btn-{variant}-border-color / -hover / -active
---split-btn-{variant}-opacity-disabled
+--split-btn-{structure}-bg / -hover / -active / -disabled
+--split-btn-{structure}-fg / -hover / -disabled
+--split-btn-{structure}-border-color / -hover / -active
+--split-btn-{structure}-opacity-disabled
 --split-btn-divider-color / -width
 
 /* Typography */
@@ -471,128 +492,100 @@
 (function(){
   'use strict';
 
-  var VARIANTS=['primary','secondary','danger','neutral'];
-  var SIZES=['micro','tiny','small','base','medium','large','big','huge','mega','ultra'];
-  var SIZE_HT={micro:'24px',tiny:'28px',small:'32px',base:'36px',medium:'40px',large:'44px',big:'48px',huge:'56px',mega:'64px',ultra:'80px'};
-  var SHADOWS=['none','xs','sm','DEFAULT','md','lg','xl','2xl'];
-  var VARIANT_LABELS={primary:'Save',secondary:'Export',danger:'Delete'};
+  var STRUCTS = ['filled','outlined','soft','ghost'];
+  var ROLES   = ['primary','danger','success','warning','brand','info','neutral'];
+  var SIZES   = ['micro','tiny','small','base','medium','large','big','huge','mega','ultra'];
+  var SIZE_HT = {micro:'24px',tiny:'28px',small:'32px',base:'36px',medium:'40px',large:'44px',big:'48px',huge:'56px',mega:'64px',ultra:'80px'};
+  var SHADOWS = ['none','xs','sm','DEFAULT','md','lg','xl','2xl'];
 
-  /* SVG fragments */
   var ICON_PLUS='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M3 8h10"/></svg>';
-  var ICON_CHEVRON='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg>';
-  var ICON_SAVE='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 14H3V2h8l2 2v10z"/><path d="M5 14v-4h6v4"/><path d="M5 2v3h4"/></svg>';
-  var ICON_DOWNLOAD='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M5 8l3 3 3-3M3 13h10"/></svg>';
-  var ICON_TRASH='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h10M6 4V3h4v1M5 4v9h6V4"/></svg>';
+  var ICON_CHEVRON='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 6 8 10 11 6"/></svg>';
+  var ICON_DOWNLOAD='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 8l4 4 4-4M3 13h10"/></svg>';
 
-  var VARIANT_ICONS={primary:ICON_SAVE,secondary:ICON_DOWNLOAD,danger:ICON_TRASH};
+  var ROLE_LABELS={
+    primary:{filled:'Submit',outlined:'Cancel',soft:'Details',ghost:'Skip'},
+    danger:{filled:'Delete',outlined:'Remove',soft:'Archive',ghost:'Undo'},
+    success:{filled:'Confirm',outlined:'Approve',soft:'Review',ghost:'OK'},
+    warning:{filled:'Proceed',outlined:'Override',soft:'Caution',ghost:'Skip'},
+    brand:{filled:'Get Started',outlined:'Learn More',soft:'Features',ghost:'Skip'},
+    info:{filled:'Learn More',outlined:'View Docs',soft:'FAQ',ghost:'Info'},
+    neutral:{filled:'Dismiss',outlined:'Close',soft:'Options',ghost:'More'}
+  };
 
-  var curV='primary', curS='base', curRounded=false;
+  var curStruct='filled',curRole='primary',curS='base',curRounded=false;
 
-  function makeSB(v,s,o){
+  function makeSB(struct,role,s,label,o){
     o=o||{};
-    var c=document.createElement('div');
-    c.className='split-btn';
-    if(!o.noSync) c.classList.add('synced-sb');
-    c.dataset.variant=v; c.dataset.size=s;
-    if(o.disabled) c.dataset.disabled='';
-    if(o.loading) c.dataset.loading='';
-    if(o.rounded || (curRounded && !o.noRounded)) c.dataset.rounded='';
+    var w=document.createElement('div');
+    w.className='split-btn';
+    if(!o.noSync) w.classList.add('synced-btn');
+    w.dataset.variant=struct;
+    if(role&&role!=='primary'||struct==='ghost')w.dataset.role=role||'primary';
+    w.dataset.size=s;
+    if(curRounded&&!o.noRounded) w.dataset.rounded='';
+    if(o.disabled) w.dataset.disabled='';
 
-    /* Action zone */
-    var ab=document.createElement('button');
-    ab.type='button'; ab.className='split-btn__action';
-    if(o.disabled){ab.disabled=true}
-    if(o.iconStart){
-      var ic=document.createElement('span');ic.className='split-btn__icon';
-      ic.innerHTML=o.iconSvg||VARIANT_ICONS[v]||ICON_SAVE;ab.appendChild(ic);
-    }
-    var label=o.label!==undefined?o.label:VARIANT_LABELS[v]||'Action';
-    if(label!==false){
-      var lb=document.createElement('span');lb.className='split-btn__label';lb.textContent=label;ab.appendChild(lb);
-    }
-    c.appendChild(ab);
+    var act=document.createElement('button');
+    act.type='button';act.className='split-btn__action';
+    if(o.disabled) act.disabled=true;
+    if(o.iconStart){var ic=document.createElement('span');ic.className='split-btn__icon';ic.innerHTML=o.iconSvg||ICON_PLUS;act.appendChild(ic)}
+    if(label!==false){var l=document.createElement('span');l.className='split-btn__label';l.textContent=label||'Action';act.appendChild(l)}
+    w.appendChild(act);
 
-    /* Divider */
-    var dv=document.createElement('span');dv.className='split-btn__divider';c.appendChild(dv);
+    var div=document.createElement('span');div.className='split-btn__divider';w.appendChild(div);
 
-    /* Trigger zone */
-    var tb=document.createElement('button');
-    tb.type='button';tb.className='split-btn__trigger';
-    tb.setAttribute('aria-label','More options');
-    tb.setAttribute('aria-haspopup','true');
-    if(o.disabled){tb.disabled=true}
-    var ch=document.createElement('span');ch.className='split-btn__chevron';ch.innerHTML=ICON_CHEVRON;
-    tb.appendChild(ch);c.appendChild(tb);
+    var trig=document.createElement('button');
+    trig.type='button';trig.className='split-btn__trigger';
+    trig.setAttribute('aria-haspopup','true');trig.setAttribute('aria-expanded','false');
+    if(o.disabled) trig.disabled=true;
+    var chev=document.createElement('span');chev.className='split-btn__chevron';chev.innerHTML=ICON_CHEVRON;trig.appendChild(chev);
+    w.appendChild(trig);
 
-    if(o.style){for(var k in o.style){if(o.style.hasOwnProperty(k))c.style.setProperty(k,o.style[k])}}
-    return c;
+    if(o.style){for(var k in o.style){if(o.style.hasOwnProperty(k))w.style.setProperty(k,o.style[k])}}
+    return w;
   }
 
-  function wrapCard(el,t){var d=document.createElement('div');d.className='variant-card';d.appendChild(el);var l=document.createElement('span');l.className='variant-label';l.textContent=t;d.appendChild(l);return d}
+  function wrapCard(b,t){var d=document.createElement('div');d.className='variant-card';d.appendChild(b);var l=document.createElement('span');l.className='variant-label';l.textContent=t;d.appendChild(l);return d}
   function clr(id){var e=document.getElementById(id);e.innerHTML='';return e}
   function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+  function labelFor(st,r){var l=ROLE_LABELS[r];return l&&l[st]?l[st]:cap(st)}
 
-  /* ── Section Renderers ──────────────────────────────── */
-
-  function renderVariants(){
-    var el=clr('variantGallery');
-    VARIANTS.forEach(function(v){el.appendChild(wrapCard(makeSB(v,curS,{iconStart:true,noSync:true}),v))});
+  function renderStructGallery(){
+    var el=clr('structGallery');
+    STRUCTS.forEach(function(st){el.appendChild(wrapCard(makeSB(st,curRole,curS,labelFor(st,curRole),{iconStart:true,noSync:true}),st))});
+  }
+  function renderRoleGallery(){
+    var el=clr('roleGallery');
+    ROLES.forEach(function(r){el.appendChild(wrapCard(makeSB(curStruct,r,curS,labelFor(curStruct,r),{iconStart:true,noSync:true}),r))});
   }
 
   function renderDensity(){
     var el=clr('densityScale');
     SIZES.forEach(function(s){
       var it=document.createElement('div');it.className='density-item';
-      it.appendChild(makeSB(curV,s,{iconStart:true,noSync:true}));
+      it.appendChild(makeSB(curStruct,curRole,s,cap(s),{iconStart:true,noSync:true}));
       var m=document.createElement('div');m.className='density-meta';m.textContent=SIZE_HT[s];it.appendChild(m);el.appendChild(it);
     });
   }
 
   function renderStates(){
     var el=clr('stateMatrix');
-    VARIANTS.forEach(function(v){
-      var row=document.createElement('div');row.className='state-row';
-      var lbl=document.createElement('span');lbl.className='state-label';lbl.textContent=v;row.appendChild(lbl);
-
-      /* Default */
-      var dc=document.createElement('div');dc.className='variant-card';
-      dc.appendChild(makeSB(v,curS,{iconStart:true,noSync:true}));
-      var dl=document.createElement('span');dl.className='variant-label';dl.textContent='Default';dc.appendChild(dl);
-      row.appendChild(dc);
-
-      /* Hover */
-      var hc=document.createElement('div');hc.className='variant-card';
-      hc.appendChild(makeSB(v,curS,{iconStart:true,noSync:true}));
-      var hl=document.createElement('span');hl.className='variant-label';hl.textContent='Hover zones';hc.appendChild(hl);
-      row.appendChild(hc);
-
-      /* Disabled */
-      var xc=document.createElement('div');xc.className='variant-card';
-      xc.appendChild(makeSB(v,curS,{iconStart:true,disabled:true,noSync:true}));
-      var xl=document.createElement('span');xl.className='variant-label';xl.textContent='Disabled';xc.appendChild(xl);
-      row.appendChild(xc);
-
-      /* Loading */
-      var lc=document.createElement('div');lc.className='variant-card';
-      lc.appendChild(makeSB(v,curS,{iconStart:true,loading:true,label:'Loading...',noSync:true}));
-      var ll=document.createElement('span');ll.className='variant-label';ll.textContent='Loading';lc.appendChild(ll);
-      row.appendChild(lc);
-
+    STRUCTS.forEach(function(st){
+      var row=document.createElement('div');row.className='state-row';row.style.cssText='display:flex;gap:12px;align-items:center;padding:8px 0';
+      var lbl=document.createElement('span');lbl.className='sub-label';lbl.style.width='80px';lbl.textContent=cap(st);row.appendChild(lbl);
+      row.appendChild(makeSB(st,curRole,curS,cap(st),{iconStart:true,noSync:true}));
+      row.appendChild(makeSB(st,curRole,curS,cap(st),{iconStart:true,noSync:true}));
+      row.appendChild(makeSB(st,curRole,curS,'Disabled',{disabled:true,iconStart:true,noSync:true}));
+      row.appendChild(makeSB(st,curRole,curS,'Loading...',{iconStart:true,noSync:true}));
       el.appendChild(row);
     });
   }
 
   function renderSlots(){
     var el=clr('slotsDemo');
-    var combos=[
-      {label:'Label only',opts:{label:'Save'}},
-      {label:'Icon + Label',opts:{iconStart:true,label:'Save'}},
-      {label:'Label + Trigger',opts:{label:'Export As'}},
-      {label:'Icon + Label (danger)',opts:{iconStart:true,label:'Delete',variant:'danger'}},
-    ];
-    combos.forEach(function(c){
+    [{label:'Label only',text:'Action',opts:{}},{label:'Icon + Label',text:'Action',opts:{iconStart:true}},{label:'Icon + Label (Danger)',text:'Delete',opts:{iconStart:true}}].forEach(function(c){
       var cd=document.createElement('div');cd.className='slot-card';
-      cd.appendChild(makeSB(c.opts.variant||curV,curS,{iconStart:c.opts.iconStart,label:c.opts.label,noSync:true}));
+      cd.appendChild(makeSB(curStruct,curRole,curS,c.text,c.opts));
       var l=document.createElement('span');l.className='slot-label';l.textContent=c.label;cd.appendChild(l);el.appendChild(cd);
     });
   }
@@ -601,7 +594,7 @@
     ['surfaceBase','surfaceAlt','surfaceDeep'].forEach(function(id){
       var p=document.getElementById(id);
       while(p.children.length>1)p.removeChild(p.lastChild);
-      VARIANTS.forEach(function(v){p.appendChild(makeSB(v,curS,{iconStart:true,noSync:true}))});
+      STRUCTS.forEach(function(st){p.appendChild(makeSB(st,curRole,curS,cap(st),{iconStart:true}))});
     });
   }
 
@@ -609,7 +602,7 @@
     var el=clr('radiusScale');
     SIZES.forEach(function(s){
       var it=document.createElement('div');it.className='density-item';
-      it.appendChild(makeSB(curV,s,{noSync:true,noRounded:true}));
+      it.appendChild(makeSB(curStruct,curRole,s,cap(s),{noSync:true}));
       var m=document.createElement('div');m.className='density-meta';m.textContent=s;it.appendChild(m);el.appendChild(it);
     });
   }
@@ -618,8 +611,8 @@
     var el=clr('roundedScale');
     SIZES.forEach(function(s){
       var it=document.createElement('div');it.className='density-item';
-      it.appendChild(makeSB(curV,s,{noSync:true,rounded:true}));
-      var m=document.createElement('div');m.className='density-meta';m.textContent=s+' (pill)';it.appendChild(m);el.appendChild(it);
+      it.appendChild(makeSB(curStruct,curRole,s,cap(s),{noSync:true,noRounded:true}));
+      var m=document.createElement('div');m.className='density-meta';m.textContent=s;it.appendChild(m);el.appendChild(it);
     });
   }
 
@@ -627,219 +620,168 @@
     var el=clr('shadowStrip');
     SHADOWS.forEach(function(s){
       var it=document.createElement('div');it.className='density-item';
-      it.appendChild(makeSB(curV,curS,{noSync:true,style:{'--split-btn-shadow':'var(--shadow-'+s+')','--split-btn-shadow-hover':'var(--shadow-'+s+')'}}));
+      it.appendChild(makeSB(curStruct,curRole,curS,s==='DEFAULT'?'default':s,{noSync:true,style:{'--split-btn-shadow':'var(--shadow-'+s+')','--split-btn-shadow-hover':'var(--shadow-'+s+')'}}));
       var m=document.createElement('div');m.className='density-meta';m.textContent='--shadow-'+s;it.appendChild(m);el.appendChild(it);
     });
   }
 
   function renderMotion(){
     var el=clr('motionDemo');
-    var items=[
-      {label:'Normal',sub:'duration-normal',opts:{iconStart:true}},
-      {label:'Loading...',sub:'1.5s pulse',opts:{loading:true,label:'Loading...'}},
-      {label:'Fast',sub:'duration-fast',opts:{iconStart:true,style:{'--split-btn-transition-duration':'var(--duration-fast)','--split-btn-transition-easing':'var(--easing-in)'}}},
-      {label:'Slow bounce',sub:'duration-slow',opts:{iconStart:true,style:{'--split-btn-transition-duration':'var(--duration-slow)','--split-btn-transition-easing':'var(--easing-bounce)'}}}
-    ];
-    items.forEach(function(it){
+    [{label:'Normal',sub:'duration-normal',opts:{iconStart:true}},{label:'Loading...',sub:'1.5s linear pulse',opts:{}},{label:'Fast',sub:'duration-fast',opts:{style:{'--split-btn-transition-duration':'var(--duration-fast)','--split-btn-transition-easing':'var(--easing-in)'}}},{label:'Slow bounce',sub:'duration-slow',opts:{style:{'--split-btn-transition-duration':'var(--duration-slow)','--split-btn-transition-easing':'var(--easing-bounce)'}}}].forEach(function(it){
       var cd=document.createElement('div');cd.className='motion-card';
-      cd.appendChild(makeSB(curV,curS,it.opts));
+      cd.appendChild(makeSB(curStruct,curRole,curS,it.label,it.opts));
       var l=document.createElement('span');l.className='motion-label';l.textContent=it.sub;cd.appendChild(l);el.appendChild(cd);
     });
   }
 
-  /* ── Inspector ──────────────────────────────────────── */
-  var SB_TOKENS = {
-    height: {micro:'--spacing-24',tiny:'--spacing-28',small:'--spacing-32',base:'--spacing-36',medium:'--spacing-40',large:'--spacing-44',big:'--spacing-48',huge:'--spacing-56',mega:'--spacing-64',ultra:'--spacing-80'},
-    radius: {micro:'--radius-xs',tiny:'--radius-sm',small:'--radius-sm',base:'--radius-md',medium:'--radius-md',large:'--radius-DEFAULT',big:'--radius-DEFAULT',huge:'--radius-lg',mega:'--radius-xl',ultra:'--radius-xl'},
-    actionPx: {micro:'--spacing-8',tiny:'--spacing-8',small:'--spacing-10',base:'--spacing-12',medium:'--spacing-14',large:'--spacing-16',big:'--spacing-18',huge:'--spacing-20',mega:'--spacing-24',ultra:'--spacing-28'},
-    triggerPx: {micro:'--spacing-2',tiny:'--spacing-2',small:'--spacing-3',base:'--spacing-3',medium:'--spacing-4',large:'--spacing-4',big:'--spacing-5',huge:'--spacing-6',mega:'--spacing-8',ultra:'--spacing-10'},
-    fs: {micro:'--font-size-10',tiny:'--font-size-11',small:'--font-size-12',base:'--font-size-14',medium:'--font-size-14',large:'--font-size-16',big:'--font-size-16',huge:'--font-size-18',mega:'--font-size-20',ultra:'--font-size-24'},
-    iconSize: {micro:'--spacing-10',tiny:'--spacing-12',small:'--spacing-13',base:'--spacing-16',medium:'--spacing-16',large:'--spacing-18',big:'--spacing-18',huge:'--spacing-20',mega:'--spacing-24',ultra:'--spacing-28'}
+  /* ── Inspector ──────────────────────────────────── */
+  var SB_TOKENS={
+    height:{micro:'--spacing-24',tiny:'--spacing-28',small:'--spacing-32',base:'--spacing-36',medium:'--spacing-40',large:'--spacing-44',big:'--spacing-48',huge:'--spacing-56',mega:'--spacing-64',ultra:'--spacing-80'},
+    radius:{micro:'--radius-sm',tiny:'--radius-sm-md',small:'--radius-md',base:'--radius-md',medium:'--radius-DEFAULT',large:'--radius-DEFAULT',big:'--radius-md-lg',huge:'--radius-lg',mega:'--radius-lg-xl',ultra:'--radius-xl'},
+    actionPx:{micro:'--spacing-8',tiny:'--spacing-10',small:'--spacing-12',base:'--spacing-16',medium:'--spacing-18',large:'--spacing-20',big:'--spacing-24',huge:'--spacing-28',mega:'--spacing-32',ultra:'--spacing-40'},
+    triggerPx:{micro:'--spacing-6',tiny:'--spacing-7',small:'--spacing-8',base:'--spacing-10',medium:'--spacing-12',large:'--spacing-14',big:'--spacing-16',huge:'--spacing-18',mega:'--spacing-20',ultra:'--spacing-24'},
+    fs:{micro:'--font-size-10',tiny:'--font-size-11',small:'--font-size-12',base:'--font-size-13',medium:'--font-size-14',large:'--font-size-16',big:'--font-size-18',huge:'--font-size-20',mega:'--font-size-24',ultra:'--font-size-28'},
+    iconSize:{micro:'--spacing-12',tiny:'--spacing-14',small:'--spacing-16',base:'--spacing-18',medium:'--spacing-20',large:'--spacing-22',big:'--spacing-24',huge:'--spacing-28',mega:'--spacing-32',ultra:'--spacing-36'}
   };
+  var STRUCT_TOKEN={filled:'primary',outlined:'secondary',soft:'tertiary',ghost:'ghost'};
+  var ROLE_PREFIX={primary:'primary',danger:'danger',success:'success',warning:'warning',brand:'brand',info:'info',neutral:'surface-base'};
 
   function updateInspector(){
-    var hero=document.querySelector('.hero-preview .split-btn');
-    if(!hero)return;
-    var cs=getComputedStyle(hero);
-    var ab=hero.querySelector('.split-btn__action');
-    var acs=ab?getComputedStyle(ab):{};
-    var s=curS;
-    var tokens=[
+    var hb=document.querySelector('.hero-preview .split-btn');if(!hb)return;
+    var cs=getComputedStyle(hb),s=curS,tg=STRUCT_TOKEN[curStruct]||'primary';
+    var isN=curRole==='neutral';
+    var rows=[
       ['--split-btn-height-'+s, SB_TOKENS.height[s], cs.height],
       [curRounded?'--split-btn-radius-rounded':'--split-btn-radius-'+s, curRounded?'--radius-full':SB_TOKENS.radius[s], cs.borderRadius],
-      ['--split-btn-action-padding-x-'+s, SB_TOKENS.actionPx[s], acs.paddingLeft||'—'],
-      ['--split-btn-trigger-padding-x-'+s, SB_TOKENS.triggerPx[s], '—'],
-      ['--split-btn-font-size-'+s, SB_TOKENS.fs[s], acs.fontSize||'—'],
-      ['--split-btn-icon-size-'+s, SB_TOKENS.iconSize[s], cs.getPropertyValue('--_sb-icon-size').trim()||'—'],
-      ['--split-btn-'+curV+'-bg', '—', cs.backgroundColor],
-      ['--split-btn-'+curV+'-fg', '—', cs.color],
-      ['--split-btn-'+curV+'-border-color', '—', cs.borderColor],
-      ['--split-btn-divider-width', '—', '1px'],
-      ['--split-btn-transition-duration', '--duration-normal', acs.transitionDuration||'—']
+      ['--split-btn-action-padding-x-'+s, SB_TOKENS.actionPx[s], ''],
+      ['--split-btn-trigger-padding-x-'+s, SB_TOKENS.triggerPx[s], ''],
+      ['--split-btn-font-size-'+s, SB_TOKENS.fs[s], cs.fontSize||''],
+      ['--split-btn-'+tg+'-bg', isN?'--surface-base-cm-bg':'--primary-component-bg-default', cs.backgroundColor],
+      ['--split-btn-'+tg+'-fg', isN?'--surface-base-ct-default':'--primary-on-component', cs.color],
+      ['--split-btn-'+tg+'-border-color', '\u2014', cs.borderColor],
+      ['--split-btn-divider-color-'+tg, '\u2014', '']
     ];
     var ins=document.getElementById('heroInspector');
-    ins.innerHTML='<div class="inspector-title">Resolved Tokens ('+curV+' / '+s+(curRounded?' / rounded':'')+')</div>'+
-      tokens.map(function(t){
-        return '<div class="inspector-row"><span class="token-name">'+t[0]+'</span><span class="token-val">'+t[2]+(t[1]!=='—'?'<br><span style="opacity:0.5;font-size:9px">\u2192 '+t[1]+'</span>':'')+'</span></div>';
-      }).join('');
+    ins.innerHTML='<div class="inspector-title">Resolved Tokens ('+curStruct+' / '+curRole+' / '+s+')</div>'+
+      rows.map(function(t){return '<div class="inspector-row"><span class="token-name">'+t[0]+'</span><span class="token-val">'+(t[2]||'\u2014')+(t[1]!=='\u2014'?'<br><span style="opacity:0.5;font-size:9px">\u2192 '+t[1]+'</span>':'')+'</span></div>'}).join('');
   }
 
-  /* ── Apply Globals ──────────────────────────────────── */
+  /* ── Apply Global Controls ──────────────────────── */
   function applyGlobals(){
-    var hero=document.querySelector('.hero-preview .split-btn');
-    if(hero){hero.dataset.variant=curV;hero.dataset.size=curS;if(curRounded)hero.dataset.rounded='';else delete hero.dataset.rounded}
-    document.querySelectorAll('.a11y-grid .synced-sb').forEach(function(sb){sb.dataset.size=curS;if(curRounded)sb.dataset.rounded='';else delete sb.dataset.rounded});
-    renderVariants();renderDensity();renderStates();renderSlots();renderSurface();
-    renderRadius();renderRounded();renderShadows();renderMotion();
+    var hb=document.querySelector('.hero-preview .split-btn');
+    if(hb){
+      hb.dataset.variant=curStruct;
+      if(curRole!=='primary'||curStruct==='ghost'){hb.dataset.role=curRole}else{delete hb.dataset.role}
+      hb.dataset.size=curS;
+      if(curRounded)hb.dataset.rounded='';else delete hb.dataset.rounded;
+    }
+    document.querySelectorAll('.a11y-grid .synced-btn').forEach(function(w){
+      w.dataset.variant=curStruct;
+      if(curRole!=='primary'||curStruct==='ghost'){w.dataset.role=curRole}else{delete w.dataset.role}
+      w.dataset.size=curS;
+      if(curRounded)w.dataset.rounded='';else delete w.dataset.rounded;
+    });
+    renderStructGallery();renderRoleGallery();renderDensity();renderStates();
+    renderSlots();renderSurface();renderRadius();renderRounded();renderShadows();renderMotion();
     requestAnimationFrame(updateInspector);
   }
 
-  /* ── Global Controls ────────────────────────────────── */
-  document.getElementById('variantBar').addEventListener('click',function(e){
-    var pill=e.target.closest('.pill');if(!pill)return;
-    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
-    pill.setAttribute('aria-pressed','true');curV=pill.dataset.ctrlVariant;applyGlobals();
-  });
+  function wirePill(barId,attr,cb){
+    document.getElementById(barId).addEventListener('click',function(e){
+      var pill=e.target.closest('.pill');if(!pill)return;
+      this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
+      pill.setAttribute('aria-pressed','true');cb(pill.dataset[attr]);
+    });
+  }
 
-  document.getElementById('sizeBar').addEventListener('click',function(e){
-    var pill=e.target.closest('.pill');if(!pill)return;
-    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
-    pill.setAttribute('aria-pressed','true');curS=pill.dataset.ctrlSize;applyGlobals();
-  });
+  wirePill('structBar','ctrlStruct',function(v){curStruct=v;applyGlobals()});
+  wirePill('roleBar','ctrlRole',function(v){curRole=v;applyGlobals()});
+  wirePill('sizeBar','ctrlSize',function(v){curS=v;applyGlobals()});
+  wirePill('roundedBar','ctrlRounded',function(v){curRounded=v==='true';applyGlobals()});
 
-  document.getElementById('roundedBar').addEventListener('click',function(e){
-    var pill=e.target.closest('.pill');if(!pill)return;
-    this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
-    pill.setAttribute('aria-pressed','true');curRounded=pill.dataset.ctrlRounded==='true';applyGlobals();
-  });
-
-  window.DTF.onThemeChange = updateInspector;
-
+  window.DTF.onThemeChange=updateInspector;
   applyGlobals();
 
-  /* ── Context Playground ─────────────────────────────── */
-  var SURFACE_TOKENS=[
-    'bg','hover','pressed','outline','separator',
-    'ct-default','ct-strong','ct-subtle','ct-faint',
-    'cm-bg','cm-bg-hover','cm-bg-pressed',
-    'cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator'
-  ];
-  var ROLE_TOKENS=[
-    'content-default','content-strong','content-subtle','content-faint',
-    'component-bg-default','component-bg-hover','component-bg-pressed',
-    'component-outline-default','component-outline-hover','component-outline-pressed',
-    'component-separator',
-    'container-bg','container-hover','container-pressed',
-    'container-outline','container-separator',
-    'on-component','on-container'
-  ];
+  /* ── Context Playground ─────────────────────────── */
+  var SURFACE_TOKENS=['bg','hover','pressed','outline','separator','ct-default','ct-strong','ct-subtle','ct-faint','cm-bg','cm-bg-hover','cm-bg-pressed','cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator'];
+  var ROLE_REMAP=['component-bg-default','component-bg-hover','component-bg-pressed','on-component','content-default','content-strong','content-subtle','content-faint','component-outline-default','component-outline-hover','component-outline-pressed','component-separator','container-bg','container-hover','container-pressed','container-outline','container-separator','on-container'];
+  var pgSize='base';
 
-  function applySurface(bodyEl,surfaceId){
-    if(surfaceId==='base'){
-      SURFACE_TOKENS.forEach(function(tok){bodyEl.style.removeProperty('--surface-base-'+tok);});
-      bodyEl.style.background='var(--surface-base-bg)';
+  function applySurface(el,sid){
+    if(sid==='base'){SURFACE_TOKENS.forEach(function(t){el.style.removeProperty('--surface-base-'+t)});el.style.background='var(--surface-base-bg)'}
+    else{SURFACE_TOKENS.forEach(function(t){el.style.setProperty('--surface-base-'+t,'var(--surface-'+sid+'-'+t+')')});el.style.background='var(--surface-'+sid+'-bg)'}
+  }
+  function applyRole(el,rid){
+    if(rid==='primary'){ROLE_REMAP.forEach(function(t){el.style.removeProperty('--primary-'+t)})}
+    else if(rid==='neutral'){
+      el.style.setProperty('--primary-component-bg-default','var(--surface-base-cm-bg)');
+      el.style.setProperty('--primary-component-bg-hover','var(--surface-base-cm-bg-hover)');
+      el.style.setProperty('--primary-component-bg-pressed','var(--surface-base-cm-bg-pressed)');
+      el.style.setProperty('--primary-on-component','var(--surface-base-ct-default)');
+      el.style.setProperty('--primary-content-default','var(--surface-base-ct-default)');
+      el.style.setProperty('--primary-container-bg','var(--surface-base-hover)');
+      el.style.setProperty('--primary-container-hover','var(--surface-base-pressed)');
+      el.style.setProperty('--primary-container-pressed','var(--surface-base-pressed)');
+      el.style.setProperty('--primary-component-outline-default','var(--surface-base-cm-outline)');
+      el.style.setProperty('--primary-component-outline-hover','var(--surface-base-cm-outline-hover)');
+      el.style.setProperty('--primary-component-outline-pressed','var(--surface-base-cm-outline-pressed)');
     } else {
-      SURFACE_TOKENS.forEach(function(tok){
-        bodyEl.style.setProperty('--surface-base-'+tok,'var(--surface-'+surfaceId+'-'+tok+')');
-      });
-      bodyEl.style.background='var(--surface-'+surfaceId+'-bg)';
+      ROLE_REMAP.forEach(function(t){el.style.setProperty('--primary-'+t,'var(--'+rid+'-'+t+')')});
     }
   }
 
-  function applyRole(bodyEl,roleId){
-    if(roleId==='primary'){
-      ROLE_TOKENS.forEach(function(tok){bodyEl.style.removeProperty('--primary-'+tok);});
-    } else {
-      ROLE_TOKENS.forEach(function(tok){
-        bodyEl.style.setProperty('--primary-'+tok,'var(--'+roleId+'-'+tok+')');
-      });
-    }
+  function pgBuildCard(card){
+    var body=document.getElementById('pgBody'+card);body.innerHTML='';
+    var role=document.querySelector('[data-pg-role="'+card+'"]').value;
+    var labels=ROLE_LABELS[role]||ROLE_LABELS.primary;
+    STRUCTS.forEach(function(st){
+      var row=document.createElement('div');row.className='pg-variant-row';
+      var lbl=document.createElement('span');lbl.className='pg-variant-label';lbl.textContent=cap(st);row.appendChild(lbl);
+      row.appendChild(makeSB(st,'primary',pgSize,labels[st]||cap(st),{iconStart:true,noSync:true}));
+      body.appendChild(row);
+    });
   }
-
   function pgApplyCard(card){
     var body=document.getElementById('pgBody'+card);
-    var surfSel=document.querySelector('[data-pg-surface="'+card+'"]');
-    var roleSel=document.querySelector('[data-pg-role="'+card+'"]');
-    applySurface(body,surfSel.value);
-    applyRole(body,roleSel.value);
+    applySurface(body,document.querySelector('[data-pg-surface="'+card+'"]').value);
+    applyRole(body,document.querySelector('[data-pg-role="'+card+'"]').value);
+    pgBuildCard(card);
   }
-
-  function pgApplyDensity(size){
-    document.querySelectorAll('.pg-sb').forEach(function(sb){sb.dataset.size=size});
-  }
-
   function pgUpdateChain(){
-    var body=document.getElementById('pgBodyA');
-    var surfSel=document.querySelector('[data-pg-surface="A"]');
-    var roleSel=document.querySelector('[data-pg-role="A"]');
-    var sb=body.querySelector('.split-btn[data-variant="primary"]');
-    if(!sb)return;
-    var cs=getComputedStyle(sb);
     var chain=document.getElementById('pgChain');
-    var s=surfSel.value,r=roleSel.value;
+    var s=document.querySelector('[data-pg-surface="A"]').value;
+    var r=document.querySelector('[data-pg-role="A"]').value;
+    var isN=(r==='neutral'),rp=isN?'surface-'+s:r;
     var rows=[
-      {sec:'Primary (filled)'},
-      {label:'BG',token:'--split-btn-primary-bg',via:'--'+r+'-component-bg-default',val:cs.backgroundColor},
-      {label:'BG Hover',token:'--split-btn-primary-bg-hover',via:'--'+r+'-component-bg-hover'},
-      {label:'BG Active',token:'--split-btn-primary-bg-active',via:'--'+r+'-component-bg-pressed'},
-      {label:'FG',token:'--split-btn-primary-fg',via:'--'+r+'-on-component',val:cs.color},
-      {label:'Border',token:'--split-btn-primary-border-color',via:'--'+r+'-component-bg-default'},
-      {sec:'Secondary (outlined)'},
-      {label:'BG Hover',token:'--split-btn-secondary-bg-hover',via:'--'+r+'-container-bg'},
-      {label:'BG Active',token:'--split-btn-secondary-bg-active',via:'--'+r+'-container-pressed'},
-      {label:'FG',token:'--split-btn-secondary-fg',via:'--'+r+'-content-default'},
-      {label:'Border',token:'--split-btn-secondary-border-color',via:'--'+r+'-component-outline-default'},
-      {label:'Border Hover',token:'--split-btn-secondary-border-color-hover',via:'--'+r+'-component-outline-hover'},
-      {label:'Border Active',token:'--split-btn-secondary-border-color-active',via:'--'+r+'-component-outline-pressed'},
-      {sec:'Danger'},
-      {label:'BG',token:'--split-btn-danger-bg',via:'--danger-component-bg-default'},
-      {label:'BG Hover',token:'--split-btn-danger-bg-hover',via:'--danger-component-bg-hover'},
-      {label:'FG',token:'--split-btn-danger-fg',via:'--danger-on-component'},
-      {sec:'Neutral (surface)'},
-      {label:'BG',token:'--split-btn-neutral-bg',via:'--surface-'+s+'-cm-bg'},
-      {label:'BG Hover',token:'--split-btn-neutral-bg-hover',via:'--surface-'+s+'-cm-bg-hover'},
-      {label:'BG Active',token:'--split-btn-neutral-bg-active',via:'--surface-'+s+'-cm-bg-pressed'},
-      {label:'FG',token:'--split-btn-neutral-fg',via:'--surface-'+s+'-ct-default'},
-      {label:'FG Hover',token:'--split-btn-neutral-fg-hover',via:'--surface-'+s+'-ct-strong'},
-      {label:'Border',token:'--split-btn-neutral-border-color',via:'--surface-'+s+'-cm-outline'},
-      {label:'Border Hover',token:'--split-btn-neutral-border-color-hover',via:'--surface-'+s+'-cm-outline-hover'},
-      {sec:'Dividers'},
-      {label:'Primary Divider',token:'--split-btn-divider-color-primary',via:'rgba(255,255,255,0.3)'},
-      {label:'Secondary Divider',token:'--split-btn-divider-color-secondary',via:'--'+r+'-component-outline-default'},
-      {label:'Danger Divider',token:'--split-btn-divider-color-danger',via:'rgba(255,255,255,0.3)'},
-      {label:'Neutral Divider',token:'--split-btn-divider-color-neutral',via:'--surface-'+s+'-cm-outline'},
-      {sec:'Focus / A11y'},
-      {label:'Focus Ring',token:'--split-btn-focus-outline-color',via:'--'+r+'-component-outline-default'}
+      {sec:'Filled ('+r+')'},
+      {label:'BG',token:'--split-btn-primary-bg',via:'--'+rp+(isN?'-cm-bg':'-component-bg-default')},
+      {label:'FG',token:'--split-btn-primary-fg',via:'--'+rp+(isN?'-ct-default':'-on-component')},
+      {sec:'Outlined ('+r+')'},
+      {label:'Border',token:'--split-btn-secondary-border-color',via:'--'+rp+(isN?'-outline':'-component-outline-default')},
+      {label:'FG',token:'--split-btn-secondary-fg',via:'--'+rp+(isN?'-ct-default':'-content-default')},
+      {sec:'Soft ('+r+')'},
+      {label:'BG',token:'--split-btn-tertiary-bg',via:'--'+rp+(isN?'-hover':'-container-bg')},
+      {sec:'Ghost ('+r+')'},
+      {label:'FG',token:'--split-btn-ghost-fg',via:isN?'--surface-'+s+'-ct-default':'--'+r+'-content-default'}
     ];
     var h='<div class="pg-chain-title">Token Resolution Chain (Card A: surface-'+s+' / '+r+')</div>';
-    rows.forEach(function(row){      if(row.sec){h+='<div class="pg-chain-sec">'+row.sec+'</div>';return;}      h+='<div class="pg-chain-row">';
-      if(row.val){h+='<span class="pg-swatch" style="background:'+row.val+'"></span>';}
-      h+='<span>'+row.label+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.token+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.via+'</span>';
-      if(row.val){h+=' <span class="pg-chain-arrow">\u2192</span> <span style="font-weight:600">'+row.val+'</span>';}
-      h+='</div>';
+    rows.forEach(function(row){
+      if(row.sec){h+='<div class="pg-chain-sec">'+row.sec+'</div>';return}
+      h+='<div class="pg-chain-row"><span>'+row.label+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.token+'</span> <span class="pg-chain-arrow">\u2192</span> <span>'+row.via+'</span></div>';
     });
     chain.innerHTML=h;
   }
 
   document.querySelectorAll('[data-pg-surface],[data-pg-role]').forEach(function(sel){
-    sel.addEventListener('change',function(){
-      var card=this.dataset.pgSurface||this.dataset.pgRole;
-      pgApplyCard(card);
-      requestAnimationFrame(pgUpdateChain);
-    });
+    sel.addEventListener('change',function(){var card=this.dataset.pgSurface||this.dataset.pgRole;pgApplyCard(card);requestAnimationFrame(pgUpdateChain)});
   });
-
   document.getElementById('pgDensityBar').addEventListener('click',function(e){
     var pill=e.target.closest('.pill');if(!pill)return;
     this.querySelectorAll('.pill').forEach(function(p){p.setAttribute('aria-pressed','false')});
-    pill.setAttribute('aria-pressed','true');
-    pgApplyDensity(pill.dataset.pgSize);
-    requestAnimationFrame(pgUpdateChain);
+    pill.setAttribute('aria-pressed','true');pgSize=pill.dataset.pgSize;
+    pgApplyCard('A');pgApplyCard('B');requestAnimationFrame(pgUpdateChain);
   });
-
-  pgApplyCard('A');
-  pgApplyCard('B');
-  requestAnimationFrame(pgUpdateChain);
+  pgApplyCard('A');pgApplyCard('B');requestAnimationFrame(pgUpdateChain);
 
 })();
 </script>

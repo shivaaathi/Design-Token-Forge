@@ -2,6 +2,25 @@
    Design Token Forge — SplitButton Token Defaults
    Layer 0: System defaults for 154 split-button variables.
    All values reference global tokens — zero hardcoded visuals.
+
+   ORTHOGONAL MODEL
+   ────────────────
+   Structure (data-variant): filled | outlined | soft | ghost
+   Role (data-role):         primary | danger | success | warning | brand | info | neutral
+
+   Token groups below use legacy names for backward compatibility:
+     primary  ≡ filled   (solid background, role-colored)
+     secondary ≡ outlined (border emphasis, role-colored)
+     tertiary ≡ soft     (tinted container, role-colored)
+     ghost    = ghost    (transparent, neutral by default)
+
+   All primary/secondary/tertiary tokens reference --primary-* semantic palette.
+   CSS role selectors remap --primary-* → --{role}-* at the element level,
+   so every structural variant × every role composes automatically.
+
+   danger/success/warning/neutral/outline/brand token groups below are
+   LEGACY shortcuts for filled+danger, filled+success, etc. They remain
+   for backward compatibility with data-variant="danger" syntax.
    ════════════════════════════════════════════════════════════════ */
 
 .split-btn {
@@ -99,7 +118,7 @@
      Pattern: --split-btn-{variant}-{property}[-{state}]
      ──────────────────────────────────────────────────────────── */
 
-  /* ── PRIMARY (filled, blue) ─────────────────────────────── */
+  /* ── PRIMARY ≡ FILLED (solid bg, reads --primary-* palette) ─────────────────────────────── */
   --split-btn-primary-bg: var(--primary-component-bg-default);
   --split-btn-primary-bg-hover: var(--primary-component-bg-hover);
   --split-btn-primary-bg-active: var(--primary-component-bg-pressed);
@@ -113,7 +132,7 @@
   --split-btn-primary-border-color-disabled: var(--primary-component-bg-default);
   --split-btn-primary-opacity-disabled: 0.5;
 
-  /* ── SECONDARY (outlined, primary color border) ─────────── */
+  /* ── SECONDARY ≡ OUTLINED (border emphasis, --primary-* palette) ─────────── */
   --split-btn-secondary-bg: transparent;
   --split-btn-secondary-bg-hover: var(--primary-container-bg);
   --split-btn-secondary-bg-active: var(--primary-container-pressed);
@@ -127,7 +146,7 @@
   --split-btn-secondary-border-color-disabled: var(--primary-component-outline-default);
   --split-btn-secondary-opacity-disabled: 0.5;
 
-  /* ── DANGER (filled, red) ───────────────────────────────── */
+  /* ── DANGER (legacy: filled + danger role) ───────────────────────────────── */
   --split-btn-danger-bg: var(--danger-component-bg-default);
   --split-btn-danger-bg-hover: var(--danger-component-bg-hover);
   --split-btn-danger-bg-active: var(--danger-component-bg-pressed);
@@ -141,7 +160,7 @@
   --split-btn-danger-border-color-disabled: var(--danger-component-bg-default);
   --split-btn-danger-opacity-disabled: 0.5;
 
-  /* ── NEUTRAL (filled, surface-context) ───────────────────── */
+  /* ── NEUTRAL (legacy: filled + neutral/surface context) ───────────────────── */
   --split-btn-neutral-bg: var(--surface-base-cm-bg);
   --split-btn-neutral-bg-hover: var(--surface-base-cm-bg-hover);
   --split-btn-neutral-bg-active: var(--surface-base-cm-bg-pressed);
@@ -155,7 +174,7 @@
   --split-btn-neutral-border-color-disabled: var(--surface-base-cm-outline);
   --split-btn-neutral-opacity-disabled: 0.5;
 
-  /* ── TERTIARY (soft, tinted fill) ──────────────────────── */
+  /* ── TERTIARY ≡ SOFT (tinted container, --primary-* palette) ──────────────────────── */
   --split-btn-tertiary-bg: var(--primary-container-bg);
   --split-btn-tertiary-bg-hover: var(--primary-container-hover);
   --split-btn-tertiary-bg-active: var(--primary-container-pressed);
@@ -169,7 +188,7 @@
   --split-btn-tertiary-border-color-disabled: transparent;
   --split-btn-tertiary-opacity-disabled: 0.5;
 
-  /* ── GHOST (transparent, neutral text) ──────────────────── */
+  /* ── GHOST (transparent bg, --surface-* by default) ──────────────────── */
   --split-btn-ghost-bg: transparent;
   --split-btn-ghost-bg-hover: var(--surface-base-hover);
   --split-btn-ghost-bg-active: var(--surface-base-pressed);
@@ -183,7 +202,7 @@
   --split-btn-ghost-border-color-disabled: transparent;
   --split-btn-ghost-opacity-disabled: 0.5;
 
-  /* ── SUCCESS (filled, green) ───────────────────────────── */
+  /* ── SUCCESS (legacy: filled + success role) ───────────────────────────── */
   --split-btn-success-bg: var(--success-component-bg-default);
   --split-btn-success-bg-hover: var(--success-component-bg-hover);
   --split-btn-success-bg-active: var(--success-component-bg-pressed);
@@ -197,7 +216,7 @@
   --split-btn-success-border-color-disabled: var(--success-component-bg-default);
   --split-btn-success-opacity-disabled: 0.5;
 
-  /* ── WARNING (filled, amber) ───────────────────────────── */
+  /* ── WARNING (legacy: filled + warning role) ───────────────────────────── */
   --split-btn-warning-bg: var(--warning-component-bg-default);
   --split-btn-warning-bg-hover: var(--warning-component-bg-hover);
   --split-btn-warning-bg-active: var(--warning-component-bg-pressed);
@@ -211,7 +230,7 @@
   --split-btn-warning-border-color-disabled: var(--warning-component-bg-default);
   --split-btn-warning-opacity-disabled: 0.5;
 
-  /* ── OUTLINE (outlined, surface-context border) ───────── */
+  /* ── OUTLINE (legacy: outlined + neutral/surface context) ───────── */
   --split-btn-outline-bg: transparent;
   --split-btn-outline-bg-hover: var(--surface-base-hover);
   --split-btn-outline-bg-active: var(--surface-base-pressed);
@@ -225,7 +244,7 @@
   --split-btn-outline-border-color-disabled: var(--surface-base-outline);
   --split-btn-outline-opacity-disabled: 0.5;
 
-  /* ── BRAND (filled, brand palette) ─────────────────────── */
+  /* ── BRAND (legacy: filled + brand role) ─────────────────────── */
   --split-btn-brand-bg: var(--brand-component-bg-default);
   --split-btn-brand-bg-hover: var(--brand-component-bg-hover);
   --split-btn-brand-bg-active: var(--brand-component-bg-pressed);

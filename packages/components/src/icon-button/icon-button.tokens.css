@@ -2,6 +2,25 @@
    Design Token Forge — IconButton Token Defaults
    Layer 0: System defaults for 120 icon-button variables.
    All values reference global tokens — zero hardcoded visuals.
+
+   ORTHOGONAL MODEL
+   ────────────────
+   Structure (data-variant): filled | outlined | soft | ghost
+   Role (data-role):         primary | danger | success | warning | brand | info | neutral
+
+   Token groups below use legacy names for backward compatibility:
+     primary  ≡ filled   (solid background, role-colored)
+     secondary ≡ outlined (border emphasis, role-colored)
+     tertiary ≡ soft     (tinted container, role-colored)
+     ghost    = ghost    (transparent, neutral by default)
+
+   All primary/secondary/tertiary tokens reference --primary-* semantic palette.
+   CSS role selectors remap --primary-* → --{role}-* at the element level,
+   so every structural variant × every role composes automatically.
+
+   danger/success/warning/neutral/outline/brand token groups below are
+   LEGACY shortcuts for filled+danger, filled+success, etc. They remain
+   for backward compatibility with data-variant="danger" syntax.
    ════════════════════════════════════════════════════════════════ */
 
 .icon-btn {
@@ -63,7 +82,7 @@
      Pattern: --icon-btn-{variant}-{property}[-{state}]
      ──────────────────────────────────────────────────────────── */
 
-  /* ── PRIMARY (filled, blue) ─────────────────────────────── */
+  /* ── PRIMARY ≡ FILLED (solid bg, reads --primary-* palette) ─────────────────────────────── */
   --icon-btn-primary-bg: var(--primary-component-bg-default);
   --icon-btn-primary-bg-hover: var(--primary-component-bg-hover);
   --icon-btn-primary-bg-active: var(--primary-component-bg-pressed);
@@ -77,7 +96,7 @@
   --icon-btn-primary-border-color-disabled: var(--primary-component-bg-default);
   --icon-btn-primary-opacity-disabled: 0.5;
 
-  /* ── SECONDARY (outlined, primary color border) ─────────── */
+  /* ── SECONDARY ≡ OUTLINED (border emphasis, --primary-* palette) ─────────── */
   --icon-btn-secondary-bg: transparent;
   --icon-btn-secondary-bg-hover: var(--primary-container-bg);
   --icon-btn-secondary-bg-active: var(--primary-container-pressed);
@@ -91,7 +110,7 @@
   --icon-btn-secondary-border-color-disabled: var(--primary-component-outline-default);
   --icon-btn-secondary-opacity-disabled: 0.5;
 
-  /* ── GHOST (transparent, neutral text) ──────────────────── */
+  /* ── GHOST (transparent bg, --surface-* by default) ──────────────────── */
   --icon-btn-ghost-bg: transparent;
   --icon-btn-ghost-bg-hover: var(--surface-base-hover);
   --icon-btn-ghost-bg-active: var(--surface-base-pressed);
@@ -105,7 +124,7 @@
   --icon-btn-ghost-border-color-disabled: transparent;
   --icon-btn-ghost-opacity-disabled: 0.5;
 
-  /* ── DANGER (filled, red) ───────────────────────────────── */
+  /* ── DANGER (legacy: filled + danger role) ───────────────────────────────── */
   --icon-btn-danger-bg: var(--danger-component-bg-default);
   --icon-btn-danger-bg-hover: var(--danger-component-bg-hover);
   --icon-btn-danger-bg-active: var(--danger-component-bg-pressed);
@@ -119,7 +138,7 @@
   --icon-btn-danger-border-color-disabled: var(--danger-component-bg-default);
   --icon-btn-danger-opacity-disabled: 0.5;
 
-  /* ── NEUTRAL (filled, surface-context) ───────────────────── */
+  /* ── NEUTRAL (legacy: filled + neutral/surface context) ───────────────────── */
   --icon-btn-neutral-bg: var(--surface-base-cm-bg);
   --icon-btn-neutral-bg-hover: var(--surface-base-cm-bg-hover);
   --icon-btn-neutral-bg-active: var(--surface-base-cm-bg-pressed);
@@ -133,7 +152,7 @@
   --icon-btn-neutral-border-color-disabled: var(--surface-base-cm-outline);
   --icon-btn-neutral-opacity-disabled: 0.5;
 
-  /* ── OUTLINE (outlined, surface-context border) ─────────── */
+  /* ── OUTLINE (legacy: outlined + neutral/surface context) ─────────── */
   --icon-btn-outline-bg: transparent;
   --icon-btn-outline-bg-hover: var(--surface-base-hover);
   --icon-btn-outline-bg-active: var(--surface-base-pressed);
@@ -147,7 +166,7 @@
   --icon-btn-outline-border-color-disabled: var(--surface-base-outline);
   --icon-btn-outline-opacity-disabled: 0.5;
 
-  /* ── TERTIARY (soft, tinted fill) ────────────────────────── */
+  /* ── TERTIARY ≡ SOFT (tinted container, --primary-* palette) ────────────────────────── */
   --icon-btn-tertiary-bg: var(--primary-container-bg);
   --icon-btn-tertiary-bg-hover: var(--primary-container-hover);
   --icon-btn-tertiary-bg-active: var(--primary-container-pressed);
@@ -161,7 +180,7 @@
   --icon-btn-tertiary-border-color-disabled: transparent;
   --icon-btn-tertiary-opacity-disabled: 0.5;
 
-  /* ── SUCCESS (filled, green) ─────────────────────────────── */
+  /* ── SUCCESS (legacy: filled + success role) ─────────────────────────────── */
   --icon-btn-success-bg: var(--success-component-bg-default);
   --icon-btn-success-bg-hover: var(--success-component-bg-hover);
   --icon-btn-success-bg-active: var(--success-component-bg-pressed);
@@ -175,7 +194,7 @@
   --icon-btn-success-border-color-disabled: var(--success-component-bg-default);
   --icon-btn-success-opacity-disabled: 0.5;
 
-  /* ── WARNING (filled, amber) ─────────────────────────────── */
+  /* ── WARNING (legacy: filled + warning role) ─────────────────────────────── */
   --icon-btn-warning-bg: var(--warning-component-bg-default);
   --icon-btn-warning-bg-hover: var(--warning-component-bg-hover);
   --icon-btn-warning-bg-active: var(--warning-component-bg-pressed);
@@ -189,7 +208,7 @@
   --icon-btn-warning-border-color-disabled: var(--warning-component-bg-default);
   --icon-btn-warning-opacity-disabled: 0.5;
 
-  /* ── BRAND (filled, brand palette) ───────────────────────── */
+  /* ── BRAND (legacy: filled + brand role) ───────────────────────── */
   --icon-btn-brand-bg: var(--brand-component-bg-default);
   --icon-btn-brand-bg-hover: var(--brand-component-bg-hover);
   --icon-btn-brand-bg-active: var(--brand-component-bg-pressed);
