@@ -89,6 +89,7 @@
   align-self: stretch;
   background-color: var(--_sb-divider-color);
   flex-shrink: 0;
+  transition: background-color var(--split-btn-transition-duration) var(--split-btn-transition-easing);
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -313,11 +314,12 @@
   --_sb-fg-hover: var(--split-btn-neutral-fg-hover);
   --_sb-border-color: var(--split-btn-neutral-border-color);
   --_sb-shadow: var(--split-btn-shadow);
-  --_sb-divider-color: var(--split-btn-divider-color-neutral);
+  --_sb-divider-color: transparent;
 }
 .split-btn[data-variant="neutral"]:hover {
   --_sb-border-color: var(--split-btn-neutral-border-color-hover);
   --_sb-shadow: var(--split-btn-shadow-hover);
+  --_sb-divider-color: var(--split-btn-divider-color-neutral);
 }
 
 /* ── TERTIARY (soft, tinted fill) ──────────────────────────── */
@@ -329,11 +331,12 @@
   --_sb-fg-hover: var(--split-btn-tertiary-fg-hover);
   --_sb-border-color: var(--split-btn-tertiary-border-color);
   --_sb-shadow: var(--split-btn-shadow);
-  --_sb-divider-color: var(--split-btn-divider-color-tertiary);
+  --_sb-divider-color: transparent;
 }
 .split-btn[data-variant="tertiary"]:hover {
   --_sb-border-color: var(--split-btn-tertiary-border-color-hover);
   --_sb-shadow: var(--split-btn-shadow-hover);
+  --_sb-divider-color: var(--split-btn-divider-color-tertiary);
 }
 
 /* ── GHOST (transparent, neutral text) ──────────────────────── */
@@ -345,11 +348,12 @@
   --_sb-fg-hover: var(--split-btn-ghost-fg-hover);
   --_sb-border-color: var(--split-btn-ghost-border-color);
   --_sb-shadow: var(--split-btn-shadow);
-  --_sb-divider-color: var(--split-btn-divider-color-ghost);
+  --_sb-divider-color: transparent;
 }
 .split-btn[data-variant="ghost"]:hover {
   --_sb-border-color: var(--split-btn-ghost-border-color-hover);
   --_sb-shadow: var(--split-btn-shadow-hover);
+  --_sb-divider-color: var(--split-btn-divider-color-ghost);
 }
 
 /* ── SUCCESS (filled, green) ───────────────────────────────── */
@@ -468,11 +472,12 @@
   --_sb-fg-hover: var(--split-btn-tertiary-fg-hover);
   --_sb-border-color: var(--split-btn-tertiary-border-color);
   --_sb-shadow: var(--split-btn-shadow);
-  --_sb-divider-color: var(--split-btn-divider-color-tertiary);
+  --_sb-divider-color: transparent;
 }
 .split-btn[data-variant="soft"]:hover {
   --_sb-border-color: var(--split-btn-tertiary-border-color-hover);
   --_sb-shadow: var(--split-btn-shadow-hover);
+  --_sb-divider-color: var(--split-btn-divider-color-tertiary);
 }
 
 /* ════════════════════════════════════════════════════════════════
