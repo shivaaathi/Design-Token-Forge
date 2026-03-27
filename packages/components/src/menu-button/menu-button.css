@@ -58,8 +58,12 @@
   user-select: none;
   -webkit-user-select: none;
   text-decoration: none;
-  white-space: nowrap;
+  white-space: var(--menu-btn-white-space);
   vertical-align: middle;
+  gap: var(--_mb-gap);
+  min-width: var(--_mb-min-width);
+  max-width: var(--menu-btn-max-width);
+  inline-size: var(--menu-btn-inline-size);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -77,6 +81,7 @@
 .menu-btn:active {
   background-color: var(--_mb-bg-active);
   border-color: var(--_mb-border-color-active);
+  box-shadow: var(--_mb-shadow-active);
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -92,6 +97,8 @@
   --_mb-radius: var(--menu-btn-radius-base);
   --_mb-fs: var(--menu-btn-font-size-base);
   --_mb-icon-size: var(--menu-btn-icon-size-base);
+  --_mb-gap: var(--menu-btn-gap-base);
+  --_mb-min-width: var(--menu-btn-min-width-base);
 }
 
 .menu-btn[data-size="micro"] {
@@ -102,6 +109,8 @@
   --_mb-radius: var(--menu-btn-radius-micro);
   --_mb-fs: var(--menu-btn-font-size-micro);
   --_mb-icon-size: var(--menu-btn-icon-size-micro);
+  --_mb-gap: var(--menu-btn-gap-micro);
+  --_mb-min-width: var(--menu-btn-min-width-micro);
 }
 
 .menu-btn[data-size="tiny"] {
@@ -112,6 +121,8 @@
   --_mb-radius: var(--menu-btn-radius-tiny);
   --_mb-fs: var(--menu-btn-font-size-tiny);
   --_mb-icon-size: var(--menu-btn-icon-size-tiny);
+  --_mb-gap: var(--menu-btn-gap-tiny);
+  --_mb-min-width: var(--menu-btn-min-width-tiny);
 }
 
 .menu-btn[data-size="small"] {
@@ -122,6 +133,8 @@
   --_mb-radius: var(--menu-btn-radius-small);
   --_mb-fs: var(--menu-btn-font-size-small);
   --_mb-icon-size: var(--menu-btn-icon-size-small);
+  --_mb-gap: var(--menu-btn-gap-small);
+  --_mb-min-width: var(--menu-btn-min-width-small);
 }
 
 .menu-btn[data-size="medium"] {
@@ -132,6 +145,8 @@
   --_mb-radius: var(--menu-btn-radius-medium);
   --_mb-fs: var(--menu-btn-font-size-medium);
   --_mb-icon-size: var(--menu-btn-icon-size-medium);
+  --_mb-gap: var(--menu-btn-gap-medium);
+  --_mb-min-width: var(--menu-btn-min-width-medium);
 }
 
 .menu-btn[data-size="large"] {
@@ -142,6 +157,8 @@
   --_mb-radius: var(--menu-btn-radius-large);
   --_mb-fs: var(--menu-btn-font-size-large);
   --_mb-icon-size: var(--menu-btn-icon-size-large);
+  --_mb-gap: var(--menu-btn-gap-large);
+  --_mb-min-width: var(--menu-btn-min-width-large);
 }
 
 .menu-btn[data-size="big"] {
@@ -152,6 +169,8 @@
   --_mb-radius: var(--menu-btn-radius-big);
   --_mb-fs: var(--menu-btn-font-size-big);
   --_mb-icon-size: var(--menu-btn-icon-size-big);
+  --_mb-gap: var(--menu-btn-gap-big);
+  --_mb-min-width: var(--menu-btn-min-width-big);
 }
 
 .menu-btn[data-size="huge"] {
@@ -162,6 +181,8 @@
   --_mb-radius: var(--menu-btn-radius-huge);
   --_mb-fs: var(--menu-btn-font-size-huge);
   --_mb-icon-size: var(--menu-btn-icon-size-huge);
+  --_mb-gap: var(--menu-btn-gap-huge);
+  --_mb-min-width: var(--menu-btn-min-width-huge);
 }
 
 .menu-btn[data-size="mega"] {
@@ -172,6 +193,8 @@
   --_mb-radius: var(--menu-btn-radius-mega);
   --_mb-fs: var(--menu-btn-font-size-mega);
   --_mb-icon-size: var(--menu-btn-icon-size-mega);
+  --_mb-gap: var(--menu-btn-gap-mega);
+  --_mb-min-width: var(--menu-btn-min-width-mega);
 }
 
 .menu-btn[data-size="ultra"] {
@@ -182,6 +205,8 @@
   --_mb-radius: var(--menu-btn-radius-ultra);
   --_mb-fs: var(--menu-btn-font-size-ultra);
   --_mb-icon-size: var(--menu-btn-icon-size-ultra);
+  --_mb-gap: var(--menu-btn-gap-ultra);
+  --_mb-min-width: var(--menu-btn-min-width-ultra);
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -209,6 +234,7 @@
   --_mb-border-color-active: var(--menu-btn-primary-border-color-active);
   --_mb-shadow: var(--menu-btn-shadow);
   --_mb-shadow-hover: var(--menu-btn-shadow-hover);
+  --_mb-shadow-active: var(--menu-btn-shadow-active);
 }
 
 /* ── SECONDARY ──────────────────────────────────────────────── */
@@ -223,6 +249,7 @@
   --_mb-border-color-active: var(--menu-btn-secondary-border-color-active);
   --_mb-shadow: var(--menu-btn-shadow);
   --_mb-shadow-hover: var(--menu-btn-shadow-hover);
+  --_mb-shadow-active: var(--menu-btn-shadow-active);
 }
 
 /* ── GHOST ──────────────────────────────────────────────────── */
@@ -237,6 +264,7 @@
   --_mb-border-color-active: var(--menu-btn-ghost-border-color-active);
   --_mb-shadow: var(--menu-btn-shadow);
   --_mb-shadow-hover: var(--menu-btn-shadow-hover);
+  --_mb-shadow-active: var(--menu-btn-shadow-active);
 }
 
 /* ── NEUTRAL ────────────────────────────────────────────────── */
@@ -251,6 +279,7 @@
   --_mb-border-color-active: var(--menu-btn-neutral-border-color-active);
   --_mb-shadow: var(--menu-btn-shadow);
   --_mb-shadow-hover: var(--menu-btn-shadow-hover);
+  --_mb-shadow-active: var(--menu-btn-shadow-active);
 }
 /* ── TERTIARY (soft, tinted fill) ──────────────────────────── */
 .menu-btn[data-variant="tertiary"] {
@@ -264,6 +293,7 @@
   --_mb-border-color-active: var(--menu-btn-tertiary-border-color-active);
   --_mb-shadow: var(--menu-btn-shadow);
   --_mb-shadow-hover: var(--menu-btn-shadow-hover);
+  --_mb-shadow-active: var(--menu-btn-shadow-active);
 }
 
 /* ── DANGER (filled, red) ─────────────────────────────────── */
@@ -278,6 +308,7 @@
   --_mb-border-color-active: var(--menu-btn-danger-border-color-active);
   --_mb-shadow: var(--menu-btn-shadow);
   --_mb-shadow-hover: var(--menu-btn-shadow-hover);
+  --_mb-shadow-active: var(--menu-btn-shadow-active);
 }
 
 /* ── SUCCESS (filled, green) ───────────────────────────────── */
@@ -292,6 +323,7 @@
   --_mb-border-color-active: var(--menu-btn-success-border-color-active);
   --_mb-shadow: var(--menu-btn-shadow);
   --_mb-shadow-hover: var(--menu-btn-shadow-hover);
+  --_mb-shadow-active: var(--menu-btn-shadow-active);
 }
 
 /* ── WARNING (filled, amber) ───────────────────────────────── */
@@ -306,6 +338,7 @@
   --_mb-border-color-active: var(--menu-btn-warning-border-color-active);
   --_mb-shadow: var(--menu-btn-shadow);
   --_mb-shadow-hover: var(--menu-btn-shadow-hover);
+  --_mb-shadow-active: var(--menu-btn-shadow-active);
 }
 
 /* ── OUTLINE (outlined, surface-context border) ───────────── */
@@ -320,6 +353,7 @@
   --_mb-border-color-active: var(--menu-btn-outline-border-color-active);
   --_mb-shadow: var(--menu-btn-shadow);
   --_mb-shadow-hover: var(--menu-btn-shadow-hover);
+  --_mb-shadow-active: var(--menu-btn-shadow-active);
 }
 
 /* ── BRAND (filled, brand palette) ───────────────────────────── */
@@ -334,6 +368,7 @@
   --_mb-border-color-active: var(--menu-btn-brand-border-color-active);
   --_mb-shadow: var(--menu-btn-shadow);
   --_mb-shadow-hover: var(--menu-btn-shadow-hover);
+  --_mb-shadow-active: var(--menu-btn-shadow-active);
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -358,6 +393,7 @@
   --_mb-border-color-active: var(--menu-btn-primary-border-color-active);
   --_mb-shadow: var(--menu-btn-shadow);
   --_mb-shadow-hover: var(--menu-btn-shadow-hover);
+  --_mb-shadow-active: var(--menu-btn-shadow-active);
 }
 
 /* ── OUTLINED (alias for secondary) ─────────────────────────── */
@@ -372,6 +408,7 @@
   --_mb-border-color-active: var(--menu-btn-secondary-border-color-active);
   --_mb-shadow: var(--menu-btn-shadow);
   --_mb-shadow-hover: var(--menu-btn-shadow-hover);
+  --_mb-shadow-active: var(--menu-btn-shadow-active);
 }
 
 /* ── SOFT (alias for tertiary) ──────────────────────────────── */
@@ -386,6 +423,7 @@
   --_mb-border-color-active: var(--menu-btn-tertiary-border-color-active);
   --_mb-shadow: var(--menu-btn-shadow);
   --_mb-shadow-hover: var(--menu-btn-shadow-hover);
+  --_mb-shadow-active: var(--menu-btn-shadow-active);
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -657,7 +695,7 @@
 .menu-btn[data-loading] {
   cursor: wait;
   pointer-events: none;
-  animation: menu-btn-pulse 1.5s ease-in-out infinite;
+  animation: menu-btn-pulse var(--menu-btn-loader-speed) ease-in-out infinite;
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -683,7 +721,6 @@
 
 .menu-btn__label {
   display: inline-block;
-  margin-inline: 0.4em;
 }
 
 .menu-btn__chevron {
@@ -694,7 +731,6 @@
   height: var(--_mb-icon-size);
   color: var(--menu-btn-icon-color);
   flex-shrink: 0;
-  margin-inline-start: 0.15em;
 }
 .menu-btn:hover .menu-btn__chevron {
   color: var(--menu-btn-icon-color-hover);

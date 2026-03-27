@@ -1,7 +1,9 @@
 /* ════════════════════════════════════════════════════════════════
    Design Token Forge — Slider Token Defaults
-   Layer 0: System defaults for 120 slider variables.
+   Layer 0: System defaults for slider variables.
    All values reference global tokens — zero hardcoded visuals.
+   Structural variants: filled (default) | soft
+   Semantic roles:      primary (default) | danger | success | warning | neutral
    ════════════════════════════════════════════════════════════════ */
 
 .slider {
@@ -21,7 +23,7 @@
 
   /* Thumb */
   --slider-thumb-radius: var(--radius-full);
-  --slider-thumb-border-width: 0px;
+  --slider-thumb-border-width: 2px;
   --slider-thumb-border-style: solid;
   --slider-thumb-shadow: var(--shadow-sm);
   --slider-thumb-shadow-hover: var(--shadow-md);
@@ -34,6 +36,11 @@
   /* Tooltip */
   --slider-tooltip-radius: var(--radius-md);
   --slider-tooltip-shadow: var(--shadow-sm);
+  --slider-tooltip-border-width: 1px;
+  --slider-tooltip-border-style: solid;
+
+  /* Track overflow */
+  --slider-track-overflow: hidden;
 
   /* Clip */
   --slider-clip-path: none;
@@ -91,21 +98,40 @@
   --slider-tooltip-offset: var(--spacing-8);
   --slider-tooltip-arrow-size: 5px;
 
+  /* Halo size per density (≈2× thumb width) */
+  --slider-thumb-halo-size-micro: 20px;
+  --slider-thumb-halo-size-tiny: 24px;
+  --slider-thumb-halo-size-small: 28px;
+  --slider-thumb-halo-size-base: 36px;
+  --slider-thumb-halo-size-medium: 40px;
+  --slider-thumb-halo-size-large: 48px;
+  --slider-thumb-halo-size-big: 56px;
+  --slider-thumb-halo-size-huge: 64px;
+  --slider-thumb-halo-size-mega: 80px;
+  --slider-thumb-halo-size-ultra: 96px;
+
+  /* Vertical orientation */
+  --slider-vertical-height: 200px;
+
   /* Spacing */
   --slider-tick-offset: var(--spacing-4);
   --slider-label-offset: var(--spacing-2);
   --slider-gap: var(--spacing-8);
 
   /* ────────────────────────────────────────────────────────────
-     🎨 SURFACE  (27 vars)
+     🎨 SURFACE — FILLED variant (default)
+     Reads from --primary-* palette; role selectors remap automatically.
      ──────────────────────────────────────────────────────────── */
 
-  /* ── Track (unfilled rail) — use -hover variant for stronger contrast against bg ── */
+  /* ── Track (unfilled rail) — neutral, not role-colored ── */
   --slider-track-bg: var(--surface-base-cm-outline-hover);
   --slider-track-bg-hover: var(--surface-base-cm-outline-pressed, var(--surface-base-cm-outline-hover));
   --slider-track-bg-disabled: var(--surface-base-cm-outline);
   --slider-track-border-color: transparent;
   --slider-track-border-color-disabled: transparent;
+  --slider-track-shadow-hover: var(--shadow-none);
+  --slider-track-shadow-active: var(--shadow-none);
+  --slider-track-shadow-disabled: var(--shadow-none);
 
   /* ── Fill (value indicator) ── */
   --slider-fill-bg: var(--primary-component-bg-default);
@@ -113,19 +139,20 @@
   --slider-fill-bg-active: var(--primary-component-bg-pressed);
   --slider-fill-bg-disabled: var(--primary-component-bg-default);
 
-  /* ── Thumb ── */
-  --slider-thumb-bg: var(--primary-component-bg-default);
-  --slider-thumb-bg-hover: var(--primary-component-bg-hover);
-  --slider-thumb-bg-active: var(--primary-component-bg-pressed);
-  --slider-thumb-bg-disabled: var(--primary-component-bg-default);
-  --slider-thumb-border-color: var(--color-fixed-white);
-  --slider-thumb-border-color-hover: var(--color-fixed-white);
-  --slider-thumb-border-color-active: var(--color-fixed-white);
+  /* ── Thumb — white fill + colored border = distinct from fill bar ── */
+  --slider-thumb-bg: var(--color-white);
+  --slider-thumb-bg-hover: var(--color-white);
+  --slider-thumb-bg-active: var(--color-white);
+  --slider-thumb-bg-disabled: var(--color-white);
+  --slider-thumb-border-color: var(--primary-component-bg-default);
+  --slider-thumb-border-color-hover: var(--primary-component-bg-hover);
+  --slider-thumb-border-color-active: var(--primary-component-bg-pressed);
+  --slider-thumb-border-color-disabled: var(--color-fixed-white);
+  --slider-thumb-shadow-disabled: var(--shadow-none);
 
   /* ── Halo (Material-style hover ring around thumb) ── */
   --slider-thumb-halo-bg: var(--primary-container-bg);
   --slider-thumb-halo-bg-active: var(--primary-container-pressed);
-  --slider-thumb-halo-size: 40px;
   --slider-thumb-halo-opacity: 0.2;
 
   /* ── Tick marks ── */
@@ -142,6 +169,20 @@
   --slider-opacity-disabled: 0.5;
 
   /* ────────────────────────────────────────────────────────────
+     🎨 SURFACE — SOFT variant
+     Fill uses container-level tint; thumb stays solid.
+     Role selectors remap --primary-* automatically.
+     ──────────────────────────────────────────────────────────── */
+
+  --slider-soft-fill-bg: var(--primary-container-bg);
+  --slider-soft-fill-bg-hover: var(--primary-container-hover);
+  --slider-soft-fill-bg-active: var(--primary-container-pressed);
+  --slider-soft-fill-bg-disabled: var(--primary-container-bg);
+  --slider-soft-tooltip-bg: var(--primary-container-bg);
+  --slider-soft-tooltip-fg: var(--primary-content-default);
+  --slider-soft-tick-color-active: var(--primary-container-bg);
+
+  /* ────────────────────────────────────────────────────────────
      ✏️ TYPOGRAPHY  (11 vars)
      ──────────────────────────────────────────────────────────── */
 
@@ -153,8 +194,19 @@
 
   /* Tooltip */
   --slider-tooltip-font-family: var(--font-family-sans);
-  --slider-tooltip-font-size: var(--font-size-12);
   --slider-tooltip-font-weight: var(--font-weight-medium);
+
+  /* Tooltip font-size per density */
+  --slider-tooltip-font-size-micro: var(--font-size-9);
+  --slider-tooltip-font-size-tiny: var(--font-size-10);
+  --slider-tooltip-font-size-small: var(--font-size-11);
+  --slider-tooltip-font-size-base: var(--font-size-12);
+  --slider-tooltip-font-size-medium: var(--font-size-13);
+  --slider-tooltip-font-size-large: var(--font-size-14);
+  --slider-tooltip-font-size-big: var(--font-size-15);
+  --slider-tooltip-font-size-huge: var(--font-size-16);
+  --slider-tooltip-font-size-mega: var(--font-size-18);
+  --slider-tooltip-font-size-ultra: var(--font-size-20);
 
   /* Tick labels */
   --slider-tick-label-font-size: var(--font-size-11);
@@ -174,6 +226,7 @@
   --slider-tooltip-display: none;
   --slider-ticks-display: none;
   --slider-fill-display: block;
+  --slider-tooltip-white-space: nowrap;
   --slider-label-gap: var(--spacing-8);
   --slider-thumb-content: none;
 
@@ -187,6 +240,7 @@
   --slider-thumb-transition-duration: var(--duration-fast);
   --slider-thumb-transition-easing: var(--easing-spring);
   --slider-tooltip-transition-duration: var(--duration-fast);
+  --slider-loader-speed: 1.5s;
   --slider-animation-loading: none;
 
   /* ────────────────────────────────────────────────────────────

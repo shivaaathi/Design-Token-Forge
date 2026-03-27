@@ -54,7 +54,7 @@
   border: var(--slider-track-border-width) var(--slider-track-border-style) var(--slider-track-border-color);
   background-color: var(--slider-track-bg);
   box-shadow: var(--slider-track-shadow);
-  overflow: hidden;
+  overflow: var(--slider-track-overflow);
 
   /* Motion */
   transition-property: background-color, border-color;
@@ -148,8 +148,8 @@
 .slider__thumb::before {
   content: '';
   position: absolute;
-  width: var(--slider-thumb-halo-size);
-  height: var(--slider-thumb-halo-size);
+  width: var(--_sl-halo-size);
+  height: var(--_sl-halo-size);
   border-radius: var(--radius-full);
   background: var(--slider-thumb-halo-bg);
   opacity: 0;
@@ -181,13 +181,13 @@
   border-radius: var(--slider-tooltip-radius);
   background: var(--slider-tooltip-bg);
   color: var(--slider-tooltip-fg);
-  border: 1px solid var(--slider-tooltip-border-color);
+  border: var(--slider-tooltip-border-width) var(--slider-tooltip-border-style) var(--slider-tooltip-border-color);
   box-shadow: var(--slider-tooltip-shadow);
 
   font-family: var(--slider-tooltip-font-family);
-  font-size: var(--slider-tooltip-font-size);
+  font-size: var(--_sl-tooltip-fs);
   font-weight: var(--slider-tooltip-font-weight);
-  white-space: nowrap;
+  white-space: var(--slider-tooltip-white-space);
   pointer-events: none;
 
   transition: opacity var(--slider-tooltip-transition-duration) ease;
@@ -257,60 +257,162 @@
   --_sl-track-h: var(--slider-track-h-base);
   --_sl-thumb-w: var(--slider-thumb-w-base);
   --_sl-thumb-h: var(--slider-thumb-h-base);
+  --_sl-halo-size: var(--slider-thumb-halo-size-base);
+  --_sl-tooltip-fs: var(--slider-tooltip-font-size-base);
 }
 
 .slider[data-size="micro"] {
   --_sl-track-h: var(--slider-track-h-micro);
   --_sl-thumb-w: var(--slider-thumb-w-micro);
   --_sl-thumb-h: var(--slider-thumb-h-micro);
+  --_sl-halo-size: var(--slider-thumb-halo-size-micro);
+  --_sl-tooltip-fs: var(--slider-tooltip-font-size-micro);
 }
 
 .slider[data-size="tiny"] {
   --_sl-track-h: var(--slider-track-h-tiny);
   --_sl-thumb-w: var(--slider-thumb-w-tiny);
   --_sl-thumb-h: var(--slider-thumb-h-tiny);
+  --_sl-halo-size: var(--slider-thumb-halo-size-tiny);
+  --_sl-tooltip-fs: var(--slider-tooltip-font-size-tiny);
 }
 
 .slider[data-size="small"] {
   --_sl-track-h: var(--slider-track-h-small);
   --_sl-thumb-w: var(--slider-thumb-w-small);
   --_sl-thumb-h: var(--slider-thumb-h-small);
+  --_sl-halo-size: var(--slider-thumb-halo-size-small);
+  --_sl-tooltip-fs: var(--slider-tooltip-font-size-small);
 }
 
 .slider[data-size="medium"] {
   --_sl-track-h: var(--slider-track-h-medium);
   --_sl-thumb-w: var(--slider-thumb-w-medium);
   --_sl-thumb-h: var(--slider-thumb-h-medium);
+  --_sl-halo-size: var(--slider-thumb-halo-size-medium);
+  --_sl-tooltip-fs: var(--slider-tooltip-font-size-medium);
 }
 
 .slider[data-size="large"] {
   --_sl-track-h: var(--slider-track-h-large);
   --_sl-thumb-w: var(--slider-thumb-w-large);
   --_sl-thumb-h: var(--slider-thumb-h-large);
+  --_sl-halo-size: var(--slider-thumb-halo-size-large);
+  --_sl-tooltip-fs: var(--slider-tooltip-font-size-large);
 }
 
 .slider[data-size="big"] {
   --_sl-track-h: var(--slider-track-h-big);
   --_sl-thumb-w: var(--slider-thumb-w-big);
   --_sl-thumb-h: var(--slider-thumb-h-big);
+  --_sl-halo-size: var(--slider-thumb-halo-size-big);
+  --_sl-tooltip-fs: var(--slider-tooltip-font-size-big);
 }
 
 .slider[data-size="huge"] {
   --_sl-track-h: var(--slider-track-h-huge);
   --_sl-thumb-w: var(--slider-thumb-w-huge);
   --_sl-thumb-h: var(--slider-thumb-h-huge);
+  --_sl-halo-size: var(--slider-thumb-halo-size-huge);
+  --_sl-tooltip-fs: var(--slider-tooltip-font-size-huge);
 }
 
 .slider[data-size="mega"] {
   --_sl-track-h: var(--slider-track-h-mega);
   --_sl-thumb-w: var(--slider-thumb-w-mega);
   --_sl-thumb-h: var(--slider-thumb-h-mega);
+  --_sl-halo-size: var(--slider-thumb-halo-size-mega);
+  --_sl-tooltip-fs: var(--slider-tooltip-font-size-mega);
 }
 
 .slider[data-size="ultra"] {
   --_sl-track-h: var(--slider-track-h-ultra);
   --_sl-thumb-w: var(--slider-thumb-w-ultra);
   --_sl-thumb-h: var(--slider-thumb-h-ultra);
+  --_sl-halo-size: var(--slider-thumb-halo-size-ultra);
+  --_sl-tooltip-fs: var(--slider-tooltip-font-size-ultra);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   VARIANT SELECTORS — filled (default) | soft
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Filled (default) ───────────────────────────────────────── */
+/* No override needed — token defaults already read --primary-component-*.
+   Filled is the zero-config path. */
+
+/* ── Soft ────────────────────────────────────────────────────── */
+/* Fill uses lighter container-level tint; thumb stays solid. */
+.slider[data-variant="soft"] {
+  --slider-fill-bg: var(--slider-soft-fill-bg);
+  --slider-fill-bg-hover: var(--slider-soft-fill-bg-hover);
+  --slider-fill-bg-active: var(--slider-soft-fill-bg-active);
+  --slider-fill-bg-disabled: var(--slider-soft-fill-bg-disabled);
+  --slider-tooltip-bg: var(--slider-soft-tooltip-bg);
+  --slider-tooltip-fg: var(--slider-soft-tooltip-fg);
+  --slider-tick-color-active: var(--slider-soft-tick-color-active);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   ROLE SELECTORS — orthogonal to variants
+   Remap the --primary-* palette → chosen role.
+   Both filled and soft tokens reference --primary-*, so
+   swapping at the palette level works for all variants.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── data-role="primary" ────────────────────────────────────── */
+/* Default — no override needed. Tokens already read --primary-*. */
+
+/* ── data-role="danger" ─────────────────────────────────────── */
+.slider[data-role="danger"] {
+  --primary-component-bg-default: var(--danger-component-bg-default);
+  --primary-component-bg-hover: var(--danger-component-bg-hover);
+  --primary-component-bg-pressed: var(--danger-component-bg-pressed);
+  --primary-on-component: var(--danger-on-component);
+  --primary-content-default: var(--danger-content-default);
+  --primary-container-bg: var(--danger-container-bg);
+  --primary-container-hover: var(--danger-container-hover);
+  --primary-container-pressed: var(--danger-container-pressed);
+  --primary-component-outline-default: var(--danger-component-outline-default);
+}
+
+/* ── data-role="success" ────────────────────────────────────── */
+.slider[data-role="success"] {
+  --primary-component-bg-default: var(--success-component-bg-default);
+  --primary-component-bg-hover: var(--success-component-bg-hover);
+  --primary-component-bg-pressed: var(--success-component-bg-pressed);
+  --primary-on-component: var(--success-on-component);
+  --primary-content-default: var(--success-content-default);
+  --primary-container-bg: var(--success-container-bg);
+  --primary-container-hover: var(--success-container-hover);
+  --primary-container-pressed: var(--success-container-pressed);
+  --primary-component-outline-default: var(--success-component-outline-default);
+}
+
+/* ── data-role="warning" ────────────────────────────────────── */
+.slider[data-role="warning"] {
+  --primary-component-bg-default: var(--warning-component-bg-default);
+  --primary-component-bg-hover: var(--warning-component-bg-hover);
+  --primary-component-bg-pressed: var(--warning-component-bg-pressed);
+  --primary-on-component: var(--warning-on-component);
+  --primary-content-default: var(--warning-content-default);
+  --primary-container-bg: var(--warning-container-bg);
+  --primary-container-hover: var(--warning-container-hover);
+  --primary-container-pressed: var(--warning-container-pressed);
+  --primary-component-outline-default: var(--warning-component-outline-default);
+}
+
+/* ── data-role="neutral" ────────────────────────────────────── */
+.slider[data-role="neutral"] {
+  --primary-component-bg-default: var(--surface-base-cm-bg);
+  --primary-component-bg-hover: var(--surface-base-cm-bg-hover);
+  --primary-component-bg-pressed: var(--surface-base-cm-bg-pressed);
+  --primary-on-component: var(--surface-base-ct-default);
+  --primary-content-default: var(--surface-base-ct-default);
+  --primary-container-bg: var(--surface-base-hover);
+  --primary-container-hover: var(--surface-base-pressed);
+  --primary-container-pressed: var(--surface-base-pressed);
+  --primary-component-outline-default: var(--surface-base-cm-outline);
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -319,6 +421,7 @@
 
 .slider:hover .slider__track {
   background-color: var(--slider-track-bg-hover);
+  box-shadow: var(--slider-track-shadow-hover);
 }
 
 .slider:hover .slider__fill {
@@ -384,6 +487,7 @@
 .slider[aria-disabled="true"] .slider__track {
   background-color: var(--slider-track-bg-disabled);
   border-color: var(--slider-track-border-color-disabled);
+  box-shadow: var(--slider-track-shadow-disabled);
 }
 
 .slider[data-disabled] .slider__fill,
@@ -394,6 +498,8 @@
 .slider[data-disabled] .slider__thumb,
 .slider[aria-disabled="true"] .slider__thumb {
   background-color: var(--slider-thumb-bg-disabled);
+  border-color: var(--slider-thumb-border-color-disabled);
+  box-shadow: var(--slider-thumb-shadow-disabled);
 }
 
 .slider[data-disabled] .slider__tick::before,
@@ -405,7 +511,7 @@
 .slider[data-loading] {
   cursor: wait;
   pointer-events: none;
-  animation: slider-pulse 1.5s ease-in-out infinite;
+  animation: slider-pulse var(--slider-loader-speed) ease-in-out infinite;
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -447,7 +553,7 @@
   width: auto;
   min-width: auto;
   min-height: var(--slider-track-min-w);
-  height: 200px;
+  height: var(--slider-vertical-height);
 }
 
 .slider[data-orientation="vertical"] .slider__fill {

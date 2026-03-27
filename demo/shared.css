@@ -125,7 +125,8 @@ body{
 .surface-panel-label{font-size:var(--font-size-10,10px);font-weight:600;color:var(--demo-fg-faint);text-transform:uppercase;letter-spacing:0.04em}
 
 /* ── Slot, Motion, Shadow ──────────────────────────────── */
-.slot-grid,.motion-strip,.shadow-strip{display:flex;flex-wrap:wrap;gap:20px;padding:32px;align-items:center}
+.slot-grid,.motion-strip{display:flex;flex-wrap:wrap;gap:20px;padding:32px;align-items:center}
+.shadow-strip{display:flex;flex-wrap:wrap;gap:20px;padding:32px 32px 72px;align-items:center}
 .slot-card,.motion-card{display:flex;flex-direction:column;align-items:center;gap:8px}
 .slot-label,.motion-label{font-size:var(--font-size-10,10px);color:var(--demo-fg-faint);font-weight:600;text-align:center}
 .sub-label{font-size:11px;font-weight:600;color:var(--demo-fg-faint);text-transform:uppercase;letter-spacing:0.04em;padding:16px 32px 8px}

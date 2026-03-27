@@ -63,6 +63,7 @@
   /* Clip & overflow */
   --btn-clip-path: none;
   --btn-overflow: hidden;
+  --btn-white-space: nowrap;
 
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (62 vars)

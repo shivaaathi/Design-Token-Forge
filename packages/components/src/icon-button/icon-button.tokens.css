@@ -48,6 +48,10 @@
   /* Shadow */
   --icon-btn-shadow: var(--shadow-none);
   --icon-btn-shadow-hover: var(--shadow-none);
+  --icon-btn-shadow-active: var(--shadow-none);
+
+  /* Overflow */
+  --icon-btn-overflow: hidden;
 
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (20 vars)
@@ -236,6 +240,9 @@
   --icon-btn-transition-easing: var(--easing-in-out);
   --icon-btn-animation-enter: none;
   --icon-btn-animation-exit: none;
+
+  /* Loader */
+  --icon-btn-loader-speed: 1.5s;
 
   /* ────────────────────────────────────────────────────────────
      ♿ ACCESSIBILITY  (5 vars)

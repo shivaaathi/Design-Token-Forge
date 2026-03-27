@@ -26,7 +26,7 @@
   border-width: var(--icon-btn-border-width);
   border-style: var(--icon-btn-border-style);
   box-shadow: var(--_ib-shadow);
-  overflow: hidden;
+  overflow: var(--icon-btn-overflow);
 
   /* Surface */
   background-color: var(--_ib-bg);
@@ -145,6 +145,7 @@
 .icon-btn[data-variant="primary"]:active {
   --_ib-bg: var(--icon-btn-primary-bg-active);
   --_ib-border-color: var(--icon-btn-primary-border-color-active);
+  --_ib-shadow: var(--icon-btn-shadow-active);
 }
 
 /* ── SECONDARY ──────────────────────────────────────────────── */
@@ -163,6 +164,7 @@
 .icon-btn[data-variant="secondary"]:active {
   --_ib-bg: var(--icon-btn-secondary-bg-active);
   --_ib-border-color: var(--icon-btn-secondary-border-color-active);
+  --_ib-shadow: var(--icon-btn-shadow-active);
 }
 
 /* ── GHOST ──────────────────────────────────────────────────── */
@@ -181,6 +183,7 @@
 .icon-btn[data-variant="ghost"]:active {
   --_ib-bg: var(--icon-btn-ghost-bg-active);
   --_ib-border-color: var(--icon-btn-ghost-border-color-active);
+  --_ib-shadow: var(--icon-btn-shadow-active);
 }
 
 /* ── DANGER ─────────────────────────────────────────────────── */
@@ -199,6 +202,7 @@
 .icon-btn[data-variant="danger"]:active {
   --_ib-bg: var(--icon-btn-danger-bg-active);
   --_ib-border-color: var(--icon-btn-danger-border-color-active);
+  --_ib-shadow: var(--icon-btn-shadow-active);
 }
 
 /* ── NEUTRAL (filled, surface-context) ──────────────────────── */
@@ -217,6 +221,7 @@
 .icon-btn[data-variant="neutral"]:active {
   --_ib-bg: var(--icon-btn-neutral-bg-active);
   --_ib-border-color: var(--icon-btn-neutral-border-color-active);
+  --_ib-shadow: var(--icon-btn-shadow-active);
 }
 
 /* ── OUTLINE (outlined, surface-context border) ─────────────── */
@@ -235,6 +240,7 @@
 .icon-btn[data-variant="outline"]:active {
   --_ib-bg: var(--icon-btn-outline-bg-active);
   --_ib-border-color: var(--icon-btn-outline-border-color-active);
+  --_ib-shadow: var(--icon-btn-shadow-active);
 }
 
 /* ── TERTIARY (soft, tinted fill) ──────────────────────────── */
@@ -253,6 +259,7 @@
 .icon-btn[data-variant="tertiary"]:active {
   --_ib-bg: var(--icon-btn-tertiary-bg-active);
   --_ib-border-color: var(--icon-btn-tertiary-border-color-active);
+  --_ib-shadow: var(--icon-btn-shadow-active);
 }
 
 /* ── SUCCESS (filled, green) ───────────────────────────────── */
@@ -271,6 +278,7 @@
 .icon-btn[data-variant="success"]:active {
   --_ib-bg: var(--icon-btn-success-bg-active);
   --_ib-border-color: var(--icon-btn-success-border-color-active);
+  --_ib-shadow: var(--icon-btn-shadow-active);
 }
 
 /* ── WARNING (filled, amber) ───────────────────────────────── */
@@ -289,6 +297,7 @@
 .icon-btn[data-variant="warning"]:active {
   --_ib-bg: var(--icon-btn-warning-bg-active);
   --_ib-border-color: var(--icon-btn-warning-border-color-active);
+  --_ib-shadow: var(--icon-btn-shadow-active);
 }
 
 /* ── BRAND (filled, brand palette) ───────────────────────────── */
@@ -307,6 +316,7 @@
 .icon-btn[data-variant="brand"]:active {
   --_ib-bg: var(--icon-btn-brand-bg-active);
   --_ib-border-color: var(--icon-btn-brand-border-color-active);
+  --_ib-shadow: var(--icon-btn-shadow-active);
 }
 
 
@@ -336,6 +346,7 @@
 .icon-btn[data-variant="filled"]:active {
   --_ib-bg: var(--icon-btn-primary-bg-active);
   --_ib-border-color: var(--icon-btn-primary-border-color-active);
+  --_ib-shadow: var(--icon-btn-shadow-active);
 }
 
 /* ── OUTLINED (alias for secondary) ─────────────────────────── */
@@ -354,6 +365,7 @@
 .icon-btn[data-variant="outlined"]:active {
   --_ib-bg: var(--icon-btn-secondary-bg-active);
   --_ib-border-color: var(--icon-btn-secondary-border-color-active);
+  --_ib-shadow: var(--icon-btn-shadow-active);
 }
 
 /* ── SOFT (alias for tertiary) ──────────────────────────────── */
@@ -372,6 +384,7 @@
 .icon-btn[data-variant="soft"]:active {
   --_ib-bg: var(--icon-btn-tertiary-bg-active);
   --_ib-border-color: var(--icon-btn-tertiary-border-color-active);
+  --_ib-shadow: var(--icon-btn-shadow-active);
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -644,7 +657,7 @@
 .icon-btn[data-loading] {
   cursor: wait;
   pointer-events: none;
-  animation: icon-btn-pulse 1.5s ease-in-out infinite;
+  animation: icon-btn-pulse var(--icon-btn-loader-speed) ease-in-out infinite;
 }
 
 @keyframes icon-btn-pulse {

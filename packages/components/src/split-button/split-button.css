@@ -23,6 +23,8 @@
   border-color: var(--_sb-border-color);
   box-shadow: var(--_sb-shadow);
   overflow: hidden;
+  max-width: var(--split-btn-max-width);
+  inline-size: var(--split-btn-inline-size);
 
   /* Surface — default bg applied to container */
   background-color: var(--_sb-bg);
@@ -58,7 +60,7 @@
   line-height: var(--split-btn-line-height);
   letter-spacing: var(--split-btn-letter-spacing);
   text-transform: var(--split-btn-text-transform);
-  white-space: nowrap;
+  white-space: var(--split-btn-white-space);
 
   /* Motion */
   transition-property: var(--split-btn-transition-property);
@@ -755,7 +757,7 @@
 .split-btn[data-loading] .split-btn__action {
   cursor: wait;
   pointer-events: none;
-  animation: split-btn-pulse 1.5s ease-in-out infinite;
+  animation: split-btn-pulse var(--split-btn-loader-speed) ease-in-out infinite;
 }
 
 @keyframes split-btn-pulse {

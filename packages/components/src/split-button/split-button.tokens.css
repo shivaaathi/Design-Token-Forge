@@ -48,6 +48,7 @@
   /* Shadow */
   --split-btn-shadow: var(--shadow-none);
   --split-btn-shadow-hover: var(--shadow-none);
+  --split-btn-shadow-active: var(--shadow-none);
 
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (50 vars)
@@ -112,6 +113,11 @@
   --split-btn-trigger-padding-x-huge: var(--spacing-6);
   --split-btn-trigger-padding-x-mega: var(--spacing-8);
   --split-btn-trigger-padding-x-ultra: var(--spacing-10);
+
+  /* Width model */
+  --split-btn-max-width: none;
+  --split-btn-inline-size: auto;
+  --split-btn-white-space: nowrap;
 
   /* ────────────────────────────────────────────────────────────
      🎨 SURFACE  (48 vars = 4 variants × 12 properties)
@@ -322,6 +328,9 @@
   --split-btn-transition-easing: var(--easing-in-out);
   --split-btn-animation-enter: none;
   --split-btn-animation-exit: none;
+
+  /* Loader */
+  --split-btn-loader-speed: 1.5s;
 
   /* ────────────────────────────────────────────────────────────
      ♿ ACCESSIBILITY  (5 vars)

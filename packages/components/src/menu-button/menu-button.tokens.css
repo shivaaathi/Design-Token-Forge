@@ -48,6 +48,7 @@
   /* Shadow */
   --menu-btn-shadow: var(--shadow-none);
   --menu-btn-shadow-hover: var(--shadow-none);
+  --menu-btn-shadow-active: var(--shadow-none);
 
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (40 vars)
@@ -100,6 +101,35 @@
   --menu-btn-chevron-pe-huge: var(--spacing-6);
   --menu-btn-chevron-pe-mega: var(--spacing-8);
   --menu-btn-chevron-pe-ultra: var(--spacing-10);
+
+  /* Gap (between icon, label, chevron) */
+  --menu-btn-gap-micro: var(--spacing-2);
+  --menu-btn-gap-tiny: var(--spacing-2);
+  --menu-btn-gap-small: var(--spacing-3);
+  --menu-btn-gap-base: var(--spacing-4);
+  --menu-btn-gap-medium: var(--spacing-5);
+  --menu-btn-gap-large: var(--spacing-6);
+  --menu-btn-gap-big: var(--spacing-6);
+  --menu-btn-gap-huge: var(--spacing-8);
+  --menu-btn-gap-mega: var(--spacing-10);
+  --menu-btn-gap-ultra: var(--spacing-12);
+
+  /* Min-width per density mode */
+  --menu-btn-min-width-micro: var(--spacing-48);
+  --menu-btn-min-width-tiny: var(--spacing-56);
+  --menu-btn-min-width-small: var(--spacing-64);
+  --menu-btn-min-width-base: var(--spacing-72);
+  --menu-btn-min-width-medium: var(--spacing-80);
+  --menu-btn-min-width-large: var(--spacing-80);
+  --menu-btn-min-width-big: var(--spacing-96);
+  --menu-btn-min-width-huge: var(--spacing-112);
+  --menu-btn-min-width-mega: var(--spacing-120);
+  --menu-btn-min-width-ultra: var(--spacing-144);
+
+  /* Width model */
+  --menu-btn-max-width: none;
+  --menu-btn-inline-size: fit-content;
+  --menu-btn-white-space: nowrap;
 
   /* ────────────────────────────────────────────────────────────
      🎨 SURFACE  (48 vars = 4 variants × 12 properties)
@@ -295,6 +325,9 @@
   --menu-btn-transition-easing: var(--easing-in-out);
   --menu-btn-animation-enter: none;
   --menu-btn-animation-exit: none;
+
+  /* Loader */
+  --menu-btn-loader-speed: 1.5s;
 
   /* ────────────────────────────────────────────────────────────
      ♿ ACCESSIBILITY  (5 vars)
