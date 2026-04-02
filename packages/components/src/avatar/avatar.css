@@ -168,7 +168,7 @@
   align-items: center;
 }
 .avatar-group .avatar + .avatar {
-  margin-left: var(--_av-group-offset);
+  margin-inline-start: var(--_av-group-offset);
 }
 .avatar-group .avatar {
   border: var(--avatar-ring-width) solid var(--avatar-ring-color);
@@ -187,11 +187,60 @@
    ──────────────────────────────────────────────────────────────── */
 .avatar:focus-visible {
   outline: var(--avatar-focus-outline-width) solid var(--avatar-focus-outline-color);
-  outline-offset: 2px;
+  outline-offset: var(--avatar-focus-outline-offset);
 }
 
-/* ────────────────────────────────────────────────────────────────
-   12. FORCED COLORS
+/* ────────────────────────────────────────────────────────────────   11b. ELEVATED (shadow)
+   ────────────────────────────────────────────────────────────────── */
+.avatar[data-elevated] {
+  box-shadow: var(--avatar-shadow-elevated);
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   11c. LOADING (skeleton shimmer)
+   ────────────────────────────────────────────────────────────────── */
+.avatar[data-loading] {
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    var(--avatar-loading-bg) 0%,
+    var(--avatar-loading-shimmer) 50%,
+    var(--avatar-loading-bg) 100%
+  );
+  background-size: 200% 100%;
+  animation: var(--avatar-animation-skeleton);
+}
+.avatar[data-loading] > * {
+  visibility: hidden;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   11d. STATUS BADGE PULSE (:has)
+   ────────────────────────────────────────────────────────────────── */
+.avatar__badge[data-status="online"] {
+  animation: var(--avatar-animation-pulse);
+}
+
+/* Count badge styling via :has() */
+.avatar.avatar--count {
+  --_av-bg: var(--surface-base-cm-bg);
+  --_av-fg: var(--surface-base-ct-subtle);
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   11e. KEYFRAMES
+   ────────────────────────────────────────────────────────────────── */
+@keyframes avatar-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.7; }
+}
+
+@keyframes avatar-skeleton {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ──────────────────────────────────────────────────────────────────   12. FORCED COLORS
    ──────────────────────────────────────────────────────────────── */
 @media (forced-colors: active) {
   .avatar {
@@ -206,7 +255,9 @@
    13. REDUCED MOTION
    ──────────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .avatar {
+  .avatar,
+  .avatar__badge {
     transition-duration: 0.01ms !important;
+    animation: none !important;
   }
 }

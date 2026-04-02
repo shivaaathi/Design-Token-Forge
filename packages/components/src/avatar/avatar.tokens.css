@@ -31,6 +31,10 @@
   --avatar-border-style: solid;
   --avatar-border-color: var(--surface-base-cm-outline);
 
+  /* Shadow */
+  --avatar-shadow: var(--shadow-none);
+  --avatar-shadow-elevated: var(--shadow-sm);
+
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (12 vars)
      ──────────────────────────────────────────────────────────── */
@@ -130,11 +134,15 @@
   --avatar-badge-away: var(--warning-component-bg-default);
 
   /* ────────────────────────────────────────────────────────────
-     ⚡ MOTION  (3 vars)
+     ⚡ MOTION  (7 vars)
      ──────────────────────────────────────────────────────────── */
   --avatar-transition-property: background-color, box-shadow, opacity;
   --avatar-transition-duration: var(--duration-normal);
   --avatar-transition-easing: var(--easing-in-out);
+  --avatar-animation-pulse: avatar-pulse 2s ease-in-out infinite;
+  --avatar-animation-skeleton: avatar-skeleton 1.5s linear infinite;
+  --avatar-loading-bg: var(--surface-base-cm-bg);
+  --avatar-loading-shimmer: var(--surface-base-cm-bg-hover);
 
   /* ────────────────────────────────────────────────────────────
      🚫 STATE  (1 var)
@@ -142,8 +150,9 @@
   --avatar-disabled-opacity: 0.5;
 
   /* ────────────────────────────────────────────────────────────
-     ♿ ACCESSIBILITY  (2 vars)
+     ♿ ACCESSIBILITY  (3 vars)
      ──────────────────────────────────────────────────────────── */
   --avatar-focus-outline-width: 2px;
   --avatar-focus-outline-color: var(--primary-component-outline-default);
+  --avatar-focus-outline-offset: 2px;
 }

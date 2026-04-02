@@ -34,6 +34,7 @@
 
   /* Header nav buttons */
   --datepicker-nav-radius: var(--radius-full);
+  --datepicker-radius-rounded: var(--radius-full);
 
   /* Footer */
   --datepicker-footer-border-width: 1px;

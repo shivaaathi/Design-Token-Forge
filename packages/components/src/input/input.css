@@ -221,22 +221,22 @@
 }
 
 /* ── Focus (outline) ──────────────────────────────────────── */
-.input-group:not([data-disabled]):not([data-variant]):has(.input-field:focus-within),
-.input-group[data-variant="outline"]:not([data-disabled]):has(.input-field:focus-within) {
+.input-group:not([data-disabled]):not([data-variant]):has(.input-field:focus-visible),
+.input-group[data-variant="outline"]:not([data-disabled]):has(.input-field:focus-visible) {
   --_input-bg: var(--input-outline-bg-focus);
   --_input-border-color: var(--input-outline-border-color-focus);
   --_input-shadow: var(--input-shadow-focus);
 }
 
 /* ── Focus (filled) ───────────────────────────────────────── */
-.input-group[data-variant="filled"]:not([data-disabled]):has(.input-field:focus-within) {
+.input-group[data-variant="filled"]:not([data-disabled]):has(.input-field:focus-visible) {
   --_input-bg: var(--input-filled-bg-focus);
   --_input-border-color: var(--input-filled-border-color-focus);
   --_input-shadow: var(--input-shadow-focus);
 }
 
 /* ── Focus (underline) ────────────────────────────────────── */
-.input-group[data-variant="underline"]:not([data-disabled]):has(.input-field:focus-within) {
+.input-group[data-variant="underline"]:not([data-disabled]):has(.input-field:focus-visible) {
   --_input-bg: var(--input-underline-bg-focus);
   --_input-border-color: var(--input-underline-border-color-focus);
   --_input-shadow: var(--input-shadow-focus);
@@ -262,7 +262,7 @@
 }
 
 /* Error + Focus should keep error border color */
-.input-group[data-error]:has(.input-field:focus-within) {
+.input-group[data-error]:has(.input-field:focus-visible) {
   --_input-shadow: var(--input-shadow-focus);
 }
 
@@ -331,7 +331,7 @@
   border-radius: 0;
   padding-inline-start: 0;
 }
-.input-group[data-variant="underline"]:not([data-disabled]):has(.input-field:focus-within) .input-field {
+.input-group[data-variant="underline"]:not([data-disabled]):has(.input-field:focus-visible) .input-field {
   border-bottom-width: 2px;
 }
 
@@ -365,9 +365,9 @@
 }
 
 /* ────────────────────────────────────────────────────────────────
-   7.  FOCUS RING — on :focus-within
+   7.  FOCUS RING — on :focus-visible
    ──────────────────────────────────────────────────────────────── */
-.input-group:not([data-disabled]):has(.input-field:focus-within) .input-field {
+.input-group:not([data-disabled]):has(.input-field:focus-visible) .input-field {
   outline: var(--input-focus-outline-width) var(--input-outline-style) var(--input-focus-outline-color);
   outline-offset: var(--input-focus-outline-offset);
 }
@@ -414,7 +414,7 @@
   margin-bottom: var(--input-label-gap);
 }
 
-.input-group:has(.input-field:focus-within) .input__label {
+.input-group:has(.input-field:focus-visible) .input__label {
   color: var(--input-label-color-focus);
 }
 .input-group[data-error] .input__label {
@@ -489,11 +489,16 @@
   min-height: var(--input-min-tap-target);
 }
 
+/* Rounded (pill) override */
+.input-group[data-rounded] .input-field {
+  --_input-radius: var(--input-radius-rounded);
+}
+
 @media (forced-colors: active) {
   .input-field {
     border-color: ButtonText;
   }
-  .input-group:has(.input-field:focus-within) .input-field {
+  .input-group:has(.input-field:focus-visible) .input-field {
     outline-color: Highlight;
     border-color: Highlight;
   }

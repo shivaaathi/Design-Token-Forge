@@ -16,6 +16,7 @@
   align-items: flex-start;
   gap: var(--radio-gap);
   position: relative;
+  min-height: var(--radio-min-tap-target);
 
   cursor: pointer;
   user-select: none;

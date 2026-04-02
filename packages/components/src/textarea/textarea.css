@@ -176,22 +176,22 @@
 }
 
 /* ── Focus (outline) ──────────────────────────────────────── */
-.textarea-group:not([data-disabled]):not([data-variant]):has(.textarea-field:focus-within),
-.textarea-group[data-variant="outline"]:not([data-disabled]):has(.textarea-field:focus-within) {
+.textarea-group:not([data-disabled]):not([data-variant]):has(.textarea-field:focus-visible),
+.textarea-group[data-variant="outline"]:not([data-disabled]):has(.textarea-field:focus-visible) {
   --_ta-bg: var(--textarea-outline-bg-focus);
   --_ta-border-color: var(--textarea-outline-border-color-focus);
   --_ta-shadow: var(--textarea-shadow-focus);
 }
 
 /* ── Focus (filled) ───────────────────────────────────────── */
-.textarea-group[data-variant="filled"]:not([data-disabled]):has(.textarea-field:focus-within) {
+.textarea-group[data-variant="filled"]:not([data-disabled]):has(.textarea-field:focus-visible) {
   --_ta-bg: var(--textarea-filled-bg-focus);
   --_ta-border-color: var(--textarea-filled-border-color-focus);
   --_ta-shadow: var(--textarea-shadow-focus);
 }
 
 /* ── Focus (underline) ────────────────────────────────────── */
-.textarea-group[data-variant="underline"]:not([data-disabled]):has(.textarea-field:focus-within) {
+.textarea-group[data-variant="underline"]:not([data-disabled]):has(.textarea-field:focus-visible) {
   --_ta-bg: var(--textarea-underline-bg-focus);
   --_ta-border-color: var(--textarea-underline-border-color-focus);
   --_ta-shadow: var(--textarea-shadow-focus);
@@ -217,7 +217,7 @@
 }
 
 /* Error + Focus should keep error border color */
-.textarea-group[data-error]:has(.textarea-field:focus-within) {
+.textarea-group[data-error]:has(.textarea-field:focus-visible) {
   --_ta-shadow: var(--textarea-shadow-focus);
 }
 
@@ -279,7 +279,7 @@
   border-width: 0 0 var(--textarea-border-width) 0;
   border-radius: 0;
 }
-.textarea-group[data-variant="underline"]:not([data-disabled]):has(.textarea-field:focus-within) .textarea-field {
+.textarea-group[data-variant="underline"]:not([data-disabled]):has(.textarea-field:focus-visible) .textarea-field {
   border-bottom-width: 2px;
 }
 
@@ -321,9 +321,9 @@
 }
 
 /* ────────────────────────────────────────────────────────────────
-   7.  FOCUS RING — on :focus-within
+   7.  FOCUS RING — on :focus-visible
    ──────────────────────────────────────────────────────────────── */
-.textarea-group:not([data-disabled]):has(.textarea-field:focus-within) .textarea-field {
+.textarea-group:not([data-disabled]):has(.textarea-field:focus-visible) .textarea-field {
   outline: var(--textarea-focus-outline-width) var(--textarea-outline-style) var(--textarea-focus-outline-color);
   outline-offset: var(--textarea-focus-outline-offset);
 }
@@ -369,7 +369,7 @@
   margin-bottom: var(--textarea-label-gap);
 }
 
-.textarea-group:has(.textarea-field:focus-within) .textarea__label {
+.textarea-group:has(.textarea-field:focus-visible) .textarea__label {
   color: var(--textarea-label-color-focus);
 }
 .textarea-group[data-error] .textarea__label {
@@ -397,6 +397,11 @@
   color: var(--textarea-label-color-disabled);
 }
 
+/* Rounded (pill) override */
+.textarea-group[data-rounded] .textarea-field {
+  --_ta-radius: var(--textarea-radius-rounded);
+}
+
 /* ────────────────────────────────────────────────────────────────
    11. ACCESSIBILITY — Forced colors
    ──────────────────────────────────────────────────────────────── */
@@ -404,7 +409,7 @@
   .textarea-field {
     border-color: ButtonText;
   }
-  .textarea-group:has(.textarea-field:focus-within) .textarea-field {
+  .textarea-group:has(.textarea-field:focus-visible) .textarea-field {
     outline-color: Highlight;
     border-color: Highlight;
   }

@@ -49,6 +49,7 @@
   --split-btn-shadow: var(--shadow-none);
   --split-btn-shadow-hover: var(--shadow-none);
   --split-btn-shadow-active: var(--shadow-none);
+  --split-btn-shadow-elevated: var(--shadow-sm);
 
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (50 vars)

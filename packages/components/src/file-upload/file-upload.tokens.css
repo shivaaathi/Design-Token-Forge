@@ -11,7 +11,7 @@
      ──────────────────────────────────────────────────────────── */
 
   /* Border radius per density mode */
-  --file-upload-radius-micro: var(--radius-sm);
+  --file-upload-radius-micro: var(--radius-xs);
   --file-upload-radius-tiny: var(--radius-sm);
   --file-upload-radius-small: var(--radius-md);
   --file-upload-radius-base: var(--radius-DEFAULT);
@@ -25,6 +25,9 @@
   /* Border */
   --file-upload-border-width: 2px;
   --file-upload-border-style: dashed;
+
+  /* Rounded (pill) boolean — applied via data-rounded */
+  --file-upload-radius-rounded: var(--radius-full);
 
   /* Shadow */
   --file-upload-shadow: var(--shadow-none);
@@ -145,6 +148,8 @@
   --file-upload-helper-color-error: var(--danger-content-default);
   --file-upload-accent-color: var(--primary-content-default);
   --file-upload-accent-color-hover: var(--primary-content-strong);
+  --file-upload-loader-color: var(--primary-content-default);
+  --file-upload-loader-speed: 1.5s;
 
   /* ────────────────────────────────────────────────────────────
      ✏️ TYPOGRAPHY  (14 vars)
@@ -220,8 +225,10 @@
   --file-upload-transition-property: border-color, background-color, box-shadow, color, opacity;
   --file-upload-transition-duration: var(--duration-normal);
   --file-upload-transition-easing: var(--easing-in-out);
-  --file-upload-animation-enter: none;
+  --file-upload-animation-enter: file-upload-enter 0.3s var(--easing-in-out);
   --file-upload-animation-exit: none;
+  --file-upload-animation-loading: file-upload-shimmer 1.5s linear infinite;
+  --file-upload-animation-pulse: file-upload-pulse 1.2s ease-in-out infinite;
 
   /* ────────────────────────────────────────────────────────────
      ♿ ACCESSIBILITY  (4 vars)

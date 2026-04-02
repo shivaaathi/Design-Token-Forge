@@ -49,6 +49,7 @@
   --menu-btn-shadow: var(--shadow-none);
   --menu-btn-shadow-hover: var(--shadow-none);
   --menu-btn-shadow-active: var(--shadow-none);
+  --menu-btn-shadow-elevated: var(--shadow-sm);
 
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (40 vars)

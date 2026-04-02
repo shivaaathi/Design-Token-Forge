@@ -221,7 +221,7 @@
   background: var(--_al-accent);
 }
 .alert:has(.alert__accent) {
-  padding-left: calc(var(--_al-px) + var(--alert-accent-width) + 4px);
+  padding-inline-start: calc(var(--_al-px) + var(--alert-accent-width) + 4px);
 }
 
 /* ────────────────────────────────────────────────────────────────
@@ -295,7 +295,7 @@
 }
 .alert__close:focus-visible {
   outline: var(--alert-focus-outline-width) solid var(--alert-focus-outline-color);
-  outline-offset: 2px;
+  outline-offset: var(--alert-focus-outline-offset);
 }
 .alert__close svg {
   width: calc(var(--_al-close-size) - 4px);
@@ -314,8 +314,20 @@
    11. DISMISS ANIMATION
    ──────────────────────────────────────────────────────────────── */
 .alert[data-dismissing] {
-  opacity: 0;
-  transform: translateY(-8px);
+  animation: var(--alert-animation-dismiss);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   11b. KEYFRAMES
+   ──────────────────────────────────────────────────────────────── */
+@keyframes alert-enter {
+  0% { opacity: 0; transform: translateY(-8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes alert-dismiss {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-8px); }
 }
 
 /* ────────────────────────────────────────────────────────────────
@@ -336,5 +348,6 @@
 @media (prefers-reduced-motion: reduce) {
   .alert, .alert__close {
     transition-duration: 0.01ms !important;
+    animation: none !important;
   }
 }

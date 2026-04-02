@@ -227,7 +227,7 @@
   background: var(--_ts-accent);
 }
 .toast:has(.toast__accent) {
-  padding-left: calc(var(--_ts-px) + var(--toast-accent-width) + 4px);
+  padding-inline-start: calc(var(--_ts-px) + var(--toast-accent-width) + 4px);
 }
 
 /* ────────────────────────────────────────────────────────────────
@@ -322,7 +322,7 @@
 }
 .toast__close:focus-visible {
   outline: var(--toast-focus-outline-width) solid var(--toast-focus-outline-color);
-  outline-offset: 2px;
+  outline-offset: var(--toast-focus-outline-offset);
 }
 .toast__close svg {
   width: calc(var(--_ts-close-size) - 4px);

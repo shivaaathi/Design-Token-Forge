@@ -169,4 +169,5 @@
      ──────────────────────────────────────────────────────────── */
   --toast-focus-outline-width: 2px;
   --toast-focus-outline-color: var(--primary-component-outline-default);
+  --toast-focus-outline-offset: 2px;
 }

@@ -29,6 +29,10 @@
   --progress-radius-rounded: var(--radius-full);
   --progress-radius-square: 0px;
 
+  /* Shadow */
+  --progress-shadow: var(--shadow-none);
+  --progress-shadow-elevated: var(--shadow-xs);
+
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (32 vars)
      ──────────────────────────────────────────────────────────── */

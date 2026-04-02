@@ -52,6 +52,7 @@
   --btn-shadow: var(--shadow-none);
   --btn-shadow-hover: var(--shadow-none);
   --btn-shadow-active: var(--shadow-none);
+  --btn-shadow-elevated: var(--shadow-sm);
 
   /* Outline */
   --btn-outline-style: solid;

@@ -30,6 +30,10 @@
   --badge-border-width: 1px;
   --badge-border-style: solid;
 
+  /* Shadow */
+  --badge-shadow: var(--shadow-none);
+  --badge-shadow-elevated: var(--shadow-sm);
+
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (30 vars)
      ──────────────────────────────────────────────────────────── */
@@ -169,11 +173,15 @@
   --badge-dismiss-radius: var(--radius-full);
 
   /* ────────────────────────────────────────────────────────────
-     ⚡ MOTION  (3 vars)
+     ⚡ MOTION  (6 vars)
      ──────────────────────────────────────────────────────────── */
   --badge-transition-property: background-color, color, border-color, box-shadow;
   --badge-transition-duration: var(--duration-fast);
   --badge-transition-easing: var(--easing-in-out);
+  --badge-animation-pulse: badge-pulse 0.3s ease-out;
+  --badge-animation-skeleton: badge-skeleton 1.5s linear infinite;
+  --badge-loading-bg: var(--surface-base-cm-bg);
+  --badge-loading-shimmer: var(--surface-base-cm-bg-hover);
 
   /* ────────────────────────────────────────────────────────────
      🚫 STATE  (1 var)
@@ -181,8 +189,9 @@
   --badge-disabled-opacity: 0.5;
 
   /* ────────────────────────────────────────────────────────────
-     ♿ ACCESSIBILITY  (2 vars)
+     ♿ ACCESSIBILITY  (3 vars)
      ──────────────────────────────────────────────────────────── */
   --badge-focus-outline-width: 2px;
   --badge-focus-outline-color: var(--primary-component-outline-default);
+  --badge-focus-outline-offset: 2px;
 }

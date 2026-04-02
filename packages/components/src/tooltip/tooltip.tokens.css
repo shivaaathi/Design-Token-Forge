@@ -108,6 +108,7 @@
   --tooltip-enter-scale: 0.96;
   --tooltip-show-delay: 200ms;
   --tooltip-hide-delay: 0ms;
+  --tooltip-animation-enter: tooltip-enter 0.15s var(--easing-in-out);
 
   /* ────────────────────────────────────────────────────────────
      ♿ ACCESSIBILITY  (2 vars)

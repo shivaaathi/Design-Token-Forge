@@ -76,15 +76,17 @@
   <a href="#sec-surface"><span class="sn-num">07</span>Surface Context</a>
   <a href="#sec-badges"><span class="sn-num">08</span>Status Badges</a>
   <a href="#sec-group"><span class="sn-num">09</span>Avatar Group</a>
-  <a href="#sec-a11y"><span class="sn-num">10</span>Accessibility</a>
-  <a href="#sec-framework"><span class="sn-num">11</span>Use in Framework</a>
+  <a href="#sec-slots"><span class="sn-num">10</span>Slots &amp; Anatomy</a>
+  <a href="#sec-motion"><span class="sn-num">11</span>Motion</a>
+  <a href="#sec-a11y"><span class="sn-num">12</span>Accessibility</a>
+  <a href="#sec-framework"><span class="sn-num">13</span>Use in Framework</a>
 </aside>
 <div class="page-content">
 
 <header class="demo-header">
   <h1>Avatar Explorer <span>— Design Token Forge</span></h1>
   <div class="demo-meta">
-    <span class="demo-badge">~87 CSS Variables</span>
+    <span class="demo-badge">~97 CSS Variables</span>
     <span class="demo-badge">3 Shapes</span>
     <span class="demo-badge">3 Content Modes</span>
     <span class="demo-badge">10 Sizes</span>
@@ -203,7 +205,21 @@
     <div class="section-body" id="groupDemo"></div>
   </section>
 
-  <!-- ─── 10. ACCESSIBILITY ───────────────────────────── -->
+  <!-- ─── 10. SLOTS & ANATOMY ───────────────────────── -->
+  <section class="section" id="sec-slots">
+    <div class="section-header"><h2>Slots &amp; Anatomy</h2><span class="section-tag">4 Layers</span></div>
+    <p class="section-desc">Image, initials, icon fallback, and status badge. Each layer fills the container. Badge positions bottom-right.</p>
+    <div class="section-body"><div class="avatar-stage" id="slotsDemo"></div></div>
+  </section>
+
+  <!-- ─── 11. MOTION ────────────────────────────────── -->
+  <section class="section" id="sec-motion">
+    <div class="section-header"><h2>Motion</h2><span class="section-tag">2 Animations</span></div>
+    <p class="section-desc">Skeleton loading shimmer and online badge pulse. Reduced motion disables all animations.</p>
+    <div class="section-body"><div class="avatar-stage" id="motionDemo"></div></div>
+  </section>
+
+  <!-- ─── 12. ACCESSIBILITY ────────────────────────── -->
   <section class="section" id="sec-a11y">
     <div class="section-header"><h2>Accessibility</h2><span class="section-tag">A11y</span></div>
     <p class="section-desc">Image alt, ARIA labeling, focus ring, and high contrast support.</p>
@@ -229,7 +245,7 @@
     </div>
   </section>
 
-  <!-- ─── 11. FRAMEWORK ───────────────────────────────── -->
+  <!-- ─── 13. FRAMEWORK ─────────────────────────────── -->
   <section class="section" id="sec-framework">
     <div class="section-header"><h2>Use in Your Framework</h2><span class="section-tag">Integration</span></div>
     <p class="section-desc">Wrap this component in your framework. Props become data attributes — our CSS does the rest.</p>
@@ -371,6 +387,8 @@
     if (opts.role) av.dataset.role = opts.role;
     else if (!opts.noGlobalRole && G.role) av.dataset.role = G.role;
     if (opts.disabled) av.dataset.disabled = '';
+    if (opts.loading) av.dataset.loading = '';
+    if (opts.elevated) av.dataset.elevated = '';
     av.setAttribute('role','img');
     av.setAttribute('aria-label', opts.name || 'User');
 
@@ -505,7 +523,7 @@
       {label:'Initials', fn:function(o){o.initials='JD';o.role='primary';o.noGlobalRole=true;return o}},
       {label:'Icon',     fn:function(o){return o}}
     ];
-    var states = [{label:'Default',st:{}},{label:'Disabled',st:{disabled:true}}];
+    var states = [{label:'Default',st:{}},{label:'Disabled',st:{disabled:true}},{label:'Loading',st:{loading:true}},{label:'Elevated',st:{elevated:true}}];
 
     var hdr = document.createElement('div');
     hdr.style.cssText = 'display:grid;grid-template-columns:90px repeat('+states.length+',1fr);gap:12px;margin-bottom:8px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;opacity:.6';
@@ -525,6 +543,8 @@
           var cell = document.createElement('div');
           var opts = mode.fn({name:'User',size:'large',shape:sh,forceDefault:true});
           if (s.st.disabled) opts.disabled = true;
+          if (s.st.loading) opts.loading = true;
+          if (s.st.elevated) opts.elevated = true;
           cell.appendChild(makeAvatar(opts));
           row.appendChild(cell);
         });
@@ -593,6 +613,36 @@
   }
 
   /* ── Master render ─────────────────────────────────── */
+  function renderSlots(){
+    var el = clr('slotsDemo');
+    // Image layer
+    el.appendChild(card(makeAvatar({name:'Image Layer',image:true,initials:'AC',hue:220,size:'huge'}),'Image'));
+    // Initials layer
+    el.appendChild(card(makeAvatar({name:'Initials',initials:'BR',role:'primary',noGlobalRole:true,size:'huge'}),'Initials'));
+    // Icon fallback layer
+    el.appendChild(card(makeAvatar({name:'Icon',size:'huge'}),'Icon Fallback'));
+    // Badge positioned
+    el.appendChild(card(makeAvatar({name:'With Badge',image:true,initials:'JD',hue:160,status:'online',size:'huge'}),'+ Badge'));
+    // Elevated with shadow
+    el.appendChild(card(makeAvatar({name:'Elevated',image:true,initials:'EP',hue:30,elevated:true,size:'huge'}),'Elevated'));
+    // Count overflow
+    var countAv = makeAvatar({name:'3 more',initials:'+3',noGlobalRole:true,size:'huge'});
+    countAv.classList.add('avatar--count');
+    el.appendChild(card(countAv,'Count'));
+  }
+
+  function renderMotion(){
+    var el = clr('motionDemo');
+    // Loading skeleton
+    ['small','base','large','huge'].forEach(function(sz){
+      el.appendChild(card(makeAvatar({name:'Loading',loading:true,size:sz}),cap(sz)+' Loading'));
+    });
+    // Badge pulse (online)
+    ['small','base','large','huge'].forEach(function(sz){
+      el.appendChild(card(makeAvatar({name:'User',initials:'JD',role:'brand',noGlobalRole:true,status:'online',size:sz}),cap(sz)+' Pulse'));
+    });
+  }
+
   function applyGlobals(){
     renderHero();
     renderContent();
@@ -603,6 +653,8 @@
     renderSurface();
     renderBadges();
     renderGroup();
+    renderSlots();
+    renderMotion();
   }
 
   function wirePillBar(id, cb){

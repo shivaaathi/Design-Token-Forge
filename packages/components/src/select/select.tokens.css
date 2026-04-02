@@ -21,6 +21,7 @@
   --select-radius-huge: var(--radius-xl);
   --select-radius-mega: var(--radius-2xl);
   --select-radius-ultra: var(--radius-3xl);
+  --select-radius-rounded: var(--radius-full);
 
   /* Border */
   --select-border-width: 1px;

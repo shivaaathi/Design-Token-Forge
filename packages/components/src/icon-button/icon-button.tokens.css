@@ -49,6 +49,7 @@
   --icon-btn-shadow: var(--shadow-none);
   --icon-btn-shadow-hover: var(--shadow-none);
   --icon-btn-shadow-active: var(--shadow-none);
+  --icon-btn-shadow-elevated: var(--shadow-sm);
 
   /* Overflow */
   --icon-btn-overflow: hidden;

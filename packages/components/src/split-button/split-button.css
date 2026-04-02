@@ -14,6 +14,7 @@
   align-items: stretch;
   box-sizing: border-box;
   position: relative;
+  min-height: var(--split-btn-min-tap-target);
   height: var(--_sb-height);
 
   /* Shape — outer container */
@@ -805,6 +806,11 @@
 .split-btn__chevron svg {
   width: 100%;
   height: 100%;
+}
+
+/* Elevated shadow override */
+.split-btn[data-elevated] {
+  box-shadow: var(--split-btn-shadow-elevated);
 }
 
 /* ════════════════════════════════════════════════════════════════

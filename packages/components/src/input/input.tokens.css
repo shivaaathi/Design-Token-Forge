@@ -21,6 +21,7 @@
   --input-radius-huge: var(--radius-xl);
   --input-radius-mega: var(--radius-2xl);
   --input-radius-ultra: var(--radius-3xl);
+  --input-radius-rounded: var(--radius-full);
 
   /* Border width — 4 sides */
   --input-border-width-t: 1px;

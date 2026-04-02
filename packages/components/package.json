@@ -1,23 +1,51 @@
 {
   "name": "@design-token-forge/components",
-  "version": "0.0.1",
-  "private": true,
+  "version": "0.1.0",
   "description": "L1 component library — variable-exhaustive, framework-agnostic CSS + thin JS wrappers",
   "type": "module",
-  "main": "src/index.css",
-  "style": "src/index.css",
+  "main": "dist/index.css",
+  "style": "dist/index.css",
   "exports": {
-    ".": "./src/index.css",
-    "./tokens": "./src/index.css",
-    "./button": "./src/button/index.css",
-    "./button/tokens": "./src/button/button.tokens.css",
-    "./button/styles": "./src/button/button.css",
-    "./input": "./src/input/index.css",
-    "./input/tokens": "./src/input/input.tokens.css",
-    "./input/styles": "./src/input/input.css"
+    ".": "./dist/index.css",
+    "./alert": "./dist/alert/index.css",
+    "./avatar": "./dist/avatar/index.css",
+    "./badge": "./dist/badge/index.css",
+    "./button": "./dist/button/index.css",
+    "./checkbox": "./dist/checkbox/index.css",
+    "./datepicker": "./dist/datepicker/index.css",
+    "./file-upload": "./dist/file-upload/index.css",
+    "./icon-button": "./dist/icon-button/index.css",
+    "./input": "./dist/input/index.css",
+    "./menu-button": "./dist/menu-button/index.css",
+    "./progress-bar": "./dist/progress-bar/index.css",
+    "./progress-ring": "./dist/progress-ring/index.css",
+    "./radio": "./dist/radio/index.css",
+    "./select": "./dist/select/index.css",
+    "./slider": "./dist/slider/index.css",
+    "./split-button": "./dist/split-button/index.css",
+    "./textarea": "./dist/textarea/index.css",
+    "./toast": "./dist/toast/index.css",
+    "./toggle": "./dist/toggle/index.css",
+    "./tooltip": "./dist/tooltip/index.css"
   },
+  "peerDependencies": {
+    "@design-token-forge/tokens": ">=0.1.0"
+  },
+  "peerDependenciesMeta": {
+    "@design-token-forge/tokens": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@design-token-forge/tokens": "workspace:*"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "echo 'TODO: configure build'",
+    "build": "node build.mjs",
+    "prebuild": "rm -rf dist",
+    "prepublishOnly": "npm run build",
     "test": "echo 'TODO: configure tests'"
   }
 }

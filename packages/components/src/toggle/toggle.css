@@ -373,9 +373,16 @@
 }
 
 /* Error — [data-error] or [aria-invalid] */
+/* Force visible border even on filled variant (which has border-width: 0) */
 .switch[data-error] .switch__track,
 .switch[aria-invalid="true"] .switch__track {
+  border-width: var(--switch-outline-track-border-width);
   border-color: var(--switch-track-border-color-error-off);
+}
+.switch[data-error],
+.switch[aria-invalid="true"] {
+  /* Recalculate thumb inset to account for forced border */
+  --_sw-inset: calc((var(--_sw-track-h) - var(--_sw-thumb-size) - var(--switch-outline-track-border-width) * 2) / 2);
 }
 .switch[data-error]:hover .switch__track,
 .switch[aria-invalid="true"]:hover .switch__track {

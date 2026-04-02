@@ -16,11 +16,12 @@
   --textarea-radius-small: var(--radius-md);
   --textarea-radius-base: var(--radius-DEFAULT);
   --textarea-radius-medium: var(--radius-DEFAULT);
-  --textarea-radius-large: var(--radius-DEFAULT);
-  --textarea-radius-big: var(--radius-DEFAULT);
-  --textarea-radius-huge: var(--radius-lg);
-  --textarea-radius-mega: var(--radius-lg);
-  --textarea-radius-ultra: var(--radius-lg);
+  --textarea-radius-large: var(--radius-lg);
+  --textarea-radius-big: var(--radius-lg);
+  --textarea-radius-huge: var(--radius-xl);
+  --textarea-radius-mega: var(--radius-2xl);
+  --textarea-radius-ultra: var(--radius-3xl);
+  --textarea-radius-rounded: var(--radius-full);
 
   /* Border */
   --textarea-border-width: 1px;
@@ -198,3 +199,5 @@
   --textarea-min-tap-target: 44px;
   --textarea-required-indicator: '*';
   --textarea-required-color: var(--danger-content-default);
+}
+

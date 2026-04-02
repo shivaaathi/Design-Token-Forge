@@ -277,7 +277,7 @@
    ════════════════════════════════════════════════════════════════ */
 .progress-bar__label {
   min-width: var(--_pg-label-w);
-  text-align: right;
+  text-align: end;
   flex-shrink: 0;
   white-space: nowrap;
 }
@@ -358,7 +358,15 @@
 }
 
 /* ════════════════════════════════════════════════════════════════
-   17. FORCED COLORS
+   17. ELEVATED / SHADOW
+   ════════════════════════════════════════════════════════════════ */
+.progress-bar[data-elevated] {
+  box-shadow: var(--progress-shadow-elevated);
+  border-radius: var(--_pg-radius);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   18. FORCED COLORS
    ════════════════════════════════════════════════════════════════ */
 @media (forced-colors: active) {
   .progress-bar__track {

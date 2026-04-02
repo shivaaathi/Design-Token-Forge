@@ -182,22 +182,22 @@
 }
 
 /* ── Focus (outline) ──────────────────────────────────────── */
-.select-group:not([data-disabled]):not([data-variant]):has(.select-field:focus-within),
-.select-group[data-variant="outline"]:not([data-disabled]):has(.select-field:focus-within) {
+.select-group:not([data-disabled]):not([data-variant]):has(.select-field:focus-visible),
+.select-group[data-variant="outline"]:not([data-disabled]):has(.select-field:focus-visible) {
   --_sel-bg: var(--select-outline-bg-focus);
   --_sel-border-color: var(--select-outline-border-color-focus);
   --_sel-shadow: var(--select-shadow-focus);
 }
 
 /* ── Focus (filled) ───────────────────────────────────────── */
-.select-group[data-variant="filled"]:not([data-disabled]):has(.select-field:focus-within) {
+.select-group[data-variant="filled"]:not([data-disabled]):has(.select-field:focus-visible) {
   --_sel-bg: var(--select-filled-bg-focus);
   --_sel-border-color: var(--select-filled-border-color-focus);
   --_sel-shadow: var(--select-shadow-focus);
 }
 
 /* ── Focus (underline) ────────────────────────────────────── */
-.select-group[data-variant="underline"]:not([data-disabled]):has(.select-field:focus-within) {
+.select-group[data-variant="underline"]:not([data-disabled]):has(.select-field:focus-visible) {
   --_sel-bg: var(--select-underline-bg-focus);
   --_sel-border-color: var(--select-underline-border-color-focus);
   --_sel-shadow: var(--select-shadow-focus);
@@ -223,7 +223,7 @@
 }
 
 /* Error + Focus keeps error border */
-.select-group[data-error]:has(.select-field:focus-within) {
+.select-group[data-error]:has(.select-field:focus-visible) {
   --_sel-shadow: var(--select-shadow-focus);
 }
 
@@ -285,7 +285,7 @@
   border-width: 0 0 var(--select-border-width) 0;
   border-radius: 0;
 }
-.select-group[data-variant="underline"]:not([data-disabled]):has(.select-field:focus-within) .select-field {
+.select-group[data-variant="underline"]:not([data-disabled]):has(.select-field:focus-visible) .select-field {
   border-bottom-width: 2px;
 }
 
@@ -305,7 +305,7 @@
   min-width: 0;
   height: 100%;
   padding: var(--_sel-py) var(--_sel-px);
-  padding-right: calc(var(--_sel-px) + var(--_sel-chevron) + var(--_sel-px));
+  padding-inline-end: calc(var(--_sel-px) + var(--_sel-chevron) + var(--_sel-px));
   outline: none;
   cursor: pointer;
 }
@@ -340,9 +340,9 @@
 }
 
 /* ────────────────────────────────────────────────────────────────
-   8.  FOCUS RING — on :focus-within
+   8.  FOCUS RING — on :focus-visible
    ──────────────────────────────────────────────────────────────── */
-.select-group:not([data-disabled]):has(.select-field:focus-within) .select-field {
+.select-group:not([data-disabled]):has(.select-field:focus-visible) .select-field {
   outline: var(--select-focus-outline-width) var(--select-outline-style) var(--select-focus-outline-color);
   outline-offset: var(--select-focus-outline-offset);
 }
@@ -380,7 +380,7 @@
   margin-bottom: var(--select-label-gap);
 }
 
-.select-group:has(.select-field:focus-within) .select__label {
+.select-group:has(.select-field:focus-visible) .select__label {
   color: var(--select-label-color-focus);
 }
 .select-group[data-error] .select__label {
@@ -408,6 +408,11 @@
   color: var(--select-label-color-disabled);
 }
 
+/* Rounded (pill) override */
+.select-group[data-rounded] .select-field {
+  --_sel-radius: var(--select-radius-rounded);
+}
+
 /* ────────────────────────────────────────────────────────────────
    12.  ACCESSIBILITY — Forced colors
    ──────────────────────────────────────────────────────────────── */
@@ -415,7 +420,7 @@
   .select-field {
     border-color: ButtonText;
   }
-  .select-group:has(.select-field:focus-within) .select-field {
+  .select-group:has(.select-field:focus-visible) .select-field {
     outline-color: Highlight;
     border-color: Highlight;
   }

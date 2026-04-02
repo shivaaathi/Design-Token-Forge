@@ -464,6 +464,7 @@
     if(opts.animated) el.dataset.animated = '';
     if(opts.indeterminate) el.dataset.indeterminate = '';
     if(opts.disabled) el.dataset.disabled = '';
+    if(opts.elevated) el.dataset.elevated = '';
 
     el.setAttribute('role','progressbar');
     if(!opts.indeterminate){
@@ -664,6 +665,17 @@
     });
     c3.appendChild(stack3);
     el.appendChild(c3);
+
+    /* Elevated (shadow) */
+    var c4 = cel('div','shape-card');
+    var t4 = cel('div','shape-card-title'); t4.textContent = 'Elevated (Shadow)';
+    c4.appendChild(t4);
+    var stack4 = cel('div','progress-stack');
+    ['filled','outline','soft'].forEach(function(v){
+      stack4.appendChild(makeBar({value:70, size:'large', variant:v, elevated:true}));
+    });
+    c4.appendChild(stack4);
+    el.appendChild(c4);
   }
 
   /* 7. Slots & Anatomy */

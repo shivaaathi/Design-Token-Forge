@@ -77,8 +77,9 @@
   <a href="#sec-placement"><span class="sn-num">06</span>Placement</a>
   <a href="#sec-slots"><span class="sn-num">07</span>Slots &amp; Anatomy</a>
   <a href="#sec-rich"><span class="sn-num">08</span>Rich Content</a>
-  <a href="#sec-a11y"><span class="sn-num">09</span>Accessibility</a>
-  <a href="#sec-framework"><span class="sn-num">10</span>Use in Framework</a>
+  <a href="#sec-motion"><span class="sn-num">09</span>Motion</a>
+  <a href="#sec-a11y"><span class="sn-num">10</span>Accessibility</a>
+  <a href="#sec-framework"><span class="sn-num">11</span>Use in Framework</a>
 </aside>
 <div class="page-content">
 
@@ -188,7 +189,14 @@
     <div class="section-body"><div class="tooltip-stage" id="richGallery"></div></div>
   </section>
 
-  <!-- ─── 9. ACCESSIBILITY ────────────────────────────── -->
+  <!-- ─── 9. MOTION ───────────────────────────────────── -->
+  <section class="section" id="sec-motion">
+    <div class="section-header"><h2>Motion</h2><span class="section-tag">1 Animation</span></div>
+    <p class="section-desc">Scale + fade entry via <code>@keyframes tooltip-enter</code>. Token: <code>--tooltip-animation-enter</code>. Reduced motion disables animation.</p>
+    <div class="section-body"><div class="tooltip-stage" id="motionDemo" style="flex-wrap:wrap;gap:24px"></div></div>
+  </section>
+
+  <!-- ─── 10. ACCESSIBILITY ───────────────────────────── -->
   <section class="section" id="sec-a11y">
     <div class="section-header"><h2>Accessibility</h2><span class="section-tag">A11y</span></div>
     <p class="section-desc">ARIA pairing, keyboard, forced colors, and reduced motion.</p>
@@ -214,7 +222,7 @@
     </div>
   </section>
 
-  <!-- ─── 10. FRAMEWORK ───────────────────────────────── -->
+  <!-- ─── 11. FRAMEWORK ───────────────────────────────── -->
   <section class="section" id="sec-framework">
     <div class="section-header"><h2>Use in Your Framework</h2><span class="section-tag">Integration</span></div>
     <p class="section-desc">Wrap this component in your framework. Props become data attributes — our CSS does the rest.</p>
@@ -537,6 +545,18 @@
     renderPlacement();
     renderSlots();
     renderRich();
+    renderMotion();
+  }
+
+  function renderMotion() {
+    var el = clr('motionDemo');
+    var desc = document.createElement('div');
+    desc.style.cssText = 'width:100%;font-size:13px;font-weight:600;opacity:.7;margin-bottom:4px';
+    desc.textContent = 'Hover each trigger — tooltip enters with scale+fade:';
+    el.appendChild(desc);
+    ['top','right','bottom','left'].forEach(function(p) {
+      el.appendChild(makeWrap(p, { body:'Animated entry' }, p.charAt(0).toUpperCase() + p.slice(1)));
+    });
   }
 
   function wirePillBar(id, cb) {

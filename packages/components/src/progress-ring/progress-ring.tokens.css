@@ -15,6 +15,10 @@
   --ring-rotation: -90deg;
   --ring-direction: normal;
 
+  /* Shadow */
+  --ring-shadow: var(--shadow-none);
+  --ring-shadow-elevated: var(--shadow-xs);
+
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (31 vars)
      ──────────────────────────────────────────────────────────── */

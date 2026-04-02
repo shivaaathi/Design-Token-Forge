@@ -58,6 +58,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: var(--datepicker-min-tap-target);
+  min-height: var(--datepicker-min-tap-target);
   width: var(--_dp-nav-size);
   height: var(--_dp-nav-size);
   border: none;
@@ -164,8 +166,8 @@
 
   width: var(--_dp-day-size);
   height: var(--_dp-day-size);
-  min-width: 0;
-  min-height: 0;
+  min-width: var(--datepicker-min-tap-target);
+  min-height: var(--datepicker-min-tap-target);
 
   border: var(--datepicker-day-border-width) var(--datepicker-day-border-style) var(--datepicker-day-border-color);
   border-radius: var(--datepicker-day-radius);
@@ -439,6 +441,11 @@
   --_dp-header-font: var(--datepicker-header-font-size-ultra);
   --_dp-weekday-font: var(--datepicker-weekday-font-size-ultra);
   --_dp-day-font: var(--datepicker-day-font-size-ultra);
+}
+
+/* Rounded override — pill container */
+.datepicker[data-rounded] {
+  border-radius: var(--datepicker-radius-rounded);
 }
 
 /* ════════════════════════════════════════════════════════════════

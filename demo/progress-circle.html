@@ -416,6 +416,7 @@
     if(v !== 'filled') el.dataset.variant = v;
     if(opts.indeterminate) el.dataset.indeterminate = '';
     if(opts.disabled) el.dataset.disabled = '';
+    if(opts.elevated) el.dataset.elevated = '';
     if(opts.linecap) el.dataset.linecap = opts.linecap;
 
     el.setAttribute('role','progressbar');
@@ -576,6 +577,17 @@
       card.appendChild(grid);
       el.appendChild(card);
     });
+
+    /* Elevated (shadow) */
+    var ce = cel('div','linecap-card');
+    var te = cel('div','linecap-card-title'); te.textContent = 'Elevated (Shadow)';
+    ce.appendChild(te);
+    var ge = cel('div','ring-grid'); ge.style.justifyContent = 'center';
+    ['filled','outline','soft'].forEach(function(v){
+      ge.appendChild(makeRing({value:65, size:'huge', variant:v, elevated:true, label:true}));
+    });
+    ce.appendChild(ge);
+    el.appendChild(ce);
   }
 
   /* 7. Slots */

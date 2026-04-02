@@ -74,8 +74,9 @@
   <a href="#sec-surface"><span class="sn-num">07</span>Surface Context</a>
   <a href="#sec-dot"><span class="sn-num">08</span>Dot Indicator</a>
   <a href="#sec-slots"><span class="sn-num">09</span>Slots &amp; Dismiss</a>
-  <a href="#sec-a11y"><span class="sn-num">10</span>Accessibility</a>
-  <a href="#sec-framework"><span class="sn-num">11</span>Use in Framework</a>
+  <a href="#sec-motion"><span class="sn-num">10</span>Motion</a>
+  <a href="#sec-a11y"><span class="sn-num">11</span>Accessibility</a>
+  <a href="#sec-framework"><span class="sn-num">12</span>Use in Framework</a>
 </aside>
 <div class="page-content">
 
@@ -209,7 +210,14 @@
     <div class="section-body"><div class="badge-stage" id="slotsGallery" style="flex-wrap:wrap"></div></div>
   </section>
 
-  <!-- ─── 10. ACCESSIBILITY ───────────────────────────── -->
+  <!-- ─── 10. MOTION ────────────────────────────────── -->
+  <section class="section" id="sec-motion">
+    <div class="section-header"><h2>Motion</h2><span class="section-tag">2 Animations</span></div>
+    <p class="section-desc">Pop animation on count update, skeleton shimmer for async loading. Reduced motion disables all.</p>
+    <div class="section-body"><div class="badge-stage" id="motionDemo" style="flex-wrap:wrap"></div></div>
+  </section>
+
+  <!-- ─── 11. ACCESSIBILITY ────────────────────────── -->
   <section class="section" id="sec-a11y">
     <div class="section-header"><h2>Accessibility</h2><span class="section-tag">A11y</span></div>
     <p class="section-desc">Focus ring, dismiss ARIA, forced colors, and reduced motion support.</p>
@@ -372,6 +380,9 @@
     else if (!opts.noGlobalRole) el.dataset.role = G.role;
     if (opts.interactive) el.dataset.interactive = '';
     if (opts.disabled) el.dataset.disabled = '';
+    if (opts.loading) el.dataset.loading = '';
+    if (opts.elevated) el.dataset.elevated = '';
+    if (opts.pulse) el.dataset.pulse = '';
     if (opts.icon) {
       var ic = document.createElement('span');
       ic.className = 'badge__icon';
@@ -590,6 +601,36 @@
   }
 
   /* ── Master render ─────────────────────────────────── */
+  function renderMotion(){
+    var el = clr('motionDemo');
+    // Pulse animation (count update pop)
+    var pulseTitle = document.createElement('div');
+    pulseTitle.style.cssText = 'width:100%;font-size:13px;font-weight:600;opacity:.7;margin-bottom:4px';
+    pulseTitle.textContent = 'Pulse (data-pulse) — pop on count change:';
+    el.appendChild(pulseTitle);
+    ROLES.forEach(function(r){
+      el.appendChild(makeBadge({label:'3',role:r.key||undefined,noGlobalRole:true,pulse:true}));
+    });
+
+    // Loading skeleton
+    var loadTitle = document.createElement('div');
+    loadTitle.style.cssText = 'width:100%;font-size:13px;font-weight:600;opacity:.7;margin-top:16px;margin-bottom:4px';
+    loadTitle.textContent = 'Loading (data-loading) — skeleton shimmer:';
+    el.appendChild(loadTitle);
+    ['filled','outline','soft'].forEach(function(v){
+      el.appendChild(makeBadge({label:'Loading',variant:v,loading:true}));
+    });
+
+    // Elevated with shadow
+    var elevTitle = document.createElement('div');
+    elevTitle.style.cssText = 'width:100%;font-size:13px;font-weight:600;opacity:.7;margin-top:16px;margin-bottom:4px';
+    elevTitle.textContent = 'Elevated (data-elevated) — shadow:';
+    el.appendChild(elevTitle);
+    ['filled','outline','soft'].forEach(function(v){
+      el.appendChild(makeBadge({label:'Elevated',variant:v,elevated:true}));
+    });
+  }
+
   function applyGlobals(){
     renderHero();
     renderVariantGallery();
@@ -600,6 +641,7 @@
     renderSurface();
     renderDot();
     renderSlots();
+    renderMotion();
   }
 
   function wirePillBar(id, cb){

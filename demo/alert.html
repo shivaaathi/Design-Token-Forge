@@ -184,7 +184,7 @@
   <!-- 8. DISMISS -->
   <section class="section" id="sec-dismiss">
     <div class="section-header"><h2>Dismiss</h2><span class="section-tag">Motion</span></div>
-    <p class="section-desc">Dismiss transition: <code>--alert-transition-duration</code> (duration-normal) × <code>--alert-transition-easing</code> (easing-in-out) on <code>opacity, transform</code>. Click × to dismiss, then reset.</p>
+    <p class="section-desc">Entry via <code>@keyframes alert-enter</code> (slide-down + fade), dismiss via <code>@keyframes alert-dismiss</code> (slide-up + fade-out). Tokens: <code>--alert-animation-enter</code>, <code>--alert-animation-dismiss</code>. Click × to dismiss, then reset.</p>
     <div class="section-body">
       <div class="alert-stack" id="dismissDemo" style="padding:32px"></div>
       <div style="padding:0 32px 16px">

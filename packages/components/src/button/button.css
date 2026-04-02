@@ -24,6 +24,7 @@
   position: relative;
 
   /* Dimension (via active vars) */
+  min-height: var(--btn-min-tap-target);
   height: var(--_btn-height);
   padding: var(--_btn-py) var(--_btn-px);
   min-width: var(--_btn-min-width);
@@ -797,6 +798,11 @@
 .btn__label {
   display: inline-flex;
   align-items: center;
+}
+
+/* Elevated shadow override */
+.btn[data-elevated] {
+  box-shadow: var(--btn-shadow-elevated);
 }
 
 /* ════════════════════════════════════════════════════════════════

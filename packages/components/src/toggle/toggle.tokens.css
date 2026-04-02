@@ -82,8 +82,8 @@
   --switch-track-border-color-on-hover: var(--primary-component-bg-hover);
 
   /* ── Thumb ── */
-  --switch-thumb-bg: var(--color-white);
-  --switch-thumb-bg-hover: var(--color-white);
+  --switch-thumb-bg: var(--color-fixed-white);
+  --switch-thumb-bg-hover: var(--color-fixed-white);
   --switch-thumb-border-color: transparent;
   --switch-thumb-border-color-checked: transparent;
 
@@ -91,7 +91,7 @@
   --switch-track-bg-disabled: var(--surface-base-cm-outline);
   --switch-track-bg-on-disabled: var(--primary-component-bg-default);
   --switch-track-border-color-disabled: var(--surface-base-cm-outline);
-  --switch-thumb-bg-disabled: var(--color-white);
+  --switch-thumb-bg-disabled: var(--color-fixed-white);
   --switch-thumb-shadow-disabled: none;
   --switch-opacity-disabled: 0.5;
 
@@ -137,8 +137,8 @@
   --switch-outline-track-border-color-on-hover: var(--primary-component-bg-hover);
 
   /* ── Outline thumb ── */
-  --switch-outline-thumb-bg: var(--color-white);
-  --switch-outline-thumb-bg-hover: var(--color-white);
+  --switch-outline-thumb-bg: var(--color-fixed-white);
+  --switch-outline-thumb-bg-hover: var(--color-fixed-white);
   --switch-outline-thumb-border-color: var(--surface-base-cm-outline);
   --switch-outline-thumb-border-color-checked: transparent;
 
@@ -146,7 +146,7 @@
   --switch-outline-track-border-width: 2px;
   --switch-outline-track-bg-disabled: transparent;
   --switch-outline-track-bg-on-disabled: var(--primary-component-bg-default);
-  --switch-outline-thumb-bg-disabled: var(--color-white);
+  --switch-outline-thumb-bg-disabled: var(--color-fixed-white);
   --switch-outline-opacity-disabled: 0.5;
 
   /* ────────────────────────────────────────────────────────────

@@ -140,10 +140,10 @@
   --slider-fill-bg-disabled: var(--primary-component-bg-default);
 
   /* ── Thumb — white fill + colored border = distinct from fill bar ── */
-  --slider-thumb-bg: var(--color-white);
-  --slider-thumb-bg-hover: var(--color-white);
-  --slider-thumb-bg-active: var(--color-white);
-  --slider-thumb-bg-disabled: var(--color-white);
+  --slider-thumb-bg: var(--color-fixed-white);
+  --slider-thumb-bg-hover: var(--color-fixed-white);
+  --slider-thumb-bg-active: var(--color-fixed-white);
+  --slider-thumb-bg-disabled: var(--color-fixed-white);
   --slider-thumb-border-color: var(--primary-component-bg-default);
   --slider-thumb-border-color-hover: var(--primary-component-bg-hover);
   --slider-thumb-border-color-active: var(--primary-component-bg-pressed);

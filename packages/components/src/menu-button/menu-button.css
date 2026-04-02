@@ -24,6 +24,7 @@
   position: relative;
 
   /* Dimension (via active vars) */
+  min-height: var(--menu-btn-min-tap-target);
   height: var(--_mb-height);
   padding-block: var(--_mb-py);
   padding-inline-start: var(--_mb-px);
@@ -738,6 +739,11 @@
 .menu-btn__chevron svg {
   width: 100%;
   height: 100%;
+}
+
+/* Elevated shadow override */
+.menu-btn[data-elevated] {
+  box-shadow: var(--menu-btn-shadow-elevated);
 }
 
 /* ════════════════════════════════════════════════════════════════

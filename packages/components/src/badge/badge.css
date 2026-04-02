@@ -203,7 +203,61 @@
    ──────────────────────────────────────────────────────────────── */
 .badge:focus-visible {
   outline: var(--badge-focus-outline-width) solid var(--badge-focus-outline-color);
-  outline-offset: 2px;
+  outline-offset: var(--badge-focus-outline-offset);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   12b. ELEVATED (shadow)
+   ──────────────────────────────────────────────────────────────── */
+.badge[data-elevated] {
+  box-shadow: var(--badge-shadow-elevated);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   12c. LOADING (skeleton shimmer)
+   ──────────────────────────────────────────────────────────────── */
+.badge[data-loading] {
+  pointer-events: none;
+  color: transparent;
+  background: linear-gradient(
+    90deg,
+    var(--badge-loading-bg) 0%,
+    var(--badge-loading-shimmer) 50%,
+    var(--badge-loading-bg) 100%
+  );
+  background-size: 200% 100%;
+  animation: var(--badge-animation-skeleton);
+}
+.badge[data-loading] > * {
+  visibility: hidden;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   12d. PULSE (count update pop animation)
+   ──────────────────────────────────────────────────────────────── */
+.badge[data-pulse] {
+  animation: var(--badge-animation-pulse);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   12e. ICON-ONLY via :has() — equal padding when no label
+   ──────────────────────────────────────────────────────────────── */
+.badge:has(> .badge__icon:first-child:last-child) {
+  padding-inline: var(--_bd-gap);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   12f. KEYFRAMES
+   ──────────────────────────────────────────────────────────────── */
+@keyframes badge-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes badge-skeleton {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
 
 /* ────────────────────────────────────────────────────────────────
@@ -224,5 +278,6 @@
 @media (prefers-reduced-motion: reduce) {
   .badge, .badge__dismiss {
     transition-duration: 0.01ms !important;
+    animation: none !important;
   }
 }

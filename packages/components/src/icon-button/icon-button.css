@@ -17,6 +17,8 @@
   position: relative;
 
   /* Dimension (square: width = height) */
+  min-width: var(--icon-btn-min-tap-target);
+  min-height: var(--icon-btn-min-tap-target);
   width: var(--_ib-size);
   height: var(--_ib-size);
   padding: 0;
@@ -684,6 +686,11 @@
 .icon-btn__icon svg {
   width: 100%;
   height: 100%;
+}
+
+/* Elevated shadow override */
+.icon-btn[data-elevated] {
+  box-shadow: var(--icon-btn-shadow-elevated);
 }
 
 /* ════════════════════════════════════════════════════════════════

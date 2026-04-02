@@ -304,7 +304,15 @@
 }
 
 /* ════════════════════════════════════════════════════════════════
-   15. FORCED COLORS
+   15. ELEVATED / SHADOW
+   ════════════════════════════════════════════════════════════════ */
+.progress-ring[data-elevated] {
+  box-shadow: var(--ring-shadow-elevated);
+  border-radius: 50%;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   16. FORCED COLORS
    ════════════════════════════════════════════════════════════════ */
 @media (forced-colors: active) {
   .progress-ring__track { stroke: CanvasText; }

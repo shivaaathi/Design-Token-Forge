@@ -171,6 +171,8 @@
   --alert-transition-property: opacity, transform;
   --alert-transition-duration: var(--duration-normal);
   --alert-transition-easing:   var(--easing-in-out);
+  --alert-animation-enter: alert-enter 0.25s var(--easing-in-out);
+  --alert-animation-dismiss: alert-dismiss 0.2s var(--easing-in-out) forwards;
 
   /* ────────────────────────────────────────────────────────────
      8 · STATE  (1 var)
@@ -182,6 +184,7 @@
      ──────────────────────────────────────────────────────────── */
   --alert-focus-outline-width: 2px;
   --alert-focus-outline-color: var(--primary-component-outline-default);
+  --alert-focus-outline-offset: 2px;
 
   /* ────────────────────────────────────────────────────────────
      10 · SHADOW  (1 var)

@@ -116,13 +116,13 @@
 .tooltip:not([data-placement]) .tooltip__arrow {
   bottom: calc(var(--tooltip-arrow-size) / -2);
   left: 50%;
-  margin-left: calc(var(--tooltip-arrow-size) / -2);
+  margin-inline-start: calc(var(--tooltip-arrow-size) / -2);
 }
 /* Placement: bottom (arrow at top) */
 .tooltip[data-placement="bottom"] .tooltip__arrow {
   top: calc(var(--tooltip-arrow-size) / -2);
   left: 50%;
-  margin-left: calc(var(--tooltip-arrow-size) / -2);
+  margin-inline-start: calc(var(--tooltip-arrow-size) / -2);
 }
 /* Placement: left (arrow at right) */
 .tooltip[data-placement="left"] .tooltip__arrow {
@@ -211,10 +211,19 @@
 }
 
 /* ────────────────────────────────────────────────────────────────
+   9b. KEYFRAMES
+   ──────────────────────────────────────────────────────────────── */
+@keyframes tooltip-enter {
+  0% { opacity: 0; transform: scale(var(--tooltip-enter-scale)); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ────────────────────────────────────────────────────────────────
    10. REDUCED MOTION
    ──────────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .tooltip {
     transition-duration: 0.01ms !important;
+    animation: none !important;
   }
 }
