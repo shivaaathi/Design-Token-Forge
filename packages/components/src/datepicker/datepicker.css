@@ -58,8 +58,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: var(--datepicker-min-tap-target);
-  min-height: var(--datepicker-min-tap-target);
+  min-width: max(var(--_dp-nav-size), var(--datepicker-min-tap-target));
+  min-height: max(var(--_dp-nav-size), var(--datepicker-min-tap-target));
   width: var(--_dp-nav-size);
   height: var(--_dp-nav-size);
   border: none;
@@ -102,7 +102,7 @@
 
 .datepicker__weekdays {
   display: grid;
-  grid-template-columns: repeat(7, var(--_dp-day-size));
+  grid-template-columns: repeat(7, max(var(--_dp-day-size), var(--datepicker-min-tap-target)));
   gap: var(--datepicker-grid-gap-x);
   justify-content: center;
 }
@@ -128,17 +128,17 @@
 
 .datepicker__grid {
   display: grid;
-  grid-template-columns: repeat(7, var(--_dp-day-size));
+  grid-template-columns: repeat(7, max(var(--_dp-day-size), var(--datepicker-min-tap-target)));
   gap: var(--datepicker-grid-gap-y) var(--datepicker-grid-gap-x);
   justify-content: center;
 }
 
 /* Week numbers column: when enabled, prepend an 8th column */
 .datepicker[data-weeknums] .datepicker__weekdays {
-  grid-template-columns: var(--datepicker-weeknum-width) repeat(7, var(--_dp-day-size));
+  grid-template-columns: var(--datepicker-weeknum-width) repeat(7, max(var(--_dp-day-size), var(--datepicker-min-tap-target)));
 }
 .datepicker[data-weeknums] .datepicker__grid {
-  grid-template-columns: var(--datepicker-weeknum-width) repeat(7, var(--_dp-day-size));
+  grid-template-columns: var(--datepicker-weeknum-width) repeat(7, max(var(--_dp-day-size), var(--datepicker-min-tap-target)));
 }
 
 /* Week number cell */
@@ -164,10 +164,8 @@
   justify-content: center;
   box-sizing: border-box;
 
-  width: var(--_dp-day-size);
-  height: var(--_dp-day-size);
-  min-width: var(--datepicker-min-tap-target);
-  min-height: var(--datepicker-min-tap-target);
+  width: max(var(--_dp-day-size), var(--datepicker-min-tap-target));
+  height: max(var(--_dp-day-size), var(--datepicker-min-tap-target));
 
   border: var(--datepicker-day-border-width) var(--datepicker-day-border-style) var(--datepicker-day-border-color);
   border-radius: var(--datepicker-day-radius);

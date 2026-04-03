@@ -9,6 +9,22 @@
      ✅ = Standard (rendered by shared helpers, same across all pages)
      🔧 = Component-specific (custom render function required)
      ➖ = Not applicable (omit section entirely)
+
+   SIZE TIERS (enforced — do NOT deviate):
+     all10  — micro→ultra (10 stops): atomic controls that compose into
+              everything from compact data-table rows to large kiosk UIs.
+              Components: button, icon-button, split-button, menu-button,
+              input, textarea, select, toggle, checkbox, radio, slider.
+     3-size — small / base / large: overlay & panel components with
+              fixed structural layout.
+              Components: tooltip, alert, toast, datepicker, file-upload.
+     scaled — component-specific count derived from real use-cases.
+              Components: badge (6), avatar (all10), progress-bar (all10),
+              progress-circle (all10).
+
+   WHY: compound/overlay components break at extreme densities
+   (micro=16px day cells, ultra=80px day cells → layout overflow
+    or absurd footprint). 3 sizes is sufficient for popup panels.
    ════════════════════════════════════════════════════════════ */
 
 var COMPONENT_CONFIGS = {
@@ -296,7 +312,7 @@ var COMPONENT_CONFIGS = {
     pillBars: ['roleBar', 'variantBar', 'shapeBar', 'sizeBar'],
     roles: ['primary','success','warning','danger','neutral'],
     variants: ['filled','outlined','soft','ghost'],
-    sizes: ['micro','tiny','small','base','medium','large'],
+    sizes: ['micro','tiny','small','base','medium','large'],  // 6-size (inline component)
     sections: {
       hero:       '✅',
       variants:   '✅ (variant gallery)',
@@ -433,7 +449,7 @@ var COMPONENT_CONFIGS = {
     folder: 'datepicker', prefix: 'dp', className: 'datepicker',
     vars: 190,
     pillBars: ['sizeBar'],
-    sizes: 'all10',
+    sizes: ['small','base','large'],  // 3-size tier (overlay component)
     sections: {
       hero:       '✅',
       styles:     '🔧 (calendar grid styling)',
@@ -454,7 +470,7 @@ var COMPONENT_CONFIGS = {
     vars: 120,
     pillBars: ['variantBar', 'sizeBar', 'modeBar'],
     variants: ['outline','filled'],
-    sizes: 'all10',
+    sizes: ['small','base','large'],  // 3-size tier (overlay component)
     sections: {
       hero:       '✅',
       variants:   '✅',

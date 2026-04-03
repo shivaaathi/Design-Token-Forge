@@ -91,7 +91,7 @@
   <h1>DatePicker Explorer <span>— Design Token Forge</span></h1>
   <div class="demo-meta">
     <span class="demo-badge">~190 CSS Variables</span>
-    <span class="demo-badge">10 Sizes</span>
+    <span class="demo-badge">3 Sizes</span>
     <span class="demo-badge">7 Axes</span>
     <span class="demo-badge">Range Mode</span>
   </div>
@@ -101,16 +101,9 @@
   <div class="control-group">
     <label>Size</label>
     <div class="pill-bar" id="sizeBar" role="radiogroup" aria-label="Size selector">
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="micro" type="button">Micro</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="tiny" type="button">Tiny</button>
       <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="small" type="button">Small</button>
       <button class="pill" role="radio" aria-pressed="true" data-ctrl-size="base" type="button">Base</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="medium" type="button">Medium</button>
       <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="large" type="button">Large</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="big" type="button">Big</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="huge" type="button">Huge</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="mega" type="button">Mega</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="ultra" type="button">Ultra</button>
     </div>
   </div>
 </nav>
@@ -144,7 +137,7 @@
   <!-- 3. DENSITY SCALE -->
   <section class="section" id="sec-density">
     <div class="section-header"><h2>Density Scale</h2><span class="section-tag">Dimension</span></div>
-    <p class="section-desc">Ten size modes: micro → tiny → small → base (default) → medium → large → big → huge → mega → ultra. Day cell size, fonts, and header all scale independently.</p>
+    <p class="section-desc">Three size modes: small → base (default) → large. Day cell size, fonts, and header all scale independently.</p>
     <div class="section-body"><div class="density-strip" id="densityScale" style="flex-direction:column;align-items:center;gap:32px;padding:32px"></div></div>
   </section>
 
@@ -428,8 +421,8 @@
 
   var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
   var WDAYS=['Su','Mo','Tu','We','Th','Fr','Sa'];
-  var SIZES=['micro','tiny','small','base','medium','large','big','huge','mega','ultra'];
-  var DAY_SIZES={micro:'16px',tiny:'20px',small:'28px',base:'36px',medium:'40px',large:'48px',big:'54px',huge:'60px',mega:'72px',ultra:'80px'};
+  var SIZES=['small','base','large'];
+  var DAY_SIZES={small:'28px',base:'36px',large:'48px'};
   var curS='base';
   var TODAY=new Date();
   var CUR_YEAR=TODAY.getFullYear();

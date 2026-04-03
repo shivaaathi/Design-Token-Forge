@@ -106,9 +106,9 @@
   <div class="control-group">
     <label>Size</label>
     <div class="pill-bar" id="sizeBar" role="radiogroup" aria-label="Size selector">
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="sm" type="button">SM</button>
-      <button class="pill" role="radio" aria-pressed="true" data-ctrl-size="md" type="button">MD</button>
-      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="lg" type="button">LG</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="small" type="button">Small</button>
+      <button class="pill" role="radio" aria-pressed="true" data-ctrl-size="base" type="button">Base</button>
+      <button class="pill" role="radio" aria-pressed="false" data-ctrl-size="large" type="button">Large</button>
     </div>
   </div>
   <div class="control-divider"></div>
@@ -244,7 +244,7 @@
       key={t.id}
       className="toast"
       data-role={t.role}           {/* primary | success | warning | danger */}
-      data-size={t.size}           {/* sm | md | lg */}
+      data-size={t.size}           {/* small | base | large */}
       data-variant={t.variant}     {/* soft | filled | outline */}
       data-state={t.state}
       role={t.role === 'danger' ? 'alert' : 'status'}
@@ -295,7 +295,7 @@
   &lt;/div&gt;
 &lt;/div&gt;</div>
         <div class="fw-snippet-code" data-panel="html">&lt;div class="toast-container" data-position="top-right"&gt;
-  &lt;div class="toast" data-role="success" data-size="md"
+  &lt;div class="toast" data-role="success" data-size="base"
        data-variant="soft" role="status"&gt;
     &lt;span class="toast__accent"&gt;&lt;/span&gt;
     &lt;span class="toast__icon"&gt;&lt;svg&gt;…&lt;/svg&gt;&lt;/span&gt;
@@ -315,7 +315,7 @@
 --toast-border-width / -style / -color
 --toast-accent-width / -radius
 
-/* ── Per-Size (sm / md / lg) ── */
+/* ── Per-Size (small / base / large) ── */
 --toast-padding-y-{size}    /* vertical padding */
 --toast-padding-x-{size}    /* horizontal padding */
 --toast-gap-{size}           /* main flex gap */
@@ -365,7 +365,7 @@
 
   /* ── Constants ─────────────────────────────────────── */
   var ROLES    = ['primary','success','warning','danger'];
-  var SIZES    = ['sm','md','lg'];
+  var SIZES    = ['small','base','large'];
   var VARIANTS = ['','soft','filled','outline'];
   var VLABELS  = ['Default','Soft','Filled','Outline'];
   var POSITIONS= ['top-left','top-center','top-right','bottom-left','bottom-center','bottom-right'];
@@ -386,7 +386,7 @@
   };
 
   /* ── Global state ──────────────────────────────────── */
-  var G = { role:'primary', size:'md', variant:'' };
+  var G = { role:'primary', size:'base', variant:'' };
 
   /* ── Helpers ───────────────────────────────────────── */
   function cap(s) { return s.charAt(0).toUpperCase()+s.slice(1) }
@@ -461,12 +461,12 @@
   /* ── Inspector data ────────────────────────────────── */
   var INSPECT = [
     ['--toast-radius',            '--radius-lg'],
-    ['--toast-padding-y-md',      '--spacing-14'],
-    ['--toast-padding-x-md',      '--spacing-16'],
-    ['--toast-gap-md',            '--spacing-12'],
-    ['--toast-font-size-md',      '--font-size-14'],
-    ['--toast-icon-size-md',      '--spacing-20'],
-    ['--toast-close-size-md',     '--spacing-20'],
+    ['--toast-padding-y-base',    '--spacing-14'],
+    ['--toast-padding-x-base',    '--spacing-16'],
+    ['--toast-gap-base',          '--spacing-12'],
+    ['--toast-font-size-base',    '--font-size-14'],
+    ['--toast-icon-size-base',    '--spacing-20'],
+    ['--toast-close-size-base',   '--spacing-20'],
     ['--toast-bg',                '--surface-base-cn-bg'],
     ['--toast-fg',                '--surface-base-ct-default'],
     ['--toast-shadow',            '--shadow-lg'],

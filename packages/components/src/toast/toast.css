@@ -6,7 +6,7 @@
 
    Markup:
    <div class="toast-container" data-position="top-right">
-     <div class="toast" data-role="success" data-size="md"
+     <div class="toast" data-role="success" data-size="base"
           data-variant="soft" role="status">
        <span class="toast__accent"></span>
        <span class="toast__icon"><svg>…</svg></span>
@@ -61,14 +61,14 @@
    ──────────────────────────────────────────────────────────────── */
 .toast {
   /* — size active vars — */
-  --_ts-py:          var(--toast-padding-y-md);
-  --_ts-px:          var(--toast-padding-x-md);
-  --_ts-gap:         var(--toast-gap-md);
-  --_ts-content-gap: var(--toast-content-gap-md);
-  --_ts-font-size:   var(--toast-font-size-md);
-  --_ts-title-fs:    var(--toast-title-font-size-md);
-  --_ts-icon-size:   var(--toast-icon-size-md);
-  --_ts-close-size:  var(--toast-close-size-md);
+  --_ts-py:          var(--toast-padding-y-base);
+  --_ts-px:          var(--toast-padding-x-base);
+  --_ts-gap:         var(--toast-gap-base);
+  --_ts-content-gap: var(--toast-content-gap-base);
+  --_ts-font-size:   var(--toast-font-size-base);
+  --_ts-title-fs:    var(--toast-title-font-size-base);
+  --_ts-icon-size:   var(--toast-icon-size-base);
+  --_ts-close-size:  var(--toast-close-size-base);
 
   /* — role active vars (info default) — */
   --_ts-accent:         var(--toast-info-accent);
@@ -112,25 +112,25 @@
 /* ────────────────────────────────────────────────────────────────
    3.  SIZE SELECTORS
    ──────────────────────────────────────────────────────────────── */
-.toast[data-size="sm"] {
-  --_ts-py:          var(--toast-padding-y-sm);
-  --_ts-px:          var(--toast-padding-x-sm);
-  --_ts-gap:         var(--toast-gap-sm);
-  --_ts-content-gap: var(--toast-content-gap-sm);
-  --_ts-font-size:   var(--toast-font-size-sm);
-  --_ts-title-fs:    var(--toast-title-font-size-sm);
-  --_ts-icon-size:   var(--toast-icon-size-sm);
-  --_ts-close-size:  var(--toast-close-size-sm);
+.toast[data-size="small"] {
+  --_ts-py:          var(--toast-padding-y-small);
+  --_ts-px:          var(--toast-padding-x-small);
+  --_ts-gap:         var(--toast-gap-small);
+  --_ts-content-gap: var(--toast-content-gap-small);
+  --_ts-font-size:   var(--toast-font-size-small);
+  --_ts-title-fs:    var(--toast-title-font-size-small);
+  --_ts-icon-size:   var(--toast-icon-size-small);
+  --_ts-close-size:  var(--toast-close-size-small);
 }
-.toast[data-size="lg"] {
-  --_ts-py:          var(--toast-padding-y-lg);
-  --_ts-px:          var(--toast-padding-x-lg);
-  --_ts-gap:         var(--toast-gap-lg);
-  --_ts-content-gap: var(--toast-content-gap-lg);
-  --_ts-font-size:   var(--toast-font-size-lg);
-  --_ts-title-fs:    var(--toast-title-font-size-lg);
-  --_ts-icon-size:   var(--toast-icon-size-lg);
-  --_ts-close-size:  var(--toast-close-size-lg);
+.toast[data-size="large"] {
+  --_ts-py:          var(--toast-padding-y-large);
+  --_ts-px:          var(--toast-padding-x-large);
+  --_ts-gap:         var(--toast-gap-large);
+  --_ts-content-gap: var(--toast-content-gap-large);
+  --_ts-font-size:   var(--toast-font-size-large);
+  --_ts-title-fs:    var(--toast-title-font-size-large);
+  --_ts-icon-size:   var(--toast-icon-size-large);
+  --_ts-close-size:  var(--toast-close-size-large);
 }
 
 /* ────────────────────────────────────────────────────────────────

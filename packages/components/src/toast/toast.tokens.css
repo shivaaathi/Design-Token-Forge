@@ -18,40 +18,40 @@
   --toast-accent-radius: var(--radius-full);
 
   /* ────────────────────────────────────────────────────────────
-     2 · PER-SIZE: SM  (8 vars)
+     2 · PER-SIZE: SMALL  (8 vars)
      ──────────────────────────────────────────────────────────── */
-  --toast-padding-y-sm:       var(--spacing-8);
-  --toast-padding-x-sm:       var(--spacing-12);
-  --toast-gap-sm:             var(--spacing-8);
-  --toast-content-gap-sm:     var(--spacing-2);
-  --toast-font-size-sm:       var(--font-size-13);
-  --toast-title-font-size-sm: var(--font-size-13);
-  --toast-icon-size-sm:       var(--spacing-16);
-  --toast-close-size-sm:      var(--spacing-16);
+  --toast-padding-y-small:       var(--spacing-8);
+  --toast-padding-x-small:       var(--spacing-12);
+  --toast-gap-small:             var(--spacing-8);
+  --toast-content-gap-small:     var(--spacing-2);
+  --toast-font-size-small:       var(--font-size-13);
+  --toast-title-font-size-small: var(--font-size-13);
+  --toast-icon-size-small:       var(--spacing-16);
+  --toast-close-size-small:      var(--spacing-16);
 
   /* ────────────────────────────────────────────────────────────
-     2 · PER-SIZE: MD  (8 vars)  ← default
+     2 · PER-SIZE: BASE  (8 vars)  ← default
      ──────────────────────────────────────────────────────────── */
-  --toast-padding-y-md:       var(--spacing-14);
-  --toast-padding-x-md:       var(--spacing-16);
-  --toast-gap-md:             var(--spacing-12);
-  --toast-content-gap-md:     var(--spacing-4);
-  --toast-font-size-md:       var(--font-size-14);
-  --toast-title-font-size-md: var(--font-size-14);
-  --toast-icon-size-md:       var(--spacing-20);
-  --toast-close-size-md:      var(--spacing-20);
+  --toast-padding-y-base:       var(--spacing-14);
+  --toast-padding-x-base:       var(--spacing-16);
+  --toast-gap-base:             var(--spacing-12);
+  --toast-content-gap-base:     var(--spacing-4);
+  --toast-font-size-base:       var(--font-size-14);
+  --toast-title-font-size-base: var(--font-size-14);
+  --toast-icon-size-base:       var(--spacing-20);
+  --toast-close-size-base:      var(--spacing-20);
 
   /* ────────────────────────────────────────────────────────────
-     2 · PER-SIZE: LG  (8 vars)
+     2 · PER-SIZE: LARGE  (8 vars)
      ──────────────────────────────────────────────────────────── */
-  --toast-padding-y-lg:       var(--spacing-18);
-  --toast-padding-x-lg:       var(--spacing-20);
-  --toast-gap-lg:             var(--spacing-14);
-  --toast-content-gap-lg:     var(--spacing-6);
-  --toast-font-size-lg:       var(--font-size-16);
-  --toast-title-font-size-lg: var(--font-size-16);
-  --toast-icon-size-lg:       var(--spacing-24);
-  --toast-close-size-lg:      var(--spacing-24);
+  --toast-padding-y-large:       var(--spacing-18);
+  --toast-padding-x-large:       var(--spacing-20);
+  --toast-gap-large:             var(--spacing-14);
+  --toast-content-gap-large:     var(--spacing-6);
+  --toast-font-size-large:       var(--font-size-16);
+  --toast-title-font-size-large: var(--font-size-16);
+  --toast-icon-size-large:       var(--spacing-24);
+  --toast-close-size-large:      var(--spacing-24);
 
   /* ────────────────────────────────────────────────────────────
      3 · DIMENSION  (6 vars)
