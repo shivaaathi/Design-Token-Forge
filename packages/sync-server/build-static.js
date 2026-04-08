@@ -181,13 +181,18 @@ ${projLine}<p>This is a static token API served via GitHub Pages.</p>
     }
   }
 
-  // ── Backward compatibility: copy tokens to dist root ────────
+  // ── Backward compatibility: mirror full output to dist root ──
   if (PROJECT_ID) {
-    const rootTokens = path.join(BASE_OUT_DIR, 'tokens.json');
-    const rootStatus = path.join(BASE_OUT_DIR, 'status.json');
-    fs.copyFileSync(path.join(OUT_DIR, 'tokens.json'), rootTokens);
-    fs.copyFileSync(path.join(OUT_DIR, 'status.json'), rootStatus);
-    console.log(`  ✓ Backward compat → dist/tokens.json & dist/status.json`);
+    // Copy tokens + status to root
+    fs.copyFileSync(path.join(OUT_DIR, 'tokens.json'), path.join(BASE_OUT_DIR, 'tokens.json'));
+    fs.copyFileSync(path.join(OUT_DIR, 'status.json'), path.join(BASE_OUT_DIR, 'status.json'));
+    fs.copyFileSync(path.join(OUT_DIR, 'index.html'), path.join(BASE_OUT_DIR, 'index.html'));
+    // Mirror demo + packages so existing GitHub Pages URLs keep working
+    const rootDemo = path.join(BASE_OUT_DIR, 'demo');
+    const rootPkg  = path.join(BASE_OUT_DIR, 'packages');
+    if (fs.existsSync(path.join(OUT_DIR, 'demo')))     copyDirSync(path.join(OUT_DIR, 'demo'), rootDemo);
+    if (fs.existsSync(path.join(OUT_DIR, 'packages'))) copyDirSync(path.join(OUT_DIR, 'packages'), rootPkg);
+    console.log(`  ✓ Backward compat → mirrored to dist/ root`);
   }
 
   console.log('');

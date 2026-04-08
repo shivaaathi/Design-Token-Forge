@@ -141,6 +141,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
     Every visual property is a CSS custom property. Zero hardcoded values.
   </p>
   <div class="hub-meta">
+    <span class="hub-badge" style="background:#F0EAFF;color:#6D28D9" id="projectBadge"></span>
     <span class="hub-badge">Tokn 4-Tier Tokens</span>
     <span class="hub-badge">~740 Global Vars</span>
     <span class="hub-badge">38 L1 Components</span>
@@ -478,5 +479,18 @@ body{min-height:100vh;display:flex;flex-direction:column}
 </footer>
 
 <script src="shared.js"></script>
+<script>
+(function() {
+  var badge = document.getElementById('projectBadge');
+  var url = '../status.json?_cb=' + Date.now();
+  fetch(url).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.project && d.project.name) {
+      badge.textContent = d.project.name;
+    } else {
+      badge.style.display = 'none';
+    }
+  }).catch(function() { badge.style.display = 'none'; });
+})();
+</script>
 </body>
 </html>
