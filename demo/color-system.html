@@ -95,14 +95,52 @@ html[data-theme="dark"] .cert-mini[data-status="FAILED"]{background:#7F1D1D;colo
 .map-pane--dark .map-step{color:#777}
 .map-hex{color:var(--demo-fg-faint);min-width:60px;text-align:right}
 .map-pane--dark .map-hex{color:#888}
-.map-edit-toggle{padding:4px 12px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:transparent;color:var(--demo-fg-subtle);font-size:var(--font-size-10,10px);font-weight:600;cursor:pointer;font-family:inherit;transition:all 120ms}
+.map-edit-toggle{padding:5px 14px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:transparent;color:var(--demo-fg-subtle);font-size:var(--font-size-11,11px);font-weight:600;cursor:pointer;font-family:inherit;transition:all 120ms}
 .map-edit-toggle:hover{border-color:var(--primary-component-bg-default);color:var(--primary-content-default)}
 .map-edit-toggle[aria-pressed="true"]{background:var(--primary-component-bg-default);color:#fff;border-color:var(--primary-component-bg-default)}
-.map-step-select{padding:2px 4px;border:1px solid var(--demo-border);border-radius:3px;font-size:9px;font-family:var(--font-family-mono,monospace);background:var(--demo-surface);color:var(--demo-fg);min-width:56px;cursor:pointer}
-.map-pane--dark .map-step-select{background:#222;color:#ddd;border-color:#444}
-.map-step-select:focus{outline:2px solid var(--primary-component-bg-default);outline-offset:-1px}
-.map-step-changed{background:#FEF3C7;border-color:#D97706}
-.map-pane--dark .map-step-changed{background:#78350F;border-color:#D97706}
+
+/* ── Step Picker Button (replaces bare <select>) ──────────── */
+.step-pick{display:inline-flex;align-items:center;gap:6px;padding:3px 8px 3px 4px;border:1px solid var(--demo-border);border-radius:4px;background:var(--demo-surface);cursor:pointer;font-size:9px;font-family:var(--font-family-mono,monospace);color:var(--demo-fg);min-width:100px;position:relative;transition:border-color 120ms}
+.step-pick:hover{border-color:var(--primary-component-bg-default)}
+.step-pick:focus-within{outline:2px solid var(--primary-component-bg-default);outline-offset:-1px}
+.step-pick__swatch{width:18px;height:14px;border-radius:3px;border:1px solid rgba(128,128,128,.2);flex-shrink:0}
+.step-pick__label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step-pick__hex{color:var(--demo-fg-faint);font-size:8px}
+.step-pick__arrow{font-size:7px;color:var(--demo-fg-faint);margin-left:auto;flex-shrink:0}
+.step-pick[data-changed]{border-color:#D97706;background:#FEF3C7}
+.map-pane--dark .step-pick{background:#222;color:#ddd;border-color:#444}
+.map-pane--dark .step-pick[data-changed]{background:#78350F;border-color:#D97706}
+
+/* ── Step Picker Dropdown (popover) ──────────────────────── */
+.step-dropdown{position:absolute;top:calc(100% + 4px);left:0;z-index:100;background:var(--demo-surface);border:1px solid var(--demo-border);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.15);max-height:340px;overflow-y:auto;width:200px;display:none;padding:4px 0}
+.step-dropdown.open{display:block}
+.map-pane--dark .step-dropdown{background:#1e1e1e;border-color:#444}
+.step-opt{display:flex;align-items:center;gap:8px;padding:5px 10px;cursor:pointer;transition:background 80ms;font-size:10px;font-family:var(--font-family-mono,monospace)}
+.step-opt:hover{background:var(--demo-surface-alt)}
+.map-pane--dark .step-opt:hover{background:#333}
+.step-opt[data-active]{background:var(--primary-container-bg);font-weight:700}
+.map-pane--dark .step-opt[data-active]{background:#1a3a5c}
+.step-opt__sw{width:22px;height:16px;border-radius:3px;border:1px solid rgba(128,128,128,.2);flex-shrink:0}
+.step-opt__name{flex-shrink:0;min-width:40px;font-weight:600;color:var(--demo-fg-strong)}
+.map-pane--dark .step-opt__name{color:#ddd}
+.step-opt__hex{flex:1;color:var(--demo-fg-subtle);font-size:9px}
+.map-pane--dark .step-opt__hex{color:#999}
+.step-opt__tone{color:var(--demo-fg-faint);font-size:9px;min-width:28px;text-align:right}
+.step-opt--fixed{font-style:italic;color:var(--demo-fg-faint)}
+
+/* ── T2 Surface Tab Bar ──────────────────────────────────── */
+.surf-tabs{display:flex;gap:2px;flex-wrap:wrap;padding:8px 0 0 0}
+.surf-tab{padding:4px 12px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:transparent;color:var(--demo-fg-subtle);font-size:var(--font-size-10,10px);font-weight:600;cursor:pointer;font-family:inherit;transition:all 120ms;text-transform:capitalize}
+.surf-tab:hover{border-color:var(--primary-component-bg-default);color:var(--primary-content-default)}
+.surf-tab[aria-pressed="true"]{background:var(--primary-component-bg-default);color:#fff;border-color:var(--primary-component-bg-default)}
+.surf-table{width:100%;border-collapse:collapse;font-size:var(--font-size-10,10px);font-family:var(--font-family-mono,monospace)}
+.surf-table th{text-align:left;padding:6px 8px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--demo-fg-faint);border-bottom:1px solid var(--demo-border);position:sticky;top:0;background:var(--demo-surface-alt)}
+.surf-table td{padding:4px 8px;border-bottom:1px solid var(--demo-border);vertical-align:middle}
+.surf-table tr:hover td{background:var(--demo-surface-alt)}
+.surf-prop-label{font-weight:600;color:var(--demo-fg-strong);white-space:nowrap}
+.surf-prop-group{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--demo-fg-faint);padding:10px 8px 3px;border:none}
+.surf-preview{display:flex;gap:2px;align-items:center}
+.surf-preview__bar{height:32px;border-radius:4px;border:1px solid rgba(128,128,128,.1);flex:1;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;overflow:hidden}
 
 /* ── Step Detail Table ────────────────────────────────────── */
 .step-tbl{width:100%;font-size:var(--font-size-11,11px);border-collapse:collapse}
@@ -261,10 +299,11 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
 <aside class="sidebar-nav" id="sidebarNav" aria-label="Section navigation">
   <a href="#sec-roles"><span class="sn-num">1</span>Color Roles</a>
   <a href="#sec-map"><span class="sn-num">2</span>Token Map</a>
+  <a href="#sec-surf"><span class="sn-num">2b</span>Surface Map</a>
   <a href="#sec-live"><span class="sn-num">3</span>Live Components</a>
-  <a href="#sec-cert"><span class="sn-num">4</span>Trust Certificates</a>
-  <a href="#sec-steps"><span class="sn-num">5</span>Step Details</a>
-  <a href="#sec-export"><span class="sn-num">6</span>Export</a>
+  <a href="#sec-cert"><span class="sn-num">3b</span>Trust Certs</a>
+  <a href="#sec-steps"><span class="sn-num">4</span>Step Details</a>
+  <a href="#sec-export"><span class="sn-num">5</span>Export</a>
 </aside>
 
 <div class="page-content">
@@ -327,7 +366,29 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
   </div>
 </section>
 
-<div class="flow-arrow">T1 semantic tokens drive T3 component styles</div>
+<div class="flow-arrow">T1 semantic tokens drive T2 surface contexts</div>
+
+<!-- ═══════════════ 2b. Surface Context Map (T2) ═══════ -->
+<section class="section" id="sec-surf">
+  <div class="section-header">
+    <h2>2b. T2 &mdash; Surface Context Map</h2>
+    <span class="section-tag">9 Surfaces &times; 16 Props</span>
+  </div>
+  <p class="section-desc">Each surface context maps greyscale (or monochromatic for accent) steps to background, content, and component-modifier tokens. Select a surface to view and edit its step assignments.</p>
+  <div style="padding:8px 0 0 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <div class="surf-tabs" id="surfTabs"></div>
+    <button class="map-edit-toggle" id="surfEditToggle" type="button">Edit Surface Map</button>
+  </div>
+  <div class="section-body" style="max-height:560px;overflow-y:auto">
+    <table class="surf-table" id="surfTable"><tbody id="surfBody"></tbody></table>
+  </div>
+  <div class="save-bar" style="border-top:1px solid var(--demo-border);padding:8px 24px">
+    <span class="save-bar-msg" id="surfSaveMsg"></span>
+    <button class="reset-btn" id="surfResetBtn" type="button">Reset Surface Maps</button>
+  </div>
+</section>
+
+<div class="flow-arrow">T2 surface tokens drive T3 component styles</div>
 
 <!-- ═══════════════ 3. Live Components ══════════════════ -->
 <section class="section" id="sec-live">
@@ -457,10 +518,10 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
   </div>
 </section>
 
-<!-- ═══════════════ 4. Trust Certificates ═══════════════ -->
+<!-- ═══════════════ 3b. Trust Certificates ═════════════ -->
 <section class="section" id="sec-cert">
   <div class="section-header">
-    <h2>4. Trust Certificates</h2>
+    <h2>3. Trust Certificates</h2>
     <span class="section-tag">7 Tests &times; All Roles</span>
   </div>
   <p class="section-desc">Every generated palette is tested against 7 quality checks. Click a role below to see its detailed results.</p>
@@ -470,10 +531,10 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
   </div>
 </section>
 
-<!-- ═══════════════ 5. Step Details ═════════════════════ -->
+<!-- ═══════════════ 4. Step Details ═════════════════════ -->
 <section class="section" id="sec-steps">
   <div class="section-header">
-    <h2>5. Step Details</h2>
+    <h2>4. Step Details</h2>
     <span class="section-tag">Table</span>
   </div>
   <div style="padding:8px 0 0 0;display:flex;align-items:center;gap:10px">
@@ -497,10 +558,10 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
   </div>
 </section>
 
-<!-- ═══════════════ 6. Export ═══════════════════════════ -->
+<!-- ═══════════════ 5. Export ═══════════════════════════ -->
 <section class="section" id="sec-export">
   <div class="section-header">
-    <h2>6. Export</h2>
+    <h2>5. Export</h2>
     <span class="section-tag">All Roles</span>
   </div>
   <div class="section-body" style="padding:20px 24px">
@@ -641,6 +702,13 @@ function initRoles() {
     if (projectConfig.semanticMap.dark)  DARK_MAP  = JSON.parse(JSON.stringify(projectConfig.semanticMap.dark));
   } else {
     resetMaps();
+  }
+  // Override surface maps from project config if available
+  if (projectConfig && projectConfig.surfaceMap) {
+    if (projectConfig.surfaceMap.light) Object.keys(projectConfig.surfaceMap.light).forEach(function(s) { if (SURF_L[s]) Object.assign(SURF_L[s], projectConfig.surfaceMap.light[s]); });
+    if (projectConfig.surfaceMap.dark) Object.keys(projectConfig.surfaceMap.dark).forEach(function(s) { if (SURF_D[s]) Object.assign(SURF_D[s], projectConfig.surfaceMap.dark[s]); });
+    if (projectConfig.surfaceMap.lightAccent) Object.assign(SURF_LA, projectConfig.surfaceMap.lightAccent);
+    if (projectConfig.surfaceMap.darkAccent) Object.assign(SURF_DA, projectConfig.surfaceMap.darkAccent);
   }
 }
 
@@ -994,7 +1062,7 @@ stepRoleSelect.addEventListener('change', function() {
 });
 
 // ══════════════════════════════════════════════════════════════
-// RENDER: TOKEN MAP (Section 2) — with optional editing
+// RENDER: TOKEN MAP (Section 2) — rich step picker with swatches
 // ══════════════════════════════════════════════════════════════
 var mapGrid = document.getElementById('mapGrid');
 var mapEditToggle = document.getElementById('mapEditToggle');
@@ -1009,26 +1077,66 @@ mapEditToggle.addEventListener('click', function() {
   renderMap();
 });
 
+// Close any open step dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.step-pick')) {
+    document.querySelectorAll('.step-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
+  }
+});
+
+function getStepHex(pal, idx) { return idx === -1 ? '#FFFFFF' : (pal && pal.steps[idx] ? pal.steps[idx].hex : '#000000'); }
+function getStepName(idx) { return idx === -1 ? '#FFF' : STEP_OPTIONS[idx]; }
+function getStepTone(idx) { return idx === -1 ? '100' : PE.TONE_SCALE[idx]; }
+
+function buildPickerButton(pal, map, key, isDark) {
+  var currentIdx = map[key];
+  var hex = getStepHex(pal, currentIdx);
+  var name = getStepName(currentIdx);
+  var origMap = isDark
+    ? (projectConfig && projectConfig.semanticMap ? projectConfig.semanticMap.dark : DEFAULT_DARK_MAP)
+    : (projectConfig && projectConfig.semanticMap ? projectConfig.semanticMap.light : DEFAULT_LIGHT_MAP);
+  var changed = (origMap && origMap[key] !== undefined && origMap[key] !== currentIdx);
+  var tc = PE.wcagContrast(hex, '#FFFFFF') > 4 ? '#FFFFFF' : '#000000';
+
+  var h = '<div class="step-pick" tabindex="0" data-map-key="' + key + '" data-map-theme="' + (isDark ? 'dark' : 'light') + '"' + (changed ? ' data-changed' : '') + '>';
+  h += '<span class="step-pick__swatch" style="background:' + hex + '"></span>';
+  h += '<span class="step-pick__label">' + name + '</span>';
+  h += '<span class="step-pick__hex">' + hex + '</span>';
+  h += '<span class="step-pick__arrow">\u25BC</span>';
+
+  // Dropdown
+  h += '<div class="step-dropdown">';
+  // Fixed white option
+  h += '<div class="step-opt' + (currentIdx === -1 ? ' step-opt--fixed" data-active' : ' step-opt--fixed"') + ' data-idx="-1">';
+  h += '<span class="step-opt__sw" style="background:#FFFFFF"></span>';
+  h += '<span class="step-opt__name">#FFF</span>';
+  h += '<span class="step-opt__hex">#FFFFFF</span>';
+  h += '<span class="step-opt__tone">100</span>';
+  h += '</div>';
+  // All 22 steps
+  for (var si = 0; si < STEP_OPTIONS.length; si++) {
+    var sHex = pal ? pal.steps[si].hex : '#888';
+    var sName = STEP_OPTIONS[si];
+    var sTone = PE.TONE_SCALE[si];
+    var active = (si === currentIdx) ? ' data-active' : '';
+    h += '<div class="step-opt"' + active + ' data-idx="' + si + '">';
+    h += '<span class="step-opt__sw" style="background:' + sHex + '"></span>';
+    h += '<span class="step-opt__name">' + sName + '</span>';
+    h += '<span class="step-opt__hex">' + sHex + '</span>';
+    h += '<span class="step-opt__tone">L' + sTone + '</span>';
+    h += '</div>';
+  }
+  h += '</div>'; // .step-dropdown
+  h += '</div>'; // .step-pick
+  return h;
+}
+
 function renderMap() {
   var rid = selectedMapRole;
   var pal = palettes[rid];
   if (!pal) { mapGrid.innerHTML = ''; return; }
   var r = getRoleById(rid);
   var prefix = (TOKEN_ROLES.indexOf(rid) >= 0) ? rid : (r ? r.label.toLowerCase().replace(/[^a-z0-9]/g,'-') : rid);
-
-  function buildStepSelect(map, key, isDark) {
-    var currentIdx = map[key];
-    var opts = '<option value="-1"' + (currentIdx === -1 ? ' selected' : '') + '>#FFFFFF (fixed)</option>';
-    for (var si = 0; si < STEP_OPTIONS.length; si++) {
-      var sel = (si === currentIdx) ? ' selected' : '';
-      opts += '<option value="' + si + '"' + sel + '>' + STEP_OPTIONS[si] + '</option>';
-    }
-    var changedCls = '';
-    // Highlight if changed from project defaults
-    var origMap = isDark ? (projectConfig && projectConfig.semanticMap ? projectConfig.semanticMap.dark : DEFAULT_DARK_MAP) : (projectConfig && projectConfig.semanticMap ? projectConfig.semanticMap.light : DEFAULT_LIGHT_MAP);
-    if (origMap && origMap[key] !== undefined && origMap[key] !== currentIdx) changedCls = ' map-step-changed';
-    return '<select class="map-step-select' + changedCls + '" data-map-key="' + key + '" data-map-theme="' + (isDark ? 'dark' : 'light') + '">' + opts + '</select>';
-  }
 
   function buildPane(map, title, isDark) {
     var cls = isDark ? 'map-pane map-pane--dark' : 'map-pane';
@@ -1045,7 +1153,7 @@ function renderMap() {
           '<span class="map-swatch" style="background:' + hex + '" onclick="copyHex(\'' + hex + '\')" title="Click to copy"></span>' +
           '<span class="map-name">--' + prefix + '-' + key + '</span>';
         if (mapEditMode) {
-          html += buildStepSelect(map, key, isDark);
+          html += buildPickerButton(pal, map, key, isDark);
         } else {
           html += '<span class="map-step">\u2190 ' + stepLabel + '</span>';
         }
@@ -1058,38 +1166,232 @@ function renderMap() {
 
   mapGrid.innerHTML = buildPane(LIGHT_MAP, 'Light Theme', false) + buildPane(DARK_MAP, 'Dark Theme', true);
 
-  // Wire edit events
+  // Wire picker events
   if (mapEditMode) {
-    mapGrid.querySelectorAll('.map-step-select').forEach(function(sel) {
-      sel.addEventListener('change', function() {
-        var key = sel.getAttribute('data-map-key');
-        var theme = sel.getAttribute('data-map-theme');
-        var newIdx = parseInt(sel.value, 10);
-        // Validate: step index must be in range
-        if (newIdx < -1 || newIdx >= PE.STEP_NAMES.length) return;
-        if (theme === 'dark') {
-          DARK_MAP[key] = newIdx;
-        } else {
-          LIGHT_MAP[key] = newIdx;
-        }
-        // Warn if light and dark use same step for content/bg tokens
-        if (key.indexOf('content-') === 0 || key.indexOf('component-bg') === 0) {
-          var otherMap = (theme === 'dark') ? LIGHT_MAP : DARK_MAP;
-          if (otherMap[key] === newIdx && newIdx !== -1) {
-            sel.title = 'Warning: Light and Dark use same step — no visual difference between themes';
-            sel.style.outline = '2px solid #D97706';
-          } else {
-            sel.title = '';
-            sel.style.outline = '';
-          }
-        }
-        // Re-inject tokens with new mapping
-        injectAllTokens();
-        renderMap();
+    mapGrid.querySelectorAll('.step-pick').forEach(function(pick) {
+      // Toggle dropdown on click
+      pick.addEventListener('click', function(e) {
+        if (e.target.closest('.step-opt')) return; // handled below
+        var dd = pick.querySelector('.step-dropdown');
+        // Close others
+        mapGrid.querySelectorAll('.step-dropdown.open').forEach(function(d) { if (d !== dd) d.classList.remove('open'); });
+        dd.classList.toggle('open');
+      });
+      // Step selection
+      pick.querySelectorAll('.step-opt').forEach(function(opt) {
+        opt.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var key = pick.getAttribute('data-map-key');
+          var theme = pick.getAttribute('data-map-theme');
+          var newIdx = parseInt(opt.getAttribute('data-idx'), 10);
+          if (newIdx < -1 || newIdx >= PE.STEP_NAMES.length) return;
+          if (theme === 'dark') DARK_MAP[key] = newIdx;
+          else LIGHT_MAP[key] = newIdx;
+          injectAllTokens();
+          renderMap();
+        });
       });
     });
   }
 }
+
+// ══════════════════════════════════════════════════════════════
+// RENDER: T2 SURFACE CONTEXT MAP (Section 2b)
+// ══════════════════════════════════════════════════════════════
+var SURF_NAMES = ['bright','base','dim','deep','accent','container','over-container','float','inverse'];
+var SURF_PROP_ORDER = ['bg','hover','pressed','outline','separator',
+  'ct-default','ct-strong','ct-subtle','ct-faint',
+  'cm-bg','cm-bg-hover','cm-bg-pressed',
+  'cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator'];
+var SURF_PROP_GROUPS = [
+  {label:'Background',keys:['bg','hover','pressed','outline','separator']},
+  {label:'Content',keys:['ct-default','ct-strong','ct-subtle','ct-faint']},
+  {label:'Component Modifier',keys:['cm-bg','cm-bg-hover','cm-bg-pressed','cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator']}
+];
+
+// Editable surface maps (start as copies of the hardcoded defaults)
+var SURF_L = {
+  bright:{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'150','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'150'},
+  base:{bg:'25',hover:'50',pressed:'75',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'white','cm-bg-hover':'25','cm-bg-pressed':'50','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'},
+  dim:{bg:'50',hover:'75',pressed:'100',outline:'175',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'300','cm-separator':'175'},
+  deep:{bg:'75',hover:'100',pressed:'150',outline:'175',separator:'200','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'450','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'200','cm-outline-hover':'250','cm-outline-pressed':'300','cm-separator':'200'},
+  container:{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'150','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'150'},
+  'over-container':{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'},
+  float:{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'550','ct-faint':'400','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'175','cm-outline-hover':'250','cm-outline-pressed':'300','cm-separator':'175'},
+  inverse:{bg:'900',hover:'850',pressed:'800',outline:'700',separator:'700','ct-default':'25','ct-strong':'white','ct-subtle':'250','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'}
+};
+var SURF_D = {
+  bright:{bg:'850',hover:'800',pressed:'750',outline:'700',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'800','cm-bg-hover':'750','cm-bg-pressed':'700','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
+  base:{bg:'900',hover:'850',pressed:'800',outline:'750',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
+  dim:{bg:'900',hover:'850',pressed:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'},
+  deep:{bg:'black',hover:'900',pressed:'850',outline:'800',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'300','ct-faint':'450','cm-bg':'900','cm-bg-hover':'850','cm-bg-pressed':'800','cm-outline':'700','cm-outline-hover':'600','cm-outline-pressed':'550','cm-separator':'750'},
+  container:{bg:'850',hover:'800',pressed:'750',outline:'700',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'800','cm-bg-hover':'750','cm-bg-pressed':'700','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
+  'over-container':{bg:'800',hover:'750',pressed:'700',outline:'600',separator:'600','ct-default':'50','ct-strong':'white','ct-subtle':'200','ct-faint':'400','cm-bg':'750','cm-bg-hover':'700','cm-bg-pressed':'600','cm-outline':'550','cm-outline-hover':'500','cm-outline-pressed':'450','cm-separator':'600'},
+  float:{bg:'750',hover:'700',pressed:'600',outline:'550',separator:'550','ct-default':'25','ct-strong':'white','ct-subtle':'200','ct-faint':'300','cm-bg':'700','cm-bg-hover':'600','cm-bg-pressed':'550','cm-outline':'500','cm-outline-hover':'450','cm-outline-pressed':'400','cm-separator':'550'},
+  inverse:{bg:'900',hover:'850',pressed:'800',outline:'700',separator:'700','ct-default':'25','ct-strong':'white','ct-subtle':'250','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'}
+};
+var SURF_LA = {bg:'25',hover:'50',pressed:'75',outline:'175',separator:'175','ct-default':'800','ct-strong':'900','ct-subtle':'700','ct-faint':'500','cm-bg':'white','cm-bg-hover':'25','cm-bg-pressed':'50','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'};
+var SURF_DA = {bg:'900',hover:'850',pressed:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'150','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'};
+
+var surfTabs = document.getElementById('surfTabs');
+var surfBody = document.getElementById('surfBody');
+var surfEditToggle = document.getElementById('surfEditToggle');
+var surfEditMode = false;
+var selectedSurface = 'base';
+
+// Build surface tab bar
+function renderSurfTabs() {
+  surfTabs.innerHTML = SURF_NAMES.map(function(n) {
+    return '<button class="surf-tab" aria-pressed="' + (n === selectedSurface ? 'true' : 'false') + '" data-surf="' + n + '" type="button">' + n + '</button>';
+  }).join('');
+  surfTabs.querySelectorAll('.surf-tab').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      selectedSurface = btn.getAttribute('data-surf');
+      surfTabs.querySelectorAll('.surf-tab').forEach(function(b) { b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
+      renderSurfTable();
+    });
+  });
+}
+
+surfEditToggle.addEventListener('click', function() {
+  surfEditMode = !surfEditMode;
+  surfEditToggle.setAttribute('aria-pressed', surfEditMode ? 'true' : 'false');
+  surfEditToggle.textContent = surfEditMode ? 'Done Editing' : 'Edit Surface Map';
+  renderSurfTable();
+});
+
+// Get greyscale/mono hex for a step name
+function surfStepHex(stepName, isAccent) {
+  var pal = isAccent ? palettes.primary : palettes.greyscale;
+  if (!pal) return '#888';
+  if (stepName === 'white') return '#FFFFFF';
+  if (stepName === 'black') return '#000000';
+  for (var i = 0; i < pal.steps.length; i++) {
+    if (pal.steps[i].name === stepName) return pal.steps[i].hex;
+  }
+  return '#888';
+}
+
+function buildSurfStepPicker(surfMap, prop, isAccent) {
+  var currentStep = surfMap[prop];
+  var hex = surfStepHex(currentStep, isAccent);
+
+  var h = '<div class="step-pick" tabindex="0" data-surf-prop="' + prop + '">';
+  h += '<span class="step-pick__swatch" style="background:' + hex + '"></span>';
+  h += '<span class="step-pick__label">' + currentStep + '</span>';
+  h += '<span class="step-pick__hex">' + hex + '</span>';
+  h += '<span class="step-pick__arrow">\u25BC</span>';
+
+  h += '<div class="step-dropdown">';
+  // All step options (step names from the palette)
+  var pal = isAccent ? palettes.primary : palettes.greyscale;
+  if (pal) {
+    for (var si = 0; si < pal.steps.length; si++) {
+      var sName = pal.steps[si].name;
+      var sHex = pal.steps[si].hex;
+      var sTone = PE.TONE_SCALE[si];
+      var active = (sName === currentStep) ? ' data-active' : '';
+      h += '<div class="step-opt"' + active + ' data-step="' + sName + '">';
+      h += '<span class="step-opt__sw" style="background:' + sHex + '"></span>';
+      h += '<span class="step-opt__name">' + sName + '</span>';
+      h += '<span class="step-opt__hex">' + sHex + '</span>';
+      h += '<span class="step-opt__tone">L' + sTone + '</span>';
+      h += '</div>';
+    }
+  }
+  h += '</div>';
+  h += '</div>';
+  return h;
+}
+
+function renderSurfTable() {
+  var n = selectedSurface;
+  var isAccent = (n === 'accent');
+  var lMap = isAccent ? SURF_LA : SURF_L[n];
+  var dMap = isAccent ? SURF_DA : SURF_D[n];
+  if (!lMap || !dMap) { surfBody.innerHTML = ''; return; }
+
+  var html = '<tr><th>Property</th><th colspan="2">Light</th><th colspan="2">Dark</th></tr>';
+
+  for (var g = 0; g < SURF_PROP_GROUPS.length; g++) {
+    var grp = SURF_PROP_GROUPS[g];
+    html += '<tr><td class="surf-prop-group" colspan="5">' + grp.label + '</td></tr>';
+    for (var p = 0; p < grp.keys.length; p++) {
+      var prop = grp.keys[p];
+      var lStep = lMap[prop];
+      var dStep = dMap[prop];
+      var lHex = surfStepHex(lStep, isAccent);
+      var dHex = surfStepHex(dStep, isAccent);
+
+      html += '<tr><td class="surf-prop-label">' + prop + '</td>';
+
+      if (surfEditMode) {
+        html += '<td colspan="2">' + buildSurfStepPicker(lMap, prop, isAccent) + '</td>';
+        html += '<td colspan="2">' + buildSurfStepPicker(dMap, prop, isAccent) + '</td>';
+      } else {
+        html += '<td><span class="map-swatch" style="background:' + lHex + ';width:18px;height:12px;display:inline-block;border-radius:3px;border:1px solid rgba(128,128,128,.15);vertical-align:middle" onclick="copyHex(\'' + lHex + '\')"></span></td>';
+        html += '<td style="font-family:var(--font-family-mono,monospace);font-size:9px;color:var(--demo-fg-subtle)">' + lStep + ' <span style="color:var(--demo-fg-faint)">' + lHex + '</span></td>';
+        html += '<td><span class="map-swatch" style="background:' + dHex + ';width:18px;height:12px;display:inline-block;border-radius:3px;border:1px solid rgba(128,128,128,.15);vertical-align:middle" onclick="copyHex(\'' + dHex + '\')"></span></td>';
+        html += '<td style="font-family:var(--font-family-mono,monospace);font-size:9px;color:var(--demo-fg-subtle)">' + dStep + ' <span style="color:var(--demo-fg-faint)">' + dHex + '</span></td>';
+      }
+      html += '</tr>';
+    }
+  }
+
+  // Surface preview bar at bottom
+  html += '<tr><td colspan="5" style="padding:12px 8px"><div class="surf-preview">';
+  for (var pi = 0; pi < 5; pi++) {
+    var propN = ['bg','hover','pressed','outline','separator'][pi];
+    var pHex = surfStepHex(lMap[propN], isAccent);
+    var tc2 = PE.wcagContrast(pHex, '#FFFFFF') > 3 ? '#fff' : '#000';
+    html += '<span class="surf-preview__bar" style="background:' + pHex + ';color:' + tc2 + '">' + propN + '</span>';
+  }
+  html += '</div></td></tr>';
+
+  surfBody.innerHTML = html;
+
+  // Wire picker events for T2
+  if (surfEditMode) {
+    surfBody.querySelectorAll('.step-pick').forEach(function(pick) {
+      pick.addEventListener('click', function(e) {
+        if (e.target.closest('.step-opt')) return;
+        var dd = pick.querySelector('.step-dropdown');
+        document.querySelectorAll('.step-dropdown.open').forEach(function(d) { if (d !== dd) d.classList.remove('open'); });
+        dd.classList.toggle('open');
+      });
+      pick.querySelectorAll('.step-opt').forEach(function(opt) {
+        opt.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var prop2 = pick.getAttribute('data-surf-prop');
+          var newStep = opt.getAttribute('data-step');
+          // Validate step name
+          if (PE.STEP_NAMES.indexOf(newStep) === -1) return;
+          // Determine which map (light or dark) — first picker in row = light, second = dark
+          var row = pick.closest('tr');
+          var picks = row.querySelectorAll('.step-pick');
+          var isLight = (picks[0] === pick);
+          var surfName = selectedSurface;
+          if (isLight) {
+            if (surfName === 'accent') SURF_LA[prop2] = newStep;
+            else SURF_L[surfName][prop2] = newStep;
+          } else {
+            if (surfName === 'accent') SURF_DA[prop2] = newStep;
+            else SURF_D[surfName][prop2] = newStep;
+          }
+          renderSurfTable();
+        });
+      });
+    });
+  }
+}
+
+document.getElementById('surfResetBtn').addEventListener('click', function() {
+  // Reset surface maps to hardcoded defaults — reinitialize from the const copies
+  location.reload(); // simplest reset
+});
+
+renderSurfTabs();
+renderSurfTable();
 
 // ══════════════════════════════════════════════════════════════
 // RENDER: TRUST CERTIFICATES (Section 4)
@@ -1345,7 +1647,8 @@ function buildSaveableConfig() {
     roles: roles.map(function(r) {
       return {id: r.id, label: r.label, keyHex: r.keyHex, type: r.type, derive: r.derive || null};
     }),
-    customCounter: customCounter
+    customCounter: customCounter,
+    surfaceMap: { light: SURF_L, dark: SURF_D, lightAccent: SURF_LA, darkAccent: SURF_DA }
   });
 }
 
@@ -1357,6 +1660,12 @@ function loadSavedConfig() {
     if (!cfg.roles || !cfg.roles.length) return false;
     roles = cfg.roles.map(function(r) { return Object.assign({}, r); });
     customCounter = cfg.customCounter || 0;
+    if (cfg.surfaceMap) {
+      if (cfg.surfaceMap.light) Object.keys(cfg.surfaceMap.light).forEach(function(s) { if (SURF_L[s]) Object.assign(SURF_L[s], cfg.surfaceMap.light[s]); });
+      if (cfg.surfaceMap.dark) Object.keys(cfg.surfaceMap.dark).forEach(function(s) { if (SURF_D[s]) Object.assign(SURF_D[s], cfg.surfaceMap.dark[s]); });
+      if (cfg.surfaceMap.lightAccent) Object.assign(SURF_LA, cfg.surfaceMap.lightAccent);
+      if (cfg.surfaceMap.darkAccent) Object.assign(SURF_DA, cfg.surfaceMap.darkAccent);
+    }
     return true;
   } catch(e) { return false; }
 }
@@ -1397,6 +1706,8 @@ resetBtn.addEventListener('click', function() {
   refreshSelectors();
   injectAllTokens();
   renderMap();
+  renderSurfTabs();
+  renderSurfTable();
   renderCertGrid();
   renderCertDetail(selectedCertRole);
   renderSteps();
@@ -1572,6 +1883,20 @@ function buildPreviewDiff() {
   }
   if (mapChanges > 0) changes.push(mapChanges + ' semantic mapping(s) changed');
 
+  // Check surface map changes
+  var surfChanges = 0;
+  if (projectConfig && projectConfig.surfaceMap) {
+    var oSL = projectConfig.surfaceMap.light || {};
+    var oSD = projectConfig.surfaceMap.dark || {};
+    var oSLA = projectConfig.surfaceMap.lightAccent || {};
+    var oSDA = projectConfig.surfaceMap.darkAccent || {};
+    Object.keys(SURF_L).forEach(function(s) { Object.keys(SURF_L[s]).forEach(function(p) { if (!oSL[s] || oSL[s][p] !== SURF_L[s][p]) surfChanges++; }); });
+    Object.keys(SURF_D).forEach(function(s) { Object.keys(SURF_D[s]).forEach(function(p) { if (!oSD[s] || oSD[s][p] !== SURF_D[s][p]) surfChanges++; }); });
+    Object.keys(SURF_LA).forEach(function(p) { if (oSLA[p] !== SURF_LA[p]) surfChanges++; });
+    Object.keys(SURF_DA).forEach(function(p) { if (oSDA[p] !== SURF_DA[p]) surfChanges++; });
+  }
+  if (surfChanges > 0) changes.push(surfChanges + ' surface mapping(s) changed');
+
   if (changes.length === 0) return null;
 
   // Count affected tokens
@@ -1614,6 +1939,14 @@ function buildUpdatedConfig() {
 
   // Update semantic maps
   cfg.semanticMap = { light: JSON.parse(JSON.stringify(LIGHT_MAP)), dark: JSON.parse(JSON.stringify(DARK_MAP)) };
+
+  // Update surface maps
+  cfg.surfaceMap = {
+    light: JSON.parse(JSON.stringify(SURF_L)),
+    dark: JSON.parse(JSON.stringify(SURF_D)),
+    lightAccent: JSON.parse(JSON.stringify(SURF_LA)),
+    darkAccent: JSON.parse(JSON.stringify(SURF_DA))
+  };
 
   return cfg;
 }
@@ -1800,12 +2133,12 @@ function rolePrefix(r) {
 }
 
 // Build surfaces.css from greyscale + monochromatic palette steps
+// Uses the EDITABLE SURF_L / SURF_D / SURF_LA / SURF_DA globals
 function buildSurfacesFileCSS() {
   var grey = palettes.greyscale;
   var mono = palettes.primary;
-  if (!grey || !mono) return null; // can't generate without these palettes
+  if (!grey || !mono) return null;
 
-  // Step name → palette index mapping
   var stepIdx = {};
   for (var si = 0; si < grey.steps.length; si++) stepIdx[grey.steps[si].name] = si;
 
@@ -1816,36 +2149,6 @@ function buildSurfacesFileCSS() {
     }
     return '#000000';
   }
-
-  // Surface step maps (greyscale for neutral, monochromatic for accent)
-  var PROP_ORDER = ['bg','hover','pressed','outline','separator',
-    'ct-default','ct-strong','ct-subtle','ct-faint',
-    'cm-bg','cm-bg-hover','cm-bg-pressed',
-    'cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator'];
-
-  var L = {
-    bright:  {bg:'white',hover:'25',pressed:'50',outline:'150',separator:'150','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'150'},
-    base:    {bg:'25',hover:'50',pressed:'75',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'white','cm-bg-hover':'25','cm-bg-pressed':'50','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'},
-    dim:     {bg:'50',hover:'75',pressed:'100',outline:'175',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'300','cm-separator':'175'},
-    deep:    {bg:'75',hover:'100',pressed:'150',outline:'175',separator:'200','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'450','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'200','cm-outline-hover':'250','cm-outline-pressed':'300','cm-separator':'200'},
-    container:{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'150','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'150'},
-    'over-container':{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'},
-    float:   {bg:'white',hover:'25',pressed:'50',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'550','ct-faint':'400','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'175','cm-outline-hover':'250','cm-outline-pressed':'300','cm-separator':'175'},
-    inverse: {bg:'900',hover:'850',pressed:'800',outline:'700',separator:'700','ct-default':'25','ct-strong':'white','ct-subtle':'250','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'}
-  };
-  var D = {
-    bright:  {bg:'850',hover:'800',pressed:'750',outline:'700',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'800','cm-bg-hover':'750','cm-bg-pressed':'700','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
-    base:    {bg:'900',hover:'850',pressed:'800',outline:'750',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
-    dim:     {bg:'900',hover:'850',pressed:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'},
-    deep:    {bg:'black',hover:'900',pressed:'850',outline:'800',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'300','ct-faint':'450','cm-bg':'900','cm-bg-hover':'850','cm-bg-pressed':'800','cm-outline':'700','cm-outline-hover':'600','cm-outline-pressed':'550','cm-separator':'750'},
-    container:{bg:'850',hover:'800',pressed:'750',outline:'700',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'800','cm-bg-hover':'750','cm-bg-pressed':'700','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
-    'over-container':{bg:'800',hover:'750',pressed:'700',outline:'600',separator:'600','ct-default':'50','ct-strong':'white','ct-subtle':'200','ct-faint':'400','cm-bg':'750','cm-bg-hover':'700','cm-bg-pressed':'600','cm-outline':'550','cm-outline-hover':'500','cm-outline-pressed':'450','cm-separator':'600'},
-    float:   {bg:'750',hover:'700',pressed:'600',outline:'550',separator:'550','ct-default':'25','ct-strong':'white','ct-subtle':'200','ct-faint':'300','cm-bg':'700','cm-bg-hover':'600','cm-bg-pressed':'550','cm-outline':'500','cm-outline-hover':'450','cm-outline-pressed':'400','cm-separator':'550'},
-    inverse: {bg:'900',hover:'850',pressed:'800',outline:'700',separator:'700','ct-default':'25','ct-strong':'white','ct-subtle':'250','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'}
-  };
-  // Accent uses monochromatic palette
-  var LA = {bg:'25',hover:'50',pressed:'75',outline:'175',separator:'175','ct-default':'800','ct-strong':'900','ct-subtle':'700','ct-faint':'500','cm-bg':'white','cm-bg-hover':'25','cm-bg-pressed':'50','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'};
-  var DA = {bg:'900',hover:'850',pressed:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'150','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'};
 
   var NAMES = ['bright','base','dim','deep','accent','container','over-container','float','inverse'];
   var out = [];
@@ -1859,11 +2162,11 @@ function buildSurfacesFileCSS() {
   out.push(':root {');
   for (var ni = 0; ni < NAMES.length; ni++) {
     var n = NAMES[ni];
-    var map = n === 'accent' ? LA : L[n];
+    var map = n === 'accent' ? SURF_LA : SURF_L[n];
     var pal = n === 'accent' ? ms : gs;
     out.push('  /* ── SURFACE-' + n.toUpperCase() + ' ── */');
-    for (var pi = 0; pi < PROP_ORDER.length; pi++) {
-      out.push('  --surface-' + n + '-' + PROP_ORDER[pi] + ': ' + pal(map[PROP_ORDER[pi]]) + ';');
+    for (var pi = 0; pi < SURF_PROP_ORDER.length; pi++) {
+      out.push('  --surface-' + n + '-' + SURF_PROP_ORDER[pi] + ': ' + pal(map[SURF_PROP_ORDER[pi]]) + ';');
     }
   }
   out.push('}');
@@ -1871,11 +2174,11 @@ function buildSurfacesFileCSS() {
   out.push('[data-theme="dark"] {');
   for (var ni2 = 0; ni2 < NAMES.length; ni2++) {
     var n2 = NAMES[ni2];
-    var map2 = n2 === 'accent' ? DA : D[n2];
+    var map2 = n2 === 'accent' ? SURF_DA : SURF_D[n2];
     var pal2 = n2 === 'accent' ? ms : gs;
     out.push('  /* ── SURFACE-' + n2.toUpperCase() + ' (dark) ── */');
-    for (var pi2 = 0; pi2 < PROP_ORDER.length; pi2++) {
-      out.push('  --surface-' + n2 + '-' + PROP_ORDER[pi2] + ': ' + pal2(map2[PROP_ORDER[pi2]]) + ';');
+    for (var pi2 = 0; pi2 < SURF_PROP_ORDER.length; pi2++) {
+      out.push('  --surface-' + n2 + '-' + SURF_PROP_ORDER[pi2] + ': ' + pal2(map2[SURF_PROP_ORDER[pi2]]) + ';');
     }
   }
   out.push('}');
@@ -1894,6 +2197,8 @@ function doInitialRender() {
   refreshSelectors();
   injectAllTokens();
   renderMap();
+  renderSurfTabs();
+  renderSurfTable();
   renderCertGrid();
   renderCertDetail(selectedCertRole);
   renderSteps();
