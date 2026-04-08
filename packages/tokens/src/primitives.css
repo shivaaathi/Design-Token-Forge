@@ -17,6 +17,7 @@
   --prim-monochromatic-200: #9BBBFF;
   --prim-monochromatic-250: #82A9FE;
   --prim-monochromatic-300: #6593FE;
+  --prim-monochromatic-350: #5586FD;
   --prim-monochromatic-400: #487CFE;
   --prim-monochromatic-450: #3C6FF6;
   --prim-monochromatic-500: #3366F0;
@@ -40,6 +41,7 @@
   --prim-brand-200: #FE9E8B;
   --prim-brand-250: #FE826A;
   --prim-brand-300: #F56248;
+  --prim-brand-350: #EA563C;
   --prim-brand-400: #E34A30;
   --prim-brand-450: #DA391E;
   --prim-brand-500: #D22A0A;
@@ -63,6 +65,7 @@
   --prim-danger-200: #FE9E92;
   --prim-danger-250: #FF7F73;
   --prim-danger-300: #F95C52;
+  --prim-danger-350: #EE4F46;
   --prim-danger-400: #E7423B;
   --prim-danger-450: #DD2F2C;
   --prim-danger-500: #D61D20;
@@ -86,6 +89,7 @@
   --prim-warning-200: #F8A855;
   --prim-warning-250: #E9963A;
   --prim-warning-300: #D8810B;
+  --prim-warning-350: #C97808;
   --prim-warning-400: #BF7100;
   --prim-warning-450: #B0690D;
   --prim-warning-500: #A66208;
@@ -109,6 +113,7 @@
   --prim-info-200: #75C4FF;
   --prim-info-250: #54B4F7;
   --prim-info-300: #36A1E7;
+  --prim-info-350: #2596DC;
   --prim-info-400: #068ED6;
   --prim-info-450: #0484C6;
   --prim-info-500: #0E7CB9;
@@ -132,6 +137,7 @@
   --prim-success-200: #74D67A;
   --prim-success-250: #5DC665;
   --prim-success-300: #41B44E;
+  --prim-success-350: #32A941;
   --prim-success-400: #1EA135;
   --prim-success-450: #10962C;
   --prim-success-500: #0B8D28;
@@ -155,6 +161,7 @@
   --prim-greyscale-200: #BBBBBB;
   --prim-greyscale-250: #ABABAB;
   --prim-greyscale-300: #989898;
+  --prim-greyscale-350: #8E8E8E;
   --prim-greyscale-400: #868686;
   --prim-greyscale-450: #7C7C7C;
   --prim-greyscale-500: #747474;
@@ -178,6 +185,7 @@
   --prim-desaturated-200: #B9BBC3;
   --prim-desaturated-250: #A8ABB3;
   --prim-desaturated-300: #9698A1;
+  --prim-desaturated-350: #8B8E96;
   --prim-desaturated-400: #83868F;
   --prim-desaturated-450: #797C85;
   --prim-desaturated-500: #72747D;

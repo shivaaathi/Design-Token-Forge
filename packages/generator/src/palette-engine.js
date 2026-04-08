@@ -4,7 +4,7 @@
    Hybrid CIE L* Tone + OKLCH Hue/Chroma generator.
 
    Input:  one hex color
-   Output: 21-step certified palette
+   Output: 22-step certified palette
 
    Architecture:
      Tone axis  → CIE L* (guarantees WCAG contrast by construction)
@@ -16,10 +16,10 @@
 
 // ── Step names & indices ────────────────────────────────────
 export const STEP_NAMES = [
-  'white','25','50','75','100','150','175','200','250','300',
+  'white','25','50','75','100','150','175','200','250','300','350',
   '400','450','500','550','600','700','750','800','850','900','black'
 ];
-export const KEY_INDEX = 12; // step 500
+export const KEY_INDEX = 13; // step 500
 
 // ── Fixed Tone Scale ────────────────────────────────────────
 // CIE L* values for each step. These GUARANTEE specific
@@ -42,6 +42,7 @@ export const TONE_SCALE = [
    76,   // 200
    70,   // 250
    63,   // 300
+   59,   // 350
    56,   // 400
    52,   // 450
    49,   // 500 (key)
