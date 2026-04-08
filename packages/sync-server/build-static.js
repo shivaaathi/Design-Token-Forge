@@ -107,6 +107,11 @@ async function main() {
 
   const data = serverModule.runExport();
 
+  // Inject project identity into the payload
+  if (projectConfig) {
+    data.project = { id: projectConfig.id, name: projectConfig.name };
+  }
+
   // Ensure output dir exists
   fs.mkdirSync(OUT_DIR, { recursive: true });
 
@@ -123,7 +128,8 @@ async function main() {
     pendingChanges: 0,
     totalVariables: data.stats.totalVariables,
     totalCollections: data.stats.totalCollections,
-    lastSyncedHash: ''
+    lastSyncedHash: '',
+    ...(projectConfig && { project: { id: projectConfig.id, name: projectConfig.name } })
   };
   const statusPath = path.join(OUT_DIR, 'status.json');
   fs.writeFileSync(statusPath, JSON.stringify(status, null, 2));
