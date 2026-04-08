@@ -95,6 +95,14 @@ html[data-theme="dark"] .cert-mini[data-status="FAILED"]{background:#7F1D1D;colo
 .map-pane--dark .map-step{color:#777}
 .map-hex{color:var(--demo-fg-faint);min-width:60px;text-align:right}
 .map-pane--dark .map-hex{color:#888}
+.map-edit-toggle{padding:4px 12px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:transparent;color:var(--demo-fg-subtle);font-size:var(--font-size-10,10px);font-weight:600;cursor:pointer;font-family:inherit;transition:all 120ms}
+.map-edit-toggle:hover{border-color:var(--primary-component-bg-default);color:var(--primary-content-default)}
+.map-edit-toggle[aria-pressed="true"]{background:var(--primary-component-bg-default);color:#fff;border-color:var(--primary-component-bg-default)}
+.map-step-select{padding:2px 4px;border:1px solid var(--demo-border);border-radius:3px;font-size:9px;font-family:var(--font-family-mono,monospace);background:var(--demo-surface);color:var(--demo-fg);min-width:56px;cursor:pointer}
+.map-pane--dark .map-step-select{background:#222;color:#ddd;border-color:#444}
+.map-step-select:focus{outline:2px solid var(--primary-component-bg-default);outline-offset:-1px}
+.map-step-changed{background:#FEF3C7;border-color:#D97706}
+.map-pane--dark .map-step-changed{background:#78350F;border-color:#D97706}
 
 /* ── Step Detail Table ────────────────────────────────────── */
 .step-tbl{width:100%;font-size:var(--font-size-11,11px);border-collapse:collapse}
@@ -308,10 +316,11 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
     <h2>2. T1 &mdash; Semantic Token Map</h2>
     <span class="section-tag">18 Tokens &times; Light/Dark</span>
   </div>
-  <p class="section-desc">Each primitive step is assigned a semantic purpose. Select a role to see how its 22-step palette maps to 18 semantic tokens for both light and dark themes.</p>
-  <div style="padding:8px 0 0 0;display:flex;align-items:center;gap:10px">
+  <p class="section-desc">Each primitive step is assigned a semantic purpose. Select a role to see how its 22-step palette maps to 18 semantic tokens for both light and dark themes. Toggle <strong>Edit Mappings</strong> to customize step assignments.</p>
+  <div style="padding:8px 0 0 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
     <label for="mapRoleSelect" style="font-size:var(--font-size-11,11px);font-weight:600;color:var(--demo-fg-subtle)">Inspect role:</label>
     <select class="role-select" id="mapRoleSelect"></select>
+    <button class="map-edit-toggle" id="mapEditToggle" type="button">Edit Mappings</button>
   </div>
   <div class="section-body">
     <div class="map-grid" id="mapGrid"></div>
@@ -534,9 +543,17 @@ function copyHex(hex){
 var PE = window.PaletteEngine;
 
 // ══════════════════════════════════════════════════════════════
-// SEMANTIC MAPPING — step indices for each token
+// PROJECT CONFIG — loaded from project config.json
 // ══════════════════════════════════════════════════════════════
-var LIGHT_MAP = {
+var projectConfig = null;   // full config.json contents
+var projectId = '';          // e.g. 'desktop-pdf-editor'
+var originalPaletteKeys = null; // snapshot for diff
+
+// ══════════════════════════════════════════════════════════════
+// SEMANTIC MAPPING — step indices for each token
+// (defaults — overridden by project config if available)
+// ══════════════════════════════════════════════════════════════
+var DEFAULT_LIGHT_MAP = {
   'content-default':14,'content-strong':15,'content-subtle':10,'content-faint':7,
   'component-bg-default':13,'component-bg-hover':14,'component-bg-pressed':15,
   'component-outline-default':9,'component-outline-hover':10,'component-outline-pressed':12,
@@ -544,7 +561,7 @@ var LIGHT_MAP = {
   'container-bg':2,'container-hover':3,'container-pressed':4,'container-outline':7,'container-separator':4,
   'on-component':-1,'on-container':15
 };
-var DARK_MAP = {
+var DEFAULT_DARK_MAP = {
   'content-default':5,'content-strong':4,'content-subtle':7,'content-faint':10,
   'component-bg-default':12,'component-bg-hover':10,'component-bg-pressed':9,
   'component-outline-default':12,'component-outline-hover':10,'component-outline-pressed':9,
@@ -552,6 +569,13 @@ var DARK_MAP = {
   'container-bg':18,'container-hover':17,'container-pressed':16,'container-outline':14,'container-separator':17,
   'on-component':-1,'on-container':4
 };
+var LIGHT_MAP = {};
+var DARK_MAP = {};
+function resetMaps() {
+  LIGHT_MAP = JSON.parse(JSON.stringify(DEFAULT_LIGHT_MAP));
+  DARK_MAP  = JSON.parse(JSON.stringify(DEFAULT_DARK_MAP));
+}
+resetMaps();
 var SEM_GROUPS = [
   {label:'Content',keys:['content-default','content-strong','content-subtle','content-faint']},
   {label:'Component',keys:['component-bg-default','component-bg-hover','component-bg-pressed','component-outline-default','component-outline-hover','component-outline-pressed','component-separator']},
@@ -591,8 +615,33 @@ var DEFAULT_ROLES = [
   {id:'desaturated', label:'Desaturated', keyHex:null, type:'auto', derive:'desaturated'},
 ];
 
+// Map config.json palette key names → role IDs
+var PALETTE_KEY_TO_ROLE = {
+  monochromatic:'primary', brand:'brand', danger:'danger', warning:'warning',
+  info:'info', success:'success', greyscale:'greyscale', desaturated:'desaturated'
+};
+var ROLE_TO_PALETTE_KEY = {};
+Object.keys(PALETTE_KEY_TO_ROLE).forEach(function(k) { ROLE_TO_PALETTE_KEY[PALETTE_KEY_TO_ROLE[k]] = k; });
+
 function initRoles() {
   roles = DEFAULT_ROLES.map(function(r) { return Object.assign({}, r); });
+  // Override with project config palette keys if available
+  if (projectConfig && projectConfig.paletteKeys) {
+    var pk = projectConfig.paletteKeys;
+    for (var i = 0; i < roles.length; i++) {
+      var key = ROLE_TO_PALETTE_KEY[roles[i].id];
+      if (key && pk[key]) {
+        if (roles[i].type !== 'auto') roles[i].keyHex = pk[key].toUpperCase();
+      }
+    }
+  }
+  // Override maps from project config if available
+  if (projectConfig && projectConfig.semanticMap) {
+    if (projectConfig.semanticMap.light) LIGHT_MAP = JSON.parse(JSON.stringify(projectConfig.semanticMap.light));
+    if (projectConfig.semanticMap.dark)  DARK_MAP  = JSON.parse(JSON.stringify(projectConfig.semanticMap.dark));
+  } else {
+    resetMaps();
+  }
 }
 
 function deriveKeyHex(derive) {
@@ -945,9 +994,20 @@ stepRoleSelect.addEventListener('change', function() {
 });
 
 // ══════════════════════════════════════════════════════════════
-// RENDER: TOKEN MAP (Section 2)
+// RENDER: TOKEN MAP (Section 2) — with optional editing
 // ══════════════════════════════════════════════════════════════
 var mapGrid = document.getElementById('mapGrid');
+var mapEditToggle = document.getElementById('mapEditToggle');
+var mapEditMode = false;
+
+var STEP_OPTIONS = PE.STEP_NAMES.slice(); // ['white','25','50',...,'black']
+
+mapEditToggle.addEventListener('click', function() {
+  mapEditMode = !mapEditMode;
+  mapEditToggle.setAttribute('aria-pressed', mapEditMode ? 'true' : 'false');
+  mapEditToggle.textContent = mapEditMode ? 'Done Editing' : 'Edit Mappings';
+  renderMap();
+});
 
 function renderMap() {
   var rid = selectedMapRole;
@@ -955,6 +1015,20 @@ function renderMap() {
   if (!pal) { mapGrid.innerHTML = ''; return; }
   var r = getRoleById(rid);
   var prefix = (TOKEN_ROLES.indexOf(rid) >= 0) ? rid : (r ? r.label.toLowerCase().replace(/[^a-z0-9]/g,'-') : rid);
+
+  function buildStepSelect(map, key, isDark) {
+    var currentIdx = map[key];
+    var opts = '<option value="-1"' + (currentIdx === -1 ? ' selected' : '') + '>#FFFFFF (fixed)</option>';
+    for (var si = 0; si < STEP_OPTIONS.length; si++) {
+      var sel = (si === currentIdx) ? ' selected' : '';
+      opts += '<option value="' + si + '"' + sel + '>' + STEP_OPTIONS[si] + '</option>';
+    }
+    var changedCls = '';
+    // Highlight if changed from project defaults
+    var origMap = isDark ? (projectConfig && projectConfig.semanticMap ? projectConfig.semanticMap.dark : DEFAULT_DARK_MAP) : (projectConfig && projectConfig.semanticMap ? projectConfig.semanticMap.light : DEFAULT_LIGHT_MAP);
+    if (origMap && origMap[key] !== undefined && origMap[key] !== currentIdx) changedCls = ' map-step-changed';
+    return '<select class="map-step-select' + changedCls + '" data-map-key="' + key + '" data-map-theme="' + (isDark ? 'dark' : 'light') + '">' + opts + '</select>';
+  }
 
   function buildPane(map, title, isDark) {
     var cls = isDark ? 'map-pane map-pane--dark' : 'map-pane';
@@ -969,9 +1043,13 @@ function renderMap() {
         var stepLabel = idx === -1 ? 'fixed' : pal.steps[idx].name;
         html += '<div class="map-row">' +
           '<span class="map-swatch" style="background:' + hex + '" onclick="copyHex(\'' + hex + '\')" title="Click to copy"></span>' +
-          '<span class="map-name">--' + prefix + '-' + key + '</span>' +
-          '<span class="map-step">\u2190 ' + stepLabel + '</span>' +
-          '<span class="map-hex">' + hex + '</span></div>';
+          '<span class="map-name">--' + prefix + '-' + key + '</span>';
+        if (mapEditMode) {
+          html += buildStepSelect(map, key, isDark);
+        } else {
+          html += '<span class="map-step">\u2190 ' + stepLabel + '</span>';
+        }
+        html += '<span class="map-hex">' + hex + '</span></div>';
       }
     }
     html += '</div>';
@@ -979,6 +1057,38 @@ function renderMap() {
   }
 
   mapGrid.innerHTML = buildPane(LIGHT_MAP, 'Light Theme', false) + buildPane(DARK_MAP, 'Dark Theme', true);
+
+  // Wire edit events
+  if (mapEditMode) {
+    mapGrid.querySelectorAll('.map-step-select').forEach(function(sel) {
+      sel.addEventListener('change', function() {
+        var key = sel.getAttribute('data-map-key');
+        var theme = sel.getAttribute('data-map-theme');
+        var newIdx = parseInt(sel.value, 10);
+        // Validate: step index must be in range
+        if (newIdx < -1 || newIdx >= PE.STEP_NAMES.length) return;
+        if (theme === 'dark') {
+          DARK_MAP[key] = newIdx;
+        } else {
+          LIGHT_MAP[key] = newIdx;
+        }
+        // Warn if light and dark use same step for content/bg tokens
+        if (key.indexOf('content-') === 0 || key.indexOf('component-bg') === 0) {
+          var otherMap = (theme === 'dark') ? LIGHT_MAP : DARK_MAP;
+          if (otherMap[key] === newIdx && newIdx !== -1) {
+            sel.title = 'Warning: Light and Dark use same step — no visual difference between themes';
+            sel.style.outline = '2px solid #D97706';
+          } else {
+            sel.title = '';
+            sel.style.outline = '';
+          }
+        }
+        // Re-inject tokens with new mapping
+        injectAllTokens();
+        renderMap();
+      });
+    });
+  }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1361,6 +1471,32 @@ ghLogoutBtn.addEventListener('click', function() {
 
 ghCommitBtn.addEventListener('click', function() {
   if (!ghPat) return;
+
+  // ── WCAG GATE: Block deploy if any palette fails certification ──
+  var failedRoles = [];
+  for (var ci = 0; ci < roles.length; ci++) {
+    var cert = certs[roles[ci].id];
+    if (cert && cert.overall === 'FAILED') failedRoles.push(roles[ci].label);
+  }
+  if (failedRoles.length > 0) {
+    ghStatusEl.textContent = '\u2717 Deploy blocked — palette(s) failed WCAG certification: ' + failedRoles.join(', ');
+    ghStatusEl.className = 'gh-status err';
+    return;
+  }
+
+  // ── PREVIEW DIFF: Show what will change before committing ──
+  if (!ghCommitBtn._diffConfirmed) {
+    var diffHtml = buildPreviewDiff();
+    if (diffHtml) {
+      ghStatusEl.innerHTML = diffHtml;
+      ghStatusEl.className = 'gh-status';
+      ghCommitBtn._diffConfirmed = true;
+      ghCommitBtn.textContent = '\u2705 Confirm Deploy';
+      return;
+    }
+  }
+  ghCommitBtn._diffConfirmed = false;
+
   ghCommitBtn.disabled = true;
   ghCommitBtn.textContent = 'Deploying...';
   ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Building CSS files...';
@@ -1377,12 +1513,23 @@ ghCommitBtn.addEventListener('click', function() {
     { path: 'packages/tokens/src/surfaces.css', content: surfCSS }
   ];
 
-  ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Committing to GitHub...';
+  // Also update project config.json with current palette keys + mappings
+  var configToSave = buildUpdatedConfig();
+  if (configToSave) {
+    filesToCommit.push({ path: 'projects/' + projectId + '/config.json', content: JSON.stringify(configToSave, null, 2) + '\n' });
+  }
+
+  ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Committing ' + filesToCommit.length + ' files to GitHub...';
 
   ghMultiCommit(filesToCommit, 'Update color tokens via DTF Color Editor')
     .then(function() {
       ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Committed! Waiting for deploy...';
       ghStatusEl.className = 'gh-status ok';
+      // Update baseline for future diffs
+      if (configToSave) {
+        originalPaletteKeys = JSON.parse(JSON.stringify(configToSave.paletteKeys));
+        projectConfig = configToSave;
+      }
       ghPollDeploy();
     })
     .catch(function(e) {
@@ -1394,6 +1541,82 @@ ghCommitBtn.addEventListener('click', function() {
       ghCommitBtn.textContent = '\uD83D\uDE80 Commit & Deploy';
     });
 });
+
+// Build preview diff HTML showing what will change
+function buildPreviewDiff() {
+  var changes = [];
+
+  // Check palette key changes
+  if (originalPaletteKeys) {
+    for (var i = 0; i < roles.length; i++) {
+      var r = roles[i];
+      var key = ROLE_TO_PALETTE_KEY[r.id];
+      if (!key || !originalPaletteKeys[key]) continue;
+      var oldHex = originalPaletteKeys[key].toUpperCase();
+      var newHex = (r.keyHex || '').toUpperCase();
+      if (oldHex !== newHex) {
+        changes.push('<span style="font-weight:600">' + r.label + '</span>: ' +
+          '<span style="color:' + oldHex + ';\u25A0</span> ' + oldHex +
+          ' \u2192 <span style="color:' + newHex + '">\u25A0</span> ' + newHex);
+      }
+    }
+  }
+
+  // Check semantic map changes
+  var mapChanges = 0;
+  if (projectConfig && projectConfig.semanticMap) {
+    var origLight = projectConfig.semanticMap.light || {};
+    var origDark  = projectConfig.semanticMap.dark || {};
+    Object.keys(LIGHT_MAP).forEach(function(k) { if (origLight[k] !== LIGHT_MAP[k]) mapChanges++; });
+    Object.keys(DARK_MAP).forEach(function(k) { if (origDark[k] !== DARK_MAP[k]) mapChanges++; });
+  }
+  if (mapChanges > 0) changes.push(mapChanges + ' semantic mapping(s) changed');
+
+  if (changes.length === 0) return null;
+
+  // Count affected tokens
+  var affectedTokens = 0;
+  for (var j = 0; j < roles.length; j++) {
+    var r2 = roles[j];
+    var key2 = ROLE_TO_PALETTE_KEY[r2.id];
+    if (key2 && originalPaletteKeys && originalPaletteKeys[key2]) {
+      var old2 = originalPaletteKeys[key2].toUpperCase();
+      var new2 = (r2.keyHex || '').toUpperCase();
+      if (old2 !== new2) affectedTokens += 22; // 22 steps per palette
+    }
+  }
+  affectedTokens += mapChanges * TOKEN_ROLES.length; // each map change affects all roles
+
+  return '<div style="padding:8px 0;font-size:12px">' +
+    '<strong style="color:#92400E">\u26A0\uFE0F Review changes before deploying:</strong><br>' +
+    changes.map(function(c) { return '\u2022 ' + c; }).join('<br>') +
+    '<br><span style="color:var(--demo-fg-faint)">~' + affectedTokens + ' tokens will be regenerated. Click "Confirm Deploy" to proceed.</span>' +
+    '</div>';
+}
+
+// Build updated config.json with current palette keys + mappings
+function buildUpdatedConfig() {
+  if (!projectId) return null;
+  var cfg = projectConfig ? JSON.parse(JSON.stringify(projectConfig)) : {
+    id: projectId,
+    name: projectId,
+    description: '',
+    created: new Date().toISOString().split('T')[0]
+  };
+
+  // Update palette keys from current roles
+  cfg.paletteKeys = {};
+  for (var i = 0; i < roles.length; i++) {
+    var r = roles[i];
+    var key = ROLE_TO_PALETTE_KEY[r.id];
+    if (key) cfg.paletteKeys[key] = (r.keyHex || '').toUpperCase();
+  }
+
+  // Update semantic maps
+  cfg.semanticMap = { light: JSON.parse(JSON.stringify(LIGHT_MAP)), dark: JSON.parse(JSON.stringify(DARK_MAP)) };
+
+  return cfg;
+}
 
 function ghMultiCommit(files, message) {
   return ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/git/ref/heads/' + GH_BRANCH)
@@ -1660,20 +1883,66 @@ function buildSurfacesFileCSS() {
 }
 
 // ══════════════════════════════════════════════════════════════
-// INITIAL RENDER (with saved config restore)
+// LOAD PROJECT CONFIG & INITIAL RENDER
 // ══════════════════════════════════════════════════════════════
-var didRestore = loadSavedConfig();
-if (!didRestore) initRoles();
-generateAll();
-renderRolesList();
-refreshSelectors();
-injectAllTokens();
-renderMap();
-renderCertGrid();
-renderCertDetail(selectedCertRole);
-renderSteps();
-renderExport(currentFormat);
-updateSaveIndicator();
+
+function doInitialRender() {
+  var didRestore = loadSavedConfig();
+  if (!didRestore) initRoles();
+  generateAll();
+  renderRolesList();
+  refreshSelectors();
+  injectAllTokens();
+  renderMap();
+  renderCertGrid();
+  renderCertDetail(selectedCertRole);
+  renderSteps();
+  renderExport(currentFormat);
+  updateSaveIndicator();
+}
+
+// Try to load project config from deployed config.json
+(function loadProjectAndInit() {
+  var depth = (location.pathname.indexOf('/demo/') !== -1) ? '..' : '.';
+
+  // Try fetching status.json first to get project id, then config.json
+  fetch(depth + '/status.json?_cb=' + Date.now())
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(status) {
+      if (status && status.project && status.project.id) {
+        projectId = status.project.id;
+        // Try project-scoped config first, then root-level config
+        return fetch(depth + '/' + projectId + '/config.json?_cb=' + Date.now())
+          .then(function(r) { return r.ok ? r.json() : null; })
+          .catch(function() { return null; })
+          .then(function(cfg) {
+            if (cfg) return cfg;
+            // Fallback: try root config.json
+            return fetch(depth + '/config.json?_cb=' + Date.now())
+              .then(function(r) { return r.ok ? r.json() : null; })
+              .catch(function() { return null; });
+          });
+      }
+      // No project in status — try local config for dev
+      return fetch(depth + '/projects/desktop-pdf-editor/config.json?_cb=' + Date.now())
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .catch(function() { return null; });
+    })
+    .then(function(cfg) {
+      if (cfg && cfg.paletteKeys) {
+        projectConfig = cfg;
+        projectId = cfg.id || projectId;
+        originalPaletteKeys = JSON.parse(JSON.stringify(cfg.paletteKeys));
+        console.log('[DTF] Loaded project config:', projectId, Object.keys(cfg.paletteKeys).length, 'palette keys');
+      }
+    })
+    .catch(function(e) {
+      console.warn('[DTF] Could not load project config:', e.message);
+    })
+    .finally(function() {
+      doInitialRender();
+    });
+})();
 </script>
 <div class="copy-toast" id="copyToast"></div>
 </body>

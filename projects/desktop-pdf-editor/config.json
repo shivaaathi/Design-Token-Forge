@@ -15,6 +15,25 @@
     "desaturated":   "#71747C"
   },
 
+  "semanticMap": {
+    "light": {
+      "content-default":14,"content-strong":15,"content-subtle":10,"content-faint":7,
+      "component-bg-default":13,"component-bg-hover":14,"component-bg-pressed":15,
+      "component-outline-default":9,"component-outline-hover":10,"component-outline-pressed":12,
+      "component-separator":4,
+      "container-bg":2,"container-hover":3,"container-pressed":4,"container-outline":7,"container-separator":4,
+      "on-component":-1,"on-container":15
+    },
+    "dark": {
+      "content-default":5,"content-strong":4,"content-subtle":7,"content-faint":10,
+      "component-bg-default":12,"component-bg-hover":10,"component-bg-pressed":9,
+      "component-outline-default":12,"component-outline-hover":10,"component-outline-pressed":9,
+      "component-separator":17,
+      "container-bg":18,"container-hover":17,"container-pressed":16,"container-outline":14,"container-separator":17,
+      "on-component":-1,"on-container":4
+    }
+  },
+
   "tokenSources": {
     "primitives": "packages/tokens/src/primitives.css",
     "semantic":   "packages/tokens/src/semantic.css",

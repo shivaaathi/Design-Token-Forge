@@ -195,6 +195,15 @@ ${projLine}<p>This is a static token API served via GitHub Pages.</p>
     console.log(`  ✓ Backward compat → mirrored to dist/ root`);
   }
 
+  // ── Deploy project config.json so demo pages can load it ────
+  if (PROJECT_ID && projectConfig) {
+    const cfgDst = path.join(OUT_DIR, 'config.json');
+    fs.writeFileSync(cfgDst, JSON.stringify(projectConfig, null, 2));
+    console.log('  ✓ config.json  → project configuration');
+    // Also mirror to dist root for backward compat
+    fs.copyFileSync(cfgDst, path.join(BASE_OUT_DIR, 'config.json'));
+  }
+
   // ── Generate projects.json manifest ─────────────────────────
   const projectsDir = path.join(ROOT, 'projects');
   if (fs.existsSync(projectsDir)) {
