@@ -7,6 +7,50 @@
 
 window.DTF = window.DTF || { onThemeChange: null };
 
+/* ── Project Selector (injected into nav bar on every page) ── */
+(function(){
+  var nav = document.querySelector('.nav-actions');
+  if (!nav) return;
+
+  /* Determine base URL: ../status.json for demo pages, ./status.json for root */
+  var depth = (location.pathname.indexOf('/demo/') !== -1) ? '..' : '.';
+  var statusUrl = depth + '/status.json?_cb=' + Date.now();
+  var projectsUrl = depth + '/projects.json?_cb=' + Date.now();
+
+  /* Build DOM */
+  var wrap = document.createElement('div');
+  wrap.className = 'nav-project';
+  var label = document.createElement('span');
+  label.className = 'nav-project-label';
+  label.textContent = 'Project';
+  var sel = document.createElement('select');
+  sel.innerHTML = '<option>…</option>';
+  wrap.appendChild(label);
+  wrap.appendChild(sel);
+
+  /* Insert before theme toggle */
+  var toggle = document.getElementById('themeToggle');
+  if (toggle) nav.insertBefore(wrap, toggle);
+  else nav.appendChild(wrap);
+
+  /* Load current project from status, then load project list */
+  var currentId = '';
+  fetch(statusUrl).then(function(r){ return r.json(); }).then(function(d){
+    if (d.project && d.project.id) currentId = d.project.id;
+    return fetch(projectsUrl);
+  }).then(function(r){ return r.json(); }).then(function(list){
+    if (!list || !list.length) { sel.innerHTML = '<option>(none)</option>'; return; }
+    sel.innerHTML = '';
+    for (var i = 0; i < list.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = list[i].id;
+      opt.textContent = list[i].name;
+      if (list[i].id === currentId) opt.selected = true;
+      sel.appendChild(opt);
+    }
+  }).catch(function(){ sel.innerHTML = '<option>(offline)</option>'; });
+})();
+
 /* ── Inject Saved Color Tokens (from Color System page) ── */
 (function(){
   var savedCSS = localStorage.getItem('dtf-saved-tokens');
