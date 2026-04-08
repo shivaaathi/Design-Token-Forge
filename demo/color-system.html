@@ -95,7 +95,7 @@ html[data-theme="dark"] .cert-mini[data-status="FAILED"]{background:#7F1D1D;colo
 .map-pane--dark .map-step{color:#777}
 .map-hex{color:var(--demo-fg-faint);min-width:60px;text-align:right}
 .map-pane--dark .map-hex{color:#888}
-.map-edit-toggle{padding:5px 14px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:transparent;color:var(--demo-fg-subtle);font-size:var(--font-size-11,11px);font-weight:600;cursor:pointer;font-family:inherit;transition:all 120ms}
+.map-edit-toggle{margin-left:auto;padding:5px 14px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:transparent;color:var(--demo-fg-subtle);font-size:var(--font-size-11,11px);font-weight:600;cursor:pointer;font-family:inherit;transition:all 120ms;white-space:nowrap;align-self:center}
 .map-edit-toggle:hover{border-color:var(--primary-component-bg-default);color:var(--primary-content-default)}
 .map-edit-toggle[aria-pressed="true"]{background:var(--primary-component-bg-default);color:#fff;border-color:var(--primary-component-bg-default)}
 
@@ -354,12 +354,12 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
   <div class="section-header">
     <h2>2. T1 &mdash; Semantic Token Map</h2>
     <span class="section-tag">18 Tokens &times; Light/Dark</span>
+    <button class="map-edit-toggle" id="mapEditToggle" type="button">Edit Mappings</button>
   </div>
   <p class="section-desc">Each primitive step is assigned a semantic purpose. Select a role to see how its 22-step palette maps to 18 semantic tokens for both light and dark themes. Toggle <strong>Edit Mappings</strong> to customize step assignments.</p>
   <div style="padding:8px 0 0 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
     <label for="mapRoleSelect" style="font-size:var(--font-size-11,11px);font-weight:600;color:var(--demo-fg-subtle)">Inspect role:</label>
     <select class="role-select" id="mapRoleSelect"></select>
-    <button class="map-edit-toggle" id="mapEditToggle" type="button">Edit Mappings</button>
   </div>
   <div class="section-body">
     <div class="map-grid" id="mapGrid"></div>
@@ -373,11 +373,11 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
   <div class="section-header">
     <h2>2b. T2 &mdash; Surface Context Map</h2>
     <span class="section-tag">9 Surfaces &times; 16 Props</span>
+    <button class="map-edit-toggle" id="surfEditToggle" type="button">Edit Surface Map</button>
   </div>
   <p class="section-desc">Each surface context maps greyscale (or monochromatic for accent) steps to background, content, and component-modifier tokens. Select a surface to view and edit its step assignments.</p>
   <div style="padding:8px 0 0 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
     <div class="surf-tabs" id="surfTabs"></div>
-    <button class="map-edit-toggle" id="surfEditToggle" type="button">Edit Surface Map</button>
   </div>
   <div class="section-body" style="max-height:560px;overflow-y:auto">
     <table class="surf-table" id="surfTable"><tbody id="surfBody"></tbody></table>
