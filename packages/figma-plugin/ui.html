@@ -23,6 +23,12 @@
   .logo svg { width: 16px; height: 16px; }
   .header h1 { font-size: 14px; font-weight: 600; }
   .header p  { font-size: 10px; color: #888; margin-top: 1px; }
+  .project-badge {
+    display: none; margin-top: 3px; padding: 2px 8px;
+    border-radius: 4px; font-size: 10px; font-weight: 600;
+    background: #F0EAFF; color: #6D28D9; width: fit-content;
+  }
+  .project-badge.visible { display: block; }
 
   /* ── Connection bar ─────────────────────────────────── */
   .conn-bar {
@@ -233,6 +239,7 @@
   <div>
     <h1>Design Token Forge</h1>
     <p>Live sync &mdash; token changes appear here automatically</p>
+    <div class="project-badge" id="projectBadge"></div>
   </div>
 </div>
 
@@ -348,6 +355,7 @@
   var undoWarn   = document.getElementById('undoWarn');
   var autoSyncCb = document.getElementById('autoSyncCb');
   var serverUrlInput = document.getElementById('serverUrlInput');
+  var projectBadge = document.getElementById('projectBadge');
   var saveUrlBtn = document.getElementById('saveUrlBtn');
 
   /* Safe storage — Figma plugin iframes block localStorage */
@@ -417,8 +425,14 @@
   function updateConnectionUI(ok, data) {
     if (ok) {
       connBar.className = 'conn-bar live';
-      connText.textContent = (isStaticHost() ? 'GitHub Pages' : 'Live server') + ' — ' + (data.totalVariables || 0) + ' tokens';
+      var src = isStaticHost() ? 'GitHub Pages' : 'Live server';
+      connText.textContent = src + ' — ' + (data.totalVariables || 0) + ' tokens';
       connMeta.textContent = data.hash || '';
+      /* Show project name if present in status response */
+      if (data.project && data.project.name) {
+        projectBadge.textContent = data.project.name;
+        projectBadge.className = 'project-badge visible';
+      }
     } else {
       connBar.className = 'conn-bar error';
       connText.textContent = 'Cannot reach server — check Server URL setting';

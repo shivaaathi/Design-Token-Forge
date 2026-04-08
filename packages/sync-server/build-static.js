@@ -136,16 +136,17 @@ async function main() {
   console.log(`  ✓ status.json  → hash ${data.contentHash}`);
 
   // Write a minimal index.html for GitHub Pages root
+  const projLabel = projectConfig ? projectConfig.name : '';
+  const projLine = projLabel ? `<p><strong>Project:</strong> ${projLabel}</p>\n` : '';
   const indexHtml = `<!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>DTF Token API</title></head>
+<html><head><meta charset="utf-8"><title>DTF Token API${projLabel ? ' — ' + projLabel : ''}</title></head>
 <body>
 <h1>Design Token Forge — Token API</h1>
-<p>This is a static token API served via GitHub Pages.</p>
+${projLine}<p>This is a static token API served via GitHub Pages.</p>
 <ul>
   <li><a href="demo/editor.html"><strong>Token Editor</strong></a> — edit tokens live, auto-deploy to Figma</li>
   <li><a href="demo/">Component Explorer</a> — preview all components</li>
   <li><a href="status.json">status.json</a> — hash check (plugin polls this)</li>
-  <li><a href="tokens.json">tokens.json</a> — full variable payload</li>
   <li><a href="tokens.json">tokens.json</a> — full variable payload</li>
   <li><a href="demo/">demo/</a> — Component Explorer</li>
 </ul>
