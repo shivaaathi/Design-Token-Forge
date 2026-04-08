@@ -8,6 +8,7 @@ on:
       - 'packages/components/src/**'
       - 'packages/sync-server/**'
       - 'demo/**'
+      - 'projects/**'
   workflow_dispatch:
 
 permissions:
@@ -30,7 +31,7 @@ jobs:
           node-version: 20
 
       - name: Build static token files
-        run: node packages/sync-server/build-static.js --out-dir ./dist
+        run: node packages/sync-server/build-static.js --project desktop-pdf-editor --out-dir ./dist
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
