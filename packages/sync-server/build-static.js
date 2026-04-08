@@ -24,7 +24,13 @@ const __dirname  = path.dirname(__filename);
 
 const args   = process.argv.slice(2);
 const outIdx = args.indexOf('--out-dir');
-const OUT_DIR = outIdx !== -1 ? path.resolve(args[outIdx + 1]) : path.resolve(__dirname, '../../dist');
+const BASE_OUT_DIR = outIdx !== -1 ? path.resolve(args[outIdx + 1]) : path.resolve(__dirname, '../../dist');
+
+const projIdx = args.indexOf('--project');
+const PROJECT_ID = projIdx !== -1 ? args[projIdx + 1] : null;
+
+// If --project is specified, output into dist/{projectId}/
+const OUT_DIR = PROJECT_ID ? path.join(BASE_OUT_DIR, PROJECT_ID) : BASE_OUT_DIR;
 
 // ── Import the server's runExport by re-using its module ──────
 //    We dynamically import the server module and call runExport.
@@ -70,6 +76,19 @@ async function main() {
   console.log('');
   console.log('  Design Token Forge — Static Build');
   console.log('  ─────────────────────────────────');
+
+  // ── Load & validate project config (if --project specified) ──
+  const ROOT = path.resolve(__dirname, '../..');
+  let projectConfig = null;
+  if (PROJECT_ID) {
+    const configPath = path.join(ROOT, 'projects', PROJECT_ID, 'config.json');
+    if (!fs.existsSync(configPath)) {
+      console.error(`  ✗ Project config not found: ${configPath}`);
+      process.exit(1);
+    }
+    projectConfig = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+    console.log(`  Project: ${projectConfig.name} (${projectConfig.id})`);
+  }
 
   // Import the build functions from server.js
   // We need to make server.js export them. Let's do that.
@@ -130,7 +149,6 @@ async function main() {
   console.log('  ✓ index.html   → landing page');
 
   // ── Copy demo pages + dependencies ──────────────────────────
-  const ROOT = path.resolve(__dirname, '../..');
   const demoSrc = path.join(ROOT, 'demo');
   const demoDst = path.join(OUT_DIR, 'demo');
 
@@ -154,6 +172,15 @@ async function main() {
       copyDirSync(compSrc, compDst);
       console.log('  ✓ packages/components/src/');
     }
+  }
+
+  // ── Backward compatibility: copy tokens to dist root ────────
+  if (PROJECT_ID) {
+    const rootTokens = path.join(BASE_OUT_DIR, 'tokens.json');
+    const rootStatus = path.join(BASE_OUT_DIR, 'status.json');
+    fs.copyFileSync(path.join(OUT_DIR, 'tokens.json'), rootTokens);
+    fs.copyFileSync(path.join(OUT_DIR, 'status.json'), rootStatus);
+    console.log(`  ✓ Backward compat → dist/tokens.json & dist/status.json`);
   }
 
   console.log('');

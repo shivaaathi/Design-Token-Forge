@@ -13,11 +13,11 @@
 
 | # | Action | How to verify | Status |
 |---|--------|--------------|--------|
-| 0.1 | Git tag current working state | `git tag v1.0-pre-multiproject` | ☐ |
-| 0.2 | Export current `tokens.json` as baseline | `cp dist/tokens.json dist/tokens-baseline.json` | ☐ |
-| 0.3 | Record current Figma variable count | Open plugin → note total variables in status | ☐ |
+| 0.1 | Git tag current working state | `git tag v1.0-pre-multiproject` | ✅ |
+| 0.2 | Export current `tokens.json` as baseline | `cp dist/tokens.json dist/tokens-baseline.json` (250299 bytes) | ✅ |
+| 0.3 | Record current Figma variable count | 610 variables, 6 collections | ✅ |
 | 0.4 | Screenshot all 6 Figma collections | Manual — document current mode count per collection | ☐ |
-| 0.5 | Record `status.json` hash | `cat dist/status.json` — save the `contentHash` | ☐ |
+| 0.5 | Record `status.json` hash | `contentHash: 2f02a55f6c79` | ✅ |
 | 0.6 | Run `node demo/validate-sizes.js` | Must exit 0 with no violations | ☐ |
 | 0.7 | Note all files in `dist/` | `find dist/ -type f | wc -l` | ☐ |
 
@@ -43,9 +43,9 @@
 | **R1.5** Component tokens (comp size) get dropped | 10 density modes lost | Low | Verify comp size collection has exactly 10 modes in output |
 
 ### QC Gate — Phase 1 Complete When:
-- [ ] `diff dist/desktop-pdf-editor/tokens.json dist/tokens-baseline.json` shows **zero differences** (or only expected path/timestamp changes)
-- [ ] `status.json` contentHash matches baseline (same tokens = same hash)
-- [ ] Old `dist/tokens.json` still exists (backward compatible)
+- [x] `diff dist/desktop-pdf-editor/tokens.json dist/tokens-baseline.json` shows **zero differences** (only `_exportMs` timing differ)
+- [x] `status.json` contentHash matches baseline: `2f02a55f6c79` = `2f02a55f6c79`
+- [x] Old `dist/tokens.json` still exists (backward compatible — copied from project output)
 
 ---
 
