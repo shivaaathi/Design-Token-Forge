@@ -65,15 +65,18 @@ html[data-theme="dark"] .cert-mini[data-status="FAILED"]{background:#7F1D1D;colo
 .add-role-btn{width:100%;padding:10px 16px;border:2px dashed var(--demo-border);border-radius:var(--radius-md,6px);background:transparent;color:var(--demo-fg-subtle);font-size:var(--font-size-12,12px);font-weight:600;cursor:pointer;transition:all 120ms;font-family:inherit;text-align:center}
 .add-role-btn:hover{border-color:var(--primary-component-bg-default);color:var(--primary-content-default);background:var(--primary-container-bg)}
 
-/* ── Save / Reset Bar ─────────────────────────────────────── */
-.save-bar{display:flex;align-items:center;gap:10px;padding:12px 24px;border-top:1px solid var(--demo-border)}
-.save-bar-msg{font-size:var(--font-size-10,10px);color:var(--demo-fg-faint);font-style:italic;margin-right:auto}
-.save-btn,.reset-btn{padding:7px 18px;border-radius:var(--radius-sm,4px);font-size:var(--font-size-12,12px);font-weight:700;cursor:pointer;border:1px solid var(--demo-border);font-family:inherit;transition:all 120ms}
-.save-btn{background:#166534;color:#fff;border-color:#166534}
+/* ── Global Sticky Save Bar ────────────────────────────────── */
+.global-save-bar{position:sticky;bottom:0;z-index:50;display:flex;align-items:center;gap:12px;padding:10px 24px;background:var(--demo-surface);border-top:2px solid var(--demo-border);box-shadow:0 -4px 16px rgba(0,0,0,.08)}
+html[data-theme="dark"] .global-save-bar{box-shadow:0 -4px 16px rgba(0,0,0,.3)}
+.global-save-bar .save-bar-msg{font-size:var(--font-size-10,10px);color:var(--demo-fg-faint);font-style:italic;margin-right:auto}
+.save-btn{padding:7px 18px;border-radius:var(--radius-sm,4px);font-size:var(--font-size-12,12px);font-weight:700;cursor:pointer;border:1px solid #166534;background:#166534;color:#fff;font-family:inherit;transition:all 120ms}
 .save-btn:hover{background:#15803D}
 .save-btn[data-saved]{background:#DCFCE7;color:#166534;border-color:#16A34A}
-.reset-btn{background:transparent;color:var(--demo-fg-subtle)}
-.reset-btn:hover{background:#FEE2E2;color:#991B1B;border-color:#DC2626}
+
+/* ── Section-level Reset Link ─────────────────────────────── */
+.section-reset{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border:none;border-radius:var(--radius-sm,4px);background:transparent;color:var(--demo-fg-faint);font-size:var(--font-size-10,10px);font-weight:600;cursor:pointer;font-family:inherit;transition:all 120ms;margin-left:auto;align-self:center;white-space:nowrap}
+.section-reset:hover{color:#991B1B;background:#FEE2E2}
+.section-reset svg{width:12px;height:12px;flex-shrink:0}
 
 /* ── Role Selector ────────────────────────────────────────── */
 .role-select{padding:5px 10px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:var(--demo-surface);color:var(--demo-fg);font-size:var(--font-size-12,12px);font-weight:500;cursor:pointer;font-family:inherit}
@@ -304,6 +307,7 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
   <a href="#sec-cert"><span class="sn-num">3b</span>Trust Certs</a>
   <a href="#sec-steps"><span class="sn-num">4</span>Step Details</a>
   <a href="#sec-export"><span class="sn-num">5</span>Export</a>
+  <a href="#sec-deploy"><span class="sn-num">6</span>Deploy</a>
 </aside>
 
 <div class="page-content">
@@ -314,35 +318,13 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
   <div class="section-header">
     <h2>1. Color Roles</h2>
     <span class="section-tag">All Palettes</span>
+    <button class="section-reset" id="resetRolesBtn" type="button" title="Reset roles to defaults"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>Reset Roles</button>
   </div>
   <p class="section-desc">Each role generates a WCAG-guaranteed 22-step palette from a single key color. Desaturated is auto-derived from the primary hue. Add custom roles for secondary, tertiary, or accent colors.</p>
   <div class="section-body">
     <div class="role-list" id="rolesList"></div>
     <div class="add-role-wrap">
       <button class="add-role-btn" id="addRoleBtn" type="button">+ Add Color Role</button>
-    </div>
-    <div class="save-bar">
-      <span class="save-bar-msg" id="saveMsg"></span>
-      <button class="reset-btn" id="resetBtn" type="button">Reset to Default</button>
-      <button class="save-btn" id="saveBtn" type="button">Save &amp; Apply</button>
-      <button class="deploy-btn" id="deployBtn" type="button">🚀 Deploy to Figma</button>
-    </div>
-    <!-- GitHub deploy panel -->
-    <div class="gh-deploy-panel" id="ghPanel" style="display:none">
-      <div class="gh-deploy-inner">
-        <div class="gh-auth-row" id="ghAuthRow">
-          <span class="gh-label">GitHub Token:</span>
-          <input type="password" id="ghPatInput" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
-          <button class="gh-connect-btn" id="ghConnectBtn" type="button">Connect</button>
-          <a href="https://github.com/settings/tokens/new?scopes=repo&description=DTF+Color+Editor" target="_blank" rel="noopener" class="gh-help-link">Get token</a>
-        </div>
-        <div class="gh-ready-row" id="ghReadyRow" style="display:none">
-          <span class="gh-user" id="ghUser"></span>
-          <button class="gh-commit-btn" id="ghCommitBtn" type="button">🚀 Commit &amp; Deploy</button>
-          <button class="gh-logout-btn" id="ghLogoutBtn" type="button">Disconnect</button>
-        </div>
-        <div class="gh-status" id="ghStatus"></div>
-      </div>
     </div>
   </div>
 </section>
@@ -355,6 +337,7 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
     <h2>2. T1 &mdash; Semantic Token Map</h2>
     <span class="section-tag">18 Tokens &times; Light/Dark</span>
     <button class="map-edit-toggle" id="mapEditToggle" type="button">Edit Mappings</button>
+    <button class="section-reset" id="resetMapBtn" type="button" title="Reset T1 maps to defaults"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>Reset Maps</button>
   </div>
   <p class="section-desc">Each primitive step is assigned a semantic purpose. Select a role to see how its 22-step palette maps to 18 semantic tokens for both light and dark themes. Toggle <strong>Edit Mappings</strong> to customize step assignments.</p>
   <div style="padding:8px 0 0 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
@@ -374,6 +357,7 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
     <h2>2b. T2 &mdash; Surface Context Map</h2>
     <span class="section-tag">9 Surfaces &times; 16 Props</span>
     <button class="map-edit-toggle" id="surfEditToggle" type="button">Edit Surface Map</button>
+    <button class="section-reset" id="surfResetBtn" type="button" title="Reset surface maps to defaults"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>Reset Surfaces</button>
   </div>
   <p class="section-desc">Each surface context maps greyscale (or monochromatic for accent) steps to background, content, and component-modifier tokens. Select a surface to view and edit its step assignments.</p>
   <div style="padding:8px 0 0 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
@@ -381,10 +365,6 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
   </div>
   <div class="section-body" style="max-height:560px;overflow-y:auto">
     <table class="surf-table" id="surfTable"><tbody id="surfBody"></tbody></table>
-  </div>
-  <div class="save-bar" style="border-top:1px solid var(--demo-border);padding:8px 24px">
-    <span class="save-bar-msg" id="surfSaveMsg"></span>
-    <button class="reset-btn" id="surfResetBtn" type="button">Reset Surface Maps</button>
   </div>
 </section>
 
@@ -577,7 +557,45 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
   </div>
 </section>
 
+<!-- ═══════════════ 6. Deploy ══════════════════════════ -->
+<section class="section" id="sec-deploy">
+  <div class="section-header">
+    <h2>6. Deploy to Figma</h2>
+    <span class="section-tag">GitHub &rarr; Pages &rarr; Plugin</span>
+  </div>
+  <p class="section-desc">Push all changes (roles, T1 maps, T2 surfaces, primitives) to GitHub. The Figma plugin auto-detects the new tokens on the deployed Pages site.</p>
+  <div class="section-body" style="padding:0">
+    <div style="padding:16px 24px;display:flex;align-items:center;gap:10px">
+      <button class="deploy-btn" id="deployBtn" type="button">🚀 Connect &amp; Deploy</button>
+      <span style="font-size:var(--font-size-10,10px);color:var(--demo-fg-faint)">Requires a GitHub personal access token with <code>repo</code> scope</span>
+    </div>
+    <div class="gh-deploy-panel" id="ghPanel" style="display:none">
+      <div class="gh-deploy-inner">
+        <div class="gh-auth-row" id="ghAuthRow">
+          <span class="gh-label">GitHub Token:</span>
+          <input type="password" id="ghPatInput" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
+          <button class="gh-connect-btn" id="ghConnectBtn" type="button">Connect</button>
+          <a href="https://github.com/settings/tokens/new?scopes=repo&description=DTF+Color+Editor" target="_blank" rel="noopener" class="gh-help-link">Get token</a>
+        </div>
+        <div class="gh-ready-row" id="ghReadyRow" style="display:none">
+          <span class="gh-user" id="ghUser"></span>
+          <button class="gh-commit-btn" id="ghCommitBtn" type="button">🚀 Commit &amp; Deploy</button>
+          <button class="gh-logout-btn" id="ghLogoutBtn" type="button">Disconnect</button>
+        </div>
+        <div class="gh-status" id="ghStatus"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 </main>
+
+<!-- ── Global Sticky Save Bar ──────────────────────────── -->
+<div class="global-save-bar" id="globalSaveBar">
+  <span class="save-bar-msg" id="saveMsg"></span>
+  <button class="save-btn" id="saveBtn" type="button">Save &amp; Apply</button>
+</div>
+
 </div>
 </div>
 
@@ -1210,7 +1228,7 @@ var SURF_PROP_GROUPS = [
 ];
 
 // Editable surface maps (start as copies of the hardcoded defaults)
-var SURF_L = {
+var DEFAULT_SURF_L = {
   bright:{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'150','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'150'},
   base:{bg:'25',hover:'50',pressed:'75',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'white','cm-bg-hover':'25','cm-bg-pressed':'50','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'},
   dim:{bg:'50',hover:'75',pressed:'100',outline:'175',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'300','cm-separator':'175'},
@@ -1220,7 +1238,7 @@ var SURF_L = {
   float:{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'550','ct-faint':'400','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'175','cm-outline-hover':'250','cm-outline-pressed':'300','cm-separator':'175'},
   inverse:{bg:'900',hover:'850',pressed:'800',outline:'700',separator:'700','ct-default':'25','ct-strong':'white','ct-subtle':'250','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'}
 };
-var SURF_D = {
+var DEFAULT_SURF_D = {
   bright:{bg:'850',hover:'800',pressed:'750',outline:'700',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'800','cm-bg-hover':'750','cm-bg-pressed':'700','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
   base:{bg:'900',hover:'850',pressed:'800',outline:'750',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
   dim:{bg:'900',hover:'850',pressed:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'},
@@ -1230,8 +1248,13 @@ var SURF_D = {
   float:{bg:'750',hover:'700',pressed:'600',outline:'550',separator:'550','ct-default':'25','ct-strong':'white','ct-subtle':'200','ct-faint':'300','cm-bg':'700','cm-bg-hover':'600','cm-bg-pressed':'550','cm-outline':'500','cm-outline-hover':'450','cm-outline-pressed':'400','cm-separator':'550'},
   inverse:{bg:'900',hover:'850',pressed:'800',outline:'700',separator:'700','ct-default':'25','ct-strong':'white','ct-subtle':'250','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'}
 };
-var SURF_LA = {bg:'25',hover:'50',pressed:'75',outline:'175',separator:'175','ct-default':'800','ct-strong':'900','ct-subtle':'700','ct-faint':'500','cm-bg':'white','cm-bg-hover':'25','cm-bg-pressed':'50','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'};
-var SURF_DA = {bg:'900',hover:'850',pressed:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'150','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'};
+var DEFAULT_SURF_LA = {bg:'25',hover:'50',pressed:'75',outline:'175',separator:'175','ct-default':'800','ct-strong':'900','ct-subtle':'700','ct-faint':'500','cm-bg':'white','cm-bg-hover':'25','cm-bg-pressed':'50','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'};
+var DEFAULT_SURF_DA = {bg:'900',hover:'850',pressed:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'150','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'};
+
+var SURF_L = JSON.parse(JSON.stringify(DEFAULT_SURF_L));
+var SURF_D = JSON.parse(JSON.stringify(DEFAULT_SURF_D));
+var SURF_LA = JSON.parse(JSON.stringify(DEFAULT_SURF_LA));
+var SURF_DA = JSON.parse(JSON.stringify(DEFAULT_SURF_DA));
 
 var surfTabs = document.getElementById('surfTabs');
 var surfBody = document.getElementById('surfBody');
@@ -1386,8 +1409,13 @@ function renderSurfTable() {
 }
 
 document.getElementById('surfResetBtn').addEventListener('click', function() {
-  // Reset surface maps to hardcoded defaults — reinitialize from the const copies
-  location.reload(); // simplest reset
+  // Reset surface maps to hardcoded defaults
+  SURF_L = JSON.parse(JSON.stringify(DEFAULT_SURF_L));
+  SURF_D = JSON.parse(JSON.stringify(DEFAULT_SURF_D));
+  SURF_LA = JSON.parse(JSON.stringify(DEFAULT_SURF_LA));
+  SURF_DA = JSON.parse(JSON.stringify(DEFAULT_SURF_DA));
+  renderSurfTable();
+  showSaveMsg('T2 surface maps reset to defaults');
 });
 
 renderSurfTabs();
@@ -1587,7 +1615,6 @@ document.querySelectorAll('.switch').forEach(function(sw) {
 // SAVE / RESET / LOAD (localStorage)
 // ══════════════════════════════════════════════════════════════
 var saveBtn = document.getElementById('saveBtn');
-var resetBtn = document.getElementById('resetBtn');
 var saveMsg = document.getElementById('saveMsg');
 
 function buildSaveableCSS() {
@@ -1696,23 +1723,30 @@ saveBtn.addEventListener('click', function() {
   }, 2000);
 });
 
-resetBtn.addEventListener('click', function() {
-  localStorage.removeItem(STORAGE_KEY_TOKENS);
-  localStorage.removeItem(STORAGE_KEY_CONFIG);
+// ── Per-section Reset Handlers ────────────────────────────────
+// Reset Roles (Section 1) — revert to default key colors
+document.getElementById('resetRolesBtn').addEventListener('click', function() {
   customCounter = 0;
-  initRoles();
+  roles = DEFAULT_ROLES.map(function(r) { return Object.assign({}, r); });
   generateAll();
   renderRolesList();
   refreshSelectors();
   injectAllTokens();
   renderMap();
-  renderSurfTabs();
   renderSurfTable();
   renderCertGrid();
   renderCertDetail(selectedCertRole);
   renderSteps();
   renderExport(currentFormat);
-  showSaveMsg('Reset to defaults \u2014 component pages will use original tokens');
+  showSaveMsg('Color roles reset to defaults');
+});
+
+// Reset T1 Maps (Section 2) — revert semantic maps
+document.getElementById('resetMapBtn').addEventListener('click', function() {
+  resetMaps();
+  injectAllTokens();
+  renderMap();
+  showSaveMsg('T1 semantic maps reset to defaults');
 });
 
 // ══════════════════════════════════════════════════════════════
