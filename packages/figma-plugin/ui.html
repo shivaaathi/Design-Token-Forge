@@ -23,12 +23,38 @@
   .logo svg { width: 16px; height: 16px; }
   .header h1 { font-size: 14px; font-weight: 600; }
   .header p  { font-size: 10px; color: #888; margin-top: 1px; }
-  .project-badge {
-    display: none; margin-top: 3px; padding: 2px 8px;
-    border-radius: 4px; font-size: 10px; font-weight: 600;
-    background: #F0EAFF; color: #6D28D9; width: fit-content;
+
+  /* ── Project bar (top-most element) ────────────────── */
+  .project-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px; margin: -16px -16px 12px -16px;
+    background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+    color: #fff;
   }
-  .project-badge.visible { display: block; }
+  .project-bar-label {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; opacity: 0.7; white-space: nowrap;
+  }
+  .project-bar select {
+    flex: 1; padding: 5px 8px; border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.15); color: #fff;
+    font-size: 12px; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+    padding-right: 24px;
+  }
+  .project-bar select:focus { outline: none; border-color: rgba(255,255,255,0.6); }
+  .project-bar select option { color: #333; background: #fff; }
+  .btn-new-project {
+    padding: 5px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.15); color: #fff;
+    font-size: 11px; font-weight: 600; cursor: pointer;
+    white-space: nowrap; font-family: inherit;
+  }
+  .btn-new-project:hover { background: rgba(255,255,255,0.25); }
 
   /* ── Connection bar ─────────────────────────────────── */
   .conn-bar {
@@ -229,6 +255,13 @@
 </head>
 <body>
 
+<!-- Project bar (top-most) -->
+<div class="project-bar" id="projectBar">
+  <span class="project-bar-label">Project</span>
+  <select id="projectSelect"><option value="">Loading&hellip;</option></select>
+  <button class="btn-new-project" id="newProjectBtn" title="Create new project">+ New</button>
+</div>
+
 <!-- Header -->
 <div class="header">
   <div class="logo">
@@ -239,7 +272,6 @@
   <div>
     <h1>Design Token Forge</h1>
     <p>Live sync &mdash; token changes appear here automatically</p>
-    <div class="project-badge" id="projectBadge"></div>
   </div>
 </div>
 
@@ -355,7 +387,8 @@
   var undoWarn   = document.getElementById('undoWarn');
   var autoSyncCb = document.getElementById('autoSyncCb');
   var serverUrlInput = document.getElementById('serverUrlInput');
-  var projectBadge = document.getElementById('projectBadge');
+  var projectSelect = document.getElementById('projectSelect');
+  var newProjectBtn = document.getElementById('newProjectBtn');
   var saveUrlBtn = document.getElementById('saveUrlBtn');
 
   /* Safe storage — Figma plugin iframes block localStorage */
@@ -367,6 +400,9 @@
   var SERVER = storageGet('dtf-server-url') || DEFAULT_SERVER;
   serverUrlInput.value = SERVER;
 
+  var CURRENT_PROJECT = storageGet('dtf-project-id') || '';
+  var projectList = [];
+
   /* Detect if server is static (GitHub Pages) or live (localhost/API) */
   function isStaticHost() {
     return SERVER.indexOf('github.io') !== -1 || SERVER.indexOf('.pages.dev') !== -1;
@@ -375,8 +411,10 @@
     /* Static hosts serve .json files; live server uses clean paths */
     if (isStaticHost()) {
       var cb = '_cb=' + Date.now();  /* cache-bust GitHub Pages CDN */
-      if (endpoint === '/status')  return SERVER + '/status.json?' + cb;
-      if (endpoint === '/tokens')  return SERVER + '/tokens.json?' + cb;
+      var base = CURRENT_PROJECT ? SERVER + '/' + CURRENT_PROJECT : SERVER;
+      if (endpoint === '/status')  return base + '/status.json?' + cb;
+      if (endpoint === '/tokens')  return base + '/tokens.json?' + cb;
+      if (endpoint === '/projects') return SERVER + '/projects.json?' + cb;
       return null; /* changelog, ack not available on static */
     }
     return SERVER + endpoint;
@@ -428,11 +466,7 @@
       var src = isStaticHost() ? 'GitHub Pages' : 'Live server';
       connText.textContent = src + ' — ' + (data.totalVariables || 0) + ' tokens';
       connMeta.textContent = data.hash || '';
-      /* Show project name if present in status response */
-      if (data.project && data.project.name) {
-        projectBadge.textContent = data.project.name;
-        projectBadge.className = 'project-badge visible';
-      }
+
     } else {
       connBar.className = 'conn-bar error';
       connText.textContent = 'Cannot reach server — check Server URL setting';
@@ -758,6 +792,7 @@
   }
 
   /* ── Start ───────────────────────────────────────────── */
+  fetchProjects();
   startPolling();
 
   /* ── Server URL config ──────────────────────────────── */
@@ -788,6 +823,58 @@
   var GH_PAGES_URL = 'https://sridharravi90.github.io/Design-Token-Forge';
   document.getElementById('presetGH').addEventListener('click', function() {
     setServerUrl(GH_PAGES_URL);
+  });
+
+  /* ── Project selector ──────────────────────────────── */
+  function fetchProjects() {
+    var url = apiUrl('/projects');
+    if (!url) {
+      projectSelect.innerHTML = '<option value="">(local server)</option>';
+      return;
+    }
+    fetch(url).then(function(r) { return r.json(); }).then(function(list) {
+      projectList = list;
+      projectSelect.innerHTML = '';
+      if (list.length === 0) {
+        projectSelect.innerHTML = '<option value="">No projects</option>';
+        return;
+      }
+      for (var i = 0; i < list.length; i++) {
+        var opt = document.createElement('option');
+        opt.value = list[i].id;
+        opt.textContent = list[i].name;
+        if (list[i].id === CURRENT_PROJECT) opt.selected = true;
+        projectSelect.appendChild(opt);
+      }
+      /* If no saved project, select the first one */
+      if (!CURRENT_PROJECT && list.length > 0) {
+        CURRENT_PROJECT = list[0].id;
+        storageSet('dtf-project-id', CURRENT_PROJECT);
+      }
+    }).catch(function() {
+      projectSelect.innerHTML = '<option value="">(offline)</option>';
+    });
+  }
+
+  projectSelect.addEventListener('change', function() {
+    CURRENT_PROJECT = projectSelect.value;
+    storageSet('dtf-project-id', CURRENT_PROJECT);
+    /* Reset state and re-poll with new project path */
+    connected = false;
+    figmaHash = '';
+    tokenData = null;
+    serverStatus = null;
+    if (pollTimer) clearInterval(pollTimer);
+    startPolling();
+    log('Switched to project: ' + CURRENT_PROJECT);
+  });
+
+  newProjectBtn.addEventListener('click', function() {
+    var name = prompt('New project name:');
+    if (!name || !name.trim()) return;
+    var id = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    if (!id) return;
+    alert('Project "' + name.trim() + '" (id: ' + id + ')\n\nTo set it up:\n1. Create  projects/' + id + '/config.json\n2. Copy a palette config from an existing project\n3. Run:  node packages/sync-server/build-static.js --project ' + id + '\n4. Push to deploy');
   });
 </script>
 </body>

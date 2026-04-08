@@ -195,6 +195,22 @@ ${projLine}<p>This is a static token API served via GitHub Pages.</p>
     console.log(`  ✓ Backward compat → mirrored to dist/ root`);
   }
 
+  // ── Generate projects.json manifest ─────────────────────────
+  const projectsDir = path.join(ROOT, 'projects');
+  if (fs.existsSync(projectsDir)) {
+    const projectList = [];
+    for (const entry of fs.readdirSync(projectsDir, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      const cfgPath = path.join(projectsDir, entry.name, 'config.json');
+      if (!fs.existsSync(cfgPath)) continue;
+      const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf-8'));
+      projectList.push({ id: cfg.id, name: cfg.name, description: cfg.description || '' });
+    }
+    const manifestPath = path.join(BASE_OUT_DIR, 'projects.json');
+    fs.writeFileSync(manifestPath, JSON.stringify(projectList, null, 2));
+    console.log(`  ✓ projects.json → ${projectList.length} project(s)`);
+  }
+
   console.log('');
   console.log(`  Output: ${OUT_DIR}`);
   console.log(`  Deploy this folder to GitHub Pages.`);
