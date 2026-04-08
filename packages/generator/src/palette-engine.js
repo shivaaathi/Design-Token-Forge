@@ -170,7 +170,7 @@ function toneToOklchL(tone) {
 // ══════════════════════════════════════════════════════════════
 
 /**
- * Generate a 21-step palette from a single key hex color.
+ * Generate a 22-step palette from a single key hex color.
  *
  * @param {string} keyHex - Key color as hex (e.g. "#E53F28")
  * @returns {{ steps: {name:string, hex:string, tone:number, contrast:number}[] }}
@@ -182,8 +182,8 @@ export function generatePalette(keyHex) {
     const name = STEP_NAMES[i];
 
     // White and black anchors
-    if (i === 0)  return { name, hex: '#FFFFFF', tone: 100, contrast: 1.0 };
-    if (i === 20) return { name, hex: '#000000', tone: 0,   contrast: 21.0 };
+    if (i === 0)                    return { name, hex: '#FFFFFF', tone: 100, contrast: 1.0 };
+    if (i === STEP_NAMES.length - 1) return { name, hex: '#000000', tone: 0,   contrast: 21.0 };
 
     // Target OKLCH L from the fixed tone
     const targetL = toneToOklchL(tone);
@@ -234,6 +234,8 @@ export function certifyPalette(palette) {
   const hexes = palette.steps.map(s => s.hex);
   const tests = [];
   let totalPass = 0, totalWarn = 0, totalFail = 0;
+  const N = STEP_NAMES.length;
+  const idx = name => STEP_NAMES.indexOf(name);
 
   // ── Test 1: Valid sRGB ────────────────────────────────────
   {
@@ -244,8 +246,8 @@ export function certifyPalette(palette) {
       return { step: STEP_NAMES[i], hex: h, pass: valid && inRange };
     });
     const passed = details.filter(d => d.pass).length;
-    const status = passed === 21 ? 'PASS' : 'FAIL';
-    tests.push({ name: '1. Valid sRGB Colors', description: 'Every step is a displayable sRGB hex color', status, checked: 21, passed, details });
+    const status = passed === N ? 'PASS' : 'FAIL';
+    tests.push({ name: '1. Valid sRGB Colors', description: 'Every step is a displayable sRGB hex color', status, checked: N, passed, details });
     if (status === 'PASS') totalPass++; else totalFail++;
   }
 
@@ -253,25 +255,25 @@ export function certifyPalette(palette) {
   {
     const tones = hexes.map(h => hexToLstar(h));
     const details = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < N - 1; i++) {
       const delta = +(tones[i] - tones[i + 1]).toFixed(2);
       details.push({ from: STEP_NAMES[i], to: STEP_NAMES[i + 1], delta, pass: delta >= 0 });
     }
     const passed = details.filter(d => d.pass).length;
-    const status = passed === 20 ? 'PASS' : 'FAIL';
-    tests.push({ name: '2. Monotonic Lightness', description: 'Every step is darker than the previous (no brightness reversals)', status, checked: 20, passed, details: details.filter(d => !d.pass) });
+    const status = passed === N - 1 ? 'PASS' : 'FAIL';
+    tests.push({ name: '2. Monotonic Lightness', description: 'Every step is darker than the previous (no brightness reversals)', status, checked: N - 1, passed, details: details.filter(d => !d.pass) });
     if (status === 'PASS') totalPass++; else totalFail++;
   }
 
   // ── Test 3: WCAG Contrast Compliance ──────────────────────
   {
     const checks = [
-      { label: 'Step 600 on white (body text)',  fg: hexes[14], bg: '#FFFFFF', threshold: 4.5, level: 'AA' },
-      { label: 'Step 700 on white (body text)',  fg: hexes[15], bg: '#FFFFFF', threshold: 4.5, level: 'AA' },
-      { label: 'Step 500 on white (large text)', fg: hexes[12], bg: '#FFFFFF', threshold: 3.0, level: 'AA-lg' },
-      { label: 'Step 900 on white (AAA text)',   fg: hexes[19], bg: '#FFFFFF', threshold: 7.0, level: 'AAA' },
-      { label: 'White on step 500 (button)',     fg: '#FFFFFF', bg: hexes[12], threshold: 3.0, level: 'AA-lg' },
-      { label: 'Step 600 on step 50 (card text)',fg: hexes[14], bg: hexes[2],  threshold: 4.5, level: 'AA' },
+      { label: 'Step 600 on white (body text)',  fg: hexes[idx('600')], bg: '#FFFFFF', threshold: 4.5, level: 'AA' },
+      { label: 'Step 700 on white (body text)',  fg: hexes[idx('700')], bg: '#FFFFFF', threshold: 4.5, level: 'AA' },
+      { label: 'Step 500 on white (large text)', fg: hexes[idx('500')], bg: '#FFFFFF', threshold: 3.0, level: 'AA-lg' },
+      { label: 'Step 900 on white (AAA text)',   fg: hexes[idx('900')], bg: '#FFFFFF', threshold: 7.0, level: 'AAA' },
+      { label: 'White on step 500 (button)',     fg: '#FFFFFF', bg: hexes[idx('500')], threshold: 3.0, level: 'AA-lg' },
+      { label: 'Step 600 on step 50 (card text)',fg: hexes[idx('600')], bg: hexes[idx('50')],  threshold: 4.5, level: 'AA' },
     ];
     const details = checks.map(c => {
       const ratio = +wcagContrast(c.fg, c.bg).toFixed(2);
@@ -286,11 +288,11 @@ export function certifyPalette(palette) {
   // ── Test 4: Dark Mode Readability ─────────────────────────
   {
     const checks = [
-      { label: 'Step 200 on step 900', light: 7, dark: 19, threshold: 4.5 },
-      { label: 'Step 300 on step 900', light: 9, dark: 19, threshold: 4.5 },
-      { label: 'Step 200 on step 850', light: 7, dark: 18, threshold: 4.5 },
-      { label: 'Step 100 on step 800', light: 4, dark: 17, threshold: 4.5 },
-      { label: 'Step 50 on step 900',  light: 2, dark: 19, threshold: 7.0 },
+      { label: 'Step 200 on step 900', light: idx('200'), dark: idx('900'), threshold: 4.5 },
+      { label: 'Step 300 on step 900', light: idx('300'), dark: idx('900'), threshold: 4.5 },
+      { label: 'Step 200 on step 850', light: idx('200'), dark: idx('850'), threshold: 4.5 },
+      { label: 'Step 100 on step 800', light: idx('100'), dark: idx('800'), threshold: 4.5 },
+      { label: 'Step 50 on step 900',  light: idx('50'),  dark: idx('900'), threshold: 7.0 },
     ];
     const details = checks.map(c => {
       const ratio = +wcagContrast(hexes[c.light], hexes[c.dark]).toFixed(2);
@@ -305,21 +307,22 @@ export function certifyPalette(palette) {
   // ── Test 5: Perceptual Distinguishability ─────────────────
   {
     const Ls = hexes.map(h => hexToOklch(h)[0]);
+    const inner = N - 2;
     const details = [];
-    for (let i = 1; i < 20; i++) {
+    for (let i = 1; i < N - 1; i++) {
       const delta = +Math.abs(Ls[i] - Ls[i + 1]).toFixed(4);
       if (delta < 0.015) details.push({ from: STEP_NAMES[i], to: STEP_NAMES[i + 1], delta });
     }
     const clumps = details.length;
     const status = clumps <= 1 ? 'PASS' : clumps <= 3 ? 'WARN' : 'FAIL';
-    tests.push({ name: '5. Perceptual Distinguishability', description: 'Adjacent steps are visually different (no invisible transitions)', status, checked: 19, passed: 19 - clumps, clumps, details });
+    tests.push({ name: '5. Perceptual Distinguishability', description: 'Adjacent steps are visually different (no invisible transitions)', status, checked: inner, passed: inner - clumps, clumps, details });
     if (status === 'PASS') totalPass++; else if (status === 'WARN') totalWarn++; else totalFail++;
   }
 
   // ── Test 6: White/Black Anchoring ─────────────────────────
   {
     const whiteOk = hexes[0].toUpperCase() === '#FFFFFF';
-    const blackOk = hexes[20].toUpperCase() === '#000000';
+    const blackOk = hexes[N - 1].toUpperCase() === '#000000';
     const status = whiteOk && blackOk ? 'PASS' : 'FAIL';
     tests.push({ name: '6. White/Black Anchoring', description: 'Palette anchors at pure #FFFFFF and #000000', status, checked: 2, passed: (whiteOk ? 1 : 0) + (blackOk ? 1 : 0), details: [] });
     if (status === 'PASS') totalPass++; else totalFail++;
@@ -327,10 +330,10 @@ export function certifyPalette(palette) {
 
   // ── Test 7: Hue Consistency ───────────────────────────────
   {
-    const keyHue = hexToOklch(hexes[12])[2];
+    const keyHue = hexToOklch(hexes[KEY_INDEX])[2];
     let maxDrift = 0;
     let sumDrift = 0, count = 0;
-    for (let i = 1; i < 20; i++) {
+    for (let i = 1; i < N - 1; i++) {
       const [, C, H] = hexToOklch(hexes[i]);
       if (C < 0.01) continue;
       let d = Math.abs(H - keyHue);
