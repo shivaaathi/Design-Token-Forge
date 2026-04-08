@@ -46,14 +46,20 @@ html[data-theme="dark"] .cert-mini[data-status="CERTIFIED"]{background:#14532D;c
 html[data-theme="dark"] .cert-mini[data-status="CONDITIONAL"]{background:#78350F;color:#FCD34D}
 html[data-theme="dark"] .cert-mini[data-status="FAILED"]{background:#7F1D1D;color:#FCA5A5}
 
-.role-strip{display:flex;border-radius:var(--radius-md,6px);overflow:hidden;height:44px}
-.role-swatch{flex:1;position:relative;cursor:pointer;transition:transform 100ms ease}
-.role-swatch:hover{transform:scaleY(1.18);z-index:1}
+.role-strip{display:flex;gap:2px;border-radius:var(--radius-lg,10px);overflow:hidden;height:56px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04)}
+.role-swatch{flex:1;position:relative;cursor:pointer;transition:transform 150ms ease,box-shadow 150ms ease,border-radius 150ms ease}
+.role-swatch:hover{transform:scaleY(1.2) scaleX(1.08);z-index:2;border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+.role-swatch:active{transform:scaleY(1.12) scaleX(1.04)}
 .role-swatch[data-key]{outline:2px solid var(--demo-fg-strong);outline-offset:-2px;z-index:2}
-.role-tip{display:none;position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:var(--demo-fg-strong);color:var(--demo-bg);font-size:9px;font-family:var(--font-family-mono,monospace);padding:2px 7px;border-radius:var(--radius-xs,3px);white-space:nowrap;z-index:10;pointer-events:none}
+.role-tip{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--demo-fg-strong);color:var(--demo-bg);font-size:10px;font-family:var(--font-family-mono,monospace);padding:4px 10px;border-radius:var(--radius-sm,4px);white-space:nowrap;z-index:10;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.15);letter-spacing:.02em}
+.role-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--demo-fg-strong)}
 .role-swatch:hover .role-tip{display:block}
-.role-swatch-lbl{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:700;letter-spacing:.03em;opacity:0;transition:opacity 100ms;pointer-events:none}
+.role-swatch-lbl{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);font-size:8px;font-weight:700;letter-spacing:.03em;opacity:0;transition:opacity 150ms;pointer-events:none}
 .role-swatch:hover .role-swatch-lbl{opacity:1}
+
+/* Copy feedback toast */
+.copy-toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--demo-fg-strong);color:var(--demo-bg);font-size:12px;font-weight:600;font-family:var(--font-family-mono,monospace);padding:8px 20px;border-radius:var(--radius-md,6px);box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:9999;opacity:0;transition:opacity 200ms ease,transform 200ms ease;pointer-events:none}
+.copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 .add-role-wrap{padding:12px 24px}
 .add-role-btn{width:100%;padding:10px 16px;border:2px dashed var(--demo-border);border-radius:var(--radius-md,6px);background:transparent;color:var(--demo-fg-subtle);font-size:var(--font-size-12,12px);font-weight:600;cursor:pointer;transition:all 120ms;font-family:inherit;text-align:center}
@@ -81,7 +87,8 @@ html[data-theme="dark"] .cert-mini[data-status="FAILED"]{background:#7F1D1D;colo
 .map-group-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--demo-fg-faint);padding:12px 0 4px 0}
 .map-pane--dark .map-group-label{color:#666}
 .map-row{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:var(--font-size-10,10px);font-family:var(--font-family-mono,monospace)}
-.map-swatch{width:22px;height:14px;border-radius:3px;border:1px solid rgba(128,128,128,.2);flex-shrink:0}
+.map-swatch{width:22px;height:14px;border-radius:4px;border:1px solid rgba(128,128,128,.15);flex-shrink:0;cursor:pointer;transition:transform 100ms ease,box-shadow 100ms ease}
+.map-swatch:hover{transform:scale(1.3);box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:1;position:relative}
 .map-name{flex:1;color:var(--demo-fg-subtle);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .map-pane--dark .map-name{color:#aaa}
 .map-step{color:var(--demo-fg-faint);min-width:36px;text-align:right;font-size:9px}
@@ -115,7 +122,7 @@ html[data-theme="dark"] .cert-mini[data-status="FAILED"]{background:#7F1D1D;colo
 .cert-card{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius-sm,4px);border:1px solid var(--demo-border);cursor:pointer;transition:all 120ms}
 .cert-card:hover{background:var(--demo-surface-alt)}
 .cert-card[data-active]{border-color:var(--primary-component-bg-default);background:var(--demo-surface-alt)}
-.cert-card-swatch{width:16px;height:16px;border-radius:3px;border:1px solid rgba(128,128,128,.2);flex-shrink:0}
+.cert-card-swatch{width:16px;height:16px;border-radius:4px;border:1px solid rgba(128,128,128,.15);flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,.06)}
 .cert-card-name{font-size:var(--font-size-11,11px);font-weight:600;color:var(--demo-fg-strong);flex:1}
 .cert-card-badge{font-size:10px}
 .cert-panel{display:flex;flex-direction:column;gap:0}
@@ -507,6 +514,20 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
 <script src="shared.js"></script>
 <script src="palette-engine.js"></script>
 <script>
+/* ── Copy Hex to Clipboard (global for onclick attrs) ──── */
+var _copyToast, _copyTimer=0;
+function copyHex(hex){
+  if(!hex) return;
+  if(!_copyToast) _copyToast=document.getElementById('copyToast');
+  navigator.clipboard.writeText(hex.toUpperCase()).then(function(){
+    _copyToast.textContent='Copied '+hex.toUpperCase();
+    _copyToast.classList.add('show');
+    clearTimeout(_copyTimer);
+    _copyTimer=setTimeout(function(){_copyToast.classList.remove('show')},1500);
+  });
+}
+</script>
+<script>
 /* ════════════════════════════════════════════════════════════
    Color System — Multi-Role Page Logic
    ════════════════════════════════════════════════════════════ */
@@ -682,7 +703,7 @@ function buildStripHtml(roleId) {
   return pal.steps.map(function(s, i) {
     var tc = s.contrast > 4.5 ? '#FFFFFF' : '#000000';
     var attr = i === 12 ? ' data-key' : '';
-    return '<div class="role-swatch"' + attr + ' style="background:' + s.hex + '">' +
+    return '<div class="role-swatch"' + attr + ' data-hex="' + s.hex + '" onclick="copyHex(\'' + s.hex + '\')" style="background:' + s.hex + '">' +
       '<span class="role-tip">' + s.name + ' ' + s.hex + '</span>' +
       '<span class="role-swatch-lbl" style="color:' + tc + '">' + s.name + '</span></div>';
   }).join('');
@@ -947,7 +968,7 @@ function renderMap() {
         var hex = idx === -1 ? '#FFFFFF' : pal.steps[idx].hex;
         var stepLabel = idx === -1 ? 'fixed' : pal.steps[idx].name;
         html += '<div class="map-row">' +
-          '<span class="map-swatch" style="background:' + hex + '"></span>' +
+          '<span class="map-swatch" style="background:' + hex + '" onclick="copyHex(\'' + hex + '\')" title="Click to copy"></span>' +
           '<span class="map-name">--' + prefix + '-' + key + '</span>' +
           '<span class="map-step">\u2190 ' + stepLabel + '</span>' +
           '<span class="map-hex">' + hex + '</span></div>';
@@ -1654,5 +1675,6 @@ renderSteps();
 renderExport(currentFormat);
 updateSaveIndicator();
 </script>
+<div class="copy-toast" id="copyToast"></div>
 </body>
 </html>
