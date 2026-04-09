@@ -7,80 +7,166 @@
 <link rel="stylesheet" href="../packages/tokens/src/index.css">
 <link rel="stylesheet" href="shared.css">
 <style>
-/* Index-specific styles */
+/* ── Hub Layout ───────────────────────────────────── */
 body{min-height:100vh;display:flex;flex-direction:column}
-.hub-header{
-  padding:40px 40px 32px;max-width:1200px;width:100%;margin:0 auto;
-  border-bottom:1px solid var(--demo-border);
+
+/* ── Hero Banner ──────────────────────────────────── */
+.hub-hero{
+  padding:48px 40px 40px;max-width:1200px;width:100%;margin:0 auto;
 }
-.hub-header h1{
-  font-size:var(--font-size-28,28px);font-weight:800;color:var(--demo-fg-strong);
-  letter-spacing:-0.02em;
+.hub-hero h1{
+  font-size:clamp(24px,4vw,36px);font-weight:800;color:var(--demo-fg-strong);
+  letter-spacing:-.025em;line-height:1.15;
 }
-.hub-header h1 span{font-weight:300;color:var(--demo-fg-subtle)}
-.hub-subtitle{
-  font-size:var(--font-size-14,14px);color:var(--demo-fg-subtle);
-  max-width:60ch;margin:8px 0 0;line-height:1.6;
+.hub-hero h1 span{
+  background:linear-gradient(135deg,var(--primary-component-bg-default),var(--brand-component-bg-default,#E53F28));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.hub-meta{display:flex;gap:8px;margin:16px 0 0;flex-wrap:wrap}
-.hub-badge{
-  font-size:var(--font-size-11,11px);padding:3px 10px;
-  border-radius:var(--radius-sm,4px);background:var(--demo-cm-bg);
-  color:var(--demo-fg-subtle);font-weight:600;white-space:nowrap;
+.hub-desc{
+  font-size:15px;color:var(--demo-fg-subtle);max-width:56ch;margin:10px 0 0;line-height:1.6;
 }
 
-/* Grid */
+/* ── Stat Bar ─────────────────────────────────────── */
+.stat-bar{
+  display:flex;gap:6px;margin:20px 0 0;flex-wrap:wrap;
+}
+.stat-pill{
+  display:flex;align-items:center;gap:5px;padding:5px 12px;
+  border-radius:var(--radius-sm,4px);font-size:11px;font-weight:600;
+  white-space:nowrap;border:1px solid var(--demo-border);
+  background:var(--demo-surface);color:var(--demo-fg-subtle);
+}
+.stat-pill .stat-num{
+  font-weight:800;color:var(--demo-fg-strong);font-size:12px;
+}
+.stat-pill.accent{
+  border-color:var(--primary-component-outline-default);
+  color:var(--primary-content-default);
+}
+.stat-pill.accent .stat-num{color:var(--primary-content-default)}
+
+/* ── Quick Actions Row ────────────────────────────── */
+.quick-actions{
+  max-width:1200px;width:100%;margin:0 auto;padding:0 40px;
+}
+.qa-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;
+}
+.qa-card{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  border:1px solid var(--demo-border);border-radius:var(--radius-md,6px);
+  background:var(--demo-surface);text-decoration:none;color:inherit;
+  transition:border-color 180ms,box-shadow 180ms,transform 120ms;
+}
+.qa-card:hover{
+  border-color:var(--primary-component-outline-default);
+  box-shadow:0 2px 8px rgba(0,0,0,.05);transform:translateY(-1px);
+}
+.qa-icon{
+  width:36px;height:36px;border-radius:var(--radius-sm,4px);
+  display:flex;align-items:center;justify-content:center;
+  background:var(--demo-cm-bg);color:var(--demo-fg-faint);font-size:18px;flex-shrink:0;
+}
+.qa-text{display:flex;flex-direction:column;gap:1px;min-width:0}
+.qa-title{font-size:13px;font-weight:700;color:var(--demo-fg-strong)}
+.qa-hint{font-size:11px;color:var(--demo-fg-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── Main Grid ────────────────────────────────────── */
 .hub-main{
-  max-width:1200px;width:100%;margin:0 auto;padding:40px 40px 60px;
-  display:flex;flex-direction:column;gap:48px;
+  max-width:1200px;width:100%;margin:0 auto;padding:32px 40px 64px;
+  display:flex;flex-direction:column;gap:40px;
 }
-.category-title{
-  font-size:var(--font-size-12,12px);font-weight:700;
-  text-transform:uppercase;letter-spacing:0.06em;
-  color:var(--demo-fg-faint);padding-bottom:10px;margin-bottom:16px;
-  border-bottom:1px solid var(--demo-border);
+
+/* ── Search / Filter Bar ──────────────────────────── */
+.hub-filter{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
 }
-.component-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;
+.hub-search{
+  flex:1;min-width:200px;padding:8px 12px 8px 36px;
+  border:1px solid var(--demo-border);border-radius:var(--radius-md,6px);
+  background:var(--demo-surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='M11 11l3.5 3.5'/%3E%3C/svg%3E") no-repeat 12px center;
+  font-size:13px;color:var(--demo-fg);font-family:inherit;
 }
-.component-card{
-  position:relative;display:flex;flex-direction:column;gap:12px;
-  padding:24px;border-radius:var(--radius-lg,12px);
+.hub-search:focus{outline:2px solid var(--primary-component-bg-default);outline-offset:-1px;border-color:transparent}
+.hub-search::placeholder{color:var(--demo-fg-faint)}
+.filter-pills{display:flex;gap:4px}
+.filter-pill{
+  padding:5px 12px;border-radius:var(--radius-sm,4px);border:1px solid var(--demo-border);
+  background:var(--demo-surface);color:var(--demo-fg-subtle);font-size:11px;
+  font-weight:600;cursor:pointer;transition:all 150ms;white-space:nowrap;font-family:inherit;
+}
+.filter-pill:hover{border-color:var(--demo-fg-faint);color:var(--demo-fg-strong)}
+.filter-pill.active{
+  background:var(--primary-component-bg-default);color:var(--primary-on-component);
+  border-color:var(--primary-component-bg-default);
+}
+
+/* ── Category ─────────────────────────────────────── */
+.category{display:flex;flex-direction:column;gap:14px}
+.cat-head{display:flex;align-items:baseline;gap:8px}
+.cat-title{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--demo-fg-faint);
+}
+.cat-count{font-size:10px;color:var(--demo-fg-faint);opacity:.6}
+
+/* ── Component Card (redesigned) ──────────────────── */
+.comp-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;
+}
+.comp-card{
+  position:relative;display:grid;grid-template-rows:auto 1fr auto;gap:8px;
+  padding:20px;border-radius:var(--radius-lg,12px);
   border:1px solid var(--demo-border);background:var(--demo-surface);
   text-decoration:none;color:inherit;
-  transition:border-color 180ms ease, box-shadow 180ms ease;
+  transition:border-color 180ms,box-shadow 180ms,transform 120ms;
 }
-.component-card:hover{
+.comp-card:hover{
   border-color:var(--primary-component-outline-default);
-  box-shadow:0 2px 12px rgba(0,0,0,0.06);
+  box-shadow:0 4px 16px rgba(0,0,0,.06);transform:translateY(-2px);
 }
-.component-card[data-status="done"]{cursor:pointer}
-.component-card[data-status="planned"]{opacity:0.55;pointer-events:none}
+.comp-card[data-status="planned"]{opacity:.45;pointer-events:none}
 
-.card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.card-name{font-size:var(--font-size-16,16px);font-weight:700;color:var(--demo-fg-strong)}
-.card-prefix{
-  font-size:var(--font-size-10,10px);font-weight:600;padding:2px 6px;
+.cc-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cc-name{font-size:15px;font-weight:700;color:var(--demo-fg-strong)}
+.cc-badge{
+  font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;
+  text-transform:uppercase;letter-spacing:.04em;
+}
+.cc-badge[data-s="done"]{background:var(--success-component-bg-default,#059669);color:var(--success-on-component,#fff)}
+.cc-badge[data-s="planned"]{background:var(--demo-cm-bg);color:var(--demo-fg-faint)}
+
+.cc-desc{font-size:12px;color:var(--demo-fg-subtle);line-height:1.5}
+
+.cc-meta{
+  display:flex;gap:6px;flex-wrap:wrap;padding-top:4px;
+  border-top:1px solid var(--demo-border);margin-top:4px;
+}
+.cc-tag{
+  font-size:10px;font-weight:600;padding:2px 6px;
   border-radius:var(--radius-xs,2px);background:var(--demo-cm-bg);
   color:var(--demo-fg-faint);font-family:var(--font-family-mono,monospace);
 }
-.card-status{
-  font-size:var(--font-size-10,10px);font-weight:700;padding:2px 8px;
-  border-radius:var(--radius-sm,4px);text-transform:uppercase;letter-spacing:0.04em;
-}
-.card-status[data-s="done"]{background:#059669;color:#fff}
-.card-status[data-s="planned"]{background:var(--demo-cm-bg);color:var(--demo-fg-faint)}
 
-.card-desc{font-size:var(--font-size-12,12px);color:var(--demo-fg-subtle);line-height:1.5}
-.card-stats{
-  display:flex;gap:12px;font-size:var(--font-size-11,11px);color:var(--demo-fg-faint);
+/* ── No-results state ─────────────────────────────── */
+.no-results{
+  display:none;padding:40px 20px;text-align:center;
+  color:var(--demo-fg-faint);font-size:13px;
 }
-.card-stats span{display:flex;align-items:center;gap:4px}
+.no-results.visible{display:block}
 
-/* Footer */
-.hub-footer{
-  margin-top:auto;padding:24px 40px;border-top:1px solid var(--demo-border);
-  font-size:var(--font-size-11,11px);color:var(--demo-fg-faint);text-align:center;
+/* ── Responsive ───────────────────────────────────── */
+@media(max-width:900px){
+  .hub-hero,.quick-actions,.hub-main{padding-left:20px;padding-right:20px}
+  .qa-grid{grid-template-columns:repeat(2,1fr)}
+  .comp-grid{grid-template-columns:1fr}
+  .stat-bar{gap:4px}
+  .stat-pill{padding:4px 8px;font-size:10px}
+}
+@media(max-width:500px){
+  .qa-grid{grid-template-columns:1fr}
+  .hub-filter{flex-direction:column}
+  .hub-search{min-width:0}
 }
 </style>
 </head>
@@ -89,351 +175,340 @@ body{min-height:100vh;display:flex;flex-direction:column}
 <!-- Explorer Nav -->
 <nav class="explorer-nav" aria-label="Site navigation"></nav>
 
-<!-- Header -->
-<header class="hub-header">
-  <h1>Design Token Forge <span>Component Explorer</span></h1>
-  <p class="hub-subtitle">
-    Variable-exhaustive L1 components built on the Tokn 4-tier token architecture.
-    Every visual property is a CSS custom property. Zero hardcoded values.
+<!-- ── Hero ──────────────────────────────────────────── -->
+<header class="hub-hero">
+  <h1><span>Design Token Forge</span></h1>
+  <p class="hub-desc">
+    Variable-exhaustive L1 components on the Tokn 4-tier token architecture.
+    Every visual property is a CSS custom property — zero hardcoded values.
   </p>
-  <div class="hub-meta">
-    <span class="hub-badge">Tokn 4-Tier Tokens</span>
-    <span class="hub-badge">~740 Global Vars</span>
-    <span class="hub-badge">38 L1 Components</span>
-    <span class="hub-badge">7-Axis Coverage</span>
-    <span class="hub-badge">10 Density Modes</span>
-    <a class="hub-badge" href="frameworks.html" style="text-decoration:none;color:var(--primary-on-component);border:1px solid var(--primary-component-outline-default);background:var(--primary-component-bg-default);cursor:pointer">Works with your framework →</a>
+  <div class="stat-bar">
+    <span class="stat-pill accent"><span class="stat-num">20</span> Components</span>
+    <span class="stat-pill"><span class="stat-num">~740</span> Variables</span>
+    <span class="stat-pill"><span class="stat-num">4</span> Token Tiers</span>
+    <span class="stat-pill"><span class="stat-num">10</span> Density Modes</span>
+    <span class="stat-pill"><span class="stat-num">7</span> Axes</span>
+    <span class="stat-pill"><span class="stat-num">6</span> Frameworks</span>
   </div>
 </header>
 
-<!-- Main Grid -->
+<!-- ── Quick Actions ────────────────────────────────── -->
+<div class="quick-actions">
+  <div class="qa-grid">
+    <a class="qa-card" href="color-system.html">
+      <span class="qa-icon">&#127912;</span>
+      <span class="qa-text"><span class="qa-title">Color System</span><span class="qa-hint">Pick, generate, tokenize</span></span>
+    </a>
+    <a class="qa-card" href="editor.html">
+      <span class="qa-icon">&#9998;</span>
+      <span class="qa-text"><span class="qa-title">Token Editor</span><span class="qa-hint">Edit variables live</span></span>
+    </a>
+    <a class="qa-card" href="color-tokens.html">
+      <span class="qa-icon">&#128203;</span>
+      <span class="qa-text"><span class="qa-title">Token Reference</span><span class="qa-hint">Browse 740+ variables</span></span>
+    </a>
+    <a class="qa-card" href="frameworks.html">
+      <span class="qa-icon">&#9889;</span>
+      <span class="qa-text"><span class="qa-title">Frameworks</span><span class="qa-hint">React, Vue, Angular, Svelte</span></span>
+    </a>
+  </div>
+</div>
+
+<!-- ── Main ─────────────────────────────────────────── -->
 <main class="hub-main">
 
-  <!-- ── Foundation ─────────────────────────────────── -->
-  <section>
-    <h2 class="category-title">Foundation</h2>
-    <div class="component-grid">
-      <a class="component-card" data-status="done" href="frameworks.html">
-        <div class="card-top">
-          <span class="card-name">Framework Integration</span>
-          <span class="card-status" data-s="done">Done</span>
-        </div>
-        <span class="card-prefix">React · Vue · Angular · Svelte · Solid · WC</span>
-        <p class="card-desc">CSS-first, framework-agnostic. Copy-paste wrapper patterns for every major framework. Zero runtime cost.</p>
-        <div class="card-stats">
-          <span>6 frameworks</span>
-          <span>Code snippets</span>
-          <span>Zero runtime</span>
-        </div>
+  <!-- Filter Bar -->
+  <div class="hub-filter">
+    <input class="hub-search" type="search" placeholder="Search components..." aria-label="Search components">
+    <div class="filter-pills">
+      <button class="filter-pill active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="done">Done</button>
+      <button class="filter-pill" data-filter="planned">Planned</button>
+    </div>
+  </div>
+
+  <!-- ── Inputs & Controls ────────────────────────────── -->
+  <section class="category" data-cat="inputs">
+    <div class="cat-head"><h2 class="cat-title">Inputs &amp; Controls</h2><span class="cat-count"></span></div>
+    <div class="comp-grid">
+      <a class="comp-card" data-status="done" href="button.html">
+        <div class="cc-top"><span class="cc-name">Button</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">10 variants, 10 density modes, shimmer loading, rounded pill mode.</p>
+        <div class="cc-meta"><span class="cc-tag">--btn-*</span><span class="cc-tag">246 vars</span><span class="cc-tag">7 axes</span></div>
       </a>
-      <a class="component-card" data-status="done" href="color-tokens.html">
-        <div class="card-top">
-          <span class="card-name">Color Tokens</span>
-          <span class="card-status" data-s="done">Done</span>
-        </div>
-        <span class="card-prefix">--prim-* / --{role}-* / --surface-*</span>
-        <p class="card-desc">Explore the Tokn 4-tier color system: 8 primitive palettes, 6 semantic roles, 7 surface contexts, light↔dark theming.</p>
-        <div class="card-stats">
-          <span>~740 vars</span>
-          <span>8 palettes</span>
-          <span>21 steps</span>
-          <span>2 themes</span>
-        </div>
+      <a class="comp-card" data-status="done" href="icon-button.html">
+        <div class="cc-top"><span class="cc-name">IconButton</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Square/circle shape. Primary, secondary, ghost, danger, neutral, outline.</p>
+        <div class="cc-meta"><span class="cc-tag">--icon-btn-*</span><span class="cc-tag">120 vars</span></div>
       </a>
-      <a class="component-card" data-status="done" href="color-system.html">
-        <div class="card-top">
-          <span class="card-name">Color System</span>
-          <span class="card-status" data-s="done">Done</span>
-        </div>
-        <span class="card-prefix">Pick → Generate → Tokenize → Render</span>
-        <p class="card-desc">Pick one color, see the full 4-tier pipeline live: primitives → semantic tokens → components. Real-time sync with WCAG certification.</p>
-        <div class="card-stats">
-          <span>21 steps</span>
-          <span>4-tier pipeline</span>
-          <span>Live components</span>
-        </div>
+      <a class="comp-card" data-status="done" href="split-button.html">
+        <div class="cc-top"><span class="cc-name">SplitButton</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Action + dropdown trigger with divider. 4 variants, 10 sizes.</p>
+        <div class="cc-meta"><span class="cc-tag">--split-btn-*</span><span class="cc-tag">154 vars</span></div>
+      </a>
+      <a class="comp-card" data-status="done" href="menu-button.html">
+        <div class="cc-top"><span class="cc-name">MenuButton</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Icon+chevron, text+chevron layouts. Primary, secondary, ghost, neutral.</p>
+        <div class="cc-meta"><span class="cc-tag">--menu-btn-*</span><span class="cc-tag">139 vars</span></div>
+      </a>
+      <a class="comp-card" data-status="done" href="toggle.html">
+        <div class="cc-top"><span class="cc-name">Toggle / Switch</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Track + thumb shape variation. Pill, rounded, square track shapes.</p>
+        <div class="cc-meta"><span class="cc-tag">--switch-*</span><span class="cc-tag">93 vars</span></div>
+      </a>
+      <a class="comp-card" data-status="done" href="checkbox.html">
+        <div class="cc-top"><span class="cc-name">Checkbox</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Square vs rounded vs circle — fully variable-driven.</p>
+        <div class="cc-meta"><span class="cc-tag">--checkbox-*</span><span class="cc-tag">74 vars</span></div>
+      </a>
+      <a class="comp-card" data-status="done" href="radio.html">
+        <div class="cc-top"><span class="cc-name">Radio</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Circular dot indicator, scales per density. Group support built-in.</p>
+        <div class="cc-meta"><span class="cc-tag">--radio-*</span><span class="cc-tag">73 vars</span></div>
+      </a>
+      <a class="comp-card" data-status="done" href="input.html">
+        <div class="cc-top"><span class="cc-name">Input / TextField</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Outline, filled, underline. Label, helper text, prefix/suffix slots.</p>
+        <div class="cc-meta"><span class="cc-tag">--input-*</span><span class="cc-tag">172 vars</span></div>
+      </a>
+      <a class="comp-card" data-status="done" href="textarea.html">
+        <div class="cc-top"><span class="cc-name">Textarea</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Resize handle, min/max rows, auto and fixed height modes.</p>
+        <div class="cc-meta"><span class="cc-tag">--textarea-*</span><span class="cc-tag">114 vars</span></div>
+      </a>
+      <a class="comp-card" data-status="done" href="select.html">
+        <div class="cc-top"><span class="cc-name">Select</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Native select with custom chevron, outline and filled variants.</p>
+        <div class="cc-meta"><span class="cc-tag">--select-*</span><span class="cc-tag">120 vars</span></div>
+      </a>
+      <a class="comp-card" data-status="done" href="slider.html">
+        <div class="cc-top"><span class="cc-name">Slider</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Track + fill + thumb. Tooltip, ticks, range mode.</p>
+        <div class="cc-meta"><span class="cc-tag">--slider-*</span><span class="cc-tag">120 vars</span></div>
+      </a>
+      <a class="comp-card" data-status="done" href="datepicker.html">
+        <div class="cc-top"><span class="cc-name">DatePicker</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Calendar grid + day cell states. Range, footer, today dot.</p>
+        <div class="cc-meta"><span class="cc-tag">--datepicker-*</span><span class="cc-tag">~190 vars</span></div>
+      </a>
+      <a class="comp-card" data-status="done" href="file-upload.html">
+        <div class="cc-top"><span class="cc-name">FileUpload</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Button mode and dropzone mode. Border pattern, icon, progress.</p>
+        <div class="cc-meta"><span class="cc-tag">--file-upload-*</span><span class="cc-tag">~120 vars</span></div>
       </a>
     </div>
   </section>
 
-  <!-- ── Inputs & Controls ──────────────────────────── -->
-  <section>
-    <h2 class="category-title">Inputs &amp; Controls</h2>
-    <div class="component-grid">
-      <a class="component-card" data-status="done" href="button.html">
-        <div class="card-top">
-          <span class="card-name">Button</span>
-          <span class="card-status" data-s="done">Done</span>
-        </div>
-        <span class="card-prefix">--btn-*</span>
-        <p class="card-desc">Most visible brand expression. 10 variants, 10 density modes, shimmer loading, rounded pill mode.</p>
-        <div class="card-stats">
-          <span>246 vars</span>
-          <span>10 variants</span>
-          <span>10 sizes</span>
-          <span>7 axes</span>
-        </div>
+  <!-- ── Display & Feedback ───────────────────────────── -->
+  <section class="category" data-cat="display">
+    <div class="cat-head"><h2 class="cat-title">Display &amp; Feedback</h2><span class="cat-count"></span></div>
+    <div class="comp-grid">
+      <a class="comp-card" data-status="done" href="avatar.html">
+        <div class="cc-top"><span class="cc-name">Avatar</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Circle, squircle, rounded-square. Image, initials, icon fallback.</p>
+        <div class="cc-meta"><span class="cc-tag">--avatar-*</span><span class="cc-tag">~80 vars</span></div>
       </a>
-      <a class="component-card" data-status="done" href="icon-button.html">
-        <div class="card-top"><span class="card-name">IconButton</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--icon-btn-*</span>
-        <p class="card-desc">Square/circle shape-critical. Primary, secondary, ghost, danger, neutral, outline variants.</p>
-        <div class="card-stats"><span>120 vars</span><span>6 variants</span><span>10 sizes</span></div>
+      <a class="comp-card" data-status="done" href="badge.html">
+        <div class="cc-top"><span class="cc-name">Badge / Tag</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Pill, rounded, square. Filled, outline, soft, dot variants.</p>
+        <div class="cc-meta"><span class="cc-tag">--badge-*</span><span class="cc-tag">~90 vars</span></div>
       </a>
-      <a class="component-card" data-status="done" href="split-button.html">
-        <div class="card-top"><span class="card-name">SplitButton</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--split-btn-*</span>
-        <p class="card-desc">Action + dropdown trigger with divider. Primary, secondary, danger, neutral variants.</p>
-        <div class="card-stats"><span>154 vars</span><span>4 variants</span><span>10 sizes</span></div>
+      <a class="comp-card" data-status="done" href="tooltip.html">
+        <div class="cc-top"><span class="cc-name">Tooltip</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Arrow shape, placement, default and error variants.</p>
+        <div class="cc-meta"><span class="cc-tag">--tooltip-*</span><span class="cc-tag">~60 vars</span></div>
       </a>
-      <a class="component-card" data-status="done" href="menu-button.html">
-        <div class="card-top"><span class="card-name">MenuButton</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--menu-btn-*</span>
-        <p class="card-desc">Action trigger with chevron. Icon+chevron, text+chevron, icon+text+chevron layouts. Primary, secondary, ghost, neutral.</p>
-        <div class="card-stats"><span>139 vars</span><span>4 variants</span><span>10 sizes</span></div>
+      <a class="comp-card" data-status="done" href="alert.html">
+        <div class="cc-top"><span class="cc-name">Alert</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Left-border accent. Info, success, warning, danger roles.</p>
+        <div class="cc-meta"><span class="cc-tag">--alert-*</span><span class="cc-tag">~80 vars</span></div>
       </a>
-      <a class="component-card" data-status="done" href="toggle.html">
-        <div class="card-top"><span class="card-name">Toggle / Switch</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--switch-*</span>
-        <p class="card-desc">Track + thumb shape variation. Huge design surface for brand expression. Pill, rounded, square track shapes.</p>
-        <div class="card-stats"><span>93 vars</span><span>2 variants</span><span>10 sizes</span></div>
+      <a class="comp-card" data-status="done" href="toast.html">
+        <div class="cc-top"><span class="cc-name">Toast</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Position, entrance animation, auto-dismiss. 4 semantic variants.</p>
+        <div class="cc-meta"><span class="cc-tag">--toast-*</span><span class="cc-tag">~90 vars</span></div>
       </a>
-      <a class="component-card" data-status="done" href="checkbox.html">
-        <div class="card-top"><span class="card-name">Checkbox</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--checkbox-*</span>
-        <p class="card-desc">Square vs rounded vs circle — the eternal debate, now fully variable-driven.</p>
-        <div class="card-stats"><span>74 vars</span><span>2 variants</span><span>10 sizes</span><span>7 axes</span></div>
+      <a class="comp-card" data-status="done" href="progress-bar.html">
+        <div class="cc-top"><span class="cc-name">Progress Bar</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Track + fill radius matching. Indeterminate animation mode.</p>
+        <div class="cc-meta"><span class="cc-tag">--progress-*</span><span class="cc-tag">~60 vars</span></div>
       </a>
-      <a class="component-card" data-status="done" href="radio.html">
-        <div class="card-top"><span class="card-name">Radio</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--radio-*</span>
-        <p class="card-desc">Always circular — dot indicator scales per density. Group support built-in.</p>
-        <div class="card-stats"><span>73 vars</span><span>2 variants</span><span>10 sizes</span><span>7 axes</span></div>
+      <a class="comp-card" data-status="done" href="progress-circle.html">
+        <div class="cc-top"><span class="cc-name">Progress Circle</span><span class="cc-badge" data-s="done">Done</span></div>
+        <p class="cc-desc">Stroke width, cap style, variable-driven SVG ring.</p>
+        <div class="cc-meta"><span class="cc-tag">--progress-ring-*</span><span class="cc-tag">~50 vars</span></div>
       </a>
-      <a class="component-card" data-status="done" href="input.html">
-        <div class="card-top"><span class="card-name">Input / TextField</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--input-*</span>
-        <p class="card-desc">Outline, filled, and underline (Material). Label, helper text, prefix/suffix slots.</p>
-        <div class="card-stats"><span>172 vars</span><span>3 variants</span><span>10 sizes</span><span>7 axes</span></div>
-      </a>
-      <a class="component-card" data-status="done" href="textarea.html">
-        <div class="card-top"><span class="card-name">Textarea</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--textarea-*</span>
-        <p class="card-desc">Resize handle, min/max rows, outline and filled variants. Auto and fixed height modes.</p>
-        <div class="card-stats"><span>114 vars</span><span>2 variants</span><span>10 sizes</span><span>2 height modes</span><span>7 axes</span></div>
-      </a>
-      <a class="component-card" data-status="done" href="select.html">
-        <div class="card-top"><span class="card-name">Select</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--select-*</span>
-        <p class="card-desc">Native select with custom chevron, outline and filled variants. 10-step density scale.</p>
-        <div class="card-stats"><span>120 vars</span><span>2 variants</span><span>10 sizes</span><span>7 axes</span></div>
-      </a>
-      <a href="slider.html" class="component-card" data-status="done">
-        <div class="card-top"><span class="card-name">Slider</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--slider-*</span>
-        <p class="card-desc">Track + fill + thumb. Any design achievable via 120 CSS variables. Tooltip, ticks, range mode.</p>
-        <div class="card-stats"><span>120 vars</span><span>10 sizes</span><span>7 axes</span></div>
-      </a>
-      <a href="datepicker.html" class="component-card" data-status="done">
-        <div class="card-top"><span class="card-name">DatePicker</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--datepicker-*</span>
-        <p class="card-desc">Calendar grid + day cell states. Any design achievable via ~190 CSS variables. Range, footer, today dot.</p>
-        <div class="card-stats"><span>~190 vars</span><span>4 sizes</span><span>7 axes</span></div>
-      </a>
-      <a href="file-upload.html" class="component-card" data-status="done">
-        <div class="card-top"><span class="card-name">FileUpload</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--file-upload-*</span>
-        <p class="card-desc">Button mode and dropzone mode. Border pattern, icon, progress indicator.</p>
-        <div class="card-stats"><span>~120 vars</span><span>2 modes</span><span>10 sizes</span><span>7 axes</span></div>
-      </a>
-    </div>
-  </section>
-
-  <!-- ── Display & Feedback ─────────────────────────── -->
-  <section>
-    <h2 class="category-title">Display &amp; Feedback</h2>
-    <div class="component-grid">
-      <a href="avatar.html" class="component-card" data-status="done">
-        <div class="card-top"><span class="card-name">Avatar</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--avatar-*</span>
-        <p class="card-desc">Circle vs squircle vs rounded-square. Image, initials, icon fallback slots.</p>
-        <div class="card-stats"><span>~80 vars</span><span>3 shapes</span><span>10 sizes</span><span>7 axes</span></div>
-      </a>
-      <a href="badge.html" class="component-card" data-status="done">
-        <div class="card-top"><span class="card-name">Badge / Tag</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--badge-*</span>
-        <p class="card-desc">Pill vs rounded vs square. Filled, outline, soft, dot variants.</p>
-        <div class="card-stats"><span>~90 vars</span><span>4 variants</span><span>10 sizes</span><span>7 axes</span></div>
-      </a>
-      <a href="tooltip.html" class="component-card" data-status="done">
-        <div class="card-top"><span class="card-name">Tooltip</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--tooltip-*</span>
-        <p class="card-desc">Arrow shape, placement, default and error variants.</p>
-        <div class="card-stats"><span>~60 vars</span><span>4 variants</span><span>3 sizes</span><span>7 axes</span></div>
-      </a>
-      <a href="alert.html" class="component-card" data-status="done">
-        <div class="card-top"><span class="card-name">Alert</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--alert-*</span>
-        <p class="card-desc">Left-border accent pattern. Info, success, warning, danger roles.</p>
-        <div class="card-stats"><span>~80 vars</span><span>4 roles</span><span>3 variants</span><span>7 axes</span></div>
-      </a>
-      <a href="toast.html" class="component-card" data-status="done">
-        <div class="card-top"><span class="card-name">Toast</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--toast-*</span>
-        <p class="card-desc">Position, entrance animation, auto-dismiss. 4 semantic variants.</p>
-        <div class="card-stats"><span>~90 vars</span><span>4 roles</span><span>6 positions</span><span>7 axes</span></div>
-      </a>
-      <a href="progress-bar.html" class="component-card" data-status="done">
-        <div class="card-top"><span class="card-name">Progress Bar</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--progress-*</span>
-        <p class="card-desc">Track + fill radius matching. Indeterminate animation mode.</p>
-        <div class="card-stats"><span>~60 vars</span><span>5 roles</span><span>10 sizes</span><span>7 axes</span></div>
-      </a>
-      <a class="component-card" href="progress-circle.html" data-status="done">
-        <div class="card-top"><span class="card-name">Progress Circle</span><span class="card-status" data-s="done">Done</span></div>
-        <span class="card-prefix">--progress-ring-*</span>
-        <p class="card-desc">Stroke width, cap style, variable-driven SVG ring.</p>
-        <div class="card-stats"><span>~50 vars</span><span>5 roles</span><span>10 sizes</span><span>7 axes</span></div>
-      </a>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Spinner</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--spinner-*</span>
-        <p class="card-desc">Stroke, speed, color. Multiple animation styles via variables.</p>
-        <div class="card-stats"><span>~40 vars</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Spinner</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Stroke, speed, color. Multiple animation styles via variables.</p>
+        <div class="cc-meta"><span class="cc-tag">--spinner-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Skeleton</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--skeleton-*</span>
-        <p class="card-desc">Text, rect, circle shapes. Wave vs pulse animation style.</p>
-        <div class="card-stats"><span>~50 vars</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Skeleton</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Text, rect, circle shapes. Wave vs pulse animation.</p>
+        <div class="cc-meta"><span class="cc-tag">--skeleton-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">KBD</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--kbd-*</span>
-        <p class="card-desc">Key cap shape with 3D border effect. Variable-driven depth and shadow.</p>
-        <div class="card-stats"><span>~40 vars</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">KBD</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Key cap shape with 3D border effect. Variable-driven depth.</p>
+        <div class="cc-meta"><span class="cc-tag">--kbd-*</span></div>
       </div>
     </div>
   </section>
 
-  <!-- ── Layout & Structure ─────────────────────────── -->
-  <section>
-    <h2 class="category-title">Layout &amp; Structure</h2>
-    <div class="component-grid">
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Card</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--card-*</span>
-        <p class="card-desc">Shadow + radius = brand signature. Flat, raised, elevated, outline variants.</p>
-        <div class="card-stats"><span>~120 vars</span><span>4 variants</span></div>
+  <!-- ── Layout & Structure ───────────────────────────── -->
+  <section class="category" data-cat="layout">
+    <div class="cat-head"><h2 class="cat-title">Layout &amp; Structure</h2><span class="cat-count"></span></div>
+    <div class="comp-grid">
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Card</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Shadow + radius = brand signature. Flat, raised, elevated, outline.</p>
+        <div class="cc-meta"><span class="cc-tag">--card-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Divider</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--divider-*</span>
-        <p class="card-desc">Orientation, label slot, solid/dashed/dotted variants.</p>
-        <div class="card-stats"><span>~40 vars</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Divider</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Orientation, label slot, solid/dashed/dotted variants.</p>
+        <div class="cc-meta"><span class="cc-tag">--divider-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Accordion</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--accordion-*</span>
-        <p class="card-desc">Expand icon, border pattern. Default, bordered, separated variants.</p>
-        <div class="card-stats"><span>~80 vars</span><span>3 variants</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Accordion</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Expand icon, border pattern. Default, bordered, separated.</p>
+        <div class="cc-meta"><span class="cc-tag">--accordion-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Tabs</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--tabs-*</span>
-        <p class="card-desc">Active indicator shape/position. Underline, boxed, pills variants.</p>
-        <div class="card-stats"><span>~100 vars</span><span>3 variants</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Tabs</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Active indicator shape/position. Underline, boxed, pills.</p>
+        <div class="cc-meta"><span class="cc-tag">--tabs-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Table</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--table-*</span>
-        <p class="card-desc">Header, row, cell density. Default, striped, bordered variants.</p>
-        <div class="card-stats"><span>~120 vars</span><span>3 variants</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Table</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Header, row, cell density. Default, striped, bordered.</p>
+        <div class="cc-meta"><span class="cc-tag">--table-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">List / ListItem</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--list-*</span>
-        <p class="card-desc">Interactive vs static, indent levels, divider control.</p>
-        <div class="card-stats"><span>~80 vars</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">List / ListItem</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Interactive vs static, indent levels, divider control.</p>
+        <div class="cc-meta"><span class="cc-tag">--list-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Pagination</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--pagination-*</span>
-        <p class="card-desc">Active page shape, prev/next slots, compact mode.</p>
-        <div class="card-stats"><span>~60 vars</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Pagination</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Active page shape, prev/next slots, compact mode.</p>
+        <div class="cc-meta"><span class="cc-tag">--pagination-*</span></div>
       </div>
     </div>
   </section>
 
-  <!-- ── Navigation ─────────────────────────────────── -->
-  <section>
-    <h2 class="category-title">Navigation</h2>
-    <div class="component-grid">
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Link</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--link-*</span>
-        <p class="card-desc">Underline style, hover effect. Default and muted variants.</p>
-        <div class="card-stats"><span>~50 vars</span></div>
+  <!-- ── Navigation ───────────────────────────────────── -->
+  <section class="category" data-cat="nav">
+    <div class="cat-head"><h2 class="cat-title">Navigation</h2><span class="cat-count"></span></div>
+    <div class="comp-grid">
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Link</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Underline style, hover effect. Default and muted variants.</p>
+        <div class="cc-meta"><span class="cc-tag">--link-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Breadcrumb</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--breadcrumb-*</span>
-        <p class="card-desc">Separator character/icon slot, truncation, active item styling.</p>
-        <div class="card-stats"><span>~50 vars</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Breadcrumb</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Separator character/icon slot, truncation, active item styling.</p>
+        <div class="cc-meta"><span class="cc-tag">--breadcrumb-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Menu / Dropdown</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--menu-*</span>
-        <p class="card-desc">Item hover shape, dividers, nested submenus, icon/shortcut slots.</p>
-        <div class="card-stats"><span>~100 vars</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Menu / Dropdown</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Item hover shape, dividers, nested submenus, icon/shortcut slots.</p>
+        <div class="cc-meta"><span class="cc-tag">--menu-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Navbar</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--navbar-*</span>
-        <p class="card-desc">Height, shadow, blur backdrop. Logo, nav items, action slots.</p>
-        <div class="card-stats"><span>~80 vars</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Navbar</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Height, shadow, blur backdrop. Logo, nav items, action slots.</p>
+        <div class="cc-meta"><span class="cc-tag">--navbar-*</span></div>
       </div>
     </div>
   </section>
 
-  <!-- ── Overlay ────────────────────────────────────── -->
-  <section>
-    <h2 class="category-title">Overlay</h2>
-    <div class="component-grid">
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Modal / Dialog</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--modal-*</span>
-        <p class="card-desc">Backdrop, radius, shadow. Size-driven width constraints.</p>
-        <div class="card-stats"><span>~100 vars</span></div>
+  <!-- ── Overlay ──────────────────────────────────────── -->
+  <section class="category" data-cat="overlay">
+    <div class="cat-head"><h2 class="cat-title">Overlay</h2><span class="cat-count"></span></div>
+    <div class="comp-grid">
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Modal / Dialog</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Backdrop, radius, shadow. Size-driven width constraints.</p>
+        <div class="cc-meta"><span class="cc-tag">--modal-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Drawer</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--drawer-*</span>
-        <p class="card-desc">Position (left/right/top/bottom), slide animation, backdrop control.</p>
-        <div class="card-stats"><span>~80 vars</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Drawer</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Position (left/right/top/bottom), slide animation, backdrop control.</p>
+        <div class="cc-meta"><span class="cc-tag">--drawer-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Popover</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--popover-*</span>
-        <p class="card-desc">Arrow, shadow, placement. Trigger-aware positioning.</p>
-        <div class="card-stats"><span>~60 vars</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Popover</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Arrow, shadow, placement. Trigger-aware positioning.</p>
+        <div class="cc-meta"><span class="cc-tag">--popover-*</span></div>
       </div>
-      <div class="component-card" data-status="planned">
-        <div class="card-top"><span class="card-name">Sheet</span><span class="card-status" data-s="planned">Planned</span></div>
-        <span class="card-prefix">--sheet-*</span>
-        <p class="card-desc">Handle bar, snap points. Bottom and side variants.</p>
-        <div class="card-stats"><span>~70 vars</span></div>
+      <div class="comp-card" data-status="planned">
+        <div class="cc-top"><span class="cc-name">Sheet</span><span class="cc-badge" data-s="planned">Planned</span></div>
+        <p class="cc-desc">Handle bar, snap points. Bottom and side variants.</p>
+        <div class="cc-meta"><span class="cc-tag">--sheet-*</span></div>
       </div>
     </div>
   </section>
+
+  <p class="no-results">No components match your search.</p>
 
 </main>
 
-<footer class="hub-footer">
-  Design Token Forge — Tokn 4-Tier Architecture · 5-Layer Cascade · 7-Axis Variable Coverage · 10 Density Modes
-</footer>
-
 <script src="nav.js"></script>
 <script src="shared.js"></script>
+<script>
+/* ── Search & Filter ────────────────────────────────── */
+(function(){
+  const search = document.querySelector('.hub-search');
+  const pills  = document.querySelectorAll('.filter-pill');
+  const cats   = document.querySelectorAll('.category');
+  const cards  = document.querySelectorAll('.comp-card');
+  const noRes  = document.querySelector('.no-results');
+  let activeFilter = 'all';
+
+  function run(){
+    const q = (search.value||'').trim().toLowerCase();
+    let totalVisible = 0;
+
+    cats.forEach(cat => {
+      const grid = cat.querySelector('.comp-grid');
+      let catVisible = 0;
+
+      grid.querySelectorAll('.comp-card').forEach(c => {
+        const name = (c.querySelector('.cc-name')?.textContent||'').toLowerCase();
+        const desc = (c.querySelector('.cc-desc')?.textContent||'').toLowerCase();
+        const tags = (c.querySelector('.cc-meta')?.textContent||'').toLowerCase();
+        const status = c.dataset.status||'';
+
+        const matchQ = !q || name.includes(q) || desc.includes(q) || tags.includes(q);
+        const matchF = activeFilter==='all' || status===activeFilter;
+        const show = matchQ && matchF;
+
+        c.style.display = show ? '' : 'none';
+        if(show) catVisible++;
+      });
+
+      cat.style.display = catVisible ? '' : 'none';
+      const cnt = cat.querySelector('.cat-count');
+      if(cnt) cnt.textContent = catVisible + ' component' + (catVisible===1?'':'s');
+      totalVisible += catVisible;
+    });
+
+    noRes.classList.toggle('visible', totalVisible===0);
+  }
+
+  search.addEventListener('input', run);
+  pills.forEach(p => p.addEventListener('click', () => {
+    pills.forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    activeFilter = p.dataset.filter;
+    run();
+  }));
+
+  run();
+})();
+</script>
 </body>
 </html>
