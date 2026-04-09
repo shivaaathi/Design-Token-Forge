@@ -145,13 +145,10 @@ html[data-theme="dark"] .global-save-bar{box-shadow:0 -4px 16px rgba(0,0,0,.3)}
 .surf-prop-group{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--demo-fg-faint);padding:10px 8px 3px;border:none}
 .surf-preview{display:flex;gap:2px;align-items:center}
 .surf-preview__bar{height:32px;border-radius:4px;border:1px solid rgba(128,128,128,.1);flex:1;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;overflow:hidden}
-.surf-pal-bar{display:flex;align-items:center;gap:16px;padding:6px 0;flex-wrap:wrap}
-.surf-pal-item{display:inline-flex;align-items:center;gap:6px;font-size:var(--font-size-10,10px);color:var(--demo-fg-subtle)}
-.surf-pal-item label{font-weight:600;white-space:nowrap}
-.surf-pal-item input[type="color"]{width:24px;height:24px;border:1px solid var(--demo-border);border-radius:4px;padding:0;cursor:pointer;background:transparent;vertical-align:middle;-webkit-appearance:none}
-.surf-pal-item input[type="color"]::-webkit-color-swatch-wrapper{padding:1px}
-.surf-pal-item input[type="color"]::-webkit-color-swatch{border:none;border-radius:3px}
-.surf-pal-hex{font-family:var(--font-family-mono,monospace);font-size:9px;color:var(--demo-fg-faint);min-width:56px}
+.surf-src-bar{display:flex;align-items:center;gap:8px;padding:4px 0 0 0;font-size:var(--font-size-11,11px)}
+.surf-src-bar label{font-weight:600;color:var(--demo-fg-subtle);white-space:nowrap}
+.surf-src-bar select{padding:3px 8px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);font-size:var(--font-size-11,11px);background:var(--demo-surface);color:var(--demo-fg-strong);font-family:inherit}
+.surf-src-bar .surf-src-swatch{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid rgba(128,128,128,.2);vertical-align:middle;margin-left:4px}
 .surf-contrast-warn{display:inline-block;font-size:8px;font-weight:700;color:#DC2626;margin-left:4px;vertical-align:middle;cursor:help}
 
 /* ── Step Detail Table ────────────────────────────────────── */
@@ -368,22 +365,11 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
     <button class="map-edit-toggle" id="surfEditToggle" type="button">Edit Surface Map</button>
     <button class="section-reset" id="surfResetBtn" type="button" title="Reset surface maps to defaults"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>Reset Surfaces</button>
   </div>
-  <p class="section-desc">Each surface context maps greyscale (or monochromatic for accent) steps to background, content, and component-modifier tokens. Select a surface to view and edit its step assignments.</p>
-  <div class="surf-pal-bar" id="surfPalBar">
-    <div class="surf-pal-item">
-      <label>Greyscale</label>
-      <input type="color" id="surfGreyKey" title="Greyscale palette key color">
-      <span class="surf-pal-hex" id="surfGreyHex"></span>
-    </div>
-    <div class="surf-pal-item">
-      <label>Accent</label>
-      <input type="color" id="surfAccentKey" title="Accent (monochromatic) palette key color">
-      <span class="surf-pal-hex" id="surfAccentHex"></span>
-    </div>
-  </div>
+  <p class="section-desc">Each surface resolves its step names against a palette source. Select a surface to view and edit its step assignments &mdash; use the palette source dropdown to switch which role palette feeds the surface.</p>
   <div style="padding:8px 0 0 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
     <div class="surf-tabs" id="surfTabs"></div>
   </div>
+  <div class="surf-src-bar" id="surfSrcBar"></div>
   <div class="section-body" style="max-height:560px;overflow-y:auto">
     <table class="surf-table" id="surfTable"><tbody id="surfBody"></tbody></table>
   </div>
@@ -750,6 +736,9 @@ function initRoles() {
     if (projectConfig.surfaceMap.lightAccent) Object.assign(SURF_LA, projectConfig.surfaceMap.lightAccent);
     if (projectConfig.surfaceMap.darkAccent) Object.assign(SURF_DA, projectConfig.surfaceMap.darkAccent);
   }
+  if (projectConfig && projectConfig.surfacePaletteSrc) {
+    SURF_NAMES.forEach(function(sn) { if (projectConfig.surfacePaletteSrc[sn]) SURF_PALETTE_SRC[sn] = projectConfig.surfacePaletteSrc[sn]; });
+  }
 }
 
 function deriveKeyHex(derive) {
@@ -949,11 +938,8 @@ function onRoleColorChange(roleId, hex) {
   updateRoleCert(roleId);
   injectAllTokens();
   renderMap();
-  // If primary or greyscale changed, sync T2 surface palette inputs
-  if (roleId === 'primary' || roleId === 'greyscale') {
-    syncSurfPalInputs();
-    renderSurfTable();
-  }
+  renderSurfTable();
+  renderSurfSrcBar();
   renderCertGrid();
   renderCertDetail(selectedCertRole);
   renderSteps();
@@ -1033,14 +1019,14 @@ function injectSurfaceTokens(rootStyle, darkArr) {
   var needDynamicUpdate = !darkArr;
   for (var ni = 0; ni < SURF_NAMES.length; ni++) {
     var sn = SURF_NAMES[ni];
-    var isAcc = (sn === 'accent');
+    var isAcc = (SURF_PALETTE_SRC[sn] !== 'greyscale');
     var lMap2 = isAcc ? SURF_LA : SURF_L[sn];
     var dMap2 = isAcc ? SURF_DA : SURF_D[sn];
     if (!lMap2 || !dMap2) continue;
     for (var pi2 = 0; pi2 < SURF_PROP_ORDER.length; pi2++) {
       var sp = SURF_PROP_ORDER[pi2];
-      var lh = surfStepHex(lMap2[sp], isAcc);
-      var dh = surfStepHex(dMap2[sp], isAcc);
+      var lh = surfStepHex(lMap2[sp], sn);
+      var dh = surfStepHex(dMap2[sp], sn);
       root.setProperty('--surface-' + sn + '-' + sp, lh);
       arr.push('  --surface-' + sn + '-' + sp + ': ' + dh + ';\n');
     }
@@ -1107,11 +1093,16 @@ var mapRoleSelect = document.getElementById('mapRoleSelect');
 var stepRoleSelect = document.getElementById('stepRoleSelect');
 
 function refreshSelectors() {
-  var opts = roles.map(function(r) {
+  var semanticOpts = roles.filter(function(r) {
+    return r.type !== 'auto';
+  }).map(function(r) {
     return '<option value="' + r.id + '">' + escHtml(r.label) + '</option>';
   }).join('');
-  mapRoleSelect.innerHTML = opts;
-  stepRoleSelect.innerHTML = opts;
+  var allOpts = roles.map(function(r) {
+    return '<option value="' + r.id + '">' + escHtml(r.label) + '</option>';
+  }).join('');
+  mapRoleSelect.innerHTML = semanticOpts;
+  stepRoleSelect.innerHTML = allOpts;
   mapRoleSelect.value = selectedMapRole;
   stepRoleSelect.value = selectedStepRole;
 }
@@ -1308,58 +1299,37 @@ var surfBody = document.getElementById('surfBody');
 var surfEditToggle = document.getElementById('surfEditToggle');
 var surfEditMode = false;
 var selectedSurface = 'base';
+var surfSrcBar = document.getElementById('surfSrcBar');
 
-// ── T2 Palette key color overrides ──────────────────────────
-var surfGreyKeyInput   = document.getElementById('surfGreyKey');
-var surfGreyHexSpan    = document.getElementById('surfGreyHex');
-var surfAccentKeyInput = document.getElementById('surfAccentKey');
-var surfAccentHexSpan  = document.getElementById('surfAccentHex');
+// ── Per-surface palette source map ──────────────────────────
+// Default: all non-accent surfaces use 'greyscale', accent uses 'primary'
+var DEFAULT_SURF_SRC = {};
+(function() { for (var i = 0; i < SURF_NAMES.length; i++) DEFAULT_SURF_SRC[SURF_NAMES[i]] = SURF_NAMES[i] === 'accent' ? 'primary' : 'greyscale'; })();
+var SURF_PALETTE_SRC = JSON.parse(JSON.stringify(DEFAULT_SURF_SRC));
 
-function syncSurfPalInputs() {
-  var greyRole = getRoleById('greyscale');
-  var priRole  = getRoleById('primary');
-  surfGreyKeyInput.value   = greyRole  ? greyRole.keyHex  : '#737373';
-  surfGreyHexSpan.textContent = surfGreyKeyInput.value;
-  surfAccentKeyInput.value = priRole   ? priRole.keyHex   : '#286CE5';
-  surfAccentHexSpan.textContent = surfAccentKeyInput.value;
+function getSurfPalette(surfName) {
+  var roleId = SURF_PALETTE_SRC[surfName] || 'greyscale';
+  return palettes[roleId] || palettes.greyscale;
 }
 
-function onSurfPaletteChange(which) {
-  var hex = (which === 'grey') ? surfGreyKeyInput.value : surfAccentKeyInput.value;
-  hex = hex.toUpperCase();
-  if (which === 'grey') {
-    var r = getRoleById('greyscale');
-    if (r) { r.keyHex = hex; r.type = 'custom'; }
-    palettes.greyscale = PE.generatePalette(hex);
-    certs.greyscale = PE.certifyPalette(palettes.greyscale);
-    surfGreyHexSpan.textContent = hex;
-    updateRoleStrip('greyscale');
-    updateRoleCert('greyscale');
-  } else {
-    var r2 = getRoleById('primary');
-    if (r2) r2.keyHex = hex;
-    palettes.primary = PE.generatePalette(hex);
-    certs.primary = PE.certifyPalette(palettes.primary);
-    surfAccentHexSpan.textContent = hex;
-    // Re-derive auto roles from new primary
-    for (var i = 0; i < roles.length; i++) {
-      if (roles[i].type === 'auto') {
-        roles[i].keyHex = deriveKeyHex(roles[i].derive);
-        palettes[roles[i].id] = PE.generatePalette(roles[i].keyHex);
-        certs[roles[i].id] = PE.certifyPalette(palettes[roles[i].id]);
-      }
-    }
-    syncSurfPalInputs();
-    renderRolesList();
-    renderMap();
-    renderCertGrid();
-  }
-  injectAllTokens();
-  renderSurfTable();
+function renderSurfSrcBar() {
+  var sn = selectedSurface;
+  var src = SURF_PALETTE_SRC[sn] || 'greyscale';
+  var pal = palettes[src];
+  var swHex = pal ? pal.keyHex : '#888';
+  var opts = roles.map(function(r) {
+    return '<option value="' + r.id + '"' + (r.id === src ? ' selected' : '') + '>' + escHtml(r.label) + '</option>';
+  }).join('');
+  surfSrcBar.innerHTML = '<label>Palette source for <strong>' + escHtml(sn) + '</strong>:</label>' +
+    '<select id="surfSrcSelect">' + opts + '</select>' +
+    '<span class="surf-src-swatch" style="background:' + swHex + '"></span>';
+  document.getElementById('surfSrcSelect').addEventListener('change', function() {
+    SURF_PALETTE_SRC[sn] = this.value;
+    injectSurfaceTokens();
+    renderSurfTable();
+    renderSurfSrcBar();
+  });
 }
-
-surfGreyKeyInput.addEventListener('input', function() { onSurfPaletteChange('grey'); });
-surfAccentKeyInput.addEventListener('input', function() { onSurfPaletteChange('accent'); });
 
 // Build surface tab bar
 function renderSurfTabs() {
@@ -1371,6 +1341,7 @@ function renderSurfTabs() {
       selectedSurface = btn.getAttribute('data-surf');
       surfTabs.querySelectorAll('.surf-tab').forEach(function(b) { b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
       renderSurfTable();
+      renderSurfSrcBar();
     });
   });
 }
@@ -1382,9 +1353,9 @@ surfEditToggle.addEventListener('click', function() {
   renderSurfTable();
 });
 
-// Get greyscale/mono hex for a step name
-function surfStepHex(stepName, isAccent) {
-  var pal = isAccent ? palettes.primary : palettes.greyscale;
+// Get hex for a step name using the palette assigned to a surface
+function surfStepHex(stepName, surfName) {
+  var pal = getSurfPalette(surfName);
   if (!pal) return '#888';
   if (stepName === 'white') return '#FFFFFF';
   if (stepName === 'black') return '#000000';
@@ -1394,9 +1365,9 @@ function surfStepHex(stepName, isAccent) {
   return '#888';
 }
 
-function buildSurfStepPicker(surfMap, prop, isAccent) {
+function buildSurfStepPicker(surfMap, prop, surfName) {
   var currentStep = surfMap[prop];
-  var hex = surfStepHex(currentStep, isAccent);
+  var hex = surfStepHex(currentStep, surfName);
 
   var h = '<div class="step-pick" tabindex="0" data-surf-prop="' + prop + '">';
   h += '<span class="step-pick__swatch" style="background:' + hex + '"></span>';
@@ -1405,8 +1376,7 @@ function buildSurfStepPicker(surfMap, prop, isAccent) {
   h += '<span class="step-pick__arrow">\u25BC</span>';
 
   h += '<div class="step-dropdown">';
-  // All step options (step names from the palette)
-  var pal = isAccent ? palettes.primary : palettes.greyscale;
+  var pal = getSurfPalette(surfName);
   if (pal) {
     for (var si = 0; si < pal.steps.length; si++) {
       var sName = pal.steps[si].name;
@@ -1428,14 +1398,14 @@ function buildSurfStepPicker(surfMap, prop, isAccent) {
 
 function renderSurfTable() {
   var n = selectedSurface;
-  var isAccent = (n === 'accent');
+  var isAccent = (SURF_PALETTE_SRC[n] !== 'greyscale');
   var lMap = isAccent ? SURF_LA : SURF_L[n];
   var dMap = isAccent ? SURF_DA : SURF_D[n];
   if (!lMap || !dMap) { surfBody.innerHTML = ''; return; }
 
   // Pre-compute bg hex for contrast checks
-  var lBg = surfStepHex(lMap['bg'], isAccent);
-  var dBg = surfStepHex(dMap['bg'], isAccent);
+  var lBg = surfStepHex(lMap['bg'], n);
+  var dBg = surfStepHex(dMap['bg'], n);
   var CONTRAST_PROPS = {'ct-default':4.5,'ct-strong':4.5,'ct-subtle':3,'ct-faint':3};
 
   var html = '<tr><th>Property</th><th colspan="2">Light</th><th colspan="2">Dark</th></tr>';
@@ -1447,8 +1417,8 @@ function renderSurfTable() {
       var prop = grp.keys[p];
       var lStep = lMap[prop];
       var dStep = dMap[prop];
-      var lHex = surfStepHex(lStep, isAccent);
-      var dHex = surfStepHex(dStep, isAccent);
+      var lHex = surfStepHex(lStep, n);
+      var dHex = surfStepHex(dStep, n);
 
       // Contrast warnings for content tokens
       var lWarn = '', dWarn = '';
@@ -1463,8 +1433,8 @@ function renderSurfTable() {
       html += '<tr><td class="surf-prop-label">' + prop + '</td>';
 
       if (surfEditMode) {
-        html += '<td colspan="2">' + buildSurfStepPicker(lMap, prop, isAccent) + lWarn + '</td>';
-        html += '<td colspan="2">' + buildSurfStepPicker(dMap, prop, isAccent) + dWarn + '</td>';
+        html += '<td colspan="2">' + buildSurfStepPicker(lMap, prop, n) + lWarn + '</td>';
+        html += '<td colspan="2">' + buildSurfStepPicker(dMap, prop, n) + dWarn + '</td>';
       } else {
         html += '<td><span class="map-swatch" style="background:' + lHex + ';width:18px;height:12px;display:inline-block;border-radius:3px;border:1px solid rgba(128,128,128,.15);vertical-align:middle" onclick="copyHex(\'' + lHex + '\')"></span></td>';
         html += '<td style="font-family:var(--font-family-mono,monospace);font-size:9px;color:var(--demo-fg-subtle)">' + lStep + ' <span style="color:var(--demo-fg-faint)">' + lHex + '</span>' + lWarn + '</td>';
@@ -1479,7 +1449,7 @@ function renderSurfTable() {
   html += '<tr><td colspan="5" style="padding:12px 8px"><div class="surf-preview">';
   for (var pi = 0; pi < 5; pi++) {
     var propN = ['bg','hover','pressed','outline','separator'][pi];
-    var pHex = surfStepHex(lMap[propN], isAccent);
+    var pHex = surfStepHex(lMap[propN], n);
     var tc2 = PE.wcagContrast(pHex, '#FFFFFF') > 3 ? '#fff' : '#000';
     html += '<span class="surf-preview__bar" style="background:' + pHex + ';color:' + tc2 + '">' + propN + '</span>';
   }
@@ -1508,11 +1478,12 @@ function renderSurfTable() {
           var picks = row.querySelectorAll('.step-pick');
           var isLight = (picks[0] === pick);
           var surfName = selectedSurface;
+          var isAccSurf = (SURF_PALETTE_SRC[surfName] !== 'greyscale');
           if (isLight) {
-            if (surfName === 'accent') SURF_LA[prop2] = newStep;
+            if (isAccSurf) SURF_LA[prop2] = newStep;
             else SURF_L[surfName][prop2] = newStep;
           } else {
-            if (surfName === 'accent') SURF_DA[prop2] = newStep;
+            if (isAccSurf) SURF_DA[prop2] = newStep;
             else SURF_D[surfName][prop2] = newStep;
           }
           renderSurfTable();
@@ -1529,17 +1500,16 @@ document.getElementById('surfResetBtn').addEventListener('click', function() {
   SURF_D = JSON.parse(JSON.stringify(DEFAULT_SURF_D));
   SURF_LA = JSON.parse(JSON.stringify(DEFAULT_SURF_LA));
   SURF_DA = JSON.parse(JSON.stringify(DEFAULT_SURF_DA));
-  // Reset palette key colors to auto-derived
-  var greyR = getRoleById('greyscale');
-  if (greyR) { greyR.type = 'auto'; greyR.keyHex = deriveKeyHex('greyscale'); palettes.greyscale = PE.generatePalette(greyR.keyHex); }
-  syncSurfPalInputs();
+  SURF_PALETTE_SRC = JSON.parse(JSON.stringify(DEFAULT_SURF_SRC));
   renderSurfTable();
+  renderSurfSrcBar();
   injectSurfaceTokens();
-  showSaveMsg('T2 surface maps and palettes reset to defaults');
+  showSaveMsg('T2 surface maps and palette sources reset to defaults');
 });
 
 renderSurfTabs();
 renderSurfTable();
+renderSurfSrcBar();
 
 // ══════════════════════════════════════════════════════════════
 // RENDER: TRUST CERTIFICATES (Section 4)
@@ -1797,7 +1767,8 @@ function buildSaveableConfig() {
       return {id: r.id, label: r.label, keyHex: r.keyHex, type: r.type, derive: r.derive || null};
     }),
     customCounter: customCounter,
-    surfaceMap: { light: SURF_L, dark: SURF_D, lightAccent: SURF_LA, darkAccent: SURF_DA }
+    surfaceMap: { light: SURF_L, dark: SURF_D, lightAccent: SURF_LA, darkAccent: SURF_DA },
+    surfacePaletteSrc: SURF_PALETTE_SRC
   });
 }
 
@@ -1814,6 +1785,9 @@ function loadSavedConfig() {
       if (cfg.surfaceMap.dark) Object.keys(cfg.surfaceMap.dark).forEach(function(s) { if (SURF_D[s]) Object.assign(SURF_D[s], cfg.surfaceMap.dark[s]); });
       if (cfg.surfaceMap.lightAccent) Object.assign(SURF_LA, cfg.surfaceMap.lightAccent);
       if (cfg.surfaceMap.darkAccent) Object.assign(SURF_DA, cfg.surfaceMap.darkAccent);
+    }
+    if (cfg.surfacePaletteSrc) {
+      SURF_NAMES.forEach(function(sn) { if (cfg.surfacePaletteSrc[sn]) SURF_PALETTE_SRC[sn] = cfg.surfacePaletteSrc[sn]; });
     }
     return true;
   } catch(e) { return false; }
@@ -1860,8 +1834,8 @@ document.getElementById('resetRolesBtn').addEventListener('click', function() {
   refreshSelectors();
   injectAllTokens();
   renderMap();
-  syncSurfPalInputs();
   renderSurfTable();
+  renderSurfSrcBar();
   renderCertGrid();
   renderCertDetail(selectedCertRole);
   renderSteps();
@@ -2110,6 +2084,9 @@ function buildUpdatedConfig() {
     darkAccent: JSON.parse(JSON.stringify(SURF_DA))
   };
 
+  // Update palette sources
+  cfg.surfacePaletteSrc = JSON.parse(JSON.stringify(SURF_PALETTE_SRC));
+
   return cfg;
 }
 
@@ -2294,22 +2271,18 @@ function rolePrefix(r) {
   return PRIM_PREFIX[r.id] || r.id;
 }
 
-// Build surfaces.css from greyscale + monochromatic palette steps
-// Uses the EDITABLE SURF_L / SURF_D / SURF_LA / SURF_DA globals
+// Build surfaces.css from per-surface palette sources
+// Uses the EDITABLE SURF_L / SURF_D / SURF_LA / SURF_DA + SURF_PALETTE_SRC globals
 function buildSurfacesFileCSS() {
-  var grey = palettes.greyscale;
-  var mono = palettes.primary;
-  if (!grey || !mono) return null;
-
-  var stepIdx = {};
-  for (var si = 0; si < grey.steps.length; si++) stepIdx[grey.steps[si].name] = si;
-
-  function gs(stepName) { return grey.steps[stepIdx[stepName]].hex; }
-  function ms(stepName) {
-    for (var mi = 0; mi < mono.steps.length; mi++) {
-      if (mono.steps[mi].name === stepName) return mono.steps[mi].hex;
+  function resolveHex(stepName, surfName) {
+    if (stepName === 'white') return '#FFFFFF';
+    if (stepName === 'black') return '#000000';
+    var pal = getSurfPalette(surfName);
+    if (!pal) return '#888888';
+    for (var i = 0; i < pal.steps.length; i++) {
+      if (pal.steps[i].name === stepName) return pal.steps[i].hex;
     }
-    return '#000000';
+    return '#888888';
   }
 
   var NAMES = ['bright','base','dim','deep','accent','container','over-container','float','inverse'];
@@ -2324,11 +2297,12 @@ function buildSurfacesFileCSS() {
   out.push(':root {');
   for (var ni = 0; ni < NAMES.length; ni++) {
     var n = NAMES[ni];
-    var map = n === 'accent' ? SURF_LA : SURF_L[n];
-    var pal = n === 'accent' ? ms : gs;
-    out.push('  /* ── SURFACE-' + n.toUpperCase() + ' ── */');
+    var isAcc = (SURF_PALETTE_SRC[n] !== 'greyscale');
+    var map = isAcc ? SURF_LA : SURF_L[n];
+    if (!map) continue;
+    out.push('  /* ── SURFACE-' + n.toUpperCase() + ' (src: ' + SURF_PALETTE_SRC[n] + ') ── */');
     for (var pi = 0; pi < SURF_PROP_ORDER.length; pi++) {
-      out.push('  --surface-' + n + '-' + SURF_PROP_ORDER[pi] + ': ' + pal(map[SURF_PROP_ORDER[pi]]) + ';');
+      out.push('  --surface-' + n + '-' + SURF_PROP_ORDER[pi] + ': ' + resolveHex(map[SURF_PROP_ORDER[pi]], n) + ';');
     }
   }
   out.push('}');
@@ -2336,11 +2310,12 @@ function buildSurfacesFileCSS() {
   out.push('[data-theme="dark"] {');
   for (var ni2 = 0; ni2 < NAMES.length; ni2++) {
     var n2 = NAMES[ni2];
-    var map2 = n2 === 'accent' ? SURF_DA : SURF_D[n2];
-    var pal2 = n2 === 'accent' ? ms : gs;
-    out.push('  /* ── SURFACE-' + n2.toUpperCase() + ' (dark) ── */');
+    var isAcc2 = (SURF_PALETTE_SRC[n2] !== 'greyscale');
+    var map2 = isAcc2 ? SURF_DA : SURF_D[n2];
+    if (!map2) continue;
+    out.push('  /* ── SURFACE-' + n2.toUpperCase() + ' (dark, src: ' + SURF_PALETTE_SRC[n2] + ') ── */');
     for (var pi2 = 0; pi2 < SURF_PROP_ORDER.length; pi2++) {
-      out.push('  --surface-' + n2 + '-' + SURF_PROP_ORDER[pi2] + ': ' + pal2(map2[SURF_PROP_ORDER[pi2]]) + ';');
+      out.push('  --surface-' + n2 + '-' + SURF_PROP_ORDER[pi2] + ': ' + resolveHex(map2[SURF_PROP_ORDER[pi2]], n2) + ';');
     }
   }
   out.push('}');
@@ -2361,7 +2336,7 @@ function doInitialRender() {
   renderMap();
   renderSurfTabs();
   renderSurfTable();
-  syncSurfPalInputs();
+  renderSurfSrcBar();
   renderCertGrid();
   renderCertDetail(selectedCertRole);
   renderSteps();
