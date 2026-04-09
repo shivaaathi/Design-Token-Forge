@@ -1864,7 +1864,9 @@ function buildSaveableConfig() {
 
 function loadSavedConfig() {
   try {
-    var raw = localStorage.getItem(STORAGE_KEY_CONFIG);
+    // Try per-project key first, then fall back to global key
+    var raw = projectId ? localStorage.getItem(STORAGE_KEY_CONFIG + '-' + projectId) : null;
+    if (!raw) raw = localStorage.getItem(STORAGE_KEY_CONFIG);
     if (!raw) return false;
     var cfg = JSON.parse(raw);
     if (!cfg.roles || !cfg.roles.length) return false;
@@ -1903,6 +1905,11 @@ saveBtn.addEventListener('click', function() {
   var config = buildSaveableConfig();
   localStorage.setItem(STORAGE_KEY_TOKENS, css);
   localStorage.setItem(STORAGE_KEY_CONFIG, config);
+  // Also persist to per-project keys so switchProject can restore later
+  if (projectId) {
+    localStorage.setItem(STORAGE_KEY_TOKENS + '-' + projectId, css);
+    localStorage.setItem(STORAGE_KEY_CONFIG + '-' + projectId, config);
+  }
   var now = new Date().toLocaleString();
   localStorage.setItem(STORAGE_KEY_SAVE_TS, now);
   saveTs.textContent = 'Last saved: ' + now;
@@ -2463,8 +2470,23 @@ var projSlugError = document.getElementById('projSlugError');
 var projCreateBtn = document.getElementById('projCreateBtn');
 var projCancelBtn = document.getElementById('projCancelBtn');
 
+var STORAGE_KEY_PROJECTS = 'dtf-known-projects';
 var knownProjects = []; // [{id, name}]
 var depth = (location.pathname.indexOf('/demo/') !== -1) ? '..' : '.';
+
+function persistKnownProjects() {
+  localStorage.setItem(STORAGE_KEY_PROJECTS, JSON.stringify(knownProjects));
+}
+
+function mergeKnownProjects(list) {
+  for (var i = 0; i < list.length; i++) {
+    var p = list[i];
+    if (!p || !p.id) continue;
+    if (!knownProjects.some(function(k) { return k.id === p.id; })) {
+      knownProjects.push(p);
+    }
+  }
+}
 
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').substring(0, 40);
@@ -2578,7 +2600,7 @@ function discoverProjects(callback) {
   if (projectId) found.push({id: projectId, name: (projectConfig && projectConfig.name) || projectId});
 
   // Try fetching a projects index or scan common names
-  fetch(depth + '/projects/index.json?_cb=' + Date.now())
+  fetch(depth + '/projects.json?_cb=' + Date.now())
     .then(function(r) { return r.ok ? r.json() : null; })
     .catch(function() { return null; })
     .then(function(index) {
@@ -2746,6 +2768,7 @@ projCreateBtn.addEventListener('click', function() {
   .then(function() {
     // Success — add to known projects and switch
     knownProjects.push({id: slug, name: name});
+    persistKnownProjects();
     projDialogBackdrop.classList.remove('open');
     switchProject(slug);
   })
@@ -2798,10 +2821,23 @@ projCreateBtn.addEventListener('click', function() {
       console.warn('[DTF] Could not load project config:', e.message);
     })
     .finally(function() {
-      // Populate project selector with at least the current project
+      // Seed knownProjects with current project
       if (projectId) {
-        knownProjects = [{id: projectId, name: (projectConfig && projectConfig.name) || projectId}];
+        mergeKnownProjects([{id: projectId, name: (projectConfig && projectConfig.name) || projectId}]);
       }
+      // Restore any previously-persisted projects from localStorage
+      try {
+        var saved = JSON.parse(localStorage.getItem(STORAGE_KEY_PROJECTS) || '[]');
+        mergeKnownProjects(saved);
+      } catch(e) {}
+
+      // Discover additional projects (async — updates dropdown when done)
+      discoverProjects(function(found) {
+        mergeKnownProjects(found);
+        persistKnownProjects();
+        populateProjectSelect();
+      });
+
       populateProjectSelect();
       doInitialRender();
 
