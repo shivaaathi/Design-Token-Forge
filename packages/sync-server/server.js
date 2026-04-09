@@ -64,7 +64,7 @@ const SEMANTIC_ROLES = [
 
 // ── CSS parser ────────────────────────────────────────────────
 
-function parseCSSTokens(filePath) {
+export function parseCSSTokens(filePath) {
   const css = fs.readFileSync(filePath, 'utf-8');
   const light = {}, dark = {};
   const darkIdx = css.indexOf('[data-theme="dark"]');
@@ -537,12 +537,13 @@ function buildCompSize(extrasCollection) {
 
 // ── Master export ─────────────────────────────────────────────
 
-export function runExport() {
+export function runExport(opts = {}) {
   const t0 = Date.now();
-  const primitiveTokens = parseCSSTokens(path.join(TOKENS_DIR, 'primitives.css'));
-  const semanticTokens  = parseCSSTokens(path.join(TOKENS_DIR, 'semantic.css'));
-  const surfaceTokens   = parseCSSTokens(path.join(TOKENS_DIR, 'surfaces.css'));
-  const extrasTokens    = parseCSSTokens(path.join(TOKENS_DIR, 'extras.css'));
+  const dir = opts.tokensDir || TOKENS_DIR;
+  const primitiveTokens = opts.primitiveTokens || parseCSSTokens(path.join(dir, 'primitives.css'));
+  const semanticTokens  = opts.semanticTokens  || parseCSSTokens(path.join(dir, 'semantic.css'));
+  const surfaceTokens   = opts.surfaceTokens   || parseCSSTokens(path.join(dir, 'surfaces.css'));
+  const extrasTokens    = opts.extrasTokens    || parseCSSTokens(path.join(dir, 'extras.css'));
 
   // T0: raw palette
   const t0Col = buildT0(primitiveTokens, extrasTokens);

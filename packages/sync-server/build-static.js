@@ -49,6 +49,9 @@ const OUT_DIR = PROJECT_ID ? path.join(BASE_OUT_DIR, PROJECT_ID) : BASE_OUT_DIR;
 // We'll import from the server module (ESM)
 const serverPath = path.join(__dirname, 'server.js');
 
+// We'll conditionally import the config→tokens generator
+const generatorPath = path.join(__dirname, 'generate-from-config.js');
+
 // ── Recursive directory copy ──────────────────────────────────
 function copyDirSync(src, dst) {
   fs.mkdirSync(dst, { recursive: true });
@@ -105,7 +108,37 @@ async function main() {
     process.exit(1);
   }
 
-  const data = serverModule.runExport();
+  // ── Generate token overrides from config.json ────────────────
+  //    If the project config has paletteKeys/semanticMap/surfaceMap,
+  //    regenerate the token values from config (the source of truth)
+  //    instead of relying solely on the CSS files.
+  let exportOpts = {};
+  if (projectConfig?.paletteKeys) {
+    try {
+      const { generateTokenOverrides } = await import(generatorPath);
+
+      // Parse baseline primitives so non-color tokens (spacing, font) are preserved
+      const TOKENS_DIR = path.join(ROOT, 'packages', 'tokens', 'src');
+      const basePrimitives = serverModule.parseCSSTokens
+        ? serverModule.parseCSSTokens(path.join(TOKENS_DIR, 'primitives.css'))
+        : { light: {}, dark: {} };
+
+      const overrides = generateTokenOverrides(projectConfig, basePrimitives);
+      if (overrides.primitiveTokens) exportOpts.primitiveTokens = overrides.primitiveTokens;
+      if (overrides.semanticTokens)  exportOpts.semanticTokens  = overrides.semanticTokens;
+      if (overrides.surfaceTokens)   exportOpts.surfaceTokens   = overrides.surfaceTokens;
+
+      const parts = [];
+      if (overrides.primitiveTokens) parts.push('primitives');
+      if (overrides.semanticTokens)  parts.push('semantic');
+      if (overrides.surfaceTokens)   parts.push('surfaces');
+      if (parts.length) console.log(`  ✓ Config overrides → ${parts.join(', ')}`);
+    } catch (e) {
+      console.warn(`  ⚠ Config override generation failed, falling back to CSS: ${e.message}`);
+    }
+  }
+
+  const data = serverModule.runExport(exportOpts);
 
   // Inject project identity into the payload
   if (projectConfig) {
