@@ -56,6 +56,10 @@ body{
 .nav-project select option{color:var(--demo-fg);background:var(--demo-surface)}
 .nav-project-new{padding:3px 10px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:var(--demo-surface);color:var(--primary-content-default,#286CE5);font-size:var(--font-size-10,10px);font-weight:600;cursor:pointer;white-space:nowrap;transition:all 150ms ease;font-family:inherit}
 .nav-project-new:hover{background:var(--demo-surface-alt);border-color:var(--primary-component-outline-default)}
+.nav-project-action{width:24px;height:24px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:var(--demo-surface);color:var(--demo-fg-faint);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 150ms ease;padding:0}
+.nav-project-action:hover{color:var(--demo-fg-strong);border-color:var(--demo-fg-faint);background:var(--demo-surface-alt)}
+.nav-project-action.nav-project-del:hover{color:#DC2626;border-color:#DC2626;background:#FEE2E2}
+.nav-project-action:disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
 .theme-toggle{padding:4px 10px;border-radius:var(--radius-sm,4px);border:1px solid var(--demo-border);background:var(--demo-surface);color:var(--demo-fg-subtle);cursor:pointer;font-size:var(--font-size-11,11px);font-weight:500;transition:all 150ms ease;font-family:inherit}
 .theme-toggle:hover{background:var(--demo-surface-alt);color:var(--demo-fg-strong)}
 

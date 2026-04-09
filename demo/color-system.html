@@ -37,13 +37,7 @@
 .role-auto-tag{font-size:var(--font-size-10,10px);color:var(--demo-fg-faint);font-style:italic}
 .role-del{width:22px;height:22px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:transparent;color:var(--demo-fg-faint);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:auto;transition:all 120ms;line-height:1}
 .role-del:hover{color:#DC2626;border-color:#DC2626;background:#FEE2E2}
-.role-disable{width:22px;height:22px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:transparent;color:var(--demo-fg-faint);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:auto;transition:all 120ms;line-height:1}
-.role-disable:hover{color:#DC2626;border-color:#DC2626;background:#FEE2E2}
-.role-row--disabled{opacity:.65}
-.role-row--disabled .role-head{gap:8px}
-.role-alias-tag{font-size:var(--font-size-11,11px);color:var(--demo-fg-faint);font-style:italic;letter-spacing:.01em}
-.role-restore{padding:2px 10px;border:1px solid var(--primary-component-outline-default,#286CE5);border-radius:var(--radius-sm,4px);background:transparent;color:var(--primary-component-bg-default,#286CE5);font-size:var(--font-size-11,11px);font-weight:600;cursor:pointer;margin-left:auto;transition:all 120ms}
-.role-restore:hover{background:var(--primary-container-bg,#EFF6FF);color:var(--primary-component-bg-hover,#1D5BC4)}
+
 
 .cert-mini{font-size:var(--font-size-10,10px);font-weight:700;padding:2px 8px;border-radius:var(--radius-xs,3px);white-space:nowrap}
 .cert-mini[data-status="CERTIFIED"]{background:#DCFCE7;color:#166534}
@@ -718,7 +712,6 @@ var roles = [];
 var palettes = {};
 var certs = {};
 var customCounter = 0;
-var disabledRoles = [];
 var selectedCertRole = 'primary';
 var selectedMapRole = 'primary';
 var selectedStepRole = 'primary';
@@ -846,9 +839,7 @@ function buildRoleRow(r) {
   var certIcon = cert ? (cert.overall === 'CERTIFIED' ? '\u2705' : cert.overall === 'CONDITIONAL' ? '\u26A0\uFE0F' : '\u274C') : '';
   var certCount = cert ? cert.pass + '/7' : '';
 
-  var isBrandDisabled = r.id === 'brand' && disabledRoles.indexOf('brand') >= 0;
-
-  var h = '<div class="role-row' + (isBrandDisabled ? ' role-row--disabled' : '') + '" data-role="' + r.id + '">';
+  var h = '<div class="role-row" data-role="' + r.id + '">';
   h += '<div class="role-head">';
 
   if (r.type === 'custom') {
@@ -857,10 +848,7 @@ function buildRoleRow(r) {
     h += '<span class="role-label">' + escHtml(r.label) + '</span>';
   }
 
-  if (isBrandDisabled) {
-    h += '<span class="role-alias-tag">\u2192 Mapped to Primary</span>';
-    h += '<button class="role-restore" data-role-restore="brand" type="button" title="Restore Brand palette">Restore</button>';
-  } else if (r.type !== 'auto') {
+  if (r.type !== 'auto') {
     h += '<div class="role-picker">';
     h += '<input type="color" class="pick-native" data-role-color="' + r.id + '" value="' + r.keyHex + '">';
     h += '<input type="text" class="pick-hex" data-role-hex="' + r.id + '" value="' + r.keyHex + '" maxlength="7" spellcheck="false">';
@@ -869,23 +857,19 @@ function buildRoleRow(r) {
     h += '<span class="role-auto-tag">from Primary \u2022 ' + (r.keyHex || '') + '</span>';
   }
 
-  if (!isBrandDisabled && cert) {
+  if (cert) {
     h += '<span class="cert-mini" data-status="' + certStatus + '">' + certIcon + ' ' + certCount + '</span>';
   }
 
   if (r.type === 'custom') {
     h += '<button class="role-del" data-role-del="' + r.id + '" type="button" title="Remove role">&times;</button>';
-  } else if (r.id === 'brand' && !isBrandDisabled) {
-    h += '<button class="role-disable" data-role-disable="brand" type="button" title="Remove Brand \u2014 aliases to Primary">\u2715</button>';
   }
 
   h += '</div>'; // .role-head
 
-  if (!isBrandDisabled) {
-    h += '<div class="role-strip" id="strip-' + r.id + '">';
-    h += buildStripHtml(r.id);
-    h += '</div>';
-  }
+  h += '<div class="role-strip" id="strip-' + r.id + '">';
+  h += buildStripHtml(r.id);
+  h += '</div>';
 
   h += '</div>'; // .role-row
   return h;
@@ -959,24 +943,6 @@ function wireRoleEvents() {
     el.addEventListener('click', function() {
       var rid = el.getAttribute('data-role-del');
       removeRole(rid);
-    });
-  });
-  // Disable brand button
-  rolesList.querySelectorAll('[data-role-disable]').forEach(function(el) {
-    el.addEventListener('click', function() {
-      var rid = el.getAttribute('data-role-disable');
-      if (disabledRoles.indexOf(rid) === -1) disabledRoles.push(rid);
-      renderRolesList();
-      injectAllTokens();
-    });
-  });
-  // Restore brand button
-  rolesList.querySelectorAll('[data-role-restore]').forEach(function(el) {
-    el.addEventListener('click', function() {
-      var rid = el.getAttribute('data-role-restore');
-      disabledRoles = disabledRoles.filter(function(d) { return d !== rid; });
-      renderRolesList();
-      injectAllTokens();
     });
   });
 }
@@ -1113,7 +1079,6 @@ function injectAllTokens() {
   // Inject semantic tokens for known roles
   for (var t = 0; t < TOKEN_ROLES.length; t++) {
     var roleId = TOKEN_ROLES[t];
-    if (disabledRoles.indexOf(roleId) >= 0) continue; // aliases below
     var pal = palettes[roleId];
     if (!pal) continue;
     var steps = pal.steps;
@@ -1143,17 +1108,6 @@ function injectAllTokens() {
       var dk = dkeys[d];
       var di = DARK_MAP[dk];
       darkCSS += '  --' + roleId + '-' + dk + ': ' + (di === -1 ? '#FFFFFF' : steps[di].hex) + ';\n';
-    }
-  }
-
-  // Alias disabled roles to primary (live preview)
-  for (var dr = 0; dr < disabledRoles.length; dr++) {
-    var did = disabledRoles[dr];
-    if (TOKEN_ROLES.indexOf(did) < 0) continue;
-    var alkeys = Object.keys(LIGHT_MAP);
-    for (var ak = 0; ak < alkeys.length; ak++) {
-      root.setProperty('--' + did + '-' + alkeys[ak], 'var(--primary-' + alkeys[ak] + ')');
-      darkCSS += '  --' + did + '-' + alkeys[ak] + ': var(--primary-' + alkeys[ak] + ');\n';
     }
   }
 
@@ -1793,7 +1747,6 @@ function buildSaveableCSS() {
   var darkCSS = '';
   for (var i = 0; i < roles.length; i++) {
     var r = roles[i];
-    if (disabledRoles.indexOf(r.id) >= 0) continue; // skip disabled, aliases below
     var pal = palettes[r.id];
     if (!pal) continue;
     var prefix = rolePrefix(r);
@@ -1833,16 +1786,6 @@ function buildSaveableCSS() {
     darkCSS += '  --surface-accent-hover: ' + ps[17].hex + ';\n';
     darkCSS += '  --surface-accent-outline: ' + ps[16].hex + ';\n';
   }
-  // Alias disabled roles to primary
-  for (var di = 0; di < disabledRoles.length; di++) {
-    var did = disabledRoles[di];
-    if (TOKEN_ROLES.indexOf(did) < 0) continue;
-    var alkeys = Object.keys(LIGHT_MAP);
-    for (var ak = 0; ak < alkeys.length; ak++) {
-      css += '  --' + did + '-' + alkeys[ak] + ': var(--primary-' + alkeys[ak] + ');\n';
-      darkCSS += '  --' + did + '-' + alkeys[ak] + ': var(--primary-' + alkeys[ak] + ');\n';
-    }
-  }
   css += '}\n';
   if (darkCSS) {
     css += '[data-theme="dark"] {\n' + darkCSS + '}\n';
@@ -1856,7 +1799,6 @@ function buildSaveableConfig() {
       return {id: r.id, label: r.label, keyHex: r.keyHex, type: r.type, derive: r.derive || null};
     }),
     customCounter: customCounter,
-    disabledRoles: disabledRoles,
     surfaceMap: { light: SURF_L, dark: SURF_D, lightAccent: SURF_LA, darkAccent: SURF_DA },
     surfacePaletteSrc: SURF_PALETTE_SRC
   });
@@ -1872,7 +1814,6 @@ function loadSavedConfig() {
     if (!cfg.roles || !cfg.roles.length) return false;
     roles = cfg.roles.map(function(r) { return Object.assign({}, r); });
     customCounter = cfg.customCounter || 0;
-    disabledRoles = cfg.disabledRoles || [];
     if (cfg.surfaceMap) {
       if (cfg.surfaceMap.light) Object.keys(cfg.surfaceMap.light).forEach(function(s) { if (SURF_L[s]) Object.assign(SURF_L[s], cfg.surfaceMap.light[s]); });
       if (cfg.surfaceMap.dark) Object.keys(cfg.surfaceMap.dark).forEach(function(s) { if (SURF_D[s]) Object.assign(SURF_D[s], cfg.surfaceMap.dark[s]); });
@@ -1892,12 +1833,17 @@ function showSaveMsg(text) {
 }
 
 function updateSaveIndicator() {
-  var hasSaved = !!localStorage.getItem(STORAGE_KEY_CONFIG);
+  var key = projectId ? STORAGE_KEY_CONFIG + '-' + projectId : STORAGE_KEY_CONFIG;
+  var hasSaved = !!localStorage.getItem(key);
   if (hasSaved) {
     saveMsg.textContent = 'Saved palette active across all pages';
+  } else {
+    saveMsg.textContent = '';
   }
-  var ts = localStorage.getItem(STORAGE_KEY_SAVE_TS);
+  var tsKey = projectId ? STORAGE_KEY_SAVE_TS + '-' + projectId : STORAGE_KEY_SAVE_TS;
+  var ts = localStorage.getItem(tsKey) || localStorage.getItem(STORAGE_KEY_SAVE_TS);
   if (ts) saveTs.textContent = 'Last saved: ' + ts;
+  else saveTs.textContent = '';
 }
 
 saveBtn.addEventListener('click', function() {
@@ -1912,6 +1858,7 @@ saveBtn.addEventListener('click', function() {
   }
   var now = new Date().toLocaleString();
   localStorage.setItem(STORAGE_KEY_SAVE_TS, now);
+  if (projectId) localStorage.setItem(STORAGE_KEY_SAVE_TS + '-' + projectId, now);
   saveTs.textContent = 'Last saved: ' + now;
   saveBtn.setAttribute('data-saved', '');
   saveBtn.textContent = 'Saved!';
@@ -1926,7 +1873,6 @@ saveBtn.addEventListener('click', function() {
 // Reset Roles (Section 1) — revert to default key colors
 document.getElementById('resetRolesBtn').addEventListener('click', function() {
   customCounter = 0;
-  disabledRoles = [];
   roles = DEFAULT_ROLES.map(function(r) { return Object.assign({}, r); });
   generateAll();
   renderRolesList();
@@ -2454,6 +2400,8 @@ function doInitialRender() {
   wrap.className = 'nav-project';
   wrap.innerHTML = '<span class="nav-project-label">Project</span>'
     + '<select id="projSelect" title="Switch active project"></select>'
+    + '<button class="nav-project-action" id="projRenameBtn" type="button" title="Rename project"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 114 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>'
+    + '<button class="nav-project-action nav-project-del" id="projDeleteBtn" type="button" title="Delete project"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>'
     + '<button class="nav-project-new" id="projNewBtn" type="button">+ New</button>';
   if (nav && toggle) nav.insertBefore(wrap, toggle);
   else if (nav) nav.appendChild(wrap);
@@ -2461,6 +2409,8 @@ function doInitialRender() {
 var projSelect = document.getElementById('projSelect');
 var projInfo = null; /* no longer shown — path was low value */
 var projNewBtn = document.getElementById('projNewBtn');
+var projRenameBtn = document.getElementById('projRenameBtn');
+var projDeleteBtn = document.getElementById('projDeleteBtn');
 var projDialogBackdrop = document.getElementById('projDialogBackdrop');
 var projNameInput = document.getElementById('projNameInput');
 var projSlugInput = document.getElementById('projSlugInput');
@@ -2497,6 +2447,63 @@ function populateProjectSelect() {
     return '<option value="' + p.id + '"' + (p.id === projectId ? ' selected' : '') + '>' + escHtml(p.name || p.id) + '</option>';
   }).join('');
   projSelect.innerHTML = opts;
+  // Disable rename/delete when only 1 project or none selected
+  var canManage = knownProjects.length > 0 && projectId;
+  var canDelete = knownProjects.length > 1 && projectId;
+  if (projRenameBtn) projRenameBtn.disabled = !canManage;
+  if (projDeleteBtn) projDeleteBtn.disabled = !canDelete;
+}
+
+// Sync the global localStorage keys so shared.js and other pages pick up the active project's tokens
+function syncGlobalKeys() {
+  var css = buildSaveableCSS();
+  var config = buildSaveableConfig();
+  localStorage.setItem(STORAGE_KEY_TOKENS, css);
+  localStorage.setItem(STORAGE_KEY_CONFIG, config);
+  if (projectId) {
+    localStorage.setItem(STORAGE_KEY_TOKENS + '-' + projectId, css);
+    localStorage.setItem(STORAGE_KEY_CONFIG + '-' + projectId, config);
+  }
+}
+
+// ── Rename Project ───────────────────────────────────────
+function renameProject() {
+  if (!projectId || knownProjects.length === 0) return;
+  var proj = knownProjects.find(function(p) { return p.id === projectId; });
+  var currentName = proj ? (proj.name || proj.id) : projectId;
+  var newName = prompt('Rename project:', currentName);
+  if (!newName || !newName.trim() || newName.trim() === currentName) return;
+  newName = newName.trim().substring(0, 60);
+  if (proj) proj.name = newName;
+  persistKnownProjects();
+  populateProjectSelect();
+  showSaveMsg('Project renamed to "' + newName + '"');
+}
+
+// ── Delete Project ───────────────────────────────────────
+function deleteProject() {
+  if (!projectId || knownProjects.length <= 1) return;
+  var proj = knownProjects.find(function(p) { return p.id === projectId; });
+  var displayName = proj ? (proj.name || proj.id) : projectId;
+  var confirmed = confirm('Delete project "' + displayName + '"?\n\nThis will remove the project from your local list and clear its saved tokens. This cannot be undone.');
+  if (!confirmed) return;
+  var delId = projectId;
+  // Remove from knownProjects
+  knownProjects = knownProjects.filter(function(p) { return p.id !== delId; });
+  persistKnownProjects();
+  // Clear per-project localStorage
+  localStorage.removeItem(STORAGE_KEY_TOKENS + '-' + delId);
+  localStorage.removeItem(STORAGE_KEY_CONFIG + '-' + delId);
+  localStorage.removeItem(STORAGE_KEY_SAVE_TS + '-' + delId);
+  // Switch to first remaining project
+  var nextId = knownProjects.length > 0 ? knownProjects[0].id : '';
+  if (nextId) {
+    switchProject(nextId);
+  } else {
+    projectId = '';
+    populateProjectSelect();
+  }
+  showSaveMsg('Project "' + displayName + '" deleted');
 }
 
 function switchProject(newId) {
@@ -2575,6 +2582,7 @@ function fullRerender() {
   renderSteps();
   renderExport(currentFormat);
   updateSaveIndicator();
+  syncGlobalKeys();
 }
 
 projSelect.addEventListener('change', function() {
@@ -2690,6 +2698,8 @@ function openNewProjectDialog() {
 }
 
 projNewBtn.addEventListener('click', openNewProjectDialog);
+projRenameBtn.addEventListener('click', renameProject);
+projDeleteBtn.addEventListener('click', deleteProject);
 
 projCloseBtn.addEventListener('click', function() {
   projDialogBackdrop.classList.remove('open');

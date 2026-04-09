@@ -318,9 +318,9 @@ var PALETTES=[
   {name:'Warning',     prefix:'prim-warning',       key:'#D97706'},
   {name:'Info',        prefix:'prim-info',          key:'#0EA5E9'},
   {name:'Success',     prefix:'prim-success',       key:'#16A34A'}
-].filter(function(p){var d=window.DTF&&DTF.disabledRoles||[];return!(d.indexOf('brand')>=0&&p.prefix==='prim-brand')});
+];
 
-var ROLES=['primary','brand','danger','success','warning','info'].filter(function(r){return(window.DTF&&DTF.disabledRoles||[]).indexOf(r)<0});
+var ROLES=['primary','brand','danger','success','warning','info'];
 var ROLE_SOURCE={primary:'monochromatic',brand:'brand',danger:'danger',success:'success',warning:'warning',info:'info'};
 
 var ROLE_TOKENS=[
