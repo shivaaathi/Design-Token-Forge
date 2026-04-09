@@ -245,6 +245,33 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
   .demo-main{padding:16px;gap:32px}
   .cert-grid{grid-template-columns:1fr 1fr}
 }
+
+/* ── Project Bar ──────────────────────────────────────────── */
+.project-bar{display:flex;align-items:center;gap:10px;padding:8px 16px;background:var(--demo-sidebar-bg,#1a1a2e);border-bottom:1px solid var(--demo-border);font-size:13px;color:var(--demo-fg,#ccc)}
+.project-bar select{background:var(--demo-card-bg,#23233a);color:var(--demo-fg,#ccc);border:1px solid var(--demo-border,#333);border-radius:6px;padding:4px 8px;font-size:13px;min-width:180px}
+.proj-new-btn{background:#BD22AB;color:#fff;border:none;border-radius:6px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+.proj-new-btn:hover{background:#a01e95}
+.proj-info{color:var(--demo-fg-faint,#888);font-size:11px;margin-left:auto}
+
+/* ── New Project Dialog ───────────────────────────────────── */
+.proj-dialog-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;align-items:center;justify-content:center}
+.proj-dialog-backdrop.open{display:flex}
+.proj-dialog{background:var(--demo-card-bg,#23233a);border:1px solid var(--demo-border,#444);border-radius:12px;padding:24px 28px;width:420px;max-width:92vw;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.proj-dialog h3{margin:0 0 16px;font-size:16px;color:var(--demo-fg,#eee)}
+.proj-dialog .field{margin-bottom:14px}
+.proj-dialog .field label{display:block;font-size:12px;font-weight:600;color:var(--demo-fg-faint,#aaa);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.proj-dialog .field input,.proj-dialog .field textarea{width:100%;box-sizing:border-box;background:var(--demo-sidebar-bg,#1a1a2e);color:var(--demo-fg,#ccc);border:1px solid var(--demo-border,#444);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit}
+.proj-dialog .field textarea{resize:vertical;min-height:48px}
+.slug-preview{font-size:11px;color:var(--demo-fg-faint,#888);padding:4px 0;font-family:'SF Mono',monospace}
+.slug-preview span{color:#BD22AB;font-weight:600}
+.field-error{font-size:11px;color:#ef4444;display:none;margin-top:2px}
+.field-hint{font-size:11px;color:var(--demo-fg-faint,#888);margin-top:2px;display:block}
+.proj-dialog-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.proj-cancel{background:transparent;color:var(--demo-fg-faint,#aaa);border:1px solid var(--demo-border,#444);border-radius:6px;padding:6px 16px;font-size:13px;cursor:pointer}
+.proj-cancel:hover{background:var(--demo-sidebar-bg,#1a1a2e)}
+.proj-create{background:#BD22AB;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:13px;font-weight:600;cursor:pointer}
+.proj-create:hover{background:#a01e95}
+.proj-create:disabled{opacity:.4;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -303,6 +330,14 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
     <span class="demo-badge">Real-time Component Sync</span>
   </div>
 </header>
+
+<!-- ── Project Selector Bar ───────────────────────────────────── -->
+<div class="project-bar" id="projectBar">
+  <label>Project:</label>
+  <select id="projSelect" title="Switch active project"></select>
+  <button class="proj-new-btn" id="projNewBtn" type="button">+ New Project</button>
+  <span class="proj-info" id="projInfo"></span>
+</div>
 
 <div class="page-layout">
 <aside class="sidebar-nav" id="sidebarNav" aria-label="Section navigation">
@@ -596,6 +631,33 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
 </section>
 
 </main>
+
+<!-- ── New Project Dialog ─────────────────────────────── -->
+<div class="proj-dialog-backdrop" id="projDialogBackdrop">
+  <div class="proj-dialog" role="dialog" aria-labelledby="projDialogTitle">
+    <h3 id="projDialogTitle">Create New Project</h3>
+    <div class="field">
+      <label for="projNameInput">Project Name</label>
+      <input type="text" id="projNameInput" placeholder="e.g. Mobile Banking App" maxlength="60" autocomplete="off">
+      <span class="field-hint">Human-readable display name</span>
+    </div>
+    <div class="field">
+      <label for="projSlugInput">Project ID (slug)</label>
+      <input type="text" id="projSlugInput" placeholder="e.g. mobile-banking-app" maxlength="40" autocomplete="off">
+      <span class="field-hint">Lowercase letters, numbers, hyphens only. Auto-generated from name.</span>
+      <span class="field-error" id="projSlugError"></span>
+    </div>
+    <div class="slug-preview" id="projSlugPreview">projects/<span id="projSlugPreviewVal">???</span>/config.json</div>
+    <div class="field">
+      <label for="projDescInput">Description (optional)</label>
+      <input type="text" id="projDescInput" placeholder="Brief description of this project" maxlength="120" autocomplete="off">
+    </div>
+    <div class="proj-dialog-actions">
+      <button class="proj-cancel" id="projCancelBtn" type="button">Cancel</button>
+      <button class="proj-create" id="projCreateBtn" type="button" disabled>Create Project</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── Global Sticky Save Bar ──────────────────────────── -->
 <div class="global-save-bar" id="globalSaveBar">
@@ -2344,31 +2406,277 @@ function doInitialRender() {
   updateSaveIndicator();
 }
 
-// Try to load project config from deployed config.json
-(function loadProjectAndInit() {
-  var depth = (location.pathname.indexOf('/demo/') !== -1) ? '..' : '.';
+// ══════════════════════════════════════════════════════════════
+// PROJECT MANAGEMENT — selector, creation, switching
+// ══════════════════════════════════════════════════════════════
+var projSelect = document.getElementById('projSelect');
+var projInfo = document.getElementById('projInfo');
+var projNewBtn = document.getElementById('projNewBtn');
+var projDialogBackdrop = document.getElementById('projDialogBackdrop');
+var projNameInput = document.getElementById('projNameInput');
+var projSlugInput = document.getElementById('projSlugInput');
+var projDescInput = document.getElementById('projDescInput');
+var projSlugPreviewVal = document.getElementById('projSlugPreviewVal');
+var projSlugError = document.getElementById('projSlugError');
+var projCreateBtn = document.getElementById('projCreateBtn');
+var projCancelBtn = document.getElementById('projCancelBtn');
 
+var knownProjects = []; // [{id, name}]
+var depth = (location.pathname.indexOf('/demo/') !== -1) ? '..' : '.';
+
+function slugify(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').substring(0, 40);
+}
+
+function populateProjectSelect() {
+  var opts = knownProjects.map(function(p) {
+    return '<option value="' + p.id + '"' + (p.id === projectId ? ' selected' : '') + '>' + escHtml(p.name || p.id) + '</option>';
+  }).join('');
+  projSelect.innerHTML = opts;
+  projInfo.textContent = projectId ? ('projects/' + projectId + '/') : '';
+}
+
+function switchProject(newId) {
+  if (newId === projectId) return;
+  // Persist current state first
+  var css = buildSaveableCSS();
+  var config = buildSaveableConfig();
+  if (projectId) {
+    localStorage.setItem(STORAGE_KEY_TOKENS + '-' + projectId, css);
+    localStorage.setItem(STORAGE_KEY_CONFIG + '-' + projectId, config);
+  }
+
+  // Load new project config
+  projectId = newId;
+  projectConfig = null;
+  originalPaletteKeys = null;
+
+  // Reset working state
+  SURF_L = JSON.parse(JSON.stringify(DEFAULT_SURF_L));
+  SURF_D = JSON.parse(JSON.stringify(DEFAULT_SURF_D));
+  SURF_LA = JSON.parse(JSON.stringify(DEFAULT_SURF_LA));
+  SURF_DA = JSON.parse(JSON.stringify(DEFAULT_SURF_DA));
+  SURF_PALETTE_SRC = JSON.parse(JSON.stringify(DEFAULT_SURF_SRC));
+
+  fetch(depth + '/projects/' + newId + '/config.json?_cb=' + Date.now())
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .catch(function() { return null; })
+    .then(function(cfg) {
+      if (cfg && cfg.paletteKeys) {
+        projectConfig = cfg;
+        originalPaletteKeys = JSON.parse(JSON.stringify(cfg.paletteKeys));
+      }
+      // Try per-project localStorage
+      var savedKey = STORAGE_KEY_CONFIG + '-' + newId;
+      var savedRaw = localStorage.getItem(savedKey);
+      if (savedRaw) {
+        try {
+          var savedCfg = JSON.parse(savedRaw);
+          if (savedCfg.roles && savedCfg.roles.length) {
+            roles = savedCfg.roles.map(function(r) { return Object.assign({}, r); });
+            customCounter = savedCfg.customCounter || 0;
+            if (savedCfg.surfaceMap) {
+              if (savedCfg.surfaceMap.light) Object.keys(savedCfg.surfaceMap.light).forEach(function(s) { if (SURF_L[s]) Object.assign(SURF_L[s], savedCfg.surfaceMap.light[s]); });
+              if (savedCfg.surfaceMap.dark) Object.keys(savedCfg.surfaceMap.dark).forEach(function(s) { if (SURF_D[s]) Object.assign(SURF_D[s], savedCfg.surfaceMap.dark[s]); });
+              if (savedCfg.surfaceMap.lightAccent) Object.assign(SURF_LA, savedCfg.surfaceMap.lightAccent);
+              if (savedCfg.surfaceMap.darkAccent) Object.assign(SURF_DA, savedCfg.surfaceMap.darkAccent);
+            }
+            if (savedCfg.surfacePaletteSrc) {
+              SURF_NAMES.forEach(function(sn) { if (savedCfg.surfacePaletteSrc[sn]) SURF_PALETTE_SRC[sn] = savedCfg.surfacePaletteSrc[sn]; });
+            }
+            generateAll();
+            fullRerender();
+            populateProjectSelect();
+            return;
+          }
+        } catch(e) {}
+      }
+      // No localStorage — init from project config
+      initRoles();
+      generateAll();
+      fullRerender();
+      populateProjectSelect();
+    });
+}
+
+function fullRerender() {
+  renderRolesList();
+  refreshSelectors();
+  injectAllTokens();
+  renderMap();
+  renderSurfTabs();
+  renderSurfTable();
+  renderSurfSrcBar();
+  renderCertGrid();
+  renderCertDetail(selectedCertRole);
+  renderSteps();
+  renderExport(currentFormat);
+  updateSaveIndicator();
+}
+
+projSelect.addEventListener('change', function() {
+  switchProject(projSelect.value);
+});
+
+// Discover projects via local fetch (scan known dirs) or GitHub API
+function discoverProjects(callback) {
+  // If GitHub connected, use Contents API
+  if (ghPat) {
+    ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/projects')
+      .then(function(items) {
+        var dirs = items.filter(function(i) { return i.type === 'dir'; });
+        var projects = dirs.map(function(d) { return {id: d.name, name: d.name}; });
+        callback(projects);
+      })
+      .catch(function() { callback([]); });
+    return;
+  }
+  // Otherwise, try fetching known project configs locally
+  // Start with current project (always known)
+  var found = [];
+  if (projectId) found.push({id: projectId, name: (projectConfig && projectConfig.name) || projectId});
+
+  // Try fetching a projects index or scan common names
+  fetch(depth + '/projects/index.json?_cb=' + Date.now())
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .catch(function() { return null; })
+    .then(function(index) {
+      if (index && Array.isArray(index)) {
+        index.forEach(function(p) {
+          if (!found.some(function(f) { return f.id === p.id; })) found.push(p);
+        });
+      }
+      callback(found);
+    });
+}
+
+// ── New Project Dialog ──────────────────────────────────────
+projNewBtn.addEventListener('click', function() {
+  if (!ghPat) {
+    projInfo.textContent = 'Connect GitHub first (Section 6) to create projects';
+    return;
+  }
+  projNameInput.value = '';
+  projSlugInput.value = '';
+  projDescInput.value = '';
+  projSlugPreviewVal.textContent = '???';
+  projSlugError.style.display = 'none';
+  projCreateBtn.disabled = true;
+  projDialogBackdrop.classList.add('open');
+  projNameInput.focus();
+});
+
+projCancelBtn.addEventListener('click', function() {
+  projDialogBackdrop.classList.remove('open');
+});
+
+projDialogBackdrop.addEventListener('click', function(e) {
+  if (e.target === projDialogBackdrop) projDialogBackdrop.classList.remove('open');
+});
+
+projNameInput.addEventListener('input', function() {
+  var slug = slugify(projNameInput.value);
+  projSlugInput.value = slug;
+  projSlugInput.dispatchEvent(new Event('input'));
+});
+
+projSlugInput.addEventListener('input', function() {
+  var slug = projSlugInput.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+  projSlugInput.value = slug;
+  projSlugPreviewVal.textContent = slug || '???';
+
+  // Validate
+  var err = '';
+  if (slug.length < 2) err = 'Slug must be at least 2 characters';
+  else if (!/^[a-z0-9][a-z0-9-]*[a-z0-9]$/.test(slug) && slug.length > 1) err = 'Must start and end with letter/number';
+  else if (knownProjects.some(function(p) { return p.id === slug; })) err = 'Project "' + slug + '" already exists';
+
+  projSlugError.textContent = err;
+  projSlugError.style.display = err ? 'block' : 'none';
+  projCreateBtn.disabled = !!err || slug.length < 2;
+});
+
+projCreateBtn.addEventListener('click', function() {
+  if (projCreateBtn.disabled || !ghPat) return;
+
+  var slug = projSlugInput.value;
+  var name = projNameInput.value.trim() || slug;
+  var desc = projDescInput.value.trim();
+
+  // Build default config for the new project
+  var newConfig = {
+    id: slug,
+    name: name,
+    description: desc,
+    created: new Date().toISOString().split('T')[0],
+    paletteKeys: {
+      monochromatic: '#286CE5',
+      brand: '#E53F28',
+      danger: '#DC2626',
+      warning: '#D97706',
+      info: '#0EA5E9',
+      success: '#16A34A',
+      greyscale: '#747474',
+      desaturated: '#71747C'
+    }
+  };
+
+  projCreateBtn.disabled = true;
+  projCreateBtn.textContent = 'Creating...';
+
+  var filePath = 'projects/' + slug + '/config.json';
+  var fileContent = JSON.stringify(newConfig, null, 2) + '\n';
+
+  // Commit via GitHub API
+  ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + filePath, {
+    method: 'PUT',
+    body: {
+      message: 'Create project: ' + name,
+      content: btoa(unescape(encodeURIComponent(fileContent)))
+    }
+  })
+  .then(function() {
+    // Success — add to known projects and switch
+    knownProjects.push({id: slug, name: name});
+    projDialogBackdrop.classList.remove('open');
+    switchProject(slug);
+    projInfo.textContent = 'Project "' + name + '" created and committed to GitHub';
+  })
+  .catch(function(e) {
+    projSlugError.textContent = 'Failed to create: ' + e.message;
+    projSlugError.style.display = 'block';
+  })
+  .finally(function() {
+    projCreateBtn.disabled = false;
+    projCreateBtn.textContent = 'Create Project';
+  });
+});
+
+// ══════════════════════════════════════════════════════════════
+// INITIAL LOAD
+// ══════════════════════════════════════════════════════════════
+(function loadProjectAndInit() {
   // Try fetching status.json first to get project id, then config.json
   fetch(depth + '/status.json?_cb=' + Date.now())
     .then(function(r) { return r.ok ? r.json() : null; })
     .then(function(status) {
       if (status && status.project && status.project.id) {
         projectId = status.project.id;
-        // Try project-scoped config first, then root-level config
-        return fetch(depth + '/' + projectId + '/config.json?_cb=' + Date.now())
+        return fetch(depth + '/projects/' + projectId + '/config.json?_cb=' + Date.now())
           .then(function(r) { return r.ok ? r.json() : null; })
           .catch(function() { return null; })
           .then(function(cfg) {
             if (cfg) return cfg;
-            // Fallback: try root config.json
             return fetch(depth + '/config.json?_cb=' + Date.now())
               .then(function(r) { return r.ok ? r.json() : null; })
               .catch(function() { return null; });
           });
       }
-      // No project in status — try local config for dev
       return fetch(depth + '/projects/desktop-pdf-editor/config.json?_cb=' + Date.now())
-        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(r) {
+          if (r.ok) { projectId = 'desktop-pdf-editor'; return r.json(); }
+          return null;
+        })
         .catch(function() { return null; });
     })
     .then(function(cfg) {
@@ -2383,6 +2691,11 @@ function doInitialRender() {
       console.warn('[DTF] Could not load project config:', e.message);
     })
     .finally(function() {
+      // Populate project selector with at least the current project
+      if (projectId) {
+        knownProjects = [{id: projectId, name: (projectConfig && projectConfig.name) || projectId}];
+      }
+      populateProjectSelect();
       doInitialRender();
     });
 })();
