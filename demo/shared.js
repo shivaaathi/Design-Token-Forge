@@ -30,8 +30,16 @@ window.DTF = window.DTF || { onThemeChange: null };
   label.textContent = 'Project';
   var sel = document.createElement('select');
   sel.innerHTML = '<option>…</option>';
+  var newBtn = document.createElement('button');
+  newBtn.className = 'nav-project-new';
+  newBtn.type = 'button';
+  newBtn.textContent = '+ New';
+  newBtn.addEventListener('click', function() {
+    window.location.href = 'color-system.html?new-project=1';
+  });
   wrap.appendChild(label);
   wrap.appendChild(sel);
+  wrap.appendChild(newBtn);
 
   /* Insert before theme toggle */
   var toggle = document.getElementById('themeToggle');
