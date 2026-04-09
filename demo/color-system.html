@@ -246,15 +246,7 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
   .cert-grid{grid-template-columns:1fr 1fr}
 }
 
-/* ── Project Bar (integrated into header flow) ───────────── */
-.project-bar{display:flex;align-items:center;gap:10px;padding:10px 32px;border-bottom:1px solid var(--demo-border);background:var(--demo-surface);font-size:var(--font-size-12,12px);color:var(--demo-fg-subtle)}
-.project-bar label{font-size:var(--font-size-10,10px);font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--demo-fg-faint)}
-.project-bar select{padding:4px 24px 4px 10px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:var(--demo-surface) url("data:image/svg+xml,%3Csvg width='8' height='5' viewBox='0 0 8 5' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%23999' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 6px center;color:var(--demo-fg-strong);font:inherit;font-size:var(--font-size-12,12px);font-weight:600;min-width:180px;cursor:pointer;-webkit-appearance:none;appearance:none;transition:border-color 150ms ease}
-.project-bar select:hover{border-color:var(--demo-fg-faint)}
-.project-bar select:focus{outline:2px solid var(--primary-component-bg-default);outline-offset:-1px;border-color:transparent}
-.proj-new-btn{padding:4px 14px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:var(--demo-surface);color:var(--primary-content-default,#286CE5);font-size:var(--font-size-11,11px);font-weight:600;cursor:pointer;white-space:nowrap;transition:all 150ms ease;font-family:inherit}
-.proj-new-btn:hover{background:var(--demo-surface-alt);border-color:var(--primary-component-outline-default)}
-.proj-info{color:var(--demo-fg-faint);font-size:var(--font-size-11,11px);margin-left:auto}
+/* (project bar removed — controls now in nav bar via JS) */
 
 /* ── New Project Dialog ───────────────────────────────────── */
 .proj-dialog-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;align-items:center;justify-content:center}
@@ -290,14 +282,6 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
     <span class="demo-badge">Real-time Component Sync</span>
   </div>
 </header>
-
-<!-- ── Project Selector Bar ───────────────────────────────────── -->
-<div class="project-bar" id="projectBar">
-  <label>Project:</label>
-  <select id="projSelect" title="Switch active project"></select>
-  <button class="proj-new-btn" id="projNewBtn" type="button">+ New Project</button>
-  <span class="proj-info" id="projInfo"></span>
-</div>
 
 <div class="page-layout">
 <aside class="sidebar-nav" id="sidebarNav" aria-label="Section navigation">
@@ -2373,8 +2357,20 @@ function doInitialRender() {
 // ══════════════════════════════════════════════════════════════
 // PROJECT MANAGEMENT — selector, creation, switching
 // ══════════════════════════════════════════════════════════════
+/* Inject project controls into the nav bar */
+(function(){
+  var nav = document.querySelector('.nav-actions');
+  var toggle = document.getElementById('themeToggle');
+  var wrap = document.createElement('div');
+  wrap.className = 'nav-project';
+  wrap.innerHTML = '<span class="nav-project-label">Project</span>'
+    + '<select id="projSelect" title="Switch active project"></select>'
+    + '<button class="nav-project-new" id="projNewBtn" type="button">+ New</button>';
+  if (nav && toggle) nav.insertBefore(wrap, toggle);
+  else if (nav) nav.appendChild(wrap);
+})();
 var projSelect = document.getElementById('projSelect');
-var projInfo = document.getElementById('projInfo');
+var projInfo = null; /* no longer shown — path was low value */
 var projNewBtn = document.getElementById('projNewBtn');
 var projDialogBackdrop = document.getElementById('projDialogBackdrop');
 var projNameInput = document.getElementById('projNameInput');
@@ -2397,7 +2393,6 @@ function populateProjectSelect() {
     return '<option value="' + p.id + '"' + (p.id === projectId ? ' selected' : '') + '>' + escHtml(p.name || p.id) + '</option>';
   }).join('');
   projSelect.innerHTML = opts;
-  projInfo.textContent = projectId ? ('projects/' + projectId + '/') : '';
 }
 
 function switchProject(newId) {
@@ -2603,7 +2598,6 @@ projCreateBtn.addEventListener('click', function() {
     knownProjects.push({id: slug, name: name});
     projDialogBackdrop.classList.remove('open');
     switchProject(slug);
-    projInfo.textContent = 'Project "' + name + '" created and committed to GitHub';
   })
   .catch(function(e) {
     projSlugError.textContent = 'Failed to create: ' + e.message;
