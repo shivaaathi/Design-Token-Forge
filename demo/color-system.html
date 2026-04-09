@@ -272,6 +272,7 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
 .proj-create{background:#BD22AB;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:13px;font-weight:600;cursor:pointer}
 .proj-create:hover{background:#a01e95}
 .proj-create:disabled{opacity:.4;cursor:not-allowed}
+.proj-gh-warn{background:#78350f;color:#fbbf24;padding:8px 12px;border-radius:6px;font-size:12px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
 </style>
 </head>
 <body>
@@ -636,6 +637,9 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
 <div class="proj-dialog-backdrop" id="projDialogBackdrop">
   <div class="proj-dialog" role="dialog" aria-labelledby="projDialogTitle">
     <h3 id="projDialogTitle">Create New Project</h3>
+    <div class="proj-gh-warn" id="projGhWarn" style="display:none">
+      <span>⚠️ Connect GitHub in Section 6 (Deploy) first to commit new projects.</span>
+    </div>
     <div class="field">
       <label for="projNameInput">Project Name</label>
       <input type="text" id="projNameInput" placeholder="e.g. Mobile Banking App" maxlength="60" autocomplete="off">
@@ -2551,17 +2555,15 @@ function discoverProjects(callback) {
 }
 
 // ── New Project Dialog ──────────────────────────────────────
+var projGhWarn = document.getElementById('projGhWarn');
 projNewBtn.addEventListener('click', function() {
-  if (!ghPat) {
-    projInfo.textContent = 'Connect GitHub first (Section 6) to create projects';
-    return;
-  }
   projNameInput.value = '';
   projSlugInput.value = '';
   projDescInput.value = '';
   projSlugPreviewVal.textContent = '???';
   projSlugError.style.display = 'none';
   projCreateBtn.disabled = true;
+  projGhWarn.style.display = ghPat ? 'none' : 'flex';
   projDialogBackdrop.classList.add('open');
   projNameInput.focus();
 });
@@ -2591,6 +2593,7 @@ projSlugInput.addEventListener('input', function() {
   else if (!/^[a-z0-9][a-z0-9-]*[a-z0-9]$/.test(slug) && slug.length > 1) err = 'Must start and end with letter/number';
   else if (knownProjects.some(function(p) { return p.id === slug; })) err = 'Project "' + slug + '" already exists';
 
+  if (!err && !ghPat) err = 'Connect GitHub first (Section 6)';
   projSlugError.textContent = err;
   projSlugError.style.display = err ? 'block' : 'none';
   projCreateBtn.disabled = !!err || slug.length < 2;
