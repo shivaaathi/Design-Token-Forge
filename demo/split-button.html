@@ -450,7 +450,7 @@
   'use strict';
 
   var STRUCTS = ['filled','outlined','soft','ghost'];
-  var ROLES   = ['primary','danger','success','warning','brand','info','neutral'];
+  var ROLES   = ['primary','danger','success','warning','brand','info','neutral'].filter(function(r){return(DTF.disabledRoles||[]).indexOf(r)<0});
   var SIZES   = ['micro','tiny','small','base','medium','large','big','huge','mega','ultra'];
   var SIZE_HT = {micro:'24px',tiny:'28px',small:'32px',base:'36px',medium:'40px',large:'44px',big:'48px',huge:'56px',mega:'64px',ultra:'80px'};
   var SHADOWS = ['none','xs','sm','DEFAULT','md','lg','xl','2xl'];

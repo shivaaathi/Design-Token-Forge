@@ -37,6 +37,13 @@
 .role-auto-tag{font-size:var(--font-size-10,10px);color:var(--demo-fg-faint);font-style:italic}
 .role-del{width:22px;height:22px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:transparent;color:var(--demo-fg-faint);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:auto;transition:all 120ms;line-height:1}
 .role-del:hover{color:#DC2626;border-color:#DC2626;background:#FEE2E2}
+.role-disable{width:22px;height:22px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:transparent;color:var(--demo-fg-faint);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:auto;transition:all 120ms;line-height:1}
+.role-disable:hover{color:#DC2626;border-color:#DC2626;background:#FEE2E2}
+.role-row--disabled{opacity:.65}
+.role-row--disabled .role-head{gap:8px}
+.role-alias-tag{font-size:var(--font-size-11,11px);color:var(--demo-fg-faint);font-style:italic;letter-spacing:.01em}
+.role-restore{padding:2px 10px;border:1px solid var(--primary-component-outline-default,#286CE5);border-radius:var(--radius-sm,4px);background:transparent;color:var(--primary-component-bg-default,#286CE5);font-size:var(--font-size-11,11px);font-weight:600;cursor:pointer;margin-left:auto;transition:all 120ms}
+.role-restore:hover{background:var(--primary-container-bg,#EFF6FF);color:var(--primary-component-bg-hover,#1D5BC4)}
 
 .cert-mini{font-size:var(--font-size-10,10px);font-weight:700;padding:2px 8px;border-radius:var(--radius-xs,3px);white-space:nowrap}
 .cert-mini[data-status="CERTIFIED"]{background:#DCFCE7;color:#166534}
@@ -711,6 +718,7 @@ var roles = [];
 var palettes = {};
 var certs = {};
 var customCounter = 0;
+var disabledRoles = [];
 var selectedCertRole = 'primary';
 var selectedMapRole = 'primary';
 var selectedStepRole = 'primary';
@@ -838,7 +846,9 @@ function buildRoleRow(r) {
   var certIcon = cert ? (cert.overall === 'CERTIFIED' ? '\u2705' : cert.overall === 'CONDITIONAL' ? '\u26A0\uFE0F' : '\u274C') : '';
   var certCount = cert ? cert.pass + '/7' : '';
 
-  var h = '<div class="role-row" data-role="' + r.id + '">';
+  var isBrandDisabled = r.id === 'brand' && disabledRoles.indexOf('brand') >= 0;
+
+  var h = '<div class="role-row' + (isBrandDisabled ? ' role-row--disabled' : '') + '" data-role="' + r.id + '">';
   h += '<div class="role-head">';
 
   if (r.type === 'custom') {
@@ -847,7 +857,10 @@ function buildRoleRow(r) {
     h += '<span class="role-label">' + escHtml(r.label) + '</span>';
   }
 
-  if (r.type !== 'auto') {
+  if (isBrandDisabled) {
+    h += '<span class="role-alias-tag">\u2192 Mapped to Primary</span>';
+    h += '<button class="role-restore" data-role-restore="brand" type="button" title="Restore Brand palette">Restore</button>';
+  } else if (r.type !== 'auto') {
     h += '<div class="role-picker">';
     h += '<input type="color" class="pick-native" data-role-color="' + r.id + '" value="' + r.keyHex + '">';
     h += '<input type="text" class="pick-hex" data-role-hex="' + r.id + '" value="' + r.keyHex + '" maxlength="7" spellcheck="false">';
@@ -856,19 +869,23 @@ function buildRoleRow(r) {
     h += '<span class="role-auto-tag">from Primary \u2022 ' + (r.keyHex || '') + '</span>';
   }
 
-  if (cert) {
+  if (!isBrandDisabled && cert) {
     h += '<span class="cert-mini" data-status="' + certStatus + '">' + certIcon + ' ' + certCount + '</span>';
   }
 
   if (r.type === 'custom') {
     h += '<button class="role-del" data-role-del="' + r.id + '" type="button" title="Remove role">&times;</button>';
+  } else if (r.id === 'brand' && !isBrandDisabled) {
+    h += '<button class="role-disable" data-role-disable="brand" type="button" title="Remove Brand \u2014 aliases to Primary">\u2715</button>';
   }
 
   h += '</div>'; // .role-head
 
-  h += '<div class="role-strip" id="strip-' + r.id + '">';
-  h += buildStripHtml(r.id);
-  h += '</div>';
+  if (!isBrandDisabled) {
+    h += '<div class="role-strip" id="strip-' + r.id + '">';
+    h += buildStripHtml(r.id);
+    h += '</div>';
+  }
 
   h += '</div>'; // .role-row
   return h;
@@ -942,6 +959,24 @@ function wireRoleEvents() {
     el.addEventListener('click', function() {
       var rid = el.getAttribute('data-role-del');
       removeRole(rid);
+    });
+  });
+  // Disable brand button
+  rolesList.querySelectorAll('[data-role-disable]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var rid = el.getAttribute('data-role-disable');
+      if (disabledRoles.indexOf(rid) === -1) disabledRoles.push(rid);
+      renderRolesList();
+      injectAllTokens();
+    });
+  });
+  // Restore brand button
+  rolesList.querySelectorAll('[data-role-restore]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var rid = el.getAttribute('data-role-restore');
+      disabledRoles = disabledRoles.filter(function(d) { return d !== rid; });
+      renderRolesList();
+      injectAllTokens();
     });
   });
 }
@@ -1078,6 +1113,7 @@ function injectAllTokens() {
   // Inject semantic tokens for known roles
   for (var t = 0; t < TOKEN_ROLES.length; t++) {
     var roleId = TOKEN_ROLES[t];
+    if (disabledRoles.indexOf(roleId) >= 0) continue; // aliases below
     var pal = palettes[roleId];
     if (!pal) continue;
     var steps = pal.steps;
@@ -1107,6 +1143,17 @@ function injectAllTokens() {
       var dk = dkeys[d];
       var di = DARK_MAP[dk];
       darkCSS += '  --' + roleId + '-' + dk + ': ' + (di === -1 ? '#FFFFFF' : steps[di].hex) + ';\n';
+    }
+  }
+
+  // Alias disabled roles to primary (live preview)
+  for (var dr = 0; dr < disabledRoles.length; dr++) {
+    var did = disabledRoles[dr];
+    if (TOKEN_ROLES.indexOf(did) < 0) continue;
+    var alkeys = Object.keys(LIGHT_MAP);
+    for (var ak = 0; ak < alkeys.length; ak++) {
+      root.setProperty('--' + did + '-' + alkeys[ak], 'var(--primary-' + alkeys[ak] + ')');
+      darkCSS += '  --' + did + '-' + alkeys[ak] + ': var(--primary-' + alkeys[ak] + ');\n';
     }
   }
 
@@ -1746,6 +1793,7 @@ function buildSaveableCSS() {
   var darkCSS = '';
   for (var i = 0; i < roles.length; i++) {
     var r = roles[i];
+    if (disabledRoles.indexOf(r.id) >= 0) continue; // skip disabled, aliases below
     var pal = palettes[r.id];
     if (!pal) continue;
     var prefix = rolePrefix(r);
@@ -1785,6 +1833,16 @@ function buildSaveableCSS() {
     darkCSS += '  --surface-accent-hover: ' + ps[17].hex + ';\n';
     darkCSS += '  --surface-accent-outline: ' + ps[16].hex + ';\n';
   }
+  // Alias disabled roles to primary
+  for (var di = 0; di < disabledRoles.length; di++) {
+    var did = disabledRoles[di];
+    if (TOKEN_ROLES.indexOf(did) < 0) continue;
+    var alkeys = Object.keys(LIGHT_MAP);
+    for (var ak = 0; ak < alkeys.length; ak++) {
+      css += '  --' + did + '-' + alkeys[ak] + ': var(--primary-' + alkeys[ak] + ');\n';
+      darkCSS += '  --' + did + '-' + alkeys[ak] + ': var(--primary-' + alkeys[ak] + ');\n';
+    }
+  }
   css += '}\n';
   if (darkCSS) {
     css += '[data-theme="dark"] {\n' + darkCSS + '}\n';
@@ -1798,6 +1856,7 @@ function buildSaveableConfig() {
       return {id: r.id, label: r.label, keyHex: r.keyHex, type: r.type, derive: r.derive || null};
     }),
     customCounter: customCounter,
+    disabledRoles: disabledRoles,
     surfaceMap: { light: SURF_L, dark: SURF_D, lightAccent: SURF_LA, darkAccent: SURF_DA },
     surfacePaletteSrc: SURF_PALETTE_SRC
   });
@@ -1811,6 +1870,7 @@ function loadSavedConfig() {
     if (!cfg.roles || !cfg.roles.length) return false;
     roles = cfg.roles.map(function(r) { return Object.assign({}, r); });
     customCounter = cfg.customCounter || 0;
+    disabledRoles = cfg.disabledRoles || [];
     if (cfg.surfaceMap) {
       if (cfg.surfaceMap.light) Object.keys(cfg.surfaceMap.light).forEach(function(s) { if (SURF_L[s]) Object.assign(SURF_L[s], cfg.surfaceMap.light[s]); });
       if (cfg.surfaceMap.dark) Object.keys(cfg.surfaceMap.dark).forEach(function(s) { if (SURF_D[s]) Object.assign(SURF_D[s], cfg.surfaceMap.dark[s]); });
@@ -1859,6 +1919,7 @@ saveBtn.addEventListener('click', function() {
 // Reset Roles (Section 1) — revert to default key colors
 document.getElementById('resetRolesBtn').addEventListener('click', function() {
   customCounter = 0;
+  disabledRoles = [];
   roles = DEFAULT_ROLES.map(function(r) { return Object.assign({}, r); });
   generateAll();
   renderRolesList();

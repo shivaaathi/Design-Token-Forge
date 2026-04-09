@@ -318,7 +318,7 @@
   var SHAPES = ['circle','squircle','rounded-square'];
   var SIZES  = ['micro','tiny','small','base','medium','large','big','huge','mega','ultra'];
   var SIZE_PX = {micro:20,tiny:24,small:28,base:32,medium:36,large:40,big:48,huge:56,mega:64,ultra:80};
-  var ROLES  = [{key:'',label:'Default'},{key:'primary',label:'Primary'},{key:'brand',label:'Brand'},{key:'danger',label:'Danger'},{key:'success',label:'Success'},{key:'warning',label:'Warning'}];
+  var ROLES  = [{key:'',label:'Default'},{key:'primary',label:'Primary'},{key:'brand',label:'Brand'},{key:'danger',label:'Danger'},{key:'success',label:'Success'},{key:'warning',label:'Warning'}].filter(function(r){return!r.key||(DTF.disabledRoles||[]).indexOf(r.key)<0});
   var STATUSES = ['online','offline','busy','away'];
   var NAMES  = ['Alice Chen','Bob Rivera','Carla Kim','David Park','Eva Singh'];
   var HUES   = [220,340,160,30,280];

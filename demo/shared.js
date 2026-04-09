@@ -75,6 +75,38 @@ window.DTF = window.DTF || { onThemeChange: null };
   }
 })();
 
+/* ── Disabled Roles (brand-as-optional) ── */
+(function(){
+  window.DTF.disabledRoles = [];
+  try {
+    var raw = localStorage.getItem('dtf-color-config');
+    if (raw) {
+      var cfg = JSON.parse(raw);
+      if (cfg.disabledRoles && cfg.disabledRoles.length) {
+        window.DTF.disabledRoles = cfg.disabledRoles;
+        /* Hide pill buttons for disabled roles */
+        var rules = '';
+        for (var i = 0; i < cfg.disabledRoles.length; i++) {
+          var rid = cfg.disabledRoles[i];
+          rules += '[data-ctrl-role="' + rid + '"]{display:none !important}\n';
+        }
+        var s = document.createElement('style');
+        s.id = 'dtfDisabledRoles';
+        s.textContent = rules;
+        document.head.appendChild(s);
+        /* Remove disabled-role options from selects after DOM ready */
+        document.addEventListener('DOMContentLoaded', function() {
+          var disabled = window.DTF.disabledRoles;
+          for (var d = 0; d < disabled.length; d++) {
+            var opts = document.querySelectorAll('option[value="' + disabled[d] + '"]');
+            for (var o = 0; o < opts.length; o++) opts[o].remove();
+          }
+        });
+      }
+    }
+  } catch(e){}
+})();
+
 /* ── Nav Dropdown — now handled by nav.js ── */
 
 /* ── Theme Toggle (persisted across pages via localStorage) ── */
