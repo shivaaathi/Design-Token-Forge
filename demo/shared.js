@@ -9,6 +9,11 @@ window.DTF = window.DTF || { onThemeChange: null };
 
 /* ── Project Selector (injected into nav bar on every page) ── */
 (function(){
+  /* color-system.html has its own dedicated project bar — skip it there */
+  var path = location.pathname;
+  var filename = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+  if (filename === 'color-system.html') return;
+
   var nav = document.querySelector('.nav-actions');
   if (!nav) return;
 
@@ -62,27 +67,7 @@ window.DTF = window.DTF || { onThemeChange: null };
   }
 })();
 
-/* ── Nav Dropdown ─────────────────────────────────────── */
-(function(){
-  var btn=document.getElementById('navSwitcher');
-  var dd=document.getElementById('navDropdown');
-  if(!btn||!dd) return;
-  btn.addEventListener('click',function(){
-    var open=dd.hasAttribute('data-open');
-    if(open){dd.removeAttribute('data-open');btn.setAttribute('aria-expanded','false');}
-    else{dd.setAttribute('data-open','');btn.setAttribute('aria-expanded','true');}
-  });
-  document.addEventListener('click',function(e){
-    if(!btn.contains(e.target)&&!dd.contains(e.target)){
-      dd.removeAttribute('data-open');btn.setAttribute('aria-expanded','false');
-    }
-  });
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'&&dd.hasAttribute('data-open')){
-      dd.removeAttribute('data-open');btn.setAttribute('aria-expanded','false');btn.focus();
-    }
-  });
-})();
+/* ── Nav Dropdown — now handled by nav.js ── */
 
 /* ── Theme Toggle (persisted across pages via localStorage) ── */
 (function(){
