@@ -224,13 +224,15 @@ figma.ui.onmessage = async function(msg) {
       }
       var savedHash = figma.root.getPluginData('dtf-hash') || '';
       var savedVarCount = parseInt(figma.root.getPluginData('dtf-var-count') || '0', 10);
+      var savedProject = figma.root.getPluginData('dtf-project') || '';
       figma.ui.postMessage({
         type: 'scan-result',
         found: cols.length > 0,
         colNames: colNames,
         varCount: varCount,
         savedHash: savedHash,
-        savedVarCount: savedVarCount
+        savedVarCount: savedVarCount,
+        savedProject: savedProject
       });
     } catch (e) {
       figma.ui.postMessage({ type: 'scan-result', found: false, colNames: [], varCount: 0, savedHash: '', savedVarCount: 0 });
@@ -260,6 +262,7 @@ figma.ui.onmessage = async function(msg) {
       /* Persist sync state to this document */
       figma.root.setPluginData('dtf-hash', syncHash);
       figma.root.setPluginData('dtf-var-count', String(stats.variables));
+      if (msg.project) figma.root.setPluginData('dtf-project', msg.project);
       figma.ui.postMessage({ type: 'done', stats: stats, hash: syncHash });
       figma.notify(
         'DTF: ' + stats.variables + ' vars (' + stats.updated + ' updated, ' +

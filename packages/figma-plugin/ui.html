@@ -170,6 +170,34 @@
   input[type="file"] { display: none; }
   .file-name { font-size: 10px; color: #888; }
 
+  /* ── Project mismatch warning ─────────────────────────── */
+  .project-warn {
+    display: none; border-radius: 8px; padding: 14px;
+    margin-bottom: 12px; background: #FFF7ED; border: 1px solid #FDBA74;
+    animation: slideIn 0.3s ease;
+  }
+  .project-warn.visible { display: block; }
+  .project-warn-header {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 12px; margin-bottom: 8px;
+  }
+  .project-warn-icon { font-size: 16px; }
+  .project-warn-body { font-size: 11px; color: #666; line-height: 1.5; margin-bottom: 10px; }
+  .project-warn-body strong { color: #333; }
+  .project-warn-actions { display: flex; gap: 8px; }
+  .project-warn-actions button {
+    padding: 6px 14px; border-radius: 5px; font-size: 11px;
+    font-weight: 500; cursor: pointer; border: none;
+  }
+  .btn-switch { background: #F97316; color: #fff; }
+  .btn-switch:hover { background: #EA580C; }
+  .btn-keep { background: #f0f0f0; color: #555; border: 1px solid #d4d4d4; }
+  .btn-keep:hover { background: #e5e5e5; }
+  .project-bar-lock {
+    font-size: 12px; cursor: default; opacity: 0.6; flex-shrink: 0;
+    title: 'Linked to this file';
+  }
+
   /* ── Undo warning ────────────────────────────────────── */
   .undo-warn {
     display: none; border-radius: 8px; padding: 12px 14px;
@@ -273,6 +301,19 @@
   <span class="dot"></span>
   <span id="connText">Connecting to sync server&hellip;</span>
   <span class="conn-meta" id="connMeta"></span>
+</div>
+
+<!-- Project mismatch warning -->
+<div class="project-warn" id="projectWarn">
+  <div class="project-warn-header">
+    <span class="project-warn-icon">&#9888;</span>
+    <span id="projectWarnTitle">Project mismatch</span>
+  </div>
+  <div class="project-warn-body" id="projectWarnBody"></div>
+  <div class="project-warn-actions">
+    <button class="btn-switch" id="projectSwitchBtn">Switch &amp; Sync</button>
+    <button class="btn-keep" id="projectKeepBtn">Keep current</button>
+  </div>
 </div>
 
 <!-- Undo warning -->
@@ -395,6 +436,13 @@
 
   var CURRENT_PROJECT = storageGet('dtf-project-id') || '';
   var projectList = [];
+  var documentProject = '';       /* project stored in this Figma file */
+  var pendingSwitchProject = '';  /* project user wants to switch to */
+
+  var projectWarn = document.getElementById('projectWarn');
+  var projectWarnBody = document.getElementById('projectWarnBody');
+  var projectSwitchBtn = document.getElementById('projectSwitchBtn');
+  var projectKeepBtn = document.getElementById('projectKeepBtn');
 
   /* Detect if server is static (GitHub Pages) or live (localhost/API) */
   function isStaticHost() {
@@ -721,13 +769,78 @@
   });
 
   function startSync() {
+    /* Guard: if file is linked to a different project, show warning */
+    if (documentProject && CURRENT_PROJECT !== documentProject) {
+      showProjectMismatchWarning();
+      return;
+    }
+    doSync();
+  }
+
+  function doSync() {
     syncing = true;
     syncBtn.disabled = true;
     syncBtn.textContent = 'Syncing\u2026';
     setStatus('Updating variables in-place\u2026', 'work');
     parent.postMessage({
-      pluginMessage: { type: 'sync', data: tokenData, hash: tokenData.contentHash || '' }
+      pluginMessage: {
+        type: 'sync',
+        data: tokenData,
+        hash: tokenData.contentHash || '',
+        project: CURRENT_PROJECT
+      }
     }, '*');
+  }
+
+  function showProjectMismatchWarning() {
+    var fromName = projectDisplayName(documentProject);
+    var toName = projectDisplayName(CURRENT_PROJECT);
+    projectWarnBody.innerHTML =
+      'This file is linked to <strong>' + esc(fromName) + '</strong>. '
+      + 'You are about to sync <strong>' + esc(toName) + '</strong> instead.<br>'
+      + 'This will replace all existing token variables with the new project\u2019s tokens.';
+    pendingSwitchProject = CURRENT_PROJECT;
+    projectWarn.className = 'project-warn visible';
+    syncBtn.disabled = true;
+  }
+
+  projectSwitchBtn.addEventListener('click', function() {
+    projectWarn.className = 'project-warn';
+    documentProject = pendingSwitchProject;
+    syncBtn.disabled = false;
+    doSync();
+  });
+
+  projectKeepBtn.addEventListener('click', function() {
+    projectWarn.className = 'project-warn';
+    /* Revert dropdown to the document's linked project */
+    CURRENT_PROJECT = documentProject;
+    storageSet('dtf-project-id', CURRENT_PROJECT);
+    selectProjectInDropdown(CURRENT_PROJECT);
+    syncBtn.disabled = false;
+    /* Re-poll for the correct project */
+    connected = false;
+    tokenData = null;
+    serverStatus = null;
+    lastSeenHash = ''; hashStableCount = 0; deploySettling = false;
+    if (pollTimer) clearInterval(pollTimer);
+    startPolling();
+  });
+
+  function projectDisplayName(id) {
+    for (var i = 0; i < projectList.length; i++) {
+      if (projectList[i].id === id) return projectList[i].name;
+    }
+    return id; /* fallback to raw id */
+  }
+
+  function selectProjectInDropdown(id) {
+    for (var i = 0; i < projectSelect.options.length; i++) {
+      if (projectSelect.options[i].value === id) {
+        projectSelect.selectedIndex = i;
+        return;
+      }
+    }
   }
 
   cancelBtn.addEventListener('click', function() {
@@ -745,6 +858,20 @@
       if (msg.savedHash && figmaHash === '') {
         figmaHash = msg.savedHash;
         lastSyncedVarCount = msg.savedVarCount || 0;
+      }
+      /* Restore per-document project link */
+      if (msg.savedProject) {
+        documentProject = msg.savedProject;
+        CURRENT_PROJECT = msg.savedProject;
+        storageSet('dtf-project-id', CURRENT_PROJECT);
+        selectProjectInDropdown(CURRENT_PROJECT);
+        /* Restart polling with the correct project */
+        if (pollTimer) clearInterval(pollTimer);
+        connected = false;
+        tokenData = null;
+        serverStatus = null;
+        lastSeenHash = ''; hashStableCount = 0; deploySettling = false;
+        startPolling();
       }
       if (msg.found) {
         figmaStats.style.display = 'flex';
@@ -825,6 +952,9 @@
 
       /* Track synced count for undo detection */
       lastSyncedVarCount = s.variables;
+
+      /* Update document-linked project */
+      documentProject = CURRENT_PROJECT;
 
       /* Start verify timer to detect undo */
       startVerifyLoop();
@@ -969,6 +1099,23 @@
         CURRENT_PROJECT = list[0].id;
         storageSet('dtf-project-id', CURRENT_PROJECT);
       }
+      /* If document is linked to a project, ensure it's selected (covers race with scan-result) */
+      if (documentProject) {
+        var docProjectFound = false;
+        for (var j = 0; j < list.length; j++) {
+          if (list[j].id === documentProject) { docProjectFound = true; break; }
+        }
+        if (docProjectFound) {
+          CURRENT_PROJECT = documentProject;
+          storageSet('dtf-project-id', CURRENT_PROJECT);
+          selectProjectInDropdown(CURRENT_PROJECT);
+        } else {
+          /* Document was linked to a project that no longer exists on server */
+          log('Document was linked to "' + documentProject + '" but that project was not found on server');
+          setStatus('Previously linked project "' + documentProject + '" not found on server \u2014 choose a project and re-sync.', 'err');
+          documentProject = '';
+        }
+      }
     }).catch(function() {
       if (!projectsFetched) {
         projectSelect.innerHTML = '<option value="">(connecting&hellip;)</option>';
@@ -979,6 +1126,8 @@
   projectSelect.addEventListener('change', function() {
     CURRENT_PROJECT = projectSelect.value;
     storageSet('dtf-project-id', CURRENT_PROJECT);
+    /* Hide any stale mismatch warning */
+    projectWarn.className = 'project-warn';
     /* Reset state and re-poll with new project path */
     connected = false;
     figmaHash = '';
