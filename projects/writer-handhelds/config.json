@@ -385,7 +385,7 @@
     }
   },
   "surfacePaletteSrc": {
-    "bright": "greyscale",
+    "bright": "desaturated",
     "base": "desaturated",
     "dim": "desaturated",
     "deep": "desaturated",
