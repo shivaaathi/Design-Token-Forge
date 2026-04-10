@@ -198,12 +198,13 @@ a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent-hover);tex
 .badges{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:20px}
 .badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--border);color:var(--fg-subtle);background:var(--surface)}
 .badge.accent{border-color:var(--accent);color:var(--accent)}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:40px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:border-color 200ms,box-shadow 200ms}
 .card:hover{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .card h3{font-size:15px;font-weight:700;margin-bottom:6px}
 .card p{font-size:13px;color:var(--fg-subtle);line-height:1.5}
 .card .tag{display:inline-block;margin-top:12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--fg-faint);padding:2px 8px;border:1px solid var(--border);border-radius:4px}
+.section-label{margin-top:40px;margin-bottom:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-faint);padding-left:2px}
 .meta{text-align:center;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--fg-faint);font-family:var(--mono)}
 </style>
 </head>
@@ -220,15 +221,35 @@ a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent-hover);tex
       <span class="badge">WCAG AA/AAA</span>
     </div>
   </div>
+  <div class="section-label">Use — For Developers</div>
   <div class="cards">
+    <a class="card" href="demo/color-integration.html">
+      <h3>Color Tokens — Usage Guide</h3>
+      <p>How to use the 4-tier color system (T0–T3) in CSS, React, and Vue. Covers page layout, theming, role-based alerts, dark mode, and contextual status switching.</p>
+      <span class="tag">CSS · React · Vue</span>
+    </a>
+    <a class="card" href="demo/frameworks.html">
+      <h3>Component Wrappers</h3>
+      <p>Copy-paste wrapper components for React, Vue, Angular, Svelte, Solid, and Web Components — with prop-to-data-attribute mapping.</p>
+      <span class="tag">6 Frameworks</span>
+    </a>
     <a class="card" href="demo/index.html">
       <h3>Component Explorer</h3>
-      <p>Browse 20+ production-ready components with live variant controls, density scaling, state matrices, and framework integration snippets.</p>
+      <p>Browse 20 production-ready components with live variant controls, density scaling, state matrices, and per-component CSS token reference.</p>
       <span class="tag">20 Components</span>
     </a>
+    <a class="card" href="demo/color-tokens.html">
+      <h3>Token Reference</h3>
+      <p>Browse all ~740 CSS custom properties organized by tier — primitives, semantic roles, surfaces, and component tokens.</p>
+      <span class="tag">~740 Variables</span>
+    </a>
+  </div>
+
+  <div class="section-label">Build — For Maintainers</div>
+  <div class="cards">
     <a class="card" href="demo/color-system.html">
-      <h3>Color System</h3>
-      <p>Pick palette keys, generate 22-step L* tones, map semantic roles, configure surfaces, and deploy — all from one admin page.</p>
+      <h3>Color System Editor</h3>
+      <p>Pick palette keys, generate 22-step L* tones, map semantic roles, configure surfaces, and deploy — the admin control panel.</p>
       <span class="tag">Live Editor</span>
     </a>
     <a class="card" href="demo/editor.html">
@@ -236,25 +257,10 @@ a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent-hover);tex
       <p>Edit CSS token files directly, commit to GitHub, and auto-sync to Figma. Real-time bidirectional variable sync.</p>
       <span class="tag">GitHub + Figma</span>
     </a>
-    <a class="card" href="demo/frameworks.html">
-      <h3>Framework Guides</h3>
-      <p>Copy-paste integration snippets for React, Vue, Angular, Svelte, Solid, and Web Components.</p>
-      <span class="tag">6 Frameworks</span>
-    </a>
-    <a class="card" href="demo/color-integration.html">
-      <h3>Color System Integration</h3>
-      <p>How to use the 4-tier color system (T0–T3) in CSS, React, and Vue — from primitives to contextual surfaces.</p>
-      <span class="tag">T0–T3 Usage</span>
-    </a>
     <a class="card" href="tokens.json">
       <h3>Token API</h3>
       <p>Machine-readable JSON endpoint with all ${data.stats.totalVariables} variables. Consumed by the Figma plugin for real-time sync.</p>
       <span class="tag">JSON API</span>
-    </a>
-    <a class="card" href="demo/color-tokens.html">
-      <h3>Token Reference</h3>
-      <p>Browse all ~740 CSS custom properties organized by tier — primitives, semantic, surfaces, and component tokens.</p>
-      <span class="tag">Reference</span>
     </a>
   </div>
   <div class="meta">
