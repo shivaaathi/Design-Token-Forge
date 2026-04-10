@@ -241,6 +241,11 @@ a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent-hover);tex
       <p>Copy-paste integration snippets for React, Vue, Angular, Svelte, Solid, and Web Components.</p>
       <span class="tag">6 Frameworks</span>
     </a>
+    <a class="card" href="demo/color-integration.html">
+      <h3>Color System Integration</h3>
+      <p>How to use the 4-tier color system (T0–T3) in CSS, React, and Vue — from primitives to contextual surfaces.</p>
+      <span class="tag">T0–T3 Usage</span>
+    </a>
     <a class="card" href="tokens.json">
       <h3>Token API</h3>
       <p>Machine-readable JSON endpoint with all ${data.stats.totalVariables} variables. Consumed by the Figma plugin for real-time sync.</p>
