@@ -722,6 +722,7 @@ var CUSTOM_NAMES = ['Secondary','Tertiary','Accent','Extra'];
 
 var STORAGE_KEY_TOKENS = 'dtf-saved-tokens';
 var STORAGE_KEY_CONFIG = 'dtf-color-config';
+var STORAGE_KEY_ACTIVE = 'dtf-active-project';
 
 var DEFAULT_ROLES = [
   {id:'primary',  label:'Primary',  keyHex:'#286CE5', type:'fixed'},
@@ -2501,6 +2502,7 @@ function deleteProject() {
     switchProject(nextId);
   } else {
     projectId = '';
+    localStorage.removeItem(STORAGE_KEY_ACTIVE);
     populateProjectSelect();
   }
   showSaveMsg('Project "' + displayName + '" deleted');
@@ -2518,6 +2520,7 @@ function switchProject(newId) {
 
   // Load new project config
   projectId = newId;
+  localStorage.setItem(STORAGE_KEY_ACTIVE, newId);
   projectConfig = null;
   originalPaletteKeys = null;
 
@@ -2796,12 +2799,17 @@ projCreateBtn.addEventListener('click', function() {
 // INITIAL LOAD
 // ══════════════════════════════════════════════════════════════
 (function loadProjectAndInit() {
+  // Restore last-active project from localStorage so reload stays on the same project
+  var remembered = localStorage.getItem(STORAGE_KEY_ACTIVE);
+
   // Try fetching status.json first to get project id, then config.json
   fetch(depth + '/status.json?_cb=' + Date.now())
     .then(function(r) { return r.ok ? r.json() : null; })
     .then(function(status) {
-      if (status && status.project && status.project.id) {
-        projectId = status.project.id;
+      // Prefer remembered project, then status.json, then fallback
+      var targetId = remembered || (status && status.project && status.project.id) || '';
+      if (targetId) {
+        projectId = targetId;
         return fetch(depth + '/projects/' + projectId + '/config.json?_cb=' + Date.now())
           .then(function(r) { return r.ok ? r.json() : null; })
           .catch(function() { return null; })
@@ -2831,6 +2839,8 @@ projCreateBtn.addEventListener('click', function() {
       console.warn('[DTF] Could not load project config:', e.message);
     })
     .finally(function() {
+      // Persist active project so reload stays on the same one
+      if (projectId) localStorage.setItem(STORAGE_KEY_ACTIVE, projectId);
       // Seed knownProjects with current project
       if (projectId) {
         mergeKnownProjects([{id: projectId, name: (projectConfig && projectConfig.name) || projectId}]);
