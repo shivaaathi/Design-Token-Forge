@@ -12,5 +12,16 @@
     "success": "#16A34A",
     "greyscale": "#747474",
     "desaturated": "#71747C"
+  },
+  "surfacePaletteSrc": {
+    "bright": "desaturated",
+    "base": "desaturated",
+    "dim": "desaturated",
+    "deep": "desaturated",
+    "accent": "monochromatic",
+    "container": "desaturated",
+    "over-container": "desaturated",
+    "float": "desaturated",
+    "inverse": "desaturated"
   }
 }

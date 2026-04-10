@@ -245,21 +245,35 @@ function buildExtras(primTokens, extrasTokens) {
 }
 
 // ── Alias map: hex → T0 variable reference ────────────────────
+// Builds both a generic hex→T0 map (first-match-wins) AND a palette-specific
+// map keyed by "HEX:paletteKey" for disambiguation when multiple palettes
+// share the same hex values (e.g. greyscale vs desaturated).
 
 function buildAliasMap(t0Collection) {
-  const map = new Map();
+  const map = new Map();       // HEX → first-match alias
+  const palMap = new Map();    // HEX:paletteKey → palette-specific alias
   for (const v of t0Collection.variables) {
     if (v.type !== 'COLOR') continue;
     const hex = v.values.Value;
-    if (typeof hex === 'string' && !map.has(hex.toUpperCase())) {
-      map.set(hex.toUpperCase(), {
-        type: 'VARIABLE_ALIAS',
-        collection: t0Collection.name,
-        name: v.name
-      });
+    if (typeof hex !== 'string') continue;
+    const upper = hex.toUpperCase();
+    const alias = {
+      type: 'VARIABLE_ALIAS',
+      collection: t0Collection.name,
+      name: v.name
+    };
+    // Generic first-match
+    if (!map.has(upper)) {
+      map.set(upper, alias);
+    }
+    // Palette-specific: extract palette key from path like "prim/desaturated/200"
+    const parts = v.name.split('/');
+    if (parts[0] === 'prim' && parts.length >= 3) {
+      const palKey = parts[1];
+      palMap.set(upper + ':' + palKey, alias);
     }
   }
-  return map;
+  return { map, palMap };
 }
 
 // ── T1: Color Tokens (combined surfaces + semantics) ──────────
@@ -267,15 +281,28 @@ function buildAliasMap(t0Collection) {
 //    Every value is an alias to T0
 
 function buildT1(surfaceTokens, semanticTokens, aliasMap) {
+  const { map, palMap } = aliasMap;
   const variables = [];
+  const palSrc = surfaceTokens.paletteSrc || {};
+
+  // Resolve alias: prefer palette-specific if paletteSrc is known
+  function resolve(hex, paletteKey) {
+    const upper = hex.toUpperCase();
+    if (paletteKey) {
+      const specific = palMap.get(upper + ':' + paletteKey);
+      if (specific) return specific;
+    }
+    return map.get(upper) || hex;
+  }
 
   // Surface variables → surface/{surfaceName}/{prop}
   for (const [name, lVal] of Object.entries(surfaceTokens.light)) {
     const { fullPath } = surfaceFigmaPath(name);
     const dVal = surfaceTokens.dark[name] || lVal;
     const type = detectType(name, lVal);
-    const lAlias = aliasMap.get(lVal.toUpperCase()) || lVal;
-    const dAlias = aliasMap.get(dVal.toUpperCase()) || dVal;
+    const pk = palSrc[name] || null;
+    const lAlias = resolve(lVal, pk);
+    const dAlias = resolve(dVal, pk);
     variables.push({ name: fullPath, type, scopes: [], values: { Light: lAlias, Dark: dAlias } });
   }
 
@@ -284,8 +311,8 @@ function buildT1(surfaceTokens, semanticTokens, aliasMap) {
     const { fullPath } = semanticFigmaPath(name);
     const dVal = semanticTokens.dark[name] || lVal;
     const type = detectType(name, lVal);
-    const lAlias = aliasMap.get(lVal.toUpperCase()) || lVal;
-    const dAlias = aliasMap.get(dVal.toUpperCase()) || dVal;
+    const lAlias = resolve(lVal, null);
+    const dAlias = resolve(dVal, null);
     variables.push({ name: fullPath, type, scopes: [], values: { Light: lAlias, Dark: dAlias } });
   }
 

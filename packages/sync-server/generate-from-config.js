@@ -147,16 +147,22 @@ function generateSemanticTokens(semanticMap, palettes) {
 }
 
 /**
- * Generate surface tokens from surface map + greyscale/monochromatic palettes.
- * Returns { light: { 'surface-bright-bg': '#hex', ... }, dark: { ... } }
+ * Generate surface tokens from surface map + palettes.
+ * Respects surfacePaletteSrc to pick the correct palette per surface.
+ * Returns { light: { 'surface-bright-bg': '#hex', ... }, dark: { ... },
+ *           paletteSrc: { 'surface-bright-bg': 'desaturated', ... } }
  */
-function generateSurfaceTokens(surfaceMap, palettes) {
-  const greyPal = palettes.greyscale;
+function generateSurfaceTokens(surfaceMap, palettes, surfacePaletteSrc) {
   const monoPal = palettes.monochromatic;
-  if (!greyPal || !monoPal) return null;
+  if (!monoPal) return null;
 
-  const grey = stepLookup(greyPal);
-  const mono = stepLookup(monoPal);
+  // Default palette source: accent → monochromatic, all others → greyscale
+  const defaultSrc = {};
+  for (const sn of SURFACE_NAMES) defaultSrc[sn] = sn === 'accent' ? 'monochromatic' : 'greyscale';
+  const srcMap = { ...defaultSrc, ...(surfacePaletteSrc || {}) };
+
+  // Map role names used in color-system editor to actual palette keys
+  const roleToKey = { primary: 'monochromatic', ...ROLE_TO_PALETTE_KEY };
 
   const surfL  = surfaceMap?.light       || DEFAULT_SURF_L;
   const surfD  = surfaceMap?.dark        || DEFAULT_SURF_D;
@@ -165,24 +171,30 @@ function generateSurfaceTokens(surfaceMap, palettes) {
 
   const light = {};
   const dark = {};
+  const palSrc = {};  // track which palette each token came from
 
   for (const name of SURFACE_NAMES) {
     const isAccent = name === 'accent';
     const lMap  = isAccent ? surfLA : surfL[name];
     const dMap  = isAccent ? surfDA : surfD[name];
-    const lLook = isAccent ? mono : grey;
-    const dLook = isAccent ? mono : grey;
+
+    // Resolve the palette for this surface
+    const srcRole = srcMap[name] || 'greyscale';
+    const palKey  = roleToKey[srcRole] || srcRole;
+    const palette = palettes[palKey] || palettes.greyscale;
+    const look    = stepLookup(palette);
 
     if (!lMap || !dMap) continue;
 
     for (const prop of SURF_PROP_ORDER) {
       const cssName = `surface-${name}-${prop}`;
-      light[cssName] = lLook[lMap[prop]] || '#000000';
-      dark[cssName]  = dLook[dMap[prop]] || '#000000';
+      light[cssName] = look[lMap[prop]] || '#000000';
+      dark[cssName]  = look[dMap[prop]] || '#000000';
+      palSrc[cssName] = palKey;
     }
   }
 
-  return { light, dark };
+  return { light, dark, paletteSrc: palSrc };
 }
 
 // ── Main export ───────────────────────────────────────────────
@@ -221,7 +233,7 @@ export function generateTokenOverrides(config, basePrimitiveTokens) {
 
   // Surfaces: full replacement if config has surfaceMap, defaults if not
   result.surfaceTokens = generateSurfaceTokens(
-    config.surfaceMap || null, palettes
+    config.surfaceMap || null, palettes, config.surfacePaletteSrc || null
   );
 
   return result;
