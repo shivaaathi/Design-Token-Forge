@@ -105,17 +105,12 @@ function toFigmaPath(name, category) {
     return `surface/${rest}`;
   }
 
-  if (category === 'extras') {
-    if (parts[0] === 'z') return `z-index/${parts.slice(1).join('-')}`;
-    return `${parts[0]}/${parts.slice(1).join('-')}`;
-  }
-
   return name;
 }
 
 // ── Collection Builder ────────────────────────────────────────
 
-function buildCollection(name, tokens, category) {
+function buildCollection(name, tokens, category, typeFilter) {
   const { light, dark } = tokens;
   const hasDark = Object.keys(dark).length > 0;
   const modes = hasDark ? ['Light', 'Dark'] : ['Value'];
@@ -123,6 +118,7 @@ function buildCollection(name, tokens, category) {
 
   for (const [varName, lightValue] of Object.entries(light)) {
     const type = detectType(varName, lightValue);
+    if (typeFilter && type !== typeFilter) continue;
     const figmaPath = toFigmaPath(varName, category);
 
     const values = {};
@@ -150,18 +146,16 @@ function main() {
   console.log('Design Token Forge → Figma Variables Export');
   console.log('─'.repeat(48));
 
-  // Parse all token files
+  // Parse color token files (extras excluded — non-color)
   const primitiveTokens = parseCSSTokens(path.join(TOKENS_DIR, 'primitives.css'));
   const semanticTokens  = parseCSSTokens(path.join(TOKENS_DIR, 'semantic.css'));
   const surfaceTokens   = parseCSSTokens(path.join(TOKENS_DIR, 'surfaces.css'));
-  const extrasTokens    = parseCSSTokens(path.join(TOKENS_DIR, 'extras.css'));
 
-  // Build 4 collections
+  // Build 3 color collections (primitives filtered to COLOR only)
   const collections = [
-    buildCollection('DTF / Primitives',     primitiveTokens, 'primitives'),
+    buildCollection('DTF / Primitives',     primitiveTokens, 'primitives', 'COLOR'),
     buildCollection('DTF / Semantic Roles',  semanticTokens,  'semantic'),
     buildCollection('DTF / Surfaces',        surfaceTokens,   'surfaces'),
-    buildCollection('DTF / Extras',          extrasTokens,    'extras'),
   ];
 
   // Assemble output payload
