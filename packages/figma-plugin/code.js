@@ -243,7 +243,8 @@ figma.ui.onmessage = async function(msg) {
       }
       figma.ui.postMessage({ type: 'verify-result', varCount: varCount });
     } catch (e) {
-      figma.ui.postMessage({ type: 'verify-result', varCount: 0 });
+      /* Report error instead of false zero — prevents false undo detection */
+      figma.ui.postMessage({ type: 'verify-result', varCount: -1, error: e.message });
     }
   }
 

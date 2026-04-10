@@ -452,9 +452,10 @@
         updateConnectionUI(true, data);
         checkForChanges(data);
       })
-      .catch(function() {
+      .catch(function(err) {
         connected = false;
         updateConnectionUI(false, null);
+        log('Poll failed: ' + (err.message || err));
       });
   }
 
@@ -525,6 +526,9 @@
     }
   }
 
+  var fetchRetries = 0;
+  var MAX_FETCH_RETRIES = 2;
+
   function fetchTokenData() {
     fetch(apiUrl('/tokens'), { cache: 'no-store' })
       .then(function(r) {
@@ -533,16 +537,24 @@
       })
       .then(function(data) {
         /* Verify fetched data hash matches the server status hash.
-           If not, the CDN served a stale tokens.json — retry once. */
+           If not, the CDN served a stale tokens.json — retry up to 2 times. */
         if (serverStatus && data.contentHash && data.contentHash !== serverStatus.hash) {
-          log('Stale tokens.json (got ' + data.contentHash + ', expected ' + serverStatus.hash + ') — retrying...');
-          setTimeout(fetchTokenData, 1500);
-          return;
+          fetchRetries++;
+          if (fetchRetries <= MAX_FETCH_RETRIES) {
+            log('Stale tokens.json (got ' + data.contentHash + ', expected ' + serverStatus.hash + ') — retry ' + fetchRetries);
+            setTimeout(fetchTokenData, 1500);
+            return;
+          }
+          log('Stale tokens.json after ' + fetchRetries + ' retries — using what we have');
         }
+        fetchRetries = 0;
         tokenData = data;
         showChangeDetails(data);
       })
-      .catch(function() {});
+      .catch(function(err) {
+        log('fetchTokenData failed: ' + (err.message || err));
+        setStatus('Failed to fetch tokens — check connection', 'err');
+      });
   }
 
   function fetchChangelog() {
@@ -653,6 +665,8 @@
         document.getElementById('fVars').textContent = msg.varCount;
         document.getElementById('fCols').textContent = msg.colNames.length;
         document.getElementById('fHash').textContent = figmaHash || 'unknown';
+        /* Start verify loop if we have synced vars — covers crash-recovery */
+        if (lastSyncedVarCount > 0) startVerifyLoop();
       }
 
       /* Undo detection: if we had synced vars but now count is 0 */
@@ -665,11 +679,18 @@
     }
 
     if (msg.type === 'verify-result') {
-      if (msg.varCount === 0 && lastSyncedVarCount > 0) {
-        onUndoDetected();
-      } else if (msg.varCount > 0 && undoDetected) {
-        undoDetected = false;
-        undoWarn.className = 'undo-warn';
+      /* varCount === -1 means the verify errored (e.g. after crash).
+         Ignore it — don't trigger false undo detection. */
+      if (msg.varCount >= 0) {
+        if (msg.varCount === 0 && lastSyncedVarCount > 0) {
+          onUndoDetected();
+        } else if (msg.varCount > 0 && undoDetected) {
+          undoDetected = false;
+          undoWarn.className = 'undo-warn';
+          lastSyncedVarCount = msg.varCount;
+          figmaStats.style.display = 'flex';
+          document.getElementById('fVars').textContent = msg.varCount;
+        }
       }
     }
 
@@ -782,7 +803,8 @@
   function onUndoDetected() {
     undoDetected = true;
     figmaHash = '';
-    lastSyncedVarCount = 0;
+    /* Keep lastSyncedVarCount so verify loop can self-correct
+       if variables reappear (e.g. Cmd+Z was re-done) */
     undoWarn.className = 'undo-warn visible';
     syncBtn.disabled = false;
     syncBtn.textContent = 'Re-sync Variables';
