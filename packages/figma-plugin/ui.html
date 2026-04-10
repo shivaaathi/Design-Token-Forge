@@ -48,13 +48,7 @@
   }
   .project-bar select:focus { outline: none; border-color: rgba(255,255,255,0.6); }
   .project-bar select option { color: #333; background: #fff; }
-  .btn-new-project {
-    padding: 5px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3);
-    background: rgba(255,255,255,0.15); color: #fff;
-    font-size: 11px; font-weight: 600; cursor: pointer;
-    white-space: nowrap; font-family: inherit;
-  }
-  .btn-new-project:hover { background: rgba(255,255,255,0.25); }
+
 
   /* ── Connection bar ─────────────────────────────────── */
   .conn-bar {
@@ -259,7 +253,6 @@
 <div class="project-bar" id="projectBar">
   <span class="project-bar-label">Project</span>
   <select id="projectSelect"><option value="">Loading&hellip;</option></select>
-  <button class="btn-new-project" id="newProjectBtn" title="Create new project">+ New</button>
 </div>
 
 <!-- Header -->
@@ -388,7 +381,7 @@
   var autoSyncCb = document.getElementById('autoSyncCb');
   var serverUrlInput = document.getElementById('serverUrlInput');
   var projectSelect = document.getElementById('projectSelect');
-  var newProjectBtn = document.getElementById('newProjectBtn');
+
   var saveUrlBtn = document.getElementById('saveUrlBtn');
 
   /* Safe storage — Figma plugin iframes block localStorage */
@@ -448,6 +441,7 @@
       .then(function(data) {
         if (!connected) {
           connected = true;
+          if (!projectsFetched) fetchProjects();
           if (!isStaticHost()) fetchChangelog();
         }
         serverStatus = data;
@@ -803,8 +797,10 @@
     serverUrlInput.value = url;
     /* Reset state and reconnect */
     connected = false;
+    projectsFetched = false;
     figmaHash = '';
     if (pollTimer) clearInterval(pollTimer);
+    fetchProjects();
     startPolling();
   }
 
@@ -826,13 +822,19 @@
   });
 
   /* ── Project selector ──────────────────────────────── */
+  var projectsFetched = false;
   function fetchProjects() {
     var url = apiUrl('/projects');
     if (!url) {
-      projectSelect.innerHTML = '<option value="">(local server)</option>';
-      return;
+      /* Local server — use the /projects endpoint */
+      url = SERVER + '/projects';
     }
-    fetch(url).then(function(r) { return r.json(); }).then(function(list) {
+    fetch(url, { cache: 'no-store' }).then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function(list) {
+      if (!Array.isArray(list)) throw new Error('Not an array');
+      projectsFetched = true;
       projectList = list;
       projectSelect.innerHTML = '';
       if (list.length === 0) {
@@ -852,7 +854,9 @@
         storageSet('dtf-project-id', CURRENT_PROJECT);
       }
     }).catch(function() {
-      projectSelect.innerHTML = '<option value="">(offline)</option>';
+      if (!projectsFetched) {
+        projectSelect.innerHTML = '<option value="">(connecting&hellip;)</option>';
+      }
     });
   }
 
@@ -869,13 +873,6 @@
     log('Switched to project: ' + CURRENT_PROJECT);
   });
 
-  newProjectBtn.addEventListener('click', function() {
-    var name = prompt('New project name:');
-    if (!name || !name.trim()) return;
-    var id = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    if (!id) return;
-    alert('Project "' + name.trim() + '" (id: ' + id + ')\n\nTo set it up:\n1. Create  projects/' + id + '/config.json\n2. Copy a palette config from an existing project\n3. Run:  node packages/sync-server/build-static.js --project ' + id + '\n4. Push to deploy');
-  });
 </script>
 </body>
 </html>
