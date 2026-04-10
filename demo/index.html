@@ -10,7 +10,39 @@
 /* ── Hub Layout ───────────────────────────────────── */
 body{min-height:100vh;display:flex;flex-direction:column}
 
-
+/* ── Hub Links ────────────────────────────────────── */
+.hub-links{
+  max-width:1200px;width:100%;margin:0 auto;padding:20px 40px 0;
+  display:flex;flex-direction:column;gap:20px;
+}
+.hub-row-label{
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--demo-fg-faint);margin-bottom:-14px;
+}
+.hub-row{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;
+}
+.hub-link{
+  display:flex;align-items:center;gap:10px;padding:10px 14px;
+  border:1px solid var(--demo-border);border-radius:var(--radius-md,6px);
+  background:var(--demo-surface);text-decoration:none;color:inherit;
+  transition:border-color 150ms,box-shadow 150ms;
+}
+.hub-link:hover{
+  border-color:var(--primary-component-outline-default);
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+.hub-link-icon{
+  width:28px;height:28px;border-radius:var(--radius-xs,3px);
+  display:flex;align-items:center;justify-content:center;
+  background:var(--demo-cm-bg);color:var(--demo-fg-faint);font-size:14px;flex-shrink:0;
+}
+.hub-link-text{display:flex;flex-direction:column;gap:0;min-width:0}
+.hub-link-title{font-size:12px;font-weight:700;color:var(--demo-fg-strong)}
+.hub-link-hint{font-size:10px;color:var(--demo-fg-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hub-sep{
+  border:none;border-top:1px solid var(--demo-border);margin:4px 0 0;
+}
 
 /* ── Main Grid ────────────────────────────────────── */
 .hub-main{
@@ -98,10 +130,12 @@ body{min-height:100vh;display:flex;flex-direction:column}
 
 /* ── Responsive ───────────────────────────────────── */
 @media(max-width:900px){
-  .hub-main{padding-left:20px;padding-right:20px}
+  .hub-links,.hub-main{padding-left:20px;padding-right:20px}
+  .hub-row{grid-template-columns:repeat(2,1fr)}
   .comp-grid{grid-template-columns:1fr}
 }
 @media(max-width:500px){
+  .hub-row{grid-template-columns:1fr}
   .hub-filter{flex-direction:column}
   .hub-search{min-width:0}
 }
@@ -111,6 +145,37 @@ body{min-height:100vh;display:flex;flex-direction:column}
 
 <!-- Explorer Nav -->
 <nav class="explorer-nav" aria-label="Site navigation"></nav>
+
+<!-- ── Hub Links ─────────────────────────────────────── -->
+<div class="hub-links">
+  <div class="hub-row-label">Use</div>
+  <div class="hub-row">
+    <a class="hub-link" href="color-integration.html">
+      <span class="hub-link-icon">&#127912;</span>
+      <span class="hub-link-text"><span class="hub-link-title">Color Tokens Guide</span><span class="hub-link-hint">T0–T3 Usage</span></span>
+    </a>
+    <a class="hub-link" href="frameworks.html">
+      <span class="hub-link-icon">&#9889;</span>
+      <span class="hub-link-text"><span class="hub-link-title">Component Wrappers</span><span class="hub-link-hint">React, Vue, Angular…</span></span>
+    </a>
+    <a class="hub-link" href="color-tokens.html">
+      <span class="hub-link-icon">&#128203;</span>
+      <span class="hub-link-text"><span class="hub-link-title">Token Reference</span><span class="hub-link-hint">~740 Variables</span></span>
+    </a>
+  </div>
+  <div class="hub-row-label">Build</div>
+  <div class="hub-row">
+    <a class="hub-link" href="color-system.html">
+      <span class="hub-link-icon">&#127752;</span>
+      <span class="hub-link-text"><span class="hub-link-title">Color System Editor</span><span class="hub-link-hint">Pick, generate, deploy</span></span>
+    </a>
+    <a class="hub-link" href="editor.html">
+      <span class="hub-link-icon">&#9998;</span>
+      <span class="hub-link-text"><span class="hub-link-title">Token Editor</span><span class="hub-link-hint">Edit & commit to GitHub</span></span>
+    </a>
+  </div>
+  <hr class="hub-sep">
+</div>
 
 <!-- ── Main ─────────────────────────────────────────── -->
 <main class="hub-main">
