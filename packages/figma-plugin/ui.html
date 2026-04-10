@@ -728,7 +728,7 @@
     parent.postMessage({
       pluginMessage: { type: 'sync', data: tokenData, hash: tokenData.contentHash || '' }
     }, '*');
-  });
+  }
 
   cancelBtn.addEventListener('click', function() {
     parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*');
