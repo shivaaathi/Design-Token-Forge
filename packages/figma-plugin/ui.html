@@ -436,8 +436,12 @@
   }
 
   function poll() {
-    fetch(apiUrl('/status'), { cache: 'no-store' })
-      .then(function(r) { return r.json(); })
+    var url = apiUrl('/status');
+    fetch(url, { cache: 'no-store' })
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
       .then(function(data) {
         if (!connected) {
           connected = true;
@@ -523,7 +527,10 @@
 
   function fetchTokenData() {
     fetch(apiUrl('/tokens'), { cache: 'no-store' })
-      .then(function(r) { return r.json(); })
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
       .then(function(data) {
         /* Verify fetched data hash matches the server status hash.
            If not, the CDN served a stale tokens.json — retry once. */

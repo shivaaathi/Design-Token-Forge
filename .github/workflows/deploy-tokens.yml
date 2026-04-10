@@ -30,8 +30,13 @@ jobs:
         with:
           node-version: 20
 
-      - name: Build static token files
-        run: node packages/sync-server/build-static.js --project desktop-pdf-editor --out-dir ./dist
+      - name: Build static token files for all projects
+        run: |
+          for dir in projects/*/; do
+            proj=$(basename "$dir")
+            echo "Building project: $proj"
+            node packages/sync-server/build-static.js --project "$proj" --out-dir ./dist
+          done
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
