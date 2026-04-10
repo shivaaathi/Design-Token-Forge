@@ -1052,9 +1052,8 @@ function injectSurfaceTokens(rootStyle, darkArr) {
   var needDynamicUpdate = !darkArr;
   for (var ni = 0; ni < SURF_NAMES.length; ni++) {
     var sn = SURF_NAMES[ni];
-    var isAcc = (SURF_PALETTE_SRC[sn] !== 'greyscale');
-    var lMap2 = isAcc ? SURF_LA : SURF_L[sn];
-    var dMap2 = isAcc ? SURF_DA : SURF_D[sn];
+    var lMap2 = SURF_L[sn] || SURF_LA;
+    var dMap2 = SURF_D[sn] || SURF_DA;
     if (!lMap2 || !dMap2) continue;
     for (var pi2 = 0; pi2 < SURF_PROP_ORDER.length; pi2++) {
       var sp = SURF_PROP_ORDER[pi2];
@@ -1431,9 +1430,8 @@ function buildSurfStepPicker(surfMap, prop, surfName) {
 
 function renderSurfTable() {
   var n = selectedSurface;
-  var isAccent = (SURF_PALETTE_SRC[n] !== 'greyscale');
-  var lMap = isAccent ? SURF_LA : SURF_L[n];
-  var dMap = isAccent ? SURF_DA : SURF_D[n];
+  var lMap = SURF_L[n] || SURF_LA;
+  var dMap = SURF_D[n] || SURF_DA;
   if (!lMap || !dMap) { surfBody.innerHTML = ''; return; }
 
   // Pre-compute bg hex for contrast checks
@@ -1511,13 +1509,10 @@ function renderSurfTable() {
           var picks = row.querySelectorAll('.step-pick');
           var isLight = (picks[0] === pick);
           var surfName = selectedSurface;
-          var isAccSurf = (SURF_PALETTE_SRC[surfName] !== 'greyscale');
           if (isLight) {
-            if (isAccSurf) SURF_LA[prop2] = newStep;
-            else SURF_L[surfName][prop2] = newStep;
+            (SURF_L[surfName] || SURF_LA)[prop2] = newStep;
           } else {
-            if (isAccSurf) SURF_DA[prop2] = newStep;
-            else SURF_D[surfName][prop2] = newStep;
+            (SURF_D[surfName] || SURF_DA)[prop2] = newStep;
           }
           renderSurfTable();
           injectSurfaceTokens();
@@ -2343,8 +2338,7 @@ function buildSurfacesFileCSS() {
   out.push(':root {');
   for (var ni = 0; ni < NAMES.length; ni++) {
     var n = NAMES[ni];
-    var isAcc = (SURF_PALETTE_SRC[n] !== 'greyscale');
-    var map = isAcc ? SURF_LA : SURF_L[n];
+    var map = SURF_L[n] || SURF_LA;
     if (!map) continue;
     out.push('  /* ── SURFACE-' + n.toUpperCase() + ' (src: ' + SURF_PALETTE_SRC[n] + ') ── */');
     for (var pi = 0; pi < SURF_PROP_ORDER.length; pi++) {
@@ -2356,8 +2350,7 @@ function buildSurfacesFileCSS() {
   out.push('[data-theme="dark"] {');
   for (var ni2 = 0; ni2 < NAMES.length; ni2++) {
     var n2 = NAMES[ni2];
-    var isAcc2 = (SURF_PALETTE_SRC[n2] !== 'greyscale');
-    var map2 = isAcc2 ? SURF_DA : SURF_D[n2];
+    var map2 = SURF_D[n2] || SURF_DA;
     if (!map2) continue;
     out.push('  /* ── SURFACE-' + n2.toUpperCase() + ' (dark, src: ' + SURF_PALETTE_SRC[n2] + ') ── */');
     for (var pi2 = 0; pi2 < SURF_PROP_ORDER.length; pi2++) {
