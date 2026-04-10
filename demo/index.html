@@ -10,70 +10,11 @@
 /* ── Hub Layout ───────────────────────────────────── */
 body{min-height:100vh;display:flex;flex-direction:column}
 
-/* ── Hero Banner ──────────────────────────────────── */
-.hub-hero{
-  padding:48px 40px 40px;max-width:1200px;width:100%;margin:0 auto;
-}
-.hub-hero h1{
-  font-size:clamp(24px,4vw,36px);font-weight:800;color:var(--demo-fg-strong);
-  letter-spacing:-.025em;line-height:1.15;
-}
-.hub-hero h1 span{
-  background:linear-gradient(135deg,var(--primary-component-bg-default),var(--brand-component-bg-default,#E53F28));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.hub-desc{
-  font-size:15px;color:var(--demo-fg-subtle);max-width:56ch;margin:10px 0 0;line-height:1.6;
-}
 
-/* ── Stat Bar ─────────────────────────────────────── */
-.stat-bar{
-  display:flex;gap:6px;margin:20px 0 0;flex-wrap:wrap;
-}
-.stat-pill{
-  display:flex;align-items:center;gap:5px;padding:5px 12px;
-  border-radius:var(--radius-sm,4px);font-size:11px;font-weight:600;
-  white-space:nowrap;border:1px solid var(--demo-border);
-  background:var(--demo-surface);color:var(--demo-fg-subtle);
-}
-.stat-pill .stat-num{
-  font-weight:800;color:var(--demo-fg-strong);font-size:12px;
-}
-.stat-pill.accent{
-  border-color:var(--primary-component-outline-default);
-  color:var(--primary-content-default);
-}
-.stat-pill.accent .stat-num{color:var(--primary-content-default)}
-
-/* ── Quick Actions Row ────────────────────────────── */
-.quick-actions{
-  max-width:1200px;width:100%;margin:0 auto;padding:0 40px;
-}
-.qa-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;
-}
-.qa-card{
-  display:flex;align-items:center;gap:12px;padding:14px 16px;
-  border:1px solid var(--demo-border);border-radius:var(--radius-md,6px);
-  background:var(--demo-surface);text-decoration:none;color:inherit;
-  transition:border-color 180ms,box-shadow 180ms,transform 120ms;
-}
-.qa-card:hover{
-  border-color:var(--primary-component-outline-default);
-  box-shadow:0 2px 8px rgba(0,0,0,.05);transform:translateY(-1px);
-}
-.qa-icon{
-  width:36px;height:36px;border-radius:var(--radius-sm,4px);
-  display:flex;align-items:center;justify-content:center;
-  background:var(--demo-cm-bg);color:var(--demo-fg-faint);font-size:18px;flex-shrink:0;
-}
-.qa-text{display:flex;flex-direction:column;gap:1px;min-width:0}
-.qa-title{font-size:13px;font-weight:700;color:var(--demo-fg-strong)}
-.qa-hint{font-size:11px;color:var(--demo-fg-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ── Main Grid ────────────────────────────────────── */
 .hub-main{
-  max-width:1200px;width:100%;margin:0 auto;padding:32px 40px 64px;
+  max-width:1200px;width:100%;margin:0 auto;padding:24px 40px 64px;
   display:flex;flex-direction:column;gap:40px;
 }
 
@@ -157,14 +98,10 @@ body{min-height:100vh;display:flex;flex-direction:column}
 
 /* ── Responsive ───────────────────────────────────── */
 @media(max-width:900px){
-  .hub-hero,.quick-actions,.hub-main{padding-left:20px;padding-right:20px}
-  .qa-grid{grid-template-columns:repeat(2,1fr)}
+  .hub-main{padding-left:20px;padding-right:20px}
   .comp-grid{grid-template-columns:1fr}
-  .stat-bar{gap:4px}
-  .stat-pill{padding:4px 8px;font-size:10px}
 }
 @media(max-width:500px){
-  .qa-grid{grid-template-columns:1fr}
   .hub-filter{flex-direction:column}
   .hub-search{min-width:0}
 }
@@ -174,45 +111,6 @@ body{min-height:100vh;display:flex;flex-direction:column}
 
 <!-- Explorer Nav -->
 <nav class="explorer-nav" aria-label="Site navigation"></nav>
-
-<!-- ── Hero ──────────────────────────────────────────── -->
-<header class="hub-hero">
-  <h1><span>Design Token Forge</span></h1>
-  <p class="hub-desc">
-    Variable-exhaustive L1 components on the Tokn 4-tier token architecture.
-    Every visual property is a CSS custom property — zero hardcoded values.
-  </p>
-  <div class="stat-bar">
-    <span class="stat-pill accent"><span class="stat-num">20</span> Components</span>
-    <span class="stat-pill"><span class="stat-num">~740</span> Variables</span>
-    <span class="stat-pill"><span class="stat-num">4</span> Token Tiers</span>
-    <span class="stat-pill"><span class="stat-num">10</span> Density Modes</span>
-    <span class="stat-pill"><span class="stat-num">7</span> Axes</span>
-    <span class="stat-pill"><span class="stat-num">6</span> Frameworks</span>
-  </div>
-</header>
-
-<!-- ── Quick Actions ────────────────────────────────── -->
-<div class="quick-actions">
-  <div class="qa-grid">
-    <a class="qa-card" href="color-system.html">
-      <span class="qa-icon">&#127912;</span>
-      <span class="qa-text"><span class="qa-title">Color System</span><span class="qa-hint">Pick, generate, tokenize</span></span>
-    </a>
-    <a class="qa-card" href="editor.html">
-      <span class="qa-icon">&#9998;</span>
-      <span class="qa-text"><span class="qa-title">Token Editor</span><span class="qa-hint">Edit variables live</span></span>
-    </a>
-    <a class="qa-card" href="color-tokens.html">
-      <span class="qa-icon">&#128203;</span>
-      <span class="qa-text"><span class="qa-title">Token Reference</span><span class="qa-hint">Browse 740+ variables</span></span>
-    </a>
-    <a class="qa-card" href="frameworks.html">
-      <span class="qa-icon">&#9889;</span>
-      <span class="qa-text"><span class="qa-title">Frameworks</span><span class="qa-hint">React, Vue, Angular, Svelte</span></span>
-    </a>
-  </div>
-</div>
 
 <!-- ── Main ─────────────────────────────────────────── -->
 <main class="hub-main">
