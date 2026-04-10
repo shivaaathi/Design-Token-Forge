@@ -16,6 +16,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
@@ -156,11 +157,16 @@ async function main() {
   fs.writeFileSync(tokensPath, JSON.stringify(data, null, 2));
   console.log(`  ✓ tokens.json  → ${data.stats.totalVariables} variables (${data.contentHash})`);
 
+  // Read git commit SHA for deploy verification
+  let buildCommit = '';
+  try { buildCommit = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim(); } catch(e) {}
+
   // Write status.json — lightweight polling endpoint
   const status = {
     connected: true,
     hash: data.contentHash,
     lastChanged: data.exported,
+    buildCommit: buildCommit,
     pendingChanges: 0,
     totalVariables: data.stats.totalVariables,
     totalCollections: data.stats.totalCollections,

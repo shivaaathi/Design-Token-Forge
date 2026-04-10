@@ -31,10 +31,14 @@ function log(msg) {
 /* ── Scan for existing DTF collections ───────────────────── */
 
 var DTF_PREFIXES = ['T0 ', 'T1 ', 'T2 ', 'T3 ', 'DTF /'];
+var DTF_EXACT_NAMES = ['primitives-numbers', 'comp size'];
 
 function isDTFCollection(name) {
   for (var p = 0; p < DTF_PREFIXES.length; p++) {
     if (name.indexOf(DTF_PREFIXES[p]) === 0) return true;
+  }
+  for (var e = 0; e < DTF_EXACT_NAMES.length; e++) {
+    if (name === DTF_EXACT_NAMES[e]) return true;
   }
   return false;
 }

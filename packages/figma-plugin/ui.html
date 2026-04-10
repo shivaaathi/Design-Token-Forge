@@ -426,6 +426,12 @@
   var hasExistingVars = false;
   var undoDetected = false;
 
+  /* ── Deploy-in-flight detection (GitHub Pages) ───────── */
+  var lastSeenHash = '';          /* hash from previous poll */
+  var hashStableCount = 0;       /* consecutive polls with same hash */
+  var HASH_SETTLE_POLLS = 2;     /* require 2 stable polls before enabling sync */
+  var deploySettling = false;     /* true while hash is still changing */
+
   /* ── Scan Figma on load ──────────────────────────────── */
   parent.postMessage({ pluginMessage: { type: 'scan' } }, '*');
 
@@ -449,6 +455,25 @@
           if (!isStaticHost()) fetchChangelog();
         }
         serverStatus = data;
+
+        /* Deploy-in-flight detection (static hosts only) */
+        if (isStaticHost() && data.hash) {
+          if (lastSeenHash && data.hash !== lastSeenHash) {
+            /* Hash just changed — deploy may be mid-flight */
+            hashStableCount = 0;
+            deploySettling = true;
+            log('Hash changed (' + lastSeenHash + ' → ' + data.hash + ') — waiting for deploy to settle');
+          } else if (data.hash === lastSeenHash) {
+            hashStableCount++;
+          }
+          lastSeenHash = data.hash;
+
+          if (deploySettling && hashStableCount >= HASH_SETTLE_POLLS) {
+            deploySettling = false;
+            log('Deploy settled on hash ' + data.hash);
+          }
+        }
+
         updateConnectionUI(true, data);
         checkForChanges(data);
       })
@@ -482,6 +507,19 @@
 
   function checkForChanges(data) {
     if (syncing) return;
+
+    /* Block sync while deploy is mid-flight */
+    if (deploySettling) {
+      notif.className = 'notif visible has-changes';
+      notifIcon.textContent = '\u23F3';
+      notifTitle.textContent = 'Deployment in progress\u2026';
+      notifBadge.style.display = 'none';
+      notifBody.innerHTML = 'Waiting for GitHub Pages to finish deploying. This will auto-resolve in a few seconds.';
+      syncBtn.disabled = true;
+      syncBtn.textContent = 'Deploying\u2026';
+      syncBtn.className = 'btn-sync';
+      return;
+    }
 
     var serverHash = data.hash;
     var hasPending = serverHash !== figmaHash && figmaHash !== '';
@@ -614,27 +652,75 @@
   }
 
   /* ── Sync ────────────────────────────────────────────── */
+  var syncVerifyAttempts = 0;
+  var MAX_SYNC_VERIFY = 5;
+
   syncBtn.addEventListener('click', function() {
     if (!tokenData || syncing) return;
 
-    /* Guard: if tokenData hash doesn't match server hash, re-fetch first */
+    /* On static hosts, always re-verify that status & tokens hashes match
+       to prevent syncing stale CDN data during a deploy */
+    if (isStaticHost()) {
+      syncBtn.textContent = 'Verifying deployment\u2026';
+      syncBtn.disabled = true;
+      fetch(apiUrl('/status'), { cache: 'no-store' })
+        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function(freshStatus) {
+          serverStatus = freshStatus;
+          /* Now fetch tokens and compare hashes */
+          return fetch(apiUrl('/tokens'), { cache: 'no-store' })
+            .then(function(r2) { if (!r2.ok) throw new Error('HTTP ' + r2.status); return r2.json(); })
+            .then(function(freshTokens) {
+              if (freshTokens.contentHash !== freshStatus.hash) {
+                /* Deploy mid-flight: tokens.json and status.json disagree */
+                syncVerifyAttempts++;
+                if (syncVerifyAttempts >= MAX_SYNC_VERIFY) {
+                  syncVerifyAttempts = 0;
+                  syncBtn.disabled = false;
+                  syncBtn.textContent = 'Update Variables';
+                  setStatus('Deploy may still be in progress \u2014 try again shortly', 'err');
+                  return;
+                }
+                log('Deploy in-flight: status=' + freshStatus.hash + ' tokens=' + freshTokens.contentHash + ' (attempt ' + syncVerifyAttempts + ')');
+                syncBtn.textContent = 'Waiting for deploy\u2026';
+                setTimeout(function() { syncBtn.disabled = false; syncBtn.click(); }, 3000);
+                return;
+              }
+              /* Hashes match — safe to sync */
+              syncVerifyAttempts = 0;
+              tokenData = freshTokens;
+              startSync();
+            });
+        })
+        .catch(function(err) {
+          syncBtn.disabled = false;
+          syncBtn.textContent = 'Update Variables';
+          setStatus('Verification failed: ' + (err.message || err), 'err');
+        });
+      return;
+    }
+
+    /* Live server: check tokenData hash matches server */
     if (serverStatus && tokenData.contentHash && tokenData.contentHash !== serverStatus.hash) {
       syncBtn.textContent = 'Fetching latest tokens\u2026';
       syncBtn.disabled = true;
       fetchTokenData();
-      /* Retry click after a short delay for fresh data */
       setTimeout(function() {
         syncBtn.disabled = false;
         if (tokenData && tokenData.contentHash === serverStatus.hash) {
           syncBtn.click();
         } else {
           syncBtn.textContent = 'Update Variables';
-          setStatus('Waited for fresh tokens — try again', 'err');
+          setStatus('Waited for fresh tokens \u2014 try again', 'err');
         }
       }, 3000);
       return;
     }
 
+    startSync();
+  });
+
+  function startSync() {
     syncing = true;
     syncBtn.disabled = true;
     syncBtn.textContent = 'Syncing\u2026';
@@ -828,6 +914,7 @@
     connected = false;
     projectsFetched = false;
     figmaHash = '';
+    lastSeenHash = ''; hashStableCount = 0; deploySettling = false;
     if (pollTimer) clearInterval(pollTimer);
     fetchProjects();
     startPolling();
@@ -897,6 +984,7 @@
     figmaHash = '';
     tokenData = null;
     serverStatus = null;
+    lastSeenHash = ''; hashStableCount = 0; deploySettling = false;
     if (pollTimer) clearInterval(pollTimer);
     startPolling();
     log('Switched to project: ' + CURRENT_PROJECT);
