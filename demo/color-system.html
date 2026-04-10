@@ -2805,13 +2805,7 @@ projCreateBtn.addEventListener('click', function() {
         projectId = targetId;
         return fetch(depth + '/projects/' + projectId + '/config.json?_cb=' + Date.now())
           .then(function(r) { return r.ok ? r.json() : null; })
-          .catch(function() { return null; })
-          .then(function(cfg) {
-            if (cfg) return cfg;
-            return fetch(depth + '/config.json?_cb=' + Date.now())
-              .then(function(r) { return r.ok ? r.json() : null; })
-              .catch(function() { return null; });
-          });
+          .catch(function() { return null; });
       }
       return fetch(depth + '/projects/desktop-pdf-editor/config.json?_cb=' + Date.now())
         .then(function(r) {
@@ -2823,7 +2817,8 @@ projCreateBtn.addEventListener('click', function() {
     .then(function(cfg) {
       if (cfg && cfg.paletteKeys) {
         projectConfig = cfg;
-        projectId = cfg.id || projectId;
+        // Only adopt cfg.id when no project was already determined
+        if (!remembered) projectId = cfg.id || projectId;
         originalPaletteKeys = JSON.parse(JSON.stringify(cfg.paletteKeys));
         console.log('[DTF] Loaded project config:', projectId, Object.keys(cfg.paletteKeys).length, 'palette keys');
       }
