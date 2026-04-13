@@ -46,27 +46,78 @@ window.DTF = window.DTF || { onThemeChange: null };
   if (toggle) nav.insertBefore(wrap, toggle);
   else nav.appendChild(wrap);
 
-  /* Load current project from status, then load project list */
-  var currentId = '';
-  fetch(statusUrl).then(function(r){ return r.json(); }).then(function(d){
-    if (d.project && d.project.id) currentId = d.project.id;
-    return fetch(projectsUrl);
-  }).then(function(r){ return r.json(); }).then(function(list){
+  /* Load current project from localStorage (synced by Color System editor) */
+  var currentId = localStorage.getItem('dtf-active-project') || '';
+
+  function populateSelect(list) {
     if (!list || !list.length) { sel.innerHTML = '<option>(none)</option>'; return; }
     sel.innerHTML = '';
     for (var i = 0; i < list.length; i++) {
       var opt = document.createElement('option');
       opt.value = list[i].id;
-      opt.textContent = list[i].name;
+      opt.textContent = list[i].name || list[i].id;
       if (list[i].id === currentId) opt.selected = true;
       sel.appendChild(opt);
     }
-  }).catch(function(){ sel.innerHTML = '<option>(offline)</option>'; });
+  }
+
+  /* Primary source: localStorage knownProjects (set by color-system.html) */
+  var knownRaw = localStorage.getItem('dtf-known-projects');
+  var knownList = null;
+  try { knownList = JSON.parse(knownRaw); } catch(e) {}
+  if (knownList && knownList.length) {
+    populateSelect(knownList);
+  }
+
+  /* Also try fetching from status/projects endpoints as fallback */
+  fetch(statusUrl).then(function(r){ return r.json(); }).then(function(d){
+    if (d.project && d.project.id && !currentId) currentId = d.project.id;
+    return fetch(projectsUrl);
+  }).then(function(r){ return r.json(); }).then(function(list){
+    /* Merge with localStorage list — remote may have additional or renamed entries */
+    if (list && list.length && (!knownList || !knownList.length)) {
+      populateSelect(list);
+    }
+  }).catch(function(){
+    if (!knownList || !knownList.length) sel.innerHTML = '<option>(offline)</option>';
+  });
+
+  /* When user switches project, update active and reload tokens */
+  sel.addEventListener('change', function() {
+    var newId = sel.value;
+    if (!newId) return;
+    localStorage.setItem('dtf-active-project', newId);
+    /* Swap the injected token <style> to the new project's CSS */
+    var css = localStorage.getItem('dtf-saved-tokens-' + newId) || localStorage.getItem('dtf-saved-tokens') || '';
+    var existing = document.getElementById('dtfSavedTokens');
+    if (existing) {
+      existing.textContent = css;
+    } else if (css) {
+      var s = document.createElement('style');
+      s.id = 'dtfSavedTokens';
+      s.textContent = css;
+      document.head.appendChild(s);
+    }
+    /* Also update the global key so other pages stay in sync */
+    if (css) localStorage.setItem('dtf-saved-tokens', css);
+    /* Trigger re-render if the page supports it */
+    if (typeof window.DTF.onThemeChange === 'function') {
+      requestAnimationFrame(window.DTF.onThemeChange);
+    }
+  });
 })();
 
 /* ── Inject Saved Color Tokens (from Color System page) ── */
 (function(){
-  var savedCSS = localStorage.getItem('dtf-saved-tokens');
+  /* Load project-specific tokens if an active project is set, else fall back to global */
+  var activeProject = localStorage.getItem('dtf-active-project');
+  var savedCSS = null;
+  if (activeProject) {
+    savedCSS = localStorage.getItem('dtf-saved-tokens-' + activeProject);
+  }
+  if (!savedCSS) {
+    savedCSS = localStorage.getItem('dtf-saved-tokens');
+  }
   if (savedCSS) {
     var style = document.createElement('style');
     style.id = 'dtfSavedTokens';
