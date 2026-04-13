@@ -1000,8 +1000,9 @@ function setHoFormat(fmt,el){
 /* ── Render handoff output ─────────────────────────────── */
 function renderHandoff(){
   var out=document.getElementById('hoOutput');
+  if(!out) return;
   if(hoTier==='t2') renderT2Handoff(out);
-  else renderT3Handoff(out);
+  else if(hoTier==='t3') renderT3Handoff(out);
 }
 
 /* ── Helpers for platform formats ──────────────────────── */
@@ -1091,6 +1092,7 @@ function renderT3Handoff(out){
   cs=getComputedStyle(document.documentElement);
   var compId=document.getElementById('hoComp').value;
   var comp=null;
+  if(!COMPONENTS||!COMPONENTS.length){out.innerHTML='';return;}
   for(var i=0;i<COMPONENTS.length;i++){if(COMPONENTS[i].id===compId){comp=COMPONENTS[i];break;}}
   if(!comp){out.innerHTML='';return;}
   if(hoFormat==='css') renderT3CSS(out,comp);
