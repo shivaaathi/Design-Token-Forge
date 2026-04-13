@@ -998,7 +998,7 @@ function setHoFormat(fmt,el){
 /* Populate dropdowns */
 (function(){
   var roleSel=document.getElementById('hoRole');
-  ROLES.forEach(function(r){
+  activeRoles.forEach(function(r){
     var o=document.createElement('option');
     o.value=r;o.textContent=r.charAt(0).toUpperCase()+r.slice(1);
     roleSel.appendChild(o);
@@ -1012,7 +1012,42 @@ function setHoFormat(fmt,el){
 })();
 
 /* ── Render handoff output ─────────────────────────────── */
+function refreshActiveRoles(){
+  var prev=activeRoles.join();
+  var activeId=localStorage.getItem('dtf-active-project')||'';
+  var cfgRaw=null;
+  if(activeId) cfgRaw=localStorage.getItem('dtf-color-config-'+activeId);
+  if(!cfgRaw) cfgRaw=localStorage.getItem('dtf-color-config');
+  if(cfgRaw){
+    try{
+      var cfg=JSON.parse(cfgRaw);
+      if(cfg&&cfg.paletteKeys){
+        var keys=Object.keys(cfg.paletteKeys);
+        activeRoles=ROLES.filter(function(role){
+          var src=ROLE_SOURCE[role];
+          return src==='monochromatic'||keys.indexOf(src)!==-1;
+        });
+      }else{activeRoles=ROLES.slice();}
+    }catch(e){activeRoles=ROLES.slice();}
+  }else{activeRoles=ROLES.slice();}
+  /* Rebuild role dropdown if roles changed */
+  if(activeRoles.join()!==prev){
+    var roleSel=document.getElementById('hoRole');
+    if(roleSel){
+      var curVal=roleSel.value;
+      roleSel.innerHTML='<option value="_all">All Roles</option>';
+      activeRoles.forEach(function(r){
+        var o=document.createElement('option');
+        o.value=r;o.textContent=r.charAt(0).toUpperCase()+r.slice(1);
+        roleSel.appendChild(o);
+      });
+      if(activeRoles.indexOf(curVal)!==-1) roleSel.value=curVal;
+    }
+  }
+}
+
 function renderHandoff(){
+  refreshActiveRoles();
   var out=document.getElementById('hoOutput');
   if(!out) return;
   if(hoTier==='t1') renderT1Handoff(out);
@@ -1042,7 +1077,7 @@ function hexToRgba(h){
 function renderT1Handoff(out){
   cs=getComputedStyle(document.documentElement);
   var selRole=document.getElementById('hoRole').value;
-  var roles=(selRole==='_all')?ROLES:[selRole];
+  var roles=(selRole==='_all')?activeRoles:[selRole];
   if(hoFormat==='css') renderT1CSS(out,roles);
   else if(hoFormat==='json') renderT1JSON(out,roles);
   else if(hoFormat==='android') renderT1Android(out,roles);
@@ -1237,11 +1272,17 @@ function renderT3Handoff(out){
   if(!COMPONENTS||!COMPONENTS.length){out.innerHTML='';return;}
   for(var i=0;i<COMPONENTS.length;i++){if(COMPONENTS[i].id===compId){comp=COMPONENTS[i];break;}}
   if(!comp){out.innerHTML='';return;}
-  if(hoFormat==='css') renderT3CSS(out,comp);
-  else if(hoFormat==='json') renderT3JSON(out,comp);
-  else if(hoFormat==='android') renderT3Android(out,comp);
-  else if(hoFormat==='ios') renderT3iOS(out,comp);
-  else renderT3Table(out,comp);
+  /* Filter out token groups that reference inactive roles */
+  var filtered={id:comp.id,label:comp.label,prefix:comp.prefix,refs:[]};
+  comp.refs.forEach(function(grp){
+    var activeToks=grp.tokens.filter(function(tok){return isActiveRef(tok.ref);});
+    if(activeToks.length) filtered.refs.push({group:grp.group,tokens:activeToks});
+  });
+  if(hoFormat==='css') renderT3CSS(out,filtered);
+  else if(hoFormat==='json') renderT3JSON(out,filtered);
+  else if(hoFormat==='android') renderT3Android(out,filtered);
+  else if(hoFormat==='ios') renderT3iOS(out,filtered);
+  else renderT3Table(out,filtered);
 }
 
 function renderT3CSS(out,comp){
