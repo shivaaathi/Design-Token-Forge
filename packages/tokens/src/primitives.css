@@ -30,6 +30,54 @@
   --prim-monochromatic-900: #010161;
   --prim-monochromatic-black: #000000;
 
+  /* ── Brand (key ≈ #E53F28) ────────────────────────── */
+  --prim-brand-white: #FFFFFF;
+  --prim-brand-25: #FFF3F1;
+  --prim-brand-50: #FFECE8;
+  --prim-brand-75: #FFE0D9;
+  --prim-brand-100: #FFD4CB;
+  --prim-brand-150: #FEC1B3;
+  --prim-brand-175: #FEB0A0;
+  --prim-brand-200: #FE9E8B;
+  --prim-brand-250: #FE826A;
+  --prim-brand-300: #F3654C;
+  --prim-brand-350: #EA563C;
+  --prim-brand-400: #E4492F;
+  --prim-brand-450: #DA381D;
+  --prim-brand-500: #D22A0A;
+  --prim-brand-550: #C22405;
+  --prim-brand-600: #AC2006;
+  --prim-brand-700: #901903;
+  --prim-brand-750: #7C1402;
+  --prim-brand-800: #650E01;
+  --prim-brand-850: #530700;
+  --prim-brand-900: #3A0400;
+  --prim-brand-black: #000000;
+
+  /* ── Danger (key ≈ #DC2626) ────────────────────────── */
+  --prim-danger-white: #FFFFFF;
+  --prim-danger-25: #FFF3F2;
+  --prim-danger-50: #FFECE9;
+  --prim-danger-75: #FFE0DB;
+  --prim-danger-100: #FFD4CE;
+  --prim-danger-150: #FFC0B7;
+  --prim-danger-175: #FFAFA4;
+  --prim-danger-200: #FF9D91;
+  --prim-danger-250: #FF8073;
+  --prim-danger-300: #F76055;
+  --prim-danger-350: #EE4F46;
+  --prim-danger-400: #E7423B;
+  --prim-danger-450: #DE2F2C;
+  --prim-danger-500: #D61D20;
+  --prim-danger-550: #C80A16;
+  --prim-danger-600: #B10B14;
+  --prim-danger-700: #94070E;
+  --prim-danger-750: #80050A;
+  --prim-danger-800: #680306;
+  --prim-danger-850: #560003;
+  --prim-danger-900: #3C0002;
+  --prim-danger-black: #000000;
+
   /* ── Warning (key ≈ #D97706) ────────────────────────── */
   --prim-warning-white: #FFFFFF;
   --prim-warning-25: #FFF4EB;
@@ -149,7 +197,6 @@
   --prim-desaturated-850: #282A30;
   --prim-desaturated-900: #1A1B21;
   --prim-desaturated-black: #000000;
-
 
   /* ═══════════════════════════════════════════════════════════
      Spacing  (43 tokens, dense in 1–15 px range)

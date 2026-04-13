@@ -2198,10 +2198,22 @@ function buildPrimitivesFileCSS() {
   lines.push('');
   // Map role IDs to primitive prefix names
   var PRIM_PREFIX = { primary:'monochromatic', brand:'brand', danger:'danger', warning:'warning', info:'info', success:'success', greyscale:'greyscale', desaturated:'desaturated' };
-  for (var i = 0; i < roles.length; i++) {
-    var r = roles[i];
+  // Always emit ALL default role palettes — the CSS is shared across projects,
+  // so even if this project deleted a role (e.g. brand), other projects need it.
+  var allRoles = DEFAULT_ROLES.map(function(dr) {
+    var active = getRoleById(dr.id);
+    return active || dr;
+  });
+  for (var i = 0; i < allRoles.length; i++) {
+    var r = allRoles[i];
     var pal = palettes[r.id];
-    if (!pal) continue;
+    // Generate on-the-fly if the role was removed from this project
+    if (!pal) {
+      var kh = r.keyHex;
+      if (r.type === 'auto') kh = deriveKeyHex(r.derive);
+      if (!kh) continue;
+      pal = PE.generatePalette(kh);
+    }
     var prefix = PRIM_PREFIX[r.id] || r.id;
     lines.push('  /* \u2500\u2500 ' + r.label + ' (key \u2248 ' + r.keyHex + ') \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */');
     for (var s = 0; s < pal.steps.length; s++) {

@@ -88,12 +88,36 @@
 .stat-num{font-size:var(--font-size-24,24px);font-weight:800;color:var(--demo-fg-strong)}
 .stat-label{font-size:var(--font-size-11,11px);color:var(--demo-fg-subtle);margin-top:2px}
 
+/* ── Developer Handoff ──────────────────────────────────────── */
+.handoff-section{padding:24px 32px;display:flex;flex-direction:column;gap:16px}
+.ho-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ho-tabs{display:flex;gap:0;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);overflow:hidden}
+.ho-tab{padding:5px 14px;font-size:var(--font-size-11,11px);font-weight:600;cursor:pointer;border:none;background:var(--demo-surface);color:var(--demo-fg-subtle);transition:all 120ms ease;font-family:inherit;border-right:1px solid var(--demo-border)}
+.ho-tab:last-child{border-right:none}
+.ho-tab:hover{background:var(--demo-surface-alt);color:var(--demo-fg)}
+.ho-tab.on{background:var(--primary-component-bg-default,#286CE5);color:var(--primary-on-component,#FFF)}
+.ho-copy-btn{margin-left:auto;padding:5px 14px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:var(--demo-surface);color:var(--demo-fg-subtle);font-size:var(--font-size-11,11px);font-weight:600;cursor:pointer;transition:all 120ms ease;font-family:inherit;display:flex;align-items:center;gap:5px}
+.ho-copy-btn:hover{background:var(--demo-surface-alt);color:var(--demo-fg-strong);border-color:var(--demo-fg-faint)}
+.ho-copy-btn.copied{background:var(--success-container-bg,#DCFCE7);color:var(--success-content-default,#15803D);border-color:var(--success-component-outline-default,#34D269)}
+.ho-code{background:var(--demo-surface-alt);border:1px solid var(--demo-border);border-radius:var(--radius-md,6px);padding:16px 20px;font-family:var(--font-family-mono,monospace);font-size:11px;line-height:1.7;overflow-x:auto;max-height:600px;overflow-y:auto;white-space:pre;color:var(--demo-fg-subtle);tab-size:2}
+.ho-code .cc{color:var(--demo-fg-faint);font-style:italic}
+.ho-code .cv{color:var(--success-content-default,#16A34A)}
+.ho-code .ck{color:var(--primary-content-default,#286CE5)}
+.ho-code .cp{color:var(--brand-content-default,#E53F28)}
+.ho-table{width:100%;border-collapse:collapse;font-size:11px;font-family:var(--font-family-mono,monospace)}
+.ho-table th{text-align:left;padding:6px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--demo-fg-faint);border-bottom:2px solid var(--demo-border);position:sticky;top:0;background:var(--demo-surface-alt)}
+.ho-table td{padding:5px 10px;border-bottom:1px solid var(--demo-border);color:var(--demo-fg-subtle);vertical-align:middle}
+.ho-table tr:hover td{background:var(--demo-surface-alt)}
+.ho-table .ho-sw{display:inline-block;width:18px;height:12px;border-radius:3px;border:1px solid rgba(128,128,128,.12);vertical-align:middle;margin-right:4px}
+.ho-table .ho-grp{font-weight:700;color:var(--demo-fg-faint);font-size:9px;text-transform:uppercase;letter-spacing:.04em;padding-top:10px}
+.ho-table td.ho-ref{color:var(--demo-fg-faint);font-size:10px}
+
 /* ── Responsive ────────────────────────────────────────────── */
 @media(max-width:900px){
   .role-grid,.surface-grid{grid-template-columns:1fr}
   .compare-grid{grid-template-columns:1fr}
   .stats-banner{grid-template-columns:repeat(2,1fr)}
-  .palette-section,.role-grid,.surface-grid,.chain-demo,.stats-banner{padding:16px}
+  .palette-section,.role-grid,.surface-grid,.chain-demo,.stats-banner,.handoff-section{padding:16px}
 }
 </style>
 </head>
@@ -126,6 +150,7 @@
     <a href="#surfaces"><span class="sn-num">4</span> T2 Surfaces</a>
     <a href="#chain"><span class="sn-num">5</span> Resolution Chain</a>
     <a href="#stats"><span class="sn-num">6</span> Token Stats</a>
+    <a href="#handoff"><span class="sn-num">7</span> Developer Handoff</a>
   </aside>
 
   <div class="page-content">
@@ -290,6 +315,44 @@
         </div>
         <div class="section-body">
           <div class="stats-banner" id="statsContainer"></div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ 7 · Developer Handoff ═══════════════ -->
+      <section class="section" id="handoff">
+        <div class="section-header">
+          <h2>Developer Handoff</h2>
+          <span class="section-tag">Export</span>
+        </div>
+        <p class="section-desc">
+          Copy-ready T2 surface maps and T3 component token references for implementation.
+          All values resolve live from the current theme — switch themes to get dark-mode values.
+        </p>
+        <div class="section-body">
+          <div class="handoff-section">
+            <div class="ho-bar">
+              <div class="ho-tabs" id="hoTierTabs">
+                <button class="ho-tab on" data-tier="t2" onclick="setHoTier('t2',this)">T2 Surfaces</button>
+                <button class="ho-tab" data-tier="t3" onclick="setHoTier('t3',this)">T3 Components</button>
+              </div>
+              <div class="ho-tabs" id="hoFormatTabs">
+                <button class="ho-tab on" data-fmt="css" onclick="setHoFormat('css',this)">CSS</button>
+                <button class="ho-tab" data-fmt="json" onclick="setHoFormat('json',this)">JSON</button>
+                <button class="ho-tab" data-fmt="table" onclick="setHoFormat('table',this)">Table</button>
+                <button class="ho-tab" data-fmt="android" onclick="setHoFormat('android',this)">Android</button>
+                <button class="ho-tab" data-fmt="ios" onclick="setHoFormat('ios',this)">iOS</button>
+              </div>
+              <div class="pg-ctrl" id="hoCompCtrl" style="display:none">
+                <label for="hoComp">Component</label>
+                <select id="hoComp" onchange="renderHandoff()"></select>
+              </div>
+              <button class="ho-copy-btn" id="hoCopyBtn" onclick="copyHandoff()">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M5 11H3.5A1.5 1.5 0 012 9.5v-6A1.5 1.5 0 013.5 2h6A1.5 1.5 0 0111 3.5V5"/></svg>
+                Copy
+              </button>
+            </div>
+            <div id="hoOutput"></div>
+          </div>
         </div>
       </section>
 
@@ -707,6 +770,7 @@ function renderAll(){
   renderSurfaces();
   renderChain();
   renderStats();
+  if(typeof renderHandoff==='function') renderHandoff();
 }
 
 renderAll();
@@ -717,6 +781,526 @@ document.getElementById('chainRole').addEventListener('change',renderChain);
 document.getElementById('chainToken').addEventListener('change',renderChain);
 
 window.DTF.onThemeChange=renderAll;
+
+/* ── T3 Component Token Map ────────────────────────────── */
+/* Built by scanning actual token CSS var() references */
+var COMPONENTS=[
+  {id:'button',label:'Button',prefix:'btn',refs:[
+    {group:'Filled (primary)',tokens:[
+      {name:'--btn-primary-bg',ref:'--primary-component-bg-default'},
+      {name:'--btn-primary-bg-hover',ref:'--primary-component-bg-hover'},
+      {name:'--btn-primary-bg-active',ref:'--primary-component-bg-pressed'},
+      {name:'--btn-primary-fg',ref:'--primary-on-component'},
+      {name:'--btn-primary-border-color',ref:'--primary-component-bg-default'},
+      {name:'--btn-primary-border-color-hover',ref:'--primary-component-bg-hover'}
+    ]},
+    {group:'Outlined (secondary)',tokens:[
+      {name:'--btn-secondary-bg-hover',ref:'--primary-container-bg'},
+      {name:'--btn-secondary-bg-active',ref:'--primary-container-pressed'},
+      {name:'--btn-secondary-fg',ref:'--primary-content-default'},
+      {name:'--btn-secondary-border-color',ref:'--primary-component-outline-default'},
+      {name:'--btn-secondary-border-color-hover',ref:'--primary-component-outline-hover'}
+    ]},
+    {group:'Soft (tertiary)',tokens:[
+      {name:'--btn-tertiary-bg',ref:'--primary-container-bg'},
+      {name:'--btn-tertiary-bg-hover',ref:'--primary-container-hover'},
+      {name:'--btn-tertiary-fg',ref:'--primary-content-default'}
+    ]},
+    {group:'Ghost',tokens:[
+      {name:'--btn-ghost-fg',ref:'--primary-content-default'},
+      {name:'--btn-ghost-bg-hover',ref:'--primary-container-bg'},
+      {name:'--btn-ghost-bg-active',ref:'--primary-container-pressed'}
+    ]},
+    {group:'Danger role',tokens:[
+      {name:'--btn-danger-bg',ref:'--danger-component-bg-default'},
+      {name:'--btn-danger-fg',ref:'--danger-on-component'},
+      {name:'--btn-danger-border-color',ref:'--danger-component-bg-default'}
+    ]},
+    {group:'Neutral (surface)',tokens:[
+      {name:'--btn-neutral-bg',ref:'--surface-base-cm-bg'},
+      {name:'--btn-neutral-fg',ref:'--surface-base-ct-default'},
+      {name:'--btn-neutral-border-color',ref:'--surface-base-cm-outline'}
+    ]}
+  ]},
+  {id:'input',label:'Input',prefix:'input',refs:[
+    {group:'Outline variant',tokens:[
+      {name:'--input-outline-fg',ref:'--surface-base-ct-default'},
+      {name:'--input-outline-border-color',ref:'--surface-base-cm-outline'},
+      {name:'--input-outline-border-color-hover',ref:'--surface-base-cm-outline-hover'},
+      {name:'--input-outline-border-color-focus',ref:'--primary-component-outline-default'},
+      {name:'--input-outline-border-color-error',ref:'--danger-component-outline-default'},
+      {name:'--input-outline-placeholder',ref:'--surface-base-ct-faint'}
+    ]},
+    {group:'Filled variant',tokens:[
+      {name:'--input-filled-bg',ref:'--surface-base-cm-bg'},
+      {name:'--input-filled-bg-hover',ref:'--surface-base-cm-bg-hover'},
+      {name:'--input-filled-fg',ref:'--surface-base-ct-default'},
+      {name:'--input-filled-border-color-focus',ref:'--primary-component-outline-default'}
+    ]},
+    {group:'Labels & helpers',tokens:[
+      {name:'--input-label-color',ref:'--surface-base-ct-default'},
+      {name:'--input-label-color-focus',ref:'--primary-content-default'},
+      {name:'--input-label-color-error',ref:'--danger-content-default'},
+      {name:'--input-helper-color',ref:'--surface-base-ct-subtle'},
+      {name:'--input-helper-color-error',ref:'--danger-content-default'},
+      {name:'--input-caret-color',ref:'--primary-component-bg-default'}
+    ]}
+  ]},
+  {id:'toggle',label:'Toggle',prefix:'switch',refs:[
+    {group:'Track',tokens:[
+      {name:'--switch-track-bg-off',ref:'--surface-base-cm-bg-pressed'},
+      {name:'--switch-track-bg-on',ref:'--primary-component-bg-default'},
+      {name:'--switch-track-bg-on-hover',ref:'--primary-component-bg-hover'},
+      {name:'--switch-track-border-color-off',ref:'--surface-base-cm-outline'},
+      {name:'--switch-track-border-color-on',ref:'--primary-component-bg-default'}
+    ]},
+    {group:'Thumb',tokens:[
+      {name:'--switch-thumb-bg',ref:'--surface-base-cm-bg'},
+      {name:'--switch-thumb-bg-hover',ref:'--surface-base-cm-bg'}
+    ]},
+    {group:'Danger / Error',tokens:[
+      {name:'--switch-track-bg-on-danger',ref:'--danger-component-bg-default'},
+      {name:'--switch-track-bg-on-danger-hover',ref:'--danger-component-bg-hover'},
+      {name:'--switch-track-border-color-error-off',ref:'--danger-component-outline-default'}
+    ]}
+  ]},
+  {id:'checkbox',label:'Checkbox',prefix:'cb',refs:[
+    {group:'Surface',tokens:[
+      {name:'--cb-bg',ref:'--surface-base-cm-bg'},
+      {name:'--cb-bg-hover',ref:'--surface-base-cm-bg-hover'},
+      {name:'--cb-bg-checked',ref:'--primary-component-bg-default'},
+      {name:'--cb-bg-checked-hover',ref:'--primary-component-bg-hover'},
+      {name:'--cb-border-color',ref:'--surface-base-cm-outline'},
+      {name:'--cb-border-color-hover',ref:'--surface-base-cm-outline-hover'},
+      {name:'--cb-check-color',ref:'--primary-on-component'}
+    ]},
+    {group:'Error state',tokens:[
+      {name:'--cb-border-color-error',ref:'--danger-component-outline-default'},
+      {name:'--cb-bg-checked-error',ref:'--danger-component-bg-default'}
+    ]}
+  ]},
+  {id:'radio',label:'Radio',prefix:'radio',refs:[
+    {group:'Surface',tokens:[
+      {name:'--radio-bg',ref:'--surface-base-cm-bg'},
+      {name:'--radio-bg-checked',ref:'--primary-component-bg-default'},
+      {name:'--radio-border-color',ref:'--surface-base-cm-outline'},
+      {name:'--radio-border-color-hover',ref:'--surface-base-cm-outline-hover'},
+      {name:'--radio-dot-color',ref:'--primary-on-component'}
+    ]}
+  ]},
+  {id:'select',label:'Select',prefix:'select',refs:[
+    {group:'Surface',tokens:[
+      {name:'--select-bg',ref:'--surface-base-cm-bg'},
+      {name:'--select-fg',ref:'--surface-base-ct-default'},
+      {name:'--select-border-color',ref:'--surface-base-cm-outline'},
+      {name:'--select-border-color-hover',ref:'--surface-base-cm-outline-hover'},
+      {name:'--select-border-color-focus',ref:'--primary-component-outline-default'},
+      {name:'--select-icon-color',ref:'--surface-base-ct-subtle'}
+    ]}
+  ]},
+  {id:'alert',label:'Alert',prefix:'alert',refs:[
+    {group:'Info variant',tokens:[
+      {name:'--alert-info-bg',ref:'--info-container-bg'},
+      {name:'--alert-info-fg',ref:'--info-content-default'},
+      {name:'--alert-info-border-color',ref:'--info-container-outline'},
+      {name:'--alert-info-icon-color',ref:'--info-content-default'}
+    ]},
+    {group:'Success variant',tokens:[
+      {name:'--alert-success-bg',ref:'--success-container-bg'},
+      {name:'--alert-success-fg',ref:'--success-content-default'},
+      {name:'--alert-success-icon-color',ref:'--success-content-default'}
+    ]},
+    {group:'Warning variant',tokens:[
+      {name:'--alert-warning-bg',ref:'--warning-container-bg'},
+      {name:'--alert-warning-fg',ref:'--warning-content-default'}
+    ]},
+    {group:'Danger variant',tokens:[
+      {name:'--alert-danger-bg',ref:'--danger-container-bg'},
+      {name:'--alert-danger-fg',ref:'--danger-content-default'}
+    ]}
+  ]},
+  {id:'badge',label:'Badge',prefix:'badge',refs:[
+    {group:'Primary',tokens:[
+      {name:'--badge-primary-bg',ref:'--primary-component-bg-default'},
+      {name:'--badge-primary-fg',ref:'--primary-on-component'}
+    ]},
+    {group:'Danger',tokens:[
+      {name:'--badge-danger-bg',ref:'--danger-component-bg-default'},
+      {name:'--badge-danger-fg',ref:'--danger-on-component'}
+    ]},
+    {group:'Neutral',tokens:[
+      {name:'--badge-neutral-bg',ref:'--surface-base-cm-bg'},
+      {name:'--badge-neutral-fg',ref:'--surface-base-ct-default'},
+      {name:'--badge-neutral-border-color',ref:'--surface-base-cm-outline'}
+    ]}
+  ]},
+  {id:'tooltip',label:'Tooltip',prefix:'tooltip',refs:[
+    {group:'Surface',tokens:[
+      {name:'--tooltip-bg',ref:'--surface-inverse-bg'},
+      {name:'--tooltip-fg',ref:'--surface-inverse-ct-default'}
+    ]}
+  ]},
+  {id:'toast',label:'Toast',prefix:'toast',refs:[
+    {group:'Surface',tokens:[
+      {name:'--toast-bg',ref:'--surface-float-bg'},
+      {name:'--toast-fg',ref:'--surface-float-ct-default'},
+      {name:'--toast-border-color',ref:'--surface-float-outline'}
+    ]},
+    {group:'Status icons',tokens:[
+      {name:'--toast-success-icon',ref:'--success-content-default'},
+      {name:'--toast-danger-icon',ref:'--danger-content-default'},
+      {name:'--toast-warning-icon',ref:'--warning-content-default'},
+      {name:'--toast-info-icon',ref:'--info-content-default'}
+    ]}
+  ]},
+  {id:'progress-bar',label:'Progress Bar',prefix:'pbar',refs:[
+    {group:'Track & fill',tokens:[
+      {name:'--pbar-track-bg',ref:'--surface-base-cm-bg-pressed'},
+      {name:'--pbar-fill-bg',ref:'--primary-component-bg-default'},
+      {name:'--pbar-fill-bg-success',ref:'--success-component-bg-default'},
+      {name:'--pbar-fill-bg-danger',ref:'--danger-component-bg-default'}
+    ]}
+  ]},
+  {id:'slider',label:'Slider',prefix:'slider',refs:[
+    {group:'Track & thumb',tokens:[
+      {name:'--slider-track-bg',ref:'--surface-base-cm-bg-pressed'},
+      {name:'--slider-fill-bg',ref:'--primary-component-bg-default'},
+      {name:'--slider-thumb-bg',ref:'--surface-base-cm-bg'},
+      {name:'--slider-thumb-border-color',ref:'--primary-component-bg-default'}
+    ]}
+  ]}
+];
+
+/* ── Handoff state ─────────────────────────────────────── */
+var hoTier='t2';
+var hoFormat='css';
+
+function setHoTier(tier,el){
+  hoTier=tier;
+  document.querySelectorAll('#hoTierTabs .ho-tab').forEach(function(t){t.classList.toggle('on',t.dataset.tier===tier);});
+  document.getElementById('hoCompCtrl').style.display=tier==='t3'?'':'none';
+  renderHandoff();
+}
+function setHoFormat(fmt,el){
+  hoFormat=fmt;
+  document.querySelectorAll('#hoFormatTabs .ho-tab').forEach(function(t){t.classList.toggle('on',t.dataset.fmt===fmt);});
+  renderHandoff();
+}
+
+/* Populate component dropdown */
+(function(){
+  var sel=document.getElementById('hoComp');
+  COMPONENTS.forEach(function(c){
+    var o=document.createElement('option');
+    o.value=c.id;o.textContent=c.label;
+    sel.appendChild(o);
+  });
+})();
+
+/* ── Render handoff output ─────────────────────────────── */
+function renderHandoff(){
+  var out=document.getElementById('hoOutput');
+  if(hoTier==='t2') renderT2Handoff(out);
+  else renderT3Handoff(out);
+}
+
+/* ── Helpers for platform formats ──────────────────────── */
+function kebabToCamel(s){
+  return s.replace(/^--/,'').replace(/-([a-z0-9])/g,function(_,c){return c.toUpperCase();});
+}
+function hexToArgb(h){
+  h=h.replace('#','');
+  if(h.length===3) h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  return '0xFF'+h.toUpperCase();
+}
+function hexToRgba(h){
+  h=h.replace('#','');
+  if(h.length===3) h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  var r=parseInt(h.substring(0,2),16)/255;
+  var g=parseInt(h.substring(2,4),16)/255;
+  var b=parseInt(h.substring(4,6),16)/255;
+  return{r:r.toFixed(3),g:g.toFixed(3),b:b.toFixed(3)};
+}
+
+function renderT2Handoff(out){
+  cs=getComputedStyle(document.documentElement);
+  if(hoFormat==='css') renderT2CSS(out);
+  else if(hoFormat==='json') renderT2JSON(out);
+  else if(hoFormat==='android') renderT2Android(out);
+  else if(hoFormat==='ios') renderT2iOS(out);
+  else renderT2Table(out);
+}
+
+function renderT2CSS(out){
+  var theme=isDark()?'dark':'light';
+  var lines=[];
+  lines.push('<span class="cc">/* T2 Surface Tokens — '+theme+' theme */</span>');
+  lines.push('<span class="cc">/* Generated from Color Token Explorer */</span>');
+  lines.push('');
+  SURFACES.forEach(function(surf){
+    lines.push('<span class="cc">/* ── surface-'+surf+' ── */</span>');
+    SURFACE_TOKENS.forEach(function(tok){
+      var prop='surface-'+surf+'-'+tok;
+      var val=hex(prop)||rv(prop);
+      lines.push('<span class="ck">--'+prop+'</span>: <span class="cv">'+val+'</span>;');
+    });
+    lines.push('');
+  });
+  out.innerHTML='<pre class="ho-code">'+lines.join('\n')+'</pre>';
+}
+
+function renderT2JSON(out){
+  var theme=isDark()?'dark':'light';
+  var obj={};
+  SURFACES.forEach(function(surf){
+    var tokens={};
+    SURFACE_TOKENS.forEach(function(tok){
+      var prop='surface-'+surf+'-'+tok;
+      tokens[tok]=hex(prop)||rv(prop);
+    });
+    obj['surface-'+surf]=tokens;
+  });
+  var json=JSON.stringify(obj,null,2);
+  /* Colorize */
+  json=json.replace(/"(#[A-Fa-f0-9]{3,8})"/g,'"<span class="cv">$1</span>"');
+  json=json.replace(/"(surface-[^"]+)"/g,'"<span class="ck">$1</span>"');
+  out.innerHTML='<pre class="ho-code">'+json+'</pre>';
+}
+
+function renderT2Table(out){
+  var html='<div style="overflow-x:auto;border:1px solid var(--demo-border);border-radius:var(--radius-md,6px)"><table class="ho-table"><thead><tr><th>Surface</th><th>Property</th><th style="width:34px"></th><th>Value</th><th>CSS Variable</th></tr></thead><tbody>';
+  SURFACES.forEach(function(surf){
+    html+='<tr><td colspan="5" class="ho-grp">surface-'+surf+'</td></tr>';
+    SURFACE_TOKENS.forEach(function(tok){
+      var prop='surface-'+surf+'-'+tok;
+      var val=hex(prop)||rv(prop);
+      html+='<tr>';
+      html+='<td style="color:var(--demo-fg-faint)">'+surf+'</td>';
+      html+='<td>'+tok+'</td>';
+      html+='<td><span class="ho-sw" style="background:'+val+'" onclick="copyHex(\''+val+'\')"></span></td>';
+      html+='<td>'+val+'</td>';
+      html+='<td class="ho-ref">--'+prop+'</td>';
+      html+='</tr>';
+    });
+  });
+  html+='</tbody></table></div>';
+  out.innerHTML=html;
+}
+
+function renderT3Handoff(out){
+  cs=getComputedStyle(document.documentElement);
+  var compId=document.getElementById('hoComp').value;
+  var comp=null;
+  for(var i=0;i<COMPONENTS.length;i++){if(COMPONENTS[i].id===compId){comp=COMPONENTS[i];break;}}
+  if(!comp){out.innerHTML='';return;}
+  if(hoFormat==='css') renderT3CSS(out,comp);
+  else if(hoFormat==='json') renderT3JSON(out,comp);
+  else if(hoFormat==='android') renderT3Android(out,comp);
+  else if(hoFormat==='ios') renderT3iOS(out,comp);
+  else renderT3Table(out,comp);
+}
+
+function renderT3CSS(out,comp){
+  var theme=isDark()?'dark':'light';
+  var lines=[];
+  lines.push('<span class="cc">/* T3 '+comp.label+' Token Map — '+theme+' theme */</span>');
+  lines.push('<span class="cc">/* Component token → T1/T2 reference → resolved hex */</span>');
+  lines.push('');
+  comp.refs.forEach(function(grp){
+    lines.push('<span class="cc">/* '+grp.group+' */</span>');
+    grp.tokens.forEach(function(tok){
+      var refProp=tok.ref.replace(/^--/,'');
+      var val=hex(refProp)||rv(refProp);
+      lines.push('<span class="ck">'+tok.name+'</span>: var(<span class="cp">'+tok.ref+'</span>);  <span class="cc">/* → '+val+' */</span>');
+    });
+    lines.push('');
+  });
+  out.innerHTML='<pre class="ho-code">'+lines.join('\n')+'</pre>';
+}
+
+function renderT3JSON(out,comp){
+  var obj={component:comp.label,tokens:{}};
+  comp.refs.forEach(function(grp){
+    grp.tokens.forEach(function(tok){
+      var refProp=tok.ref.replace(/^--/,'');
+      var val=hex(refProp)||rv(refProp);
+      obj.tokens[tok.name]={reference:tok.ref,resolved:val,group:grp.group};
+    });
+  });
+  var json=JSON.stringify(obj,null,2);
+  json=json.replace(/"(#[A-Fa-f0-9]{3,8})"/g,'"<span class="cv">$1</span>"');
+  json=json.replace(/"(--[a-z][^"]+)"/g,'"<span class="ck">$1</span>"');
+  out.innerHTML='<pre class="ho-code">'+json+'</pre>';
+}
+
+function renderT3Table(out,comp){
+  var html='<div style="overflow-x:auto;border:1px solid var(--demo-border);border-radius:var(--radius-md,6px)"><table class="ho-table"><thead><tr><th>Component Token</th><th>References</th><th style="width:34px"></th><th>Resolved</th></tr></thead><tbody>';
+  comp.refs.forEach(function(grp){
+    html+='<tr><td colspan="4" class="ho-grp">'+grp.group+'</td></tr>';
+    grp.tokens.forEach(function(tok){
+      var refProp=tok.ref.replace(/^--/,'');
+      var val=hex(refProp)||rv(refProp);
+      html+='<tr>';
+      html+='<td>'+tok.name+'</td>';
+      html+='<td class="ho-ref">'+tok.ref+'</td>';
+      html+='<td><span class="ho-sw" style="background:'+val+'" onclick="copyHex(\''+val+'\')"></span></td>';
+      html+='<td>'+val+'</td>';
+      html+='</tr>';
+    });
+  });
+  html+='</tbody></table></div>';
+  out.innerHTML=html;
+}
+
+/* ── Android (Kotlin) T2 ───────────────────────────────── */
+function renderT2Android(out){
+  var theme=isDark()?'Dark':'Light';
+  var lines=[];
+  lines.push('<span class="cc">// T2 Surface Tokens — '+theme+' theme</span>');
+  lines.push('<span class="cc">// Generated from Color Token Explorer</span>');
+  lines.push('');
+  lines.push('<span class="ck">package</span> com.app.tokens');
+  lines.push('');
+  lines.push('<span class="ck">import</span> androidx.compose.ui.graphics.<span class="cp">Color</span>');
+  lines.push('');
+  lines.push('<span class="ck">object</span> <span class="cp">SurfaceTokens'+theme+'</span> {');
+  SURFACES.forEach(function(surf){
+    lines.push('');
+    lines.push('    <span class="cc">// ── surface-'+surf+' ──</span>');
+    SURFACE_TOKENS.forEach(function(tok){
+      var prop='surface-'+surf+'-'+tok;
+      var val=hex(prop)||rv(prop);
+      var name=kebabToCamel('surface-'+surf+'-'+tok);
+      lines.push('    <span class="ck">val</span> '+name+' = <span class="cp">Color</span>(<span class="cv">'+hexToArgb(val)+'</span>)');
+    });
+  });
+  lines.push('}');
+  out.innerHTML='<pre class="ho-code">'+lines.join('\n')+'</pre>';
+}
+
+/* ── Android (Kotlin) T3 ───────────────────────────────── */
+function renderT3Android(out,comp){
+  var theme=isDark()?'Dark':'Light';
+  var lines=[];
+  lines.push('<span class="cc">// T3 '+comp.label+' Token Map — '+theme+' theme</span>');
+  lines.push('<span class="cc">// Component token → T1/T2 reference → resolved</span>');
+  lines.push('');
+  lines.push('<span class="ck">package</span> com.app.tokens');
+  lines.push('');
+  lines.push('<span class="ck">import</span> androidx.compose.ui.graphics.<span class="cp">Color</span>');
+  lines.push('');
+  var cls=kebabToCamel(comp.id);cls=cls.charAt(0).toUpperCase()+cls.slice(1);
+  lines.push('<span class="ck">object</span> <span class="cp">'+cls+'Tokens'+theme+'</span> {');
+  comp.refs.forEach(function(grp){
+    lines.push('');
+    lines.push('    <span class="cc">// '+grp.group+'</span>');
+    grp.tokens.forEach(function(tok){
+      var refProp=tok.ref.replace(/^--/,'');
+      var val=hex(refProp)||rv(refProp);
+      var name=kebabToCamel(tok.name);
+      lines.push('    <span class="ck">val</span> '+name+' = <span class="cp">Color</span>(<span class="cv">'+hexToArgb(val)+'</span>)  <span class="cc">// '+tok.ref+'</span>');
+    });
+  });
+  lines.push('}');
+  out.innerHTML='<pre class="ho-code">'+lines.join('\n')+'</pre>';
+}
+
+/* ── iOS (Swift) T2 ────────────────────────────────────── */
+function renderT2iOS(out){
+  var theme=isDark()?'Dark':'Light';
+  var lines=[];
+  lines.push('<span class="cc">// T2 Surface Tokens — '+theme+' theme</span>');
+  lines.push('<span class="cc">// Generated from Color Token Explorer</span>');
+  lines.push('');
+  lines.push('<span class="ck">import</span> SwiftUI');
+  lines.push('');
+  lines.push('<span class="ck">extension</span> <span class="cp">Color</span> {');
+  SURFACES.forEach(function(surf){
+    lines.push('');
+    lines.push('    <span class="cc">// MARK: - surface-'+surf+'</span>');
+    SURFACE_TOKENS.forEach(function(tok){
+      var prop='surface-'+surf+'-'+tok;
+      var val=hex(prop)||rv(prop);
+      var name=kebabToCamel('surface-'+surf+'-'+tok);
+      var rgb=hexToRgba(val);
+      lines.push('    <span class="ck">static let</span> '+name+' = <span class="cp">Color</span>(red: <span class="cv">'+rgb.r+'</span>, green: <span class="cv">'+rgb.g+'</span>, blue: <span class="cv">'+rgb.b+'</span>)  <span class="cc">// '+val+'</span>');
+    });
+  });
+  lines.push('}');
+  out.innerHTML='<pre class="ho-code">'+lines.join('\n')+'</pre>';
+}
+
+/* ── iOS (Swift) T3 ────────────────────────────────────── */
+function renderT3iOS(out,comp){
+  var theme=isDark()?'Dark':'Light';
+  var lines=[];
+  lines.push('<span class="cc">// T3 '+comp.label+' Token Map — '+theme+' theme</span>');
+  lines.push('<span class="cc">// Component token → T1/T2 reference → resolved</span>');
+  lines.push('');
+  lines.push('<span class="ck">import</span> SwiftUI');
+  lines.push('');
+  lines.push('<span class="ck">extension</span> <span class="cp">Color</span> {');
+  lines.push('');
+  lines.push('    <span class="cc">// MARK: - '+comp.label+'</span>');
+  comp.refs.forEach(function(grp){
+    lines.push('');
+    lines.push('    <span class="cc">// '+grp.group+'</span>');
+    grp.tokens.forEach(function(tok){
+      var refProp=tok.ref.replace(/^--/,'');
+      var val=hex(refProp)||rv(refProp);
+      var name=kebabToCamel(tok.name);
+      var rgb=hexToRgba(val);
+      lines.push('    <span class="ck">static let</span> '+name+' = <span class="cp">Color</span>(red: <span class="cv">'+rgb.r+'</span>, green: <span class="cv">'+rgb.g+'</span>, blue: <span class="cv">'+rgb.b+'</span>)  <span class="cc">// '+tok.ref+' → '+val+'</span>');
+    });
+  });
+  lines.push('}');
+  out.innerHTML='<pre class="ho-code">'+lines.join('\n')+'</pre>';
+}
+
+/* ── Copy handoff block ────────────────────────────────── */
+function copyHandoff(){
+  var out=document.getElementById('hoOutput');
+  var pre=out.querySelector('.ho-code');
+  var text='';
+  if(pre){
+    /* Strip HTML tags to get plain text */
+    text=pre.textContent;
+  } else {
+    /* Table mode — build tab-separated */
+    var rows=out.querySelectorAll('.ho-table tr');
+    var lines=[];
+    rows.forEach(function(r){
+      var cells=r.querySelectorAll('th,td');
+      var vals=[];
+      cells.forEach(function(c){
+        if(c.querySelector('.ho-sw')) return; /* skip swatch column */
+        vals.push(c.textContent.trim());
+      });
+      if(vals.length) lines.push(vals.join('\t'));
+    });
+    text=lines.join('\n');
+  }
+  if(!text) return;
+  navigator.clipboard.writeText(text).then(function(){
+    var btn=document.getElementById('hoCopyBtn');
+    btn.classList.add('copied');
+    btn.innerHTML='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8.5l3 3 7-7"/></svg> Copied!';
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML='<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M5 11H3.5A1.5 1.5 0 012 9.5v-6A1.5 1.5 0 013.5 2h6A1.5 1.5 0 0111 3.5V5"/></svg> Copy';
+    },2000);
+  });
+}
+
+/* Make handoff functions global for onclick handlers */
+window.setHoTier=setHoTier;
+window.setHoFormat=setHoFormat;
+window.renderHandoff=renderHandoff;
+window.copyHandoff=copyHandoff;
+
+/* Initial render of handoff section */
+renderHandoff();
+
 })();
 </script>
 <script>
