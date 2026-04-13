@@ -332,6 +332,7 @@
           <div class="handoff-section">
             <div class="ho-bar">
               <div class="ho-tabs" id="hoTierTabs">
+                <button class="ho-tab" data-tier="t1" onclick="setHoTier('t1',this)">T1 Semantic</button>
                 <button class="ho-tab on" data-tier="t2" onclick="setHoTier('t2',this)">T2 Surfaces</button>
                 <button class="ho-tab" data-tier="t3" onclick="setHoTier('t3',this)">T3 Components</button>
               </div>
@@ -341,6 +342,12 @@
                 <button class="ho-tab" data-fmt="table" onclick="setHoFormat('table',this)">Table</button>
                 <button class="ho-tab" data-fmt="android" onclick="setHoFormat('android',this)">Android</button>
                 <button class="ho-tab" data-fmt="ios" onclick="setHoFormat('ios',this)">iOS</button>
+              </div>
+              <div class="pg-ctrl" id="hoRoleCtrl" style="display:none">
+                <label for="hoRole">Role</label>
+                <select id="hoRole" onchange="renderHandoff()">
+                  <option value="_all">All Roles</option>
+                </select>
               </div>
               <div class="pg-ctrl" id="hoCompCtrl" style="display:none">
                 <label for="hoComp">Component</label>
@@ -978,6 +985,7 @@ var hoFormat='css';
 function setHoTier(tier,el){
   hoTier=tier;
   document.querySelectorAll('#hoTierTabs .ho-tab').forEach(function(t){t.classList.toggle('on',t.dataset.tier===tier);});
+  document.getElementById('hoRoleCtrl').style.display=tier==='t1'?'':'none';
   document.getElementById('hoCompCtrl').style.display=tier==='t3'?'':'none';
   renderHandoff();
 }
@@ -987,8 +995,14 @@ function setHoFormat(fmt,el){
   renderHandoff();
 }
 
-/* Populate component dropdown */
+/* Populate dropdowns */
 (function(){
+  var roleSel=document.getElementById('hoRole');
+  ROLES.forEach(function(r){
+    var o=document.createElement('option');
+    o.value=r;o.textContent=r.charAt(0).toUpperCase()+r.slice(1);
+    roleSel.appendChild(o);
+  });
   var sel=document.getElementById('hoComp');
   COMPONENTS.forEach(function(c){
     var o=document.createElement('option');
@@ -1001,7 +1015,8 @@ function setHoFormat(fmt,el){
 function renderHandoff(){
   var out=document.getElementById('hoOutput');
   if(!out) return;
-  if(hoTier==='t2') renderT2Handoff(out);
+  if(hoTier==='t1') renderT1Handoff(out);
+  else if(hoTier==='t2') renderT2Handoff(out);
   else if(hoTier==='t3') renderT3Handoff(out);
 }
 
@@ -1023,6 +1038,133 @@ function hexToRgba(h){
   return{r:r.toFixed(3),g:g.toFixed(3),b:b.toFixed(3)};
 }
 
+/* ── T1 Semantic Renderers ──────────────────────────────── */
+function renderT1Handoff(out){
+  cs=getComputedStyle(document.documentElement);
+  var selRole=document.getElementById('hoRole').value;
+  var roles=(selRole==='_all')?ROLES:[selRole];
+  if(hoFormat==='css') renderT1CSS(out,roles);
+  else if(hoFormat==='json') renderT1JSON(out,roles);
+  else if(hoFormat==='android') renderT1Android(out,roles);
+  else if(hoFormat==='ios') renderT1iOS(out,roles);
+  else renderT1Table(out,roles);
+}
+
+function renderT1CSS(out,roles){
+  var theme=isDark()?'dark':'light';
+  var lines=[];
+  lines.push('<span class="cc">/* T1 Semantic Tokens — '+theme+' theme */</span>');
+  lines.push('<span class="cc">/* Generated from Color Token Explorer */</span>');
+  lines.push('');
+  roles.forEach(function(role){
+    lines.push('<span class="cc">/* ── '+role+' (← prim-'+ROLE_SOURCE[role]+') ── */</span>');
+    ROLE_TOKENS.forEach(function(grp){
+      grp.tokens.forEach(function(tok){
+        var prop=role+'-'+tok;
+        var val=hex(prop)||rv(prop);
+        lines.push('<span class="ck">--'+prop+'</span>: <span class="cv">'+val+'</span>;');
+      });
+    });
+    lines.push('');
+  });
+  out.innerHTML='<pre class="ho-code">'+lines.join('\n')+'</pre>';
+}
+
+function renderT1JSON(out,roles){
+  var obj={};
+  roles.forEach(function(role){
+    var tokens={};
+    ROLE_TOKENS.forEach(function(grp){
+      grp.tokens.forEach(function(tok){
+        var prop=role+'-'+tok;
+        tokens[tok]=hex(prop)||rv(prop);
+      });
+    });
+    obj[role]=tokens;
+  });
+  var json=JSON.stringify(obj,null,2);
+  json=json.replace(/"(#[A-Fa-f0-9]{3,8})"/g,'"<span class="cv">$1</span>"');
+  json=json.replace(/"(primary|brand|danger|success|warning|info)"/g,'"<span class="ck">$1</span>"');
+  out.innerHTML='<pre class="ho-code">'+json+'</pre>';
+}
+
+function renderT1Table(out,roles){
+  var html='<div style="overflow-x:auto;border:1px solid var(--demo-border);border-radius:var(--radius-md,6px)"><table class="ho-table"><thead><tr><th>Role</th><th>Group</th><th>Token</th><th style="width:34px"></th><th>Value</th><th>CSS Variable</th></tr></thead><tbody>';
+  roles.forEach(function(role){
+    html+='<tr><td colspan="6" class="ho-grp">'+role+' ← prim-'+ROLE_SOURCE[role]+'</td></tr>';
+    ROLE_TOKENS.forEach(function(grp){
+      grp.tokens.forEach(function(tok){
+        var prop=role+'-'+tok;
+        var val=hex(prop)||rv(prop);
+        html+='<tr>';
+        html+='<td style="color:var(--demo-fg-faint)">'+role+'</td>';
+        html+='<td style="color:var(--demo-fg-faint)">'+grp.group+'</td>';
+        html+='<td>'+tok+'</td>';
+        html+='<td><span class="ho-sw" style="background:'+val+'" onclick="copyHex(\''+val+'\')">' + '</span></td>';
+        html+='<td>'+val+'</td>';
+        html+='<td class="ho-ref">--'+prop+'</td>';
+        html+='</tr>';
+      });
+    });
+  });
+  html+='</tbody></table></div>';
+  out.innerHTML=html;
+}
+
+function renderT1Android(out,roles){
+  var theme=isDark()?'Dark':'Light';
+  var lines=[];
+  lines.push('<span class="cc">// T1 Semantic Tokens — '+theme+' theme</span>');
+  lines.push('<span class="cc">// Generated from Color Token Explorer</span>');
+  lines.push('');
+  lines.push('<span class="ck">package</span> com.app.tokens');
+  lines.push('');
+  lines.push('<span class="ck">import</span> androidx.compose.ui.graphics.<span class="cp">Color</span>');
+  lines.push('');
+  lines.push('<span class="ck">object</span> <span class="cp">SemanticTokens'+theme+'</span> {');
+  roles.forEach(function(role){
+    lines.push('');
+    lines.push('    <span class="cc">// ── '+role+' ──</span>');
+    ROLE_TOKENS.forEach(function(grp){
+      grp.tokens.forEach(function(tok){
+        var prop=role+'-'+tok;
+        var val=hex(prop)||rv(prop);
+        var name=kebabToCamel(role+'-'+tok);
+        lines.push('    <span class="ck">val</span> '+name+' = <span class="cp">Color</span>(<span class="cv">'+hexToArgb(val)+'</span>)');
+      });
+    });
+  });
+  lines.push('}');
+  out.innerHTML='<pre class="ho-code">'+lines.join('\n')+'</pre>';
+}
+
+function renderT1iOS(out,roles){
+  var theme=isDark()?'Dark':'Light';
+  var lines=[];
+  lines.push('<span class="cc">// T1 Semantic Tokens — '+theme+' theme</span>');
+  lines.push('<span class="cc">// Generated from Color Token Explorer</span>');
+  lines.push('');
+  lines.push('<span class="ck">import</span> SwiftUI');
+  lines.push('');
+  lines.push('<span class="ck">extension</span> <span class="cp">Color</span> {');
+  roles.forEach(function(role){
+    lines.push('');
+    lines.push('    <span class="cc">// MARK: - '+role+'</span>');
+    ROLE_TOKENS.forEach(function(grp){
+      grp.tokens.forEach(function(tok){
+        var prop=role+'-'+tok;
+        var val=hex(prop)||rv(prop);
+        var name=kebabToCamel(role+'-'+tok);
+        var rgb=hexToRgba(val);
+        lines.push('    <span class="ck">static let</span> '+name+' = <span class="cp">Color</span>(red: <span class="cv">'+rgb.r+'</span>, green: <span class="cv">'+rgb.g+'</span>, blue: <span class="cv">'+rgb.b+'</span>)  <span class="cc">// '+val+'</span>');
+      });
+    });
+  });
+  lines.push('}');
+  out.innerHTML='<pre class="ho-code">'+lines.join('\n')+'</pre>';
+}
+
+/* ── T2 Surface Renderers ──────────────────────────────── */
 function renderT2Handoff(out){
   cs=getComputedStyle(document.documentElement);
   if(hoFormat==='css') renderT2CSS(out);
