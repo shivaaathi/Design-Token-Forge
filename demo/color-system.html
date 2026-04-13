@@ -2427,8 +2427,12 @@ var projCreateBtn = document.getElementById('projCreateBtn');
 var projCancelBtn = document.getElementById('projCancelBtn');
 
 var STORAGE_KEY_PROJECTS = 'dtf-known-projects';
+var STORAGE_KEY_DELETED = 'dtf-deleted-projects';
 var knownProjects = []; // [{id, name}]
+var deletedProjectIds = []; // [string] — projects removed by user, survives discovery
 var depth = (location.pathname.indexOf('/demo/') !== -1) ? '..' : '.';
+
+try { deletedProjectIds = JSON.parse(localStorage.getItem(STORAGE_KEY_DELETED) || '[]'); } catch(e) { deletedProjectIds = []; }
 
 function persistKnownProjects() {
   localStorage.setItem(STORAGE_KEY_PROJECTS, JSON.stringify(knownProjects));
@@ -2438,6 +2442,7 @@ function mergeKnownProjects(list) {
   for (var i = 0; i < list.length; i++) {
     var p = list[i];
     if (!p || !p.id) continue;
+    if (deletedProjectIds.indexOf(p.id) !== -1) continue;
     if (!knownProjects.some(function(k) { return k.id === p.id; })) {
       knownProjects.push(p);
     }
@@ -2785,6 +2790,9 @@ projCreateBtn.addEventListener('click', function() {
   })
   .then(function() {
     // Success — add to known projects and switch
+    // Clear from deleted list in case this slug was previously deleted
+    deletedProjectIds = deletedProjectIds.filter(function(id) { return id !== slug; });
+    localStorage.setItem(STORAGE_KEY_DELETED, JSON.stringify(deletedProjectIds));
     knownProjects.push({id: slug, name: name});
     persistKnownProjects();
     projDialogBackdrop.classList.remove('open');
