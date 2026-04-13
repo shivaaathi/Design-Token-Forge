@@ -2,10 +2,9 @@
   "id": "writer-handhelds",
   "name": "writer-handhelds",
   "description": "",
-  "created": "2026-04-10",
+  "created": "2026-04-13",
   "paletteKeys": {
     "monochromatic": "#286CE5",
-    "danger": "#DC2626",
     "warning": "#D97706",
     "info": "#0EA5E9",
     "success": "#16A34A",
