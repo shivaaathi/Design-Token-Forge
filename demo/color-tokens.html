@@ -793,6 +793,9 @@ function _deriveActivePaletteKeys(cfg){
 
 var _projCfg=_readProjectConfig();
 var _projKeys=_deriveActivePaletteKeys(_projCfg);
+console.log('[DTF-DEBUG] activeId:', localStorage.getItem('dtf-active-project'));
+console.log('[DTF-DEBUG] cfg:', _projCfg);
+console.log('[DTF-DEBUG] keys:', _projKeys);
 
 var activePalettes=(_projKeys)?PALETTES.filter(function(p){
   var pKey=p.prefix.replace('prim-','');
@@ -807,6 +810,8 @@ var activeRoles=(_projKeys)?ROLES.filter(function(role){
 function refreshProjectState(){
   var cfg=_readProjectConfig();
   var keys=_deriveActivePaletteKeys(cfg);
+  console.log('[DTF-DEBUG refresh] cfg:', cfg);
+  console.log('[DTF-DEBUG refresh] keys:', keys);
   if(keys){
     activePalettes=PALETTES.filter(function(p){
       return keys.indexOf(p.prefix.replace('prim-',''))!==-1;
