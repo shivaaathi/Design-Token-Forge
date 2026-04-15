@@ -236,14 +236,7 @@
           <div class="pg-controls">
             <div class="pg-ctrl">
               <label for="compareRole">Role</label>
-              <select id="compareRole">
-                <option value="primary">Primary</option>
-                <option value="brand">Brand</option>
-                <option value="danger">Danger</option>
-                <option value="success">Success</option>
-                <option value="warning">Warning</option>
-                <option value="info">Info</option>
-              </select>
+              <select id="compareRole"></select>
             </div>
           </div>
           <div class="compare-grid" id="compareContainer"></div>
@@ -281,14 +274,7 @@
             <div class="chain-controls">
               <div class="pg-ctrl">
                 <label for="chainRole">Role</label>
-                <select id="chainRole">
-                  <option value="primary">Primary</option>
-                  <option value="brand">Brand</option>
-                  <option value="danger">Danger</option>
-                  <option value="success">Success</option>
-                  <option value="warning">Warning</option>
-                  <option value="info">Info</option>
-                </select>
+                <select id="chainRole"></select>
               </div>
               <div class="pg-ctrl">
                 <label for="chainToken">Token</label>
@@ -556,7 +542,7 @@ function contrastText(hexColor){
 function renderPalettes(){
   var container=document.getElementById('paletteContainer');
   container.innerHTML='';
-  PALETTES.forEach(function(p){
+  activePalettes.forEach(function(p){
     var row=document.createElement('div');
     row.className='palette-row';
     row.innerHTML='<div class="palette-name">'+p.name+' <span class="palette-key">key: '+p.key+'</span></div>';
@@ -592,7 +578,7 @@ function renderRoles(){
   var container=document.getElementById('roleContainer');
   container.innerHTML='';
   var themeMap=isDark()?DARK_MAP:LIGHT_MAP;
-  ROLES.forEach(function(role){
+  activeRoles.forEach(function(role){
     var card=document.createElement('div');
     card.className='role-card';
     var src=ROLE_SOURCE[role];
@@ -734,12 +720,18 @@ function renderChain(){
 function renderStats(){
   var container=document.getElementById('statsContainer');
   container.innerHTML='';
+  var nPal=activePalettes.length;
+  var nRoles=activeRoles.length;
+  var t0=nPal*STEPS.length;
+  var t1=nRoles*18*2;
+  var t2=SURFACES.length*SURFACE_TOKENS.length*2;
+  var total=t0+5+t1+t2;
   var stats=[
-    {num:'176',label:'T0 Primitive Colors (8×22)'},
+    {num:String(t0),label:'T0 Primitive Colors ('+nPal+'×'+STEPS.length+')'},
     {num:'5',label:'Utility Colors'},
-    {num:'216',label:'T1 Semantic (6×18×2)'},
-    {num:'224',label:'T2 Surface (7×16×2)'},
-    {num:'~613',label:'Total Color Definitions'}
+    {num:String(t1),label:'T1 Semantic ('+nRoles+'×18×2)'},
+    {num:String(t2),label:'T2 Surface ('+SURFACES.length+'×'+SURFACE_TOKENS.length+'×2)'},
+    {num:'~'+total,label:'Total Color Definitions'}
   ];
   stats.forEach(function(s){
     var card=document.createElement('div');
@@ -769,6 +761,34 @@ var DARK_VALS={
 };
 
 /* ── Render All ────────────────────────────────────────── */
+
+/* Active palettes & roles derived from the current project's paletteKeys */
+function _readProjectPaletteKeys(){
+  var activeId=localStorage.getItem('dtf-active-project')||'';
+  var cfgRaw=null;
+  if(activeId) cfgRaw=localStorage.getItem('dtf-color-config-'+activeId);
+  if(!cfgRaw) cfgRaw=localStorage.getItem('dtf-color-config');
+  if(cfgRaw){
+    try{
+      var cfg=JSON.parse(cfgRaw);
+      if(cfg&&cfg.paletteKeys) return Object.keys(cfg.paletteKeys);
+    }catch(e){}
+  }
+  return null; /* null = all palettes active */
+}
+
+var _projKeys=_readProjectPaletteKeys();
+
+var activePalettes=(_projKeys)?PALETTES.filter(function(p){
+  var pKey=p.prefix.replace('prim-','');
+  return _projKeys.indexOf(pKey)!==-1;
+}):PALETTES.slice();
+
+var activeRoles=(_projKeys)?ROLES.filter(function(role){
+  var src=ROLE_SOURCE[role];
+  return src==='monochromatic'||_projKeys.indexOf(src)!==-1;
+}):ROLES.slice();
+
 function renderAll(){
   cs=getComputedStyle(document.documentElement);
   renderPalettes();
@@ -779,6 +799,24 @@ function renderAll(){
   renderStats();
   if(activeRoles) renderHandoff();
 }
+
+/* Populate role dropdowns with active roles */
+function populateRoleDropdowns(){
+  var roles=activeRoles||ROLES;
+  ['compareRole','chainRole'].forEach(function(id){
+    var sel=document.getElementById(id);
+    if(!sel) return;
+    var cur=sel.value;
+    sel.innerHTML='';
+    roles.forEach(function(r){
+      var o=document.createElement('option');
+      o.value=r;o.textContent=r.charAt(0).toUpperCase()+r.slice(1);
+      sel.appendChild(o);
+    });
+    if(roles.indexOf(cur)!==-1) sel.value=cur;
+  });
+}
+populateRoleDropdowns();
 
 renderAll();
 
@@ -982,27 +1020,6 @@ var COMPONENTS=[
 var hoTier='t2';
 var hoFormat='css';
 
-/* Active roles derived from the current project's paletteKeys */
-var activeRoles=(function(){
-  var activeId=localStorage.getItem('dtf-active-project')||'';
-  var cfgRaw=null;
-  if(activeId) cfgRaw=localStorage.getItem('dtf-color-config-'+activeId);
-  if(!cfgRaw) cfgRaw=localStorage.getItem('dtf-color-config');
-  if(cfgRaw){
-    try{
-      var cfg=JSON.parse(cfgRaw);
-      if(cfg&&cfg.paletteKeys){
-        var keys=Object.keys(cfg.paletteKeys);
-        return ROLES.filter(function(role){
-          var src=ROLE_SOURCE[role];
-          return src==='monochromatic'||keys.indexOf(src)!==-1;
-        });
-      }
-    }catch(e){}
-  }
-  return ROLES.slice();
-})();
-
 /* Check whether a token reference belongs to an active role */
 function isActiveRef(ref){
   if(!ref) return true;
@@ -1051,25 +1068,24 @@ function setHoFormat(fmt,el){
 /* ── Render handoff output ─────────────────────────────── */
 function refreshActiveRoles(){
   if(!activeRoles) activeRoles=ROLES.slice();
+  if(!activePalettes) activePalettes=PALETTES.slice();
   var prev=activeRoles.join();
-  var activeId=localStorage.getItem('dtf-active-project')||'';
-  var cfgRaw=null;
-  if(activeId) cfgRaw=localStorage.getItem('dtf-color-config-'+activeId);
-  if(!cfgRaw) cfgRaw=localStorage.getItem('dtf-color-config');
-  if(cfgRaw){
-    try{
-      var cfg=JSON.parse(cfgRaw);
-      if(cfg&&cfg.paletteKeys){
-        var keys=Object.keys(cfg.paletteKeys);
-        activeRoles=ROLES.filter(function(role){
-          var src=ROLE_SOURCE[role];
-          return src==='monochromatic'||keys.indexOf(src)!==-1;
-        });
-      }else{activeRoles=ROLES.slice();}
-    }catch(e){activeRoles=ROLES.slice();}
-  }else{activeRoles=ROLES.slice();}
-  /* Rebuild role dropdown if roles changed */
+  var keys=_readProjectPaletteKeys();
+  if(keys){
+    activeRoles=ROLES.filter(function(role){
+      var src=ROLE_SOURCE[role];
+      return src==='monochromatic'||keys.indexOf(src)!==-1;
+    });
+    activePalettes=PALETTES.filter(function(p){
+      return keys.indexOf(p.prefix.replace('prim-',''))!==-1;
+    });
+  }else{
+    activeRoles=ROLES.slice();
+    activePalettes=PALETTES.slice();
+  }
+  /* Rebuild all role dropdowns if roles changed */
   if(activeRoles.join()!==prev){
+    populateRoleDropdowns();
     var roleSel=document.getElementById('hoRole');
     if(roleSel){
       var curVal=roleSel.value;
