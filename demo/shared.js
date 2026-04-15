@@ -112,42 +112,60 @@ window.DTF = window.DTF || { onThemeChange: null };
   var _pendingPid = null; /* guard against rapid switch race conditions */
   function _applyProjectTokens(pid) {
     _pendingPid = pid;
-    var css = localStorage.getItem('dtf-saved-tokens-' + pid) || '';
-    var styleEl = document.getElementById('dtfSavedTokens');
 
-    if (css) {
-      /* Per-project CSS found in localStorage — inject it */
-      if (styleEl) { styleEl.textContent = css; }
-      else {
-        var s = document.createElement('style');
-        s.id = 'dtfSavedTokens';
-        s.textContent = css;
-        document.head.appendChild(s);
-      }
-      localStorage.setItem('dtf-saved-tokens', css);
+    /* 1. Show cached CSS immediately (may be stale, but gives instant visual) */
+    var cached = localStorage.getItem('dtf-saved-tokens-' + pid) || '';
+    if (cached) {
+      _injectCSS(cached);
       _notifyAndRefresh();
-    } else {
-      /* No saved CSS — try fetching config.json + CSS from server */
-      _fetchProjectAssets(pid, function() {
-        if (_pendingPid === pid) _notifyAndRefresh();
-      });
+    }
+
+    /* 2. ALWAYS fetch fresh CSS + config from server (async) */
+    _fetchProjectAssets(pid, function(freshCSS) {
+      if (_pendingPid !== pid) return; /* stale — user switched again */
+      if (freshCSS) {
+        /* Only re-render if CSS actually changed from cache */
+        var changed = (freshCSS !== cached);
+        localStorage.setItem('dtf-saved-tokens-' + pid, freshCSS);
+        localStorage.setItem('dtf-saved-tokens', freshCSS);
+        if (changed) {
+          _injectCSS(freshCSS);
+          _notifyAndRefresh();
+        }
+      } else if (!cached) {
+        /* No CSS from server or cache — clear override so <link> base takes effect */
+        var el = document.getElementById('dtfSavedTokens');
+        if (el) el.textContent = '';
+        _notifyAndRefresh();
+      }
+    });
+  }
+
+  /* Inject CSS into the dtfSavedTokens <style> element */
+  function _injectCSS(css) {
+    var el = document.getElementById('dtfSavedTokens');
+    if (el) { el.textContent = css; }
+    else {
+      var s = document.createElement('style');
+      s.id = 'dtfSavedTokens';
+      s.textContent = css;
+      document.head.appendChild(s);
     }
   }
 
-  /* Fetch project config from server, store in localStorage, and optionally fetch CSS */
+  /* Fetch project config + CSS from server; calls done(assembledCSS or null) */
   function _fetchProjectAssets(pid, done) {
     var configPaths = [
       depth + '/projects/' + pid + '/config.json',  /* local dev */
       depth + '/' + pid + '/config.json'             /* deployed */
     ];
 
-    /* Try to fetch config first */
+    /* Fetch config (always — may have changed) */
     _tryFetch(configPaths, function(cfgText) {
       if (cfgText) {
         localStorage.setItem('dtf-color-config-' + pid, cfgText);
       }
-      /* Try to fetch per-project CSS (primitives + semantic + surfaces) */
-      var assembled = '';
+      /* Fetch per-project CSS (primitives + semantic + surfaces) */
       var fetches = [
         { local: depth + '/projects/' + pid + '/primitives.css', deployed: depth + '/' + pid + '/packages/tokens/src/primitives.css' },
         { local: depth + '/projects/' + pid + '/semantic.css',   deployed: depth + '/' + pid + '/packages/tokens/src/semantic.css' },
@@ -160,24 +178,8 @@ window.DTF = window.DTF || { onThemeChange: null };
           if (text) parts[idx] = text;
           pending--;
           if (pending === 0) {
-            assembled = parts.filter(Boolean).join('\n');
-            if (assembled) {
-              localStorage.setItem('dtf-saved-tokens-' + pid, assembled);
-              localStorage.setItem('dtf-saved-tokens', assembled);
-              var styleEl = document.getElementById('dtfSavedTokens');
-              if (styleEl) { styleEl.textContent = assembled; }
-              else {
-                var s = document.createElement('style');
-                s.id = 'dtfSavedTokens';
-                s.textContent = assembled;
-                document.head.appendChild(s);
-              }
-            } else {
-              /* No CSS available — clear override so <link> base takes effect */
-              var el = document.getElementById('dtfSavedTokens');
-              if (el) el.textContent = '';
-            }
-            done();
+            var assembled = parts.filter(Boolean).join('\n');
+            done(assembled || null);
           }
         });
       });
@@ -222,27 +224,26 @@ window.DTF = window.DTF || { onThemeChange: null };
     document.head.appendChild(style);
   }
 
-  /* If we have an active project but no per-project CSS/config yet, bootstrap from server */
-  if (activeProject && !localStorage.getItem('dtf-saved-tokens-' + activeProject)) {
+  /* ALWAYS fetch fresh config + CSS from server (async).
+     Updates localStorage and <style> when server values differ from cache. */
+  if (activeProject) {
     var depth = (location.pathname.indexOf('/demo/') !== -1) ? '..' : '.';
     var cfgUrl = depth + '/projects/' + activeProject + '/config.json?_cb=' + Date.now();
     var cssFiles = ['primitives.css', 'semantic.css', 'surfaces.css'];
 
-    /* Fetch config if missing */
-    if (!localStorage.getItem('dtf-color-config-' + activeProject)) {
-      fetch(cfgUrl).then(function(r) {
-        if (!r.ok) throw new Error(r.status);
-        return r.text();
-      }).then(function(text) {
-        localStorage.setItem('dtf-color-config-' + activeProject, text);
-        /* Re-render if page supports it */
-        if (typeof window.DTF.onThemeChange === 'function') {
-          requestAnimationFrame(window.DTF.onThemeChange);
-        }
-      }).catch(function() {});
-    }
+    /* Fetch config — always, not just when missing */
+    fetch(cfgUrl).then(function(r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.text();
+    }).then(function(text) {
+      var old = localStorage.getItem('dtf-color-config-' + activeProject);
+      localStorage.setItem('dtf-color-config-' + activeProject, text);
+      if (text !== old && typeof window.DTF.onThemeChange === 'function') {
+        requestAnimationFrame(window.DTF.onThemeChange);
+      }
+    }).catch(function() {});
 
-    /* Fetch CSS files if missing */
+    /* Fetch CSS files — always, not just when missing */
     var pending = cssFiles.length;
     var parts = [];
     cssFiles.forEach(function(file, idx) {
@@ -256,7 +257,7 @@ window.DTF = window.DTF || { onThemeChange: null };
         pending--;
         if (pending === 0) {
           var assembled = parts.filter(Boolean).join('\n');
-          if (assembled) {
+          if (assembled && assembled !== savedCSS) {
             localStorage.setItem('dtf-saved-tokens-' + activeProject, assembled);
             localStorage.setItem('dtf-saved-tokens', assembled);
             var el = document.getElementById('dtfSavedTokens');
