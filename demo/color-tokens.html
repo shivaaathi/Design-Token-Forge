@@ -982,6 +982,43 @@ var COMPONENTS=[
 var hoTier='t2';
 var hoFormat='css';
 
+/* Active roles derived from the current project's paletteKeys */
+var activeRoles=(function(){
+  var activeId=localStorage.getItem('dtf-active-project')||'';
+  var cfgRaw=null;
+  if(activeId) cfgRaw=localStorage.getItem('dtf-color-config-'+activeId);
+  if(!cfgRaw) cfgRaw=localStorage.getItem('dtf-color-config');
+  if(cfgRaw){
+    try{
+      var cfg=JSON.parse(cfgRaw);
+      if(cfg&&cfg.paletteKeys){
+        var keys=Object.keys(cfg.paletteKeys);
+        return ROLES.filter(function(role){
+          var src=ROLE_SOURCE[role];
+          return src==='monochromatic'||keys.indexOf(src)!==-1;
+        });
+      }
+    }catch(e){}
+  }
+  return ROLES.slice();
+})();
+
+/* Check whether a token reference belongs to an active role */
+function isActiveRef(ref){
+  if(!ref) return true;
+  for(var i=0;i<activeRoles.length;i++){
+    if(ref.indexOf('--'+activeRoles[i]+'-')===0) return true;
+  }
+  /* Surface / non-role refs are always active */
+  if(ref.indexOf('--surface-')===0) return true;
+  /* If it doesn't match any role pattern, keep it */
+  var isRoleRef=false;
+  for(var j=0;j<ROLES.length;j++){
+    if(ref.indexOf('--'+ROLES[j]+'-')===0){isRoleRef=true;break;}
+  }
+  return !isRoleRef;
+}
+
 function setHoTier(tier,el){
   hoTier=tier;
   document.querySelectorAll('#hoTierTabs .ho-tab').forEach(function(t){t.classList.toggle('on',t.dataset.tier===tier);});
