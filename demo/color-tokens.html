@@ -131,12 +131,12 @@
   <div>
     <h1>Color Token Explorer <span>— Design Token Forge</span></h1>
   </div>
-  <div class="demo-meta">
-    <span class="demo-badge">8 Palettes</span>
-    <span class="demo-badge">176 Primitives</span>
-    <span class="demo-badge">216 Semantic</span>
-    <span class="demo-badge">224 Surface</span>
-    <span class="demo-badge">~680 Color Tokens</span>
+  <div class="demo-meta" id="headerBadges">
+    <span class="demo-badge" id="badgePalettes">8 Palettes</span>
+    <span class="demo-badge" id="badgePrimitives">176 Primitives</span>
+    <span class="demo-badge" id="badgeSemantic">216 Semantic</span>
+    <span class="demo-badge" id="badgeSurface">224 Surface</span>
+    <span class="demo-badge" id="badgeTotal">~680 Color Tokens</span>
   </div>
 </header>
 
@@ -172,15 +172,15 @@
           <div class="stats-banner">
             <div class="stat-card">
               <div class="stat-num">T0</div>
-              <div class="stat-label">Primitives — 8 palettes × 22 steps</div>
+              <div class="stat-label" id="ovT0">Primitives — 8 palettes × 22 steps</div>
             </div>
             <div class="stat-card">
               <div class="stat-num">T1</div>
-              <div class="stat-label">Semantic — 6 roles × 18 tokens × 2 themes</div>
+              <div class="stat-label" id="ovT1">Semantic — 6 roles × 18 tokens × 2 themes</div>
             </div>
             <div class="stat-card">
               <div class="stat-num">T2</div>
-              <div class="stat-label">Surfaces — 7 contexts × 16 tokens × 2 themes</div>
+              <div class="stat-label" id="ovT2">Surfaces — 7 contexts × 16 tokens × 2 themes</div>
             </div>
             <div class="stat-card">
               <div class="stat-num">T3</div>
@@ -194,9 +194,9 @@
       <section class="section" id="primitives">
         <div class="section-header">
           <h2>T0 — Primitive Palettes</h2>
-          <span class="section-tag">176 colors</span>
+          <span class="section-tag" id="tagPrimCount">176 colors</span>
         </div>
-        <p class="section-desc">
+        <p class="section-desc" id="descPrim">
           8 handcrafted palettes, each with 22 perceptual steps from white → black.
           Step 500 is the key color. These raw values never appear in component CSS directly —
           they feed into T1 semantic roles.
@@ -210,7 +210,7 @@
       <section class="section" id="semantic">
         <div class="section-header">
           <h2>T1 — Semantic Roles</h2>
-          <span class="section-tag">216 tokens</span>
+          <span class="section-tag" id="tagSemCount">216 tokens</span>
         </div>
         <p class="section-desc">
           6 semantic roles, each with 18 purpose-driven tokens divided into Content (4),
@@ -789,8 +789,51 @@ var activeRoles=(_projKeys)?ROLES.filter(function(role){
   return src==='monochromatic'||_projKeys.indexOf(src)!==-1;
 }):ROLES.slice();
 
+function refreshProjectState(){
+  var keys=_readProjectPaletteKeys();
+  if(keys){
+    activePalettes=PALETTES.filter(function(p){
+      return keys.indexOf(p.prefix.replace('prim-',''))!==-1;
+    });
+    activeRoles=ROLES.filter(function(role){
+      var src=ROLE_SOURCE[role];
+      return src==='monochromatic'||keys.indexOf(src)!==-1;
+    });
+  }else{
+    activePalettes=PALETTES.slice();
+    activeRoles=ROLES.slice();
+  }
+  populateRoleDropdowns();
+  updateDynamicLabels();
+}
+
+function updateDynamicLabels(){
+  var nPal=activePalettes.length;
+  var nRoles=activeRoles.length;
+  var t0=nPal*STEPS.length;
+  var t1=nRoles*18*2;
+  var t2=SURFACES.length*SURFACE_TOKENS.length*2;
+  var total=t0+5+t1+t2;
+  /* Header badges */
+  var el;
+  if((el=document.getElementById('badgePalettes'))) el.textContent=nPal+' Palettes';
+  if((el=document.getElementById('badgePrimitives'))) el.textContent=t0+' Primitives';
+  if((el=document.getElementById('badgeSemantic'))) el.textContent=t1+' Semantic';
+  if((el=document.getElementById('badgeSurface'))) el.textContent=t2+' Surface';
+  if((el=document.getElementById('badgeTotal'))) el.textContent='~'+total+' Color Tokens';
+  /* Overview cards */
+  if((el=document.getElementById('ovT0'))) el.textContent='Primitives \u2014 '+nPal+' palettes \u00d7 '+STEPS.length+' steps';
+  if((el=document.getElementById('ovT1'))) el.textContent='Semantic \u2014 '+nRoles+' roles \u00d7 18 tokens \u00d7 2 themes';
+  if((el=document.getElementById('ovT2'))) el.textContent='Surfaces \u2014 '+SURFACES.length+' contexts \u00d7 '+SURFACE_TOKENS.length+' tokens \u00d7 2 themes';
+  /* Section headers */
+  if((el=document.getElementById('tagPrimCount'))) el.textContent=t0+' colors';
+  if((el=document.getElementById('descPrim'))) el.textContent=nPal+' palettes, each with '+STEPS.length+' perceptual steps from white \u2192 black. Step 500 is the key color. These raw values never appear in component CSS directly \u2014 they feed into T1 semantic roles.';
+  if((el=document.getElementById('tagSemCount'))) el.textContent=t1+' tokens';
+}
+
 function renderAll(){
   cs=getComputedStyle(document.documentElement);
+  refreshProjectState();
   renderPalettes();
   renderRoles();
   renderComparison();
@@ -1066,42 +1109,21 @@ function setHoFormat(fmt,el){
 })();
 
 /* ── Render handoff output ─────────────────────────────── */
-function refreshActiveRoles(){
-  if(!activeRoles) activeRoles=ROLES.slice();
-  if(!activePalettes) activePalettes=PALETTES.slice();
-  var prev=activeRoles.join();
-  var keys=_readProjectPaletteKeys();
-  if(keys){
-    activeRoles=ROLES.filter(function(role){
-      var src=ROLE_SOURCE[role];
-      return src==='monochromatic'||keys.indexOf(src)!==-1;
-    });
-    activePalettes=PALETTES.filter(function(p){
-      return keys.indexOf(p.prefix.replace('prim-',''))!==-1;
-    });
-  }else{
-    activeRoles=ROLES.slice();
-    activePalettes=PALETTES.slice();
-  }
-  /* Rebuild all role dropdowns if roles changed */
-  if(activeRoles.join()!==prev){
-    populateRoleDropdowns();
-    var roleSel=document.getElementById('hoRole');
-    if(roleSel){
-      var curVal=roleSel.value;
-      roleSel.innerHTML='<option value="_all">All Roles</option>';
-      activeRoles.forEach(function(r){
-        var o=document.createElement('option');
-        o.value=r;o.textContent=r.charAt(0).toUpperCase()+r.slice(1);
-        roleSel.appendChild(o);
-      });
-      if(activeRoles.indexOf(curVal)!==-1) roleSel.value=curVal;
-    }
-  }
+function refreshHandoffRoleDropdown(){
+  var roleSel=document.getElementById('hoRole');
+  if(!roleSel) return;
+  var curVal=roleSel.value;
+  roleSel.innerHTML='<option value="_all">All Roles</option>';
+  activeRoles.forEach(function(r){
+    var o=document.createElement('option');
+    o.value=r;o.textContent=r.charAt(0).toUpperCase()+r.slice(1);
+    roleSel.appendChild(o);
+  });
+  if(activeRoles.indexOf(curVal)!==-1) roleSel.value=curVal;
 }
 
 function renderHandoff(){
-  refreshActiveRoles();
+  refreshHandoffRoleDropdown();
   var out=document.getElementById('hoOutput');
   if(!out) return;
   if(hoTier==='t1') renderT1Handoff(out);
