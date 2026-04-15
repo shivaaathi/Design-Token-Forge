@@ -777,7 +777,7 @@ function renderAll(){
   renderSurfaces();
   renderChain();
   renderStats();
-  if(typeof renderHandoff==='function') renderHandoff();
+  if(activeRoles) renderHandoff();
 }
 
 renderAll();
@@ -1050,6 +1050,7 @@ function setHoFormat(fmt,el){
 
 /* ── Render handoff output ─────────────────────────────── */
 function refreshActiveRoles(){
+  if(!activeRoles) activeRoles=ROLES.slice();
   var prev=activeRoles.join();
   var activeId=localStorage.getItem('dtf-active-project')||'';
   var cfgRaw=null;
