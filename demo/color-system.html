@@ -332,6 +332,7 @@ body.auth-locked .global-save-bar{filter:blur(6px);pointer-events:none;user-sele
 <div class="page-layout">
 <aside class="sidebar-nav" id="sidebarNav" aria-label="Section navigation">
   <a href="#sec-roles"><span class="sn-num">1</span>Color Roles</a>
+  <a href="#sec-fixed"><span class="sn-num">1b</span>Fixed Colors</a>
   <a href="#sec-map"><span class="sn-num">2</span>Token Map</a>
   <a href="#sec-surf"><span class="sn-num">2b</span>Surface Map</a>
   <a href="#sec-live"><span class="sn-num">3</span>Live Components</a>
@@ -357,6 +358,18 @@ body.auth-locked .global-save-bar{filter:blur(6px);pointer-events:none;user-sele
     <div class="add-role-wrap">
       <button class="add-role-btn" id="addRoleBtn" type="button">+ Add Color Role</button>
     </div>
+  </div>
+</section>
+
+<!-- ═══════════════ 1b. Fixed / Utility Colors ════════ -->
+<section class="section" id="sec-fixed">
+  <div class="section-header">
+    <h2>1b. Fixed &amp; Utility Colors</h2>
+    <span class="section-tag">4 Tokens &middot; Theme-aware</span>
+  </div>
+  <p class="section-desc">Standard UI colors not tied to any role. <strong>Fixed</strong> tokens stay the same in both themes. <strong>Theme-aware</strong> tokens swap in dark mode.</p>
+  <div class="section-body" style="padding:20px 24px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px" id="fixedColorsGrid"></div>
   </div>
 </section>
 
@@ -1890,6 +1903,13 @@ function buildSaveableCSS() {
       darkCSS += '  --surface-' + sn + '-' + sp + ': ' + surfStepHex(dMap2[sp], sn) + ';\n';
     }
   }
+  // Fixed / Utility color tokens
+  css += '  --color-fixed-white: #FFFFFF;\n';
+  css += '  --color-fixed-black: #000000;\n';
+  css += '  --color-white: #FFFFFF;\n';
+  css += '  --color-black: #000000;\n';
+  darkCSS += '  --color-white: #1B1B1B;\n';
+  darkCSS += '  --color-black: #FFFFFF;\n';
   css += '}\n';
   if (darkCSS) {
     css += '[data-theme="dark"] {\n' + darkCSS + '}\n';
@@ -2492,6 +2512,53 @@ function buildSurfacesFileCSS() {
 // LOAD PROJECT CONFIG & INITIAL RENDER
 // ══════════════════════════════════════════════════════════════
 
+// ═══════════ Fixed / Utility Colors ═══════════════════════════
+var FIXED_COLORS = [
+  {token:'--color-fixed-white', label:'Fixed White', light:'#FFFFFF', dark:'#FFFFFF', desc:'Always white — theme-immune'},
+  {token:'--color-fixed-black', label:'Fixed Black', light:'#000000', dark:'#000000', desc:'Always black — theme-immune'},
+  {token:'--color-white', label:'White',       light:'#FFFFFF', dark:'#1B1B1B', desc:'White in light → near-black in dark'},
+  {token:'--color-black', label:'Black',       light:'#000000', dark:'#FFFFFF', desc:'Black in light → white in dark'}
+];
+
+function renderFixedColors() {
+  var grid = document.getElementById('fixedColorsGrid');
+  if (!grid) return;
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  grid.innerHTML = '';
+  for (var i = 0; i < FIXED_COLORS.length; i++) {
+    var c = FIXED_COLORS[i];
+    var hex = isDark ? c.dark : c.light;
+    var lum = luminance(hex);
+    var fg = lum > 0.4 ? '#000' : '#FFF';
+    var card = document.createElement('div');
+    card.style.cssText = 'border:1px solid var(--demo-border);border-radius:var(--radius-md,6px);overflow:hidden';
+    card.innerHTML =
+      '<div style="height:56px;background:' + hex + ';display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="copyHex(\'' + hex + '\')" title="Click to copy">' +
+        '<span style="font-size:13px;font-weight:700;font-family:var(--font-family-mono,monospace);color:' + fg + '">' + hex + '</span>' +
+      '</div>' +
+      '<div style="padding:8px 12px">' +
+        '<div style="font-size:12px;font-weight:700;color:var(--demo-fg-strong)">' + c.label + '</div>' +
+        '<div style="font-size:10px;font-family:var(--font-family-mono,monospace);color:var(--demo-fg-subtle);margin-top:2px">' + c.token + '</div>' +
+        '<div style="font-size:10px;color:var(--demo-fg-faint);margin-top:2px">' + c.desc + '</div>' +
+        '<div style="font-size:9px;margin-top:4px;display:flex;gap:8px">' +
+          '<span style="color:var(--demo-fg-faint)">Light: ' + c.light + '</span>' +
+          '<span style="color:var(--demo-fg-faint)">Dark: ' + c.dark + '</span>' +
+        '</div>' +
+      '</div>';
+    grid.appendChild(card);
+  }
+}
+
+function luminance(hex) {
+  var r = parseInt(hex.substr(1,2),16)/255;
+  var g = parseInt(hex.substr(3,2),16)/255;
+  var b = parseInt(hex.substr(5,2),16)/255;
+  r = r <= 0.03928 ? r/12.92 : Math.pow((r+0.055)/1.055, 2.4);
+  g = g <= 0.03928 ? g/12.92 : Math.pow((g+0.055)/1.055, 2.4);
+  b = b <= 0.03928 ? b/12.92 : Math.pow((b+0.055)/1.055, 2.4);
+  return 0.2126*r + 0.7152*g + 0.0722*b;
+}
+
 function doInitialRender() {
   var didRestore = loadSavedConfig();
   if (!didRestore) initRoles();
@@ -2507,7 +2574,11 @@ function doInitialRender() {
   renderCertDetail(selectedCertRole);
   renderSteps();
   renderExport(currentFormat);
+  renderFixedColors();
   updateSaveIndicator();
+
+  /* Re-render fixed colors on theme toggle */
+  window.DTF.onThemeChange = renderFixedColors;
 }
 
 // ══════════════════════════════════════════════════════════════

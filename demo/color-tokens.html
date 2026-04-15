@@ -148,9 +148,10 @@
     <a href="#semantic"><span class="sn-num">2</span> T1 Semantic</a>
     <a href="#comparison"><span class="sn-num">3</span> Light ↔ Dark</a>
     <a href="#surfaces"><span class="sn-num">4</span> T2 Surfaces</a>
-    <a href="#chain"><span class="sn-num">5</span> Resolution Chain</a>
-    <a href="#stats"><span class="sn-num">6</span> Token Stats</a>
-    <a href="#handoff"><span class="sn-num">7</span> Developer Handoff</a>
+    <a href="#utility"><span class="sn-num">5</span> Utility Colors</a>
+    <a href="#chain"><span class="sn-num">6</span> Resolution Chain</a>
+    <a href="#stats"><span class="sn-num">7</span> Token Stats</a>
+    <a href="#handoff"><span class="sn-num">8</span> Developer Handoff</a>
   </aside>
 
   <div class="page-content">
@@ -290,6 +291,18 @@
             </div>
             <div class="chain-visual" id="chainVisual"></div>
           </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════ 5 · Utility Colors ═══════════════ -->
+      <section class="section" id="utility">
+        <div class="section-header">
+          <h2>Fixed &amp; Utility Colors</h2>
+          <span class="section-tag">4 Tokens</span>
+        </div>
+        <p class="section-desc">Standard UI colors not tied to any role. <strong>Fixed</strong> tokens are theme-immune. <strong>Theme-aware</strong> tokens swap in dark mode.</p>
+        <div class="section-body" style="padding:20px 24px">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px" id="utilityGrid"></div>
         </div>
       </section>
 
@@ -759,6 +772,43 @@ function renderChain(){
 }
 
 /* ── 6. Render Stats ───────────────────────────────────── */
+function renderUtility(){
+  var grid=document.getElementById('utilityGrid');
+  if(!grid) return;
+  var FIXED=[
+    {token:'--color-fixed-white', label:'Fixed White', desc:'Always white — theme-immune'},
+    {token:'--color-fixed-black', label:'Fixed Black', desc:'Always black — theme-immune'},
+    {token:'--color-white', label:'White', desc:'White in light, near-black in dark'},
+    {token:'--color-black', label:'Black', desc:'Black in light, white in dark'}
+  ];
+  grid.innerHTML='';
+  for(var i=0;i<FIXED.length;i++){
+    var c=FIXED[i];
+    var val=hex(c.token);
+    var lum=relLum(val);
+    var fg=lum>0.4?'#000':'#FFF';
+    var card=document.createElement('div');
+    card.style.cssText='border:1px solid var(--demo-border);border-radius:var(--radius-md,6px);overflow:hidden';
+    card.innerHTML=
+      '<div style="height:56px;background:'+val+';display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="copyHex(\''+val+'\')" title="Click to copy">'+
+        '<span style="font-size:13px;font-weight:700;font-family:var(--font-family-mono,monospace);color:'+fg+'">'+val+'</span>'+
+      '</div>'+
+      '<div style="padding:8px 12px">'+
+        '<div style="font-size:12px;font-weight:700;color:var(--demo-fg-strong)">'+c.label+'</div>'+
+        '<div style="font-size:10px;font-family:var(--font-family-mono,monospace);color:var(--demo-fg-subtle);margin-top:2px">'+c.token+'</div>'+
+        '<div style="font-size:10px;color:var(--demo-fg-faint);margin-top:2px">'+c.desc+'</div>'+
+      '</div>';
+    grid.appendChild(card);
+  }
+}
+function relLum(h){
+  if(!h||h.length<7) return 0;
+  var r=parseInt(h.substr(1,2),16)/255,g=parseInt(h.substr(3,2),16)/255,b=parseInt(h.substr(5,2),16)/255;
+  r=r<=0.03928?r/12.92:Math.pow((r+0.055)/1.055,2.4);
+  g=g<=0.03928?g/12.92:Math.pow((g+0.055)/1.055,2.4);
+  b=b<=0.03928?b/12.92:Math.pow((b+0.055)/1.055,2.4);
+  return 0.2126*r+0.7152*g+0.0722*b;
+}
 function renderStats(){
   var container=document.getElementById('statsContainer');
   container.innerHTML='';
@@ -905,6 +955,7 @@ function renderAll(){
   renderRoles();
   renderComparison();
   renderSurfaces();
+  renderUtility();
   renderChain();
   renderStats();
   if(activeRoles) renderHandoff();
