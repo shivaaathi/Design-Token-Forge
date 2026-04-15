@@ -1772,15 +1772,17 @@ function buildSaveableCSS() {
       }
     }
   }
-  // Surface accent from primary
-  var ps = palettes.primary ? palettes.primary.steps : null;
-  if (ps) {
-    css += '  --surface-accent-bg: ' + ps[2].hex + ';\n';
-    css += '  --surface-accent-hover: ' + ps[3].hex + ';\n';
-    css += '  --surface-accent-outline: ' + ps[7].hex + ';\n';
-    darkCSS += '  --surface-accent-bg: ' + ps[18].hex + ';\n';
-    darkCSS += '  --surface-accent-hover: ' + ps[17].hex + ';\n';
-    darkCSS += '  --surface-accent-outline: ' + ps[16].hex + ';\n';
+  // T2 Surface tokens — inject ALL surfaces using current SURF palette sources
+  for (var ni = 0; ni < SURF_NAMES.length; ni++) {
+    var sn = SURF_NAMES[ni];
+    var lMap2 = SURF_L[sn] || SURF_LA;
+    var dMap2 = SURF_D[sn] || SURF_DA;
+    if (!lMap2 || !dMap2) continue;
+    for (var pi2 = 0; pi2 < SURF_PROP_ORDER.length; pi2++) {
+      var sp = SURF_PROP_ORDER[pi2];
+      css += '  --surface-' + sn + '-' + sp + ': ' + surfStepHex(lMap2[sp], sn) + ';\n';
+      darkCSS += '  --surface-' + sn + '-' + sp + ': ' + surfStepHex(dMap2[sp], sn) + ';\n';
+    }
   }
   css += '}\n';
   if (darkCSS) {
@@ -2000,6 +2002,13 @@ ghCommitBtn.addEventListener('click', function() {
     { path: 'packages/tokens/src/semantic.css', content: semCSS },
     { path: 'packages/tokens/src/surfaces.css', content: surfCSS }
   ];
+
+  // Also write per-project CSS so build-static.js copies the right files
+  if (projectId) {
+    filesToCommit.push({ path: 'projects/' + projectId + '/primitives.css', content: primCSS });
+    filesToCommit.push({ path: 'projects/' + projectId + '/semantic.css', content: semCSS });
+    filesToCommit.push({ path: 'projects/' + projectId + '/surfaces.css', content: surfCSS });
+  }
 
   // Also update project config.json with current palette keys + mappings
   var configToSave = buildUpdatedConfig();
