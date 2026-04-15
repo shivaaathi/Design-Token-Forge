@@ -235,9 +235,10 @@ function buildExtras(primTokens, extrasTokens) {
     variables.push({ name: primPath(name), type, scopes: [], values: { Value: value } });
   }
 
-  // Extras (radius, shadow, motion, z-index, opacity)
+  // Extras (radius, shadow, motion, z-index, opacity) — skip COLOR tokens
   for (const [name, value] of Object.entries(extrasTokens.light)) {
     const type = detectType(name, value);
+    if (type === 'COLOR') continue;  // utility colors go to T1 with Light/Dark modes
     variables.push({ name: extrasPath(name), type, scopes: [], values: { Value: value } });
   }
 
@@ -280,10 +281,11 @@ function buildAliasMap(t0Collection) {
 //    Modes: Light, Dark
 //    Every value is an alias to T0
 
-function buildT1(surfaceTokens, semanticTokens, aliasMap) {
+function buildT1(surfaceTokens, semanticTokens, aliasMap, extrasTokens) {
   const { map, palMap } = aliasMap;
   const variables = [];
   const palSrc = surfaceTokens.paletteSrc || {};
+  const extras = extrasTokens || { light: {}, dark: {} };
 
   // Resolve alias: prefer palette-specific if paletteSrc is known
   function resolve(hex, paletteKey) {
@@ -314,6 +316,14 @@ function buildT1(surfaceTokens, semanticTokens, aliasMap) {
     const lAlias = resolve(lVal, null);
     const dAlias = resolve(dVal, null);
     variables.push({ name: fullPath, type, scopes: [], values: { Light: lAlias, Dark: dAlias } });
+  }
+
+  // Utility COLOR tokens from extras.css → utility/{name}
+  for (const [name, lVal] of Object.entries(extras.light)) {
+    const type = detectType(name, lVal);
+    if (type !== 'COLOR') continue;  // only colour tokens; numbers stay in buildExtras
+    const dVal = extras.dark[name] || lVal;
+    variables.push({ name: `utility/${name.replace(/-/g, '/')}`, type, scopes: ['FRAME_FILL', 'SHAPE_FILL', 'STROKE_COLOR', 'TEXT_FILL'], values: { Light: lVal, Dark: dVal } });
   }
 
   return { name: 'T1 Color Tokens', modes: ['Light', 'Dark'], hiddenFromPublishing: true, variables };
@@ -576,8 +586,8 @@ export function runExport(opts = {}) {
   const t0Col = buildT0(primitiveTokens, extrasTokens);
   const aliasMap = buildAliasMap(t0Col);
 
-  // T1: combined surfaces + semantics, aliased to T0
-  const t1Col = buildT1(surfaceTokens, semanticTokens, aliasMap);
+  // T1: combined surfaces + semantics + utility colors, aliased to T0
+  const t1Col = buildT1(surfaceTokens, semanticTokens, aliasMap, extrasTokens);
 
   // T2: surface context switching → aliases T1
   const t2Col = buildT2(t1Col);
