@@ -762,22 +762,37 @@ var DARK_VALS={
 
 /* ── Render All ────────────────────────────────────────── */
 
-/* Active palettes & roles derived from the current project's paletteKeys */
-function _readProjectPaletteKeys(){
+/* Active palettes & roles derived from the current project's config */
+/* Maps role IDs to palette prefix names */
+var ROLE_TO_PALETTE={primary:'monochromatic',brand:'brand',danger:'danger',warning:'warning',info:'info',success:'success',greyscale:'greyscale',desaturated:'desaturated'};
+
+function _readProjectConfig(){
   var activeId=localStorage.getItem('dtf-active-project')||'';
   var cfgRaw=null;
   if(activeId) cfgRaw=localStorage.getItem('dtf-color-config-'+activeId);
   if(!cfgRaw) cfgRaw=localStorage.getItem('dtf-color-config');
-  if(cfgRaw){
-    try{
-      var cfg=JSON.parse(cfgRaw);
-      if(cfg&&cfg.paletteKeys) return Object.keys(cfg.paletteKeys);
-    }catch(e){}
-  }
-  return null; /* null = all palettes active */
+  if(!cfgRaw) return null;
+  try{ return JSON.parse(cfgRaw); }catch(e){ return null; }
 }
 
-var _projKeys=_readProjectPaletteKeys();
+function _deriveActivePaletteKeys(cfg){
+  if(!cfg) return null;
+  /* Method 1: paletteKeys object (from GitHub deploy config) */
+  if(cfg.paletteKeys) return Object.keys(cfg.paletteKeys);
+  /* Method 2: roles array (from localStorage save) */
+  if(cfg.roles&&cfg.roles.length){
+    var keys=[];
+    cfg.roles.forEach(function(r){
+      var pk=ROLE_TO_PALETTE[r.id];
+      if(pk&&keys.indexOf(pk)===-1) keys.push(pk);
+    });
+    return keys.length?keys:null;
+  }
+  return null;
+}
+
+var _projCfg=_readProjectConfig();
+var _projKeys=_deriveActivePaletteKeys(_projCfg);
 
 var activePalettes=(_projKeys)?PALETTES.filter(function(p){
   var pKey=p.prefix.replace('prim-','');
@@ -790,7 +805,8 @@ var activeRoles=(_projKeys)?ROLES.filter(function(role){
 }):ROLES.slice();
 
 function refreshProjectState(){
-  var keys=_readProjectPaletteKeys();
+  var cfg=_readProjectConfig();
+  var keys=_deriveActivePaletteKeys(cfg);
   if(keys){
     activePalettes=PALETTES.filter(function(p){
       return keys.indexOf(p.prefix.replace('prim-',''))!==-1;
