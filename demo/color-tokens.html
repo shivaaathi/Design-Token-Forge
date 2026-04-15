@@ -402,6 +402,13 @@ var ROLE_TOKENS=[
 var SURFACES=['bright','base','container','over-container','float','dim','deep','accent'];
 var SURFACE_TOKENS=['bg','hover','pressed','outline','separator','ct-default','ct-strong','ct-subtle','ct-faint','cm-bg','cm-bg-hover','cm-bg-pressed','cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator'];
 
+var UTILITY_TOKENS=[
+  {token:'--color-fixed-white', label:'Fixed White'},
+  {token:'--color-fixed-black', label:'Fixed Black'},
+  {token:'--color-white', label:'White'},
+  {token:'--color-black', label:'Black'}
+];
+
 /* ── Light-theme semantic→primitive mapping (for annotations) ── */
 var LIGHT_MAP={
   primary:{
@@ -1419,6 +1426,12 @@ function renderT2CSS(out){
     });
     lines.push('');
   });
+  lines.push('<span class="cc">/* ── Utility Colors ── */</span>');
+  UTILITY_TOKENS.forEach(function(u){
+    var val=hex(u.token)||rv(u.token);
+    lines.push('<span class="ck">'+u.token+'</span>: <span class="cv">'+val+'</span>;  <span class="cc">/* '+u.label+' */</span>');
+  });
+  lines.push('');
   out.innerHTML='<pre class="ho-code">'+lines.join('\n')+'</pre>';
 }
 
@@ -1434,6 +1447,11 @@ function renderT2JSON(out){
     });
     obj['surface-'+surf]=tokens;
   });
+  var utilObj={};
+  UTILITY_TOKENS.forEach(function(u){
+    utilObj[u.token]={value:hex(u.token)||rv(u.token),label:u.label};
+  });
+  obj['utility-colors']=utilObj;
   var json=JSON.stringify(obj,null,2);
   /* Colorize */
   json=json.replace(/"(#[A-Fa-f0-9]{3,8})"/g,'"<span class="cv">$1</span>"');
@@ -1457,6 +1475,17 @@ function renderT2Table(out){
       html+='<td class="ho-ref">--'+prop+'</td>';
       html+='</tr>';
     });
+  });
+  html+='<tr><td colspan="5" class="ho-grp">Utility Colors</td></tr>';
+  UTILITY_TOKENS.forEach(function(u){
+    var val=hex(u.token)||rv(u.token);
+    html+='<tr>';
+    html+='<td style="color:var(--demo-fg-faint)">utility</td>';
+    html+='<td>'+u.label+'</td>';
+    html+='<td><span class="ho-sw" style="background:'+val+'" onclick="copyHex(\''+val+'\')"></span></td>';
+    html+='<td>'+val+'</td>';
+    html+='<td class="ho-ref">'+u.token+'</td>';
+    html+='</tr>';
   });
   html+='</tbody></table></div>';
   out.innerHTML=html;
@@ -1557,6 +1586,13 @@ function renderT2Android(out){
       lines.push('    <span class="ck">val</span> '+name+' = <span class="cp">Color</span>(<span class="cv">'+hexToArgb(val)+'</span>)');
     });
   });
+  lines.push('');
+  lines.push('    <span class="cc">// ── Utility Colors ──</span>');
+  UTILITY_TOKENS.forEach(function(u){
+    var val=hex(u.token)||rv(u.token);
+    var name=kebabToCamel(u.token);
+    lines.push('    <span class="ck">val</span> '+name+' = <span class="cp">Color</span>(<span class="cv">'+hexToArgb(val)+'</span>)  <span class="cc">// '+u.label+'</span>');
+  });
   lines.push('}');
   out.innerHTML='<pre class="ho-code">'+lines.join('\n')+'</pre>';
 }
@@ -1609,6 +1645,14 @@ function renderT2iOS(out){
       var rgb=hexToRgba(val);
       lines.push('    <span class="ck">static let</span> '+name+' = <span class="cp">Color</span>(red: <span class="cv">'+rgb.r+'</span>, green: <span class="cv">'+rgb.g+'</span>, blue: <span class="cv">'+rgb.b+'</span>)  <span class="cc">// '+val+'</span>');
     });
+  });
+  lines.push('');
+  lines.push('    <span class="cc">// MARK: - Utility Colors</span>');
+  UTILITY_TOKENS.forEach(function(u){
+    var val=hex(u.token)||rv(u.token);
+    var name=kebabToCamel(u.token);
+    var rgb=hexToRgba(val);
+    lines.push('    <span class="ck">static let</span> '+name+' = <span class="cp">Color</span>(red: <span class="cv">'+rgb.r+'</span>, green: <span class="cv">'+rgb.g+'</span>, blue: <span class="cv">'+rgb.b+'</span>)  <span class="cc">// '+u.label+' '+val+'</span>');
   });
   lines.push('}');
   out.innerHTML='<pre class="ho-code">'+lines.join('\n')+'</pre>';
