@@ -311,7 +311,7 @@
           <span class="section-tag">Export</span>
         </div>
         <p class="section-desc">
-          Copy-ready T2 surface maps and T3 component token references for implementation.
+          Copy-ready T1 semantic, T2 surface, and T3 component token references for implementation.
           All values resolve live from the current theme — switch themes to get dark-mode values.
         </p>
         <div class="section-body">
@@ -849,10 +849,15 @@ var activeRoles=(_projKeys)?ROLES.filter(function(role){
 /* Surface palette source map: which palette drives each surface context */
 var activeSurfacePaletteSrc=(_projCfg&&_projCfg.surfacePaletteSrc)?_projCfg.surfacePaletteSrc:null;
 
+/* Active project name for handoff headers */
+var activeProjectName=localStorage.getItem('dtf-active-project')||'';
+function _projTag(){return activeProjectName?' ['+activeProjectName+']':'';}
+
 function refreshProjectState(){
   var cfg=_readProjectConfig();
   var keys=_deriveActivePaletteKeys(cfg);
   activeSurfacePaletteSrc=(cfg&&cfg.surfacePaletteSrc)?cfg.surfacePaletteSrc:null;
+  activeProjectName=localStorage.getItem('dtf-active-project')||'';
   if(keys){
     activePalettes=PALETTES.filter(function(p){
       return keys.indexOf(p.prefix.replace('prim-',''))!==-1;
@@ -1226,7 +1231,7 @@ function renderT1Handoff(out){
 function renderT1CSS(out,roles){
   var theme=isDark()?'dark':'light';
   var lines=[];
-  lines.push('<span class="cc">/* T1 Semantic Tokens — '+theme+' theme */</span>');
+  lines.push('<span class="cc">/* T1 Semantic Tokens — '+theme+' theme'+_projTag()+' */</span>');
   lines.push('<span class="cc">/* Generated from Color Token Explorer */</span>');
   lines.push('');
   roles.forEach(function(role){
@@ -1287,7 +1292,7 @@ function renderT1Table(out,roles){
 function renderT1Android(out,roles){
   var theme=isDark()?'Dark':'Light';
   var lines=[];
-  lines.push('<span class="cc">// T1 Semantic Tokens — '+theme+' theme</span>');
+  lines.push('<span class="cc">// T1 Semantic Tokens — '+theme+' theme'+_projTag()+'</span>');
   lines.push('<span class="cc">// Generated from Color Token Explorer</span>');
   lines.push('');
   lines.push('<span class="ck">package</span> com.app.tokens');
@@ -1297,7 +1302,7 @@ function renderT1Android(out,roles){
   lines.push('<span class="ck">object</span> <span class="cp">SemanticTokens'+theme+'</span> {');
   roles.forEach(function(role){
     lines.push('');
-    lines.push('    <span class="cc">// ── '+role+' ──</span>');
+    lines.push('    <span class="cc">// ── '+role+' (\u2190 prim-'+ROLE_SOURCE[role]+') ──</span>');
     ROLE_TOKENS.forEach(function(grp){
       grp.tokens.forEach(function(tok){
         var prop=role+'-'+tok;
@@ -1314,7 +1319,7 @@ function renderT1Android(out,roles){
 function renderT1iOS(out,roles){
   var theme=isDark()?'Dark':'Light';
   var lines=[];
-  lines.push('<span class="cc">// T1 Semantic Tokens — '+theme+' theme</span>');
+  lines.push('<span class="cc">// T1 Semantic Tokens — '+theme+' theme'+_projTag()+'</span>');
   lines.push('<span class="cc">// Generated from Color Token Explorer</span>');
   lines.push('');
   lines.push('<span class="ck">import</span> SwiftUI');
@@ -1322,7 +1327,7 @@ function renderT1iOS(out,roles){
   lines.push('<span class="ck">extension</span> <span class="cp">Color</span> {');
   roles.forEach(function(role){
     lines.push('');
-    lines.push('    <span class="cc">// MARK: - '+role+'</span>');
+    lines.push('    <span class="cc">// MARK: - '+role+' (\u2190 prim-'+ROLE_SOURCE[role]+')</span>');
     ROLE_TOKENS.forEach(function(grp){
       grp.tokens.forEach(function(tok){
         var prop=role+'-'+tok;
@@ -1350,7 +1355,7 @@ function renderT2Handoff(out){
 function renderT2CSS(out){
   var theme=isDark()?'dark':'light';
   var lines=[];
-  lines.push('<span class="cc">/* T2 Surface Tokens — '+theme+' theme */</span>');
+  lines.push('<span class="cc">/* T2 Surface Tokens — '+theme+' theme'+_projTag()+' */</span>');
   lines.push('<span class="cc">/* Generated from Color Token Explorer */</span>');
   lines.push('');
   SURFACES.forEach(function(surf){
@@ -1371,6 +1376,7 @@ function renderT2JSON(out){
   var obj={};
   SURFACES.forEach(function(surf){
     var tokens={};
+    if(activeSurfacePaletteSrc&&activeSurfacePaletteSrc[surf]) tokens._paletteSrc=activeSurfacePaletteSrc[surf];
     SURFACE_TOKENS.forEach(function(tok){
       var prop='surface-'+surf+'-'+tok;
       tokens[tok]=hex(prop)||rv(prop);
@@ -1428,7 +1434,7 @@ function renderT3Handoff(out){
 function renderT3CSS(out,comp){
   var theme=isDark()?'dark':'light';
   var lines=[];
-  lines.push('<span class="cc">/* T3 '+comp.label+' Token Map — '+theme+' theme */</span>');
+  lines.push('<span class="cc">/* T3 '+comp.label+' Token Map — '+theme+' theme'+_projTag()+' */</span>');
   lines.push('<span class="cc">/* Component token → T1/T2 reference → resolved hex */</span>');
   lines.push('');
   comp.refs.forEach(function(grp){
@@ -1481,7 +1487,7 @@ function renderT3Table(out,comp){
 function renderT2Android(out){
   var theme=isDark()?'Dark':'Light';
   var lines=[];
-  lines.push('<span class="cc">// T2 Surface Tokens — '+theme+' theme</span>');
+  lines.push('<span class="cc">// T2 Surface Tokens — '+theme+' theme'+_projTag()+'</span>');
   lines.push('<span class="cc">// Generated from Color Token Explorer</span>');
   lines.push('');
   lines.push('<span class="ck">package</span> com.app.tokens');
@@ -1490,8 +1496,9 @@ function renderT2Android(out){
   lines.push('');
   lines.push('<span class="ck">object</span> <span class="cp">SurfaceTokens'+theme+'</span> {');
   SURFACES.forEach(function(surf){
+    var palSrc=(activeSurfacePaletteSrc&&activeSurfacePaletteSrc[surf])?' \u2190 '+activeSurfacePaletteSrc[surf]:'';
     lines.push('');
-    lines.push('    <span class="cc">// ── surface-'+surf+' ──</span>');
+    lines.push('    <span class="cc">// ── surface-'+surf+palSrc+' ──</span>');
     SURFACE_TOKENS.forEach(function(tok){
       var prop='surface-'+surf+'-'+tok;
       var val=hex(prop)||rv(prop);
@@ -1507,7 +1514,7 @@ function renderT2Android(out){
 function renderT3Android(out,comp){
   var theme=isDark()?'Dark':'Light';
   var lines=[];
-  lines.push('<span class="cc">// T3 '+comp.label+' Token Map — '+theme+' theme</span>');
+  lines.push('<span class="cc">// T3 '+comp.label+' Token Map — '+theme+' theme'+_projTag()+'</span>');
   lines.push('<span class="cc">// Component token → T1/T2 reference → resolved</span>');
   lines.push('');
   lines.push('<span class="ck">package</span> com.app.tokens');
@@ -1534,7 +1541,7 @@ function renderT3Android(out,comp){
 function renderT2iOS(out){
   var theme=isDark()?'Dark':'Light';
   var lines=[];
-  lines.push('<span class="cc">// T2 Surface Tokens — '+theme+' theme</span>');
+  lines.push('<span class="cc">// T2 Surface Tokens — '+theme+' theme'+_projTag()+'</span>');
   lines.push('<span class="cc">// Generated from Color Token Explorer</span>');
   lines.push('');
   lines.push('<span class="ck">import</span> SwiftUI');
@@ -1560,7 +1567,7 @@ function renderT2iOS(out){
 function renderT3iOS(out,comp){
   var theme=isDark()?'Dark':'Light';
   var lines=[];
-  lines.push('<span class="cc">// T3 '+comp.label+' Token Map — '+theme+' theme</span>');
+  lines.push('<span class="cc">// T3 '+comp.label+' Token Map — '+theme+' theme'+_projTag()+'</span>');
   lines.push('<span class="cc">// Component token → T1/T2 reference → resolved</span>');
   lines.push('');
   lines.push('<span class="ck">import</span> SwiftUI');
