@@ -287,6 +287,27 @@ async function main() {
     fs.copyFileSync(cfgDst, path.join(BASE_OUT_DIR, 'config.json'));
   }
 
+  // ── Write per-project CSS to projects/{id}/ for local dev switching ──
+  if (PROJECT_ID) {
+    const projCSSDir = path.join(ROOT, 'projects', PROJECT_ID);
+    fs.mkdirSync(projCSSDir, { recursive: true });
+    if (exportOpts.primitiveTokens) {
+      fs.writeFileSync(path.join(projCSSDir, 'primitives.css'),
+        tokensToCSSFile(exportOpts.primitiveTokens, 'T0 Primitive Colors'));
+    }
+    if (exportOpts.semanticTokens) {
+      fs.writeFileSync(path.join(projCSSDir, 'semantic.css'),
+        tokensToCSSFile(exportOpts.semanticTokens, 'T1 Semantic Tokens'));
+    }
+    if (exportOpts.surfaceTokens) {
+      fs.writeFileSync(path.join(projCSSDir, 'surfaces.css'),
+        tokensToCSSFile(exportOpts.surfaceTokens, 'T2 Surface Context Tokens'));
+    }
+    if (exportOpts.primitiveTokens || exportOpts.semanticTokens || exportOpts.surfaceTokens) {
+      console.log(`  ✓ projects/${PROJECT_ID}/*.css → local dev switching`);
+    }
+  }
+
   // ── Generate projects.json manifest ─────────────────────────
   const projectsDir = path.join(ROOT, 'projects');
   if (fs.existsSync(projectsDir)) {
