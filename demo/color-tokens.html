@@ -389,8 +389,8 @@ var PALETTES=[
   {name:'Success',     prefix:'prim-success',       key:'#16A34A'}
 ];
 
-var ROLES=['primary','brand','danger','success','warning','info','greyscale','desaturated'];
-var ROLE_SOURCE={primary:'monochromatic',brand:'brand',danger:'danger',success:'success',warning:'warning',info:'info',greyscale:'greyscale',desaturated:'desaturated'};
+var ROLES=['primary','brand','danger','success','warning','info'];
+var ROLE_SOURCE={primary:'monochromatic',brand:'brand',danger:'danger',success:'success',warning:'warning',info:'info'};
 
 var ROLE_TOKENS=[
   {group:'Content',tokens:['content-default','content-strong','content-subtle','content-faint']},
@@ -464,24 +464,6 @@ var LIGHT_MAP={
     'container-bg':'info-50','container-hover':'info-75','container-pressed':'info-100',
     'container-outline':'info-200','container-separator':'info-100',
     'on-component':'white','on-container':'info-700'
-  },
-  greyscale:{
-    'content-default':'greyscale-600','content-strong':'greyscale-700','content-subtle':'greyscale-400','content-faint':'greyscale-200',
-    'component-bg-default':'greyscale-500','component-bg-hover':'greyscale-600','component-bg-pressed':'greyscale-700',
-    'component-outline-default':'greyscale-300','component-outline-hover':'greyscale-400','component-outline-pressed':'greyscale-500',
-    'component-separator':'greyscale-100',
-    'container-bg':'greyscale-50','container-hover':'greyscale-75','container-pressed':'greyscale-100',
-    'container-outline':'greyscale-200','container-separator':'greyscale-100',
-    'on-component':'white','on-container':'greyscale-700'
-  },
-  desaturated:{
-    'content-default':'desaturated-600','content-strong':'desaturated-700','content-subtle':'desaturated-400','content-faint':'desaturated-200',
-    'component-bg-default':'desaturated-500','component-bg-hover':'desaturated-600','component-bg-pressed':'desaturated-700',
-    'component-outline-default':'desaturated-300','component-outline-hover':'desaturated-400','component-outline-pressed':'desaturated-500',
-    'component-separator':'desaturated-100',
-    'container-bg':'desaturated-50','container-hover':'desaturated-75','container-pressed':'desaturated-100',
-    'container-outline':'desaturated-200','container-separator':'desaturated-100',
-    'on-component':'white','on-container':'desaturated-700'
   }
 };
 
@@ -539,24 +521,6 @@ var DARK_MAP={
     'container-bg':'info-900','container-hover':'info-850','container-pressed':'info-800',
     'container-outline':'info-600','container-separator':'info-800',
     'on-component':'white','on-container':'info-100'
-  },
-  greyscale:{
-    'content-default':'greyscale-150','content-strong':'greyscale-100','content-subtle':'greyscale-200','content-faint':'greyscale-400',
-    'component-bg-default':'greyscale-400','component-bg-hover':'greyscale-300','component-bg-pressed':'greyscale-250',
-    'component-outline-default':'greyscale-500','component-outline-hover':'greyscale-400','component-outline-pressed':'greyscale-300',
-    'component-separator':'greyscale-800',
-    'container-bg':'greyscale-850','container-hover':'greyscale-800','container-pressed':'greyscale-750',
-    'container-outline':'greyscale-600','container-separator':'greyscale-800',
-    'on-component':'white','on-container':'greyscale-100'
-  },
-  desaturated:{
-    'content-default':'desaturated-150','content-strong':'desaturated-100','content-subtle':'desaturated-200','content-faint':'desaturated-400',
-    'component-bg-default':'desaturated-400','component-bg-hover':'desaturated-300','component-bg-pressed':'desaturated-250',
-    'component-outline-default':'desaturated-500','component-outline-hover':'desaturated-400','component-outline-pressed':'desaturated-300',
-    'component-separator':'desaturated-800',
-    'container-bg':'desaturated-850','container-hover':'desaturated-800','container-pressed':'desaturated-750',
-    'container-outline':'desaturated-600','container-separator':'desaturated-800',
-    'on-component':'white','on-container':'desaturated-100'
   }
 };
 
@@ -863,7 +827,7 @@ function _readThemeVals(role,theme){
 
 /* Active palettes & roles derived from the current project's config */
 /* Maps role IDs to palette prefix names */
-var ROLE_TO_PALETTE={primary:'monochromatic',brand:'brand',danger:'danger',warning:'warning',info:'info',success:'success',greyscale:'greyscale',desaturated:'desaturated'};
+var ROLE_TO_PALETTE={primary:'monochromatic',brand:'brand',danger:'danger',warning:'warning',info:'info',success:'success'};
 
 function _readProjectConfig(){
   var activeId=localStorage.getItem('dtf-active-project')||'';
