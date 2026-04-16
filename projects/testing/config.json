@@ -389,7 +389,7 @@
     "base": "greyscale",
     "dim": "greyscale",
     "deep": "greyscale",
-    "accent": "primary",
+    "accent": "custom-1",
     "container": "greyscale",
     "over-container": "greyscale",
     "float": "greyscale",
