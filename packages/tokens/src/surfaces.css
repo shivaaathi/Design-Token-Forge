@@ -74,23 +74,23 @@
   --surface-deep-cm-outline-hover: #A8ABB3;
   --surface-deep-cm-outline-pressed: #9698A1;
   --surface-deep-cm-separator: #B9BBC3;
-  /* ── SURFACE-ACCENT (src: desaturated) ── */
-  --surface-accent-bg: #F5F6FB;
-  --surface-accent-hover: #EFF0F6;
-  --surface-accent-pressed: #E6E8EE;
-  --surface-accent-outline: #C4C6CE;
-  --surface-accent-separator: #C4C6CE;
-  --surface-accent-ct-default: #33343B;
-  --surface-accent-ct-strong: #1A1B21;
-  --surface-accent-ct-subtle: #4B4D55;
-  --surface-accent-ct-faint: #72747D;
+  /* ── SURFACE-ACCENT (src: primary) ── */
+  --surface-accent-bg: #F2F7FF;
+  --surface-accent-hover: #EAF1FF;
+  --surface-accent-pressed: #DDE9FF;
+  --surface-accent-outline: #ABC6FF;
+  --surface-accent-separator: #ABC6FF;
+  --surface-accent-ct-default: #05218D;
+  --surface-accent-ct-strong: #010161;
+  --surface-accent-ct-subtle: #153DB6;
+  --surface-accent-ct-faint: #3366F0;
   --surface-accent-cm-bg: #FFFFFF;
-  --surface-accent-cm-bg-hover: #F5F6FB;
-  --surface-accent-cm-bg-pressed: #EFF0F6;
-  --surface-accent-cm-outline: #C4C6CE;
-  --surface-accent-cm-outline-hover: #B9BBC3;
-  --surface-accent-cm-outline-pressed: #A8ABB3;
-  --surface-accent-cm-separator: #C4C6CE;
+  --surface-accent-cm-bg-hover: #F2F7FF;
+  --surface-accent-cm-bg-pressed: #EAF1FF;
+  --surface-accent-cm-outline: #ABC6FF;
+  --surface-accent-cm-outline-hover: #9BBBFE;
+  --surface-accent-cm-outline-pressed: #82A9FE;
+  --surface-accent-cm-separator: #ABC6FF;
   /* ── SURFACE-CONTAINER (src: desaturated) ── */
   --surface-container-bg: #FFFFFF;
   --surface-container-hover: #F5F6FB;
@@ -230,23 +230,23 @@
   --surface-deep-cm-outline-hover: #5C5E66;
   --surface-deep-cm-outline-pressed: #686A73;
   --surface-deep-cm-separator: #404249;
-  /* ── SURFACE-ACCENT (dark, src: desaturated) ── */
-  --surface-accent-bg: #1A1B21;
-  --surface-accent-hover: #282A30;
-  --surface-accent-pressed: #33343B;
-  --surface-accent-outline: #404249;
-  --surface-accent-separator: #404249;
-  --surface-accent-ct-default: #E6E8EE;
+  /* ── SURFACE-ACCENT (dark, src: primary) ── */
+  --surface-accent-bg: #010161;
+  --surface-accent-hover: #02147B;
+  --surface-accent-pressed: #05218D;
+  --surface-accent-outline: #0E30A3;
+  --surface-accent-separator: #0E30A3;
+  --surface-accent-ct-default: #DDE9FF;
   --surface-accent-ct-strong: #FFFFFF;
-  --surface-accent-ct-subtle: #CFD1D8;
-  --surface-accent-ct-faint: #83868F;
-  --surface-accent-cm-bg: #282A30;
-  --surface-accent-cm-bg-hover: #33343B;
-  --surface-accent-cm-bg-pressed: #404249;
-  --surface-accent-cm-outline: #5C5E66;
-  --surface-accent-cm-outline-hover: #686A73;
-  --surface-accent-cm-outline-pressed: #72747D;
-  --surface-accent-cm-separator: #404249;
+  --surface-accent-ct-subtle: #BCD2FE;
+  --surface-accent-ct-faint: #477CFF;
+  --surface-accent-cm-bg: #02147B;
+  --surface-accent-cm-bg-hover: #05218D;
+  --surface-accent-cm-bg-pressed: #0E30A3;
+  --surface-accent-cm-outline: #224FCF;
+  --surface-accent-cm-outline-hover: #2B5CE1;
+  --surface-accent-cm-outline-pressed: #3366F0;
+  --surface-accent-cm-separator: #0E30A3;
   /* ── SURFACE-CONTAINER (dark, src: desaturated) ── */
   --surface-container-bg: #282A30;
   --surface-container-hover: #33343B;
