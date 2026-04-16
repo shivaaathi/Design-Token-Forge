@@ -374,7 +374,7 @@
   if (pid) localStorage.removeItem('dtf-saved-ts-' + pid);
 })();
 </script>
-<script src="shared.js?v=20260416"></script>
+<script src="shared.js?v=20260416b"></script>
 <script>
 /* ════════════════════════════════════════════════════════════
    Color Token Explorer — rendering logic
@@ -410,10 +410,10 @@ var SURFACES=['bright','base','container','over-container','float','dim','deep',
 var SURFACE_TOKENS=['bg','subtle','elevated','outline','separator','ct-default','ct-strong','ct-subtle','ct-faint','cm-bg','cm-bg-hover','cm-bg-pressed','cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator'];
 
 var UTILITY_TOKENS=[
-  {token:'--color-fixed-white', label:'Fixed White'},
-  {token:'--color-fixed-black', label:'Fixed Black'},
-  {token:'--color-white', label:'White'},
-  {token:'--color-black', label:'Black'}
+  {token:'color-fixed-white', label:'Fixed White'},
+  {token:'color-fixed-black', label:'Fixed Black'},
+  {token:'color-white', label:'White'},
+  {token:'color-black', label:'Black'}
 ];
 
 /* ── Light-theme semantic→primitive mapping (for annotations) ── */
@@ -754,10 +754,10 @@ function renderUtility(){
   var grid=document.getElementById('utilityGrid');
   if(!grid) return;
   var FIXED=[
-    {token:'--color-fixed-white', label:'Fixed White', desc:'Always white — theme-immune'},
-    {token:'--color-fixed-black', label:'Fixed Black', desc:'Always black — theme-immune'},
-    {token:'--color-white', label:'White', desc:'White in light, near-black in dark'},
-    {token:'--color-black', label:'Black', desc:'Black in light, white in dark'}
+    {token:'color-fixed-white', label:'Fixed White', desc:'Always white — theme-immune'},
+    {token:'color-fixed-black', label:'Fixed Black', desc:'Always black — theme-immune'},
+    {token:'color-white', label:'White', desc:'White in light, near-black in dark'},
+    {token:'color-black', label:'Black', desc:'Black in light, white in dark'}
   ];
   grid.innerHTML='';
   for(var i=0;i<FIXED.length;i++){
@@ -773,7 +773,7 @@ function renderUtility(){
       '</div>'+
       '<div style="padding:8px 12px">'+
         '<div style="font-size:12px;font-weight:700;color:var(--demo-fg-strong)">'+c.label+'</div>'+
-        '<div style="font-size:10px;font-family:var(--font-family-mono,monospace);color:var(--demo-fg-subtle);margin-top:2px">'+c.token+'</div>'+
+        '<div style="font-size:10px;font-family:var(--font-family-mono,monospace);color:var(--demo-fg-subtle);margin-top:2px">--'+c.token+'</div>'+
         '<div style="font-size:10px;color:var(--demo-fg-faint);margin-top:2px">'+c.desc+'</div>'+
       '</div>';
     grid.appendChild(card);
@@ -875,7 +875,8 @@ var activeRoles=(_projKeys)?ROLES.filter(function(role){
 }):ROLES.slice();
 
 /* Surface palette source map: which palette drives each surface context */
-var activeSurfacePaletteSrc=(_projCfg&&_projCfg.surfacePaletteSrc)?_projCfg.surfacePaletteSrc:null;
+var DEFAULT_SURF_SRC={bright:'greyscale',base:'greyscale',dim:'greyscale',deep:'greyscale',accent:'primary',container:'greyscale','over-container':'greyscale','float':'greyscale',inverse:'greyscale'};
+var activeSurfacePaletteSrc=(_projCfg&&_projCfg.surfacePaletteSrc)?_projCfg.surfacePaletteSrc:DEFAULT_SURF_SRC;
 
 /* Active project name for handoff headers */
 var activeProjectName=localStorage.getItem('dtf-active-project')||'';
@@ -884,7 +885,7 @@ function _projTag(){return activeProjectName?' ['+activeProjectName+']':'';}
 function refreshProjectState(){
   var cfg=_readProjectConfig();
   var keys=_deriveActivePaletteKeys(cfg);
-  activeSurfacePaletteSrc=(cfg&&cfg.surfacePaletteSrc)?cfg.surfacePaletteSrc:null;
+  activeSurfacePaletteSrc=(cfg&&cfg.surfacePaletteSrc)?cfg.surfacePaletteSrc:DEFAULT_SURF_SRC;
   activeProjectName=localStorage.getItem('dtf-active-project')||'';
   if(keys){
     activePalettes=PALETTES.filter(function(p){
@@ -1400,7 +1401,7 @@ function renderT2CSS(out){
   lines.push('<span class="cc">/* ── Utility Colors ── */</span>');
   UTILITY_TOKENS.forEach(function(u){
     var val=hex(u.token)||rv(u.token);
-    lines.push('<span class="ck">'+u.token+'</span>: <span class="cv">'+val+'</span>;  <span class="cc">/* '+u.label+' */</span>');
+    lines.push('<span class="ck">--'+u.token+'</span>: <span class="cv">'+val+'</span>;  <span class="cc">/* '+u.label+' */</span>');
   });
   lines.push('');
   out.innerHTML='<pre class="ho-code">'+lines.join('\n')+'</pre>';
@@ -1420,7 +1421,7 @@ function renderT2JSON(out){
   });
   var utilObj={};
   UTILITY_TOKENS.forEach(function(u){
-    utilObj[u.token]={value:hex(u.token)||rv(u.token),label:u.label};
+    utilObj['--'+u.token]={value:hex(u.token)||rv(u.token),label:u.label};
   });
   obj['utility-colors']=utilObj;
   var json=JSON.stringify(obj,null,2);
@@ -1455,7 +1456,7 @@ function renderT2Table(out){
     html+='<td>'+u.label+'</td>';
     html+='<td><span class="ho-sw" style="background:'+val+'" onclick="copyHex(\''+val+'\')"></span></td>';
     html+='<td>'+val+'</td>';
-    html+='<td class="ho-ref">'+u.token+'</td>';
+    html+='<td class="ho-ref">--'+u.token+'</td>';
     html+='</tr>';
   });
   html+='</tbody></table></div>';
