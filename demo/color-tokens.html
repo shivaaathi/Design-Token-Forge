@@ -367,7 +367,14 @@
 </div>
 
 <script src="nav.js"></script>
-<script src="shared.js"></script>
+<script>
+/* Clear stale admin-save flags BEFORE shared.js loads, so it always fetches fresh CSS+config */
+(function(){
+  var pid = localStorage.getItem('dtf-active-project');
+  if (pid) localStorage.removeItem('dtf-saved-ts-' + pid);
+})();
+</script>
+<script src="shared.js?v=20260416"></script>
 <script>
 /* ════════════════════════════════════════════════════════════
    Color Token Explorer — rendering logic
