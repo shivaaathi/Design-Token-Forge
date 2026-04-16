@@ -4,13 +4,13 @@
   "description": "",
   "created": "2026-04-16",
   "paletteKeys": {
-    "monochromatic": "#14C2B6",
+    "monochromatic": "#EA1FC5",
     "danger": "#DC2626",
     "warning": "#D97706",
     "info": "#0EA5E9",
     "success": "#16A34A",
-    "greyscale": "#A9A9A9",
-    "desaturated": "#A1ACAA"
+    "greyscale": "#8D8D8D",
+    "desaturated": "#928B90"
   },
   "semanticMap": {
     "light": {
