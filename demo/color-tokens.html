@@ -826,8 +826,8 @@ function _readThemeVals(role,theme){
 /* ── Render All ────────────────────────────────────────── */
 
 /* Active palettes & roles derived from the current project's config */
-/* Maps role IDs to palette prefix names */
-var ROLE_TO_PALETTE={primary:'monochromatic',brand:'brand',danger:'danger',warning:'warning',info:'info',success:'success'};
+/* Maps role IDs to palette prefix names (includes non-semantic palette sources for T0 derivation) */
+var ROLE_TO_PALETTE={primary:'monochromatic',brand:'brand',danger:'danger',warning:'warning',info:'info',success:'success',greyscale:'greyscale',desaturated:'desaturated'};
 
 function _readProjectConfig(){
   var activeId=localStorage.getItem('dtf-active-project')||'';

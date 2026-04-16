@@ -388,7 +388,7 @@
     "base": "desaturated",
     "dim": "desaturated",
     "deep": "desaturated",
-    "accent": "desaturated",
+    "accent": "primary",
     "container": "desaturated",
     "over-container": "desaturated",
     "float": "desaturated",
