@@ -1,0 +1,15 @@
+{
+  "name": "@design-token-forge/generator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Config-to-CSS generator — reads product config, outputs resolved variable files",
+  "type": "module",
+  "main": "src/theme-generator.js",
+  "bin": {
+    "dtf": "./src/cli.js"
+  },
+  "scripts": {
+    "build": "echo 'Generator is pure JS — no build step needed'",
+    "test": "node src/cli.js --color '#3366F0' --name test --output /tmp/dtf-test-theme.css"
+  }
+}

@@ -1,0 +1,251 @@
+# /specs/components/toggle.yaml
+# Design Token Forge — Toggle / Switch Component Variable Specification
+# Variable-exhaustive L1 component: 93 CSS custom properties
+# covering all 7 axes (Shape, Dimension, Surface, Typography, Slots, Motion, A11y)
+
+component:
+  name: Toggle
+  tag: button
+  prefix: switch
+  description: >
+    A binary toggle switch with a sliding thumb on a track. Used for
+    on/off settings. Compound anatomy: track (background rail) + thumb
+    (sliding indicator). Track width is approximately 1.75× height.
+    The thumb is circular and slightly inset from the track edges.
+    Supports optional label slot adjacent to the track.
+  category: inputs
+
+sizes: [micro, tiny, small, base, medium, large, big, huge, mega, ultra]
+
+variants:
+  semantic: [filled, outline]
+
+states: [unchecked, checked, hover, active, focus-visible, disabled, loading]
+
+markup: |
+  <button class="switch" role="switch" aria-checked="false"
+          data-size="base" type="button">
+    <span class="switch__track">
+      <span class="switch__thumb"></span>
+    </span>
+  </button>
+  <!-- With label: -->
+  <label class="switch-label">
+    <button class="switch" role="switch" aria-checked="true"
+            data-size="base" type="button">
+      <span class="switch__track">
+        <span class="switch__thumb"></span>
+      </span>
+    </button>
+    <span class="switch-label__text">Dark mode</span>
+  </label>
+
+# ═══════════════════════════════════════════════════════════════
+# VARIABLES — 93 total
+# ═══════════════════════════════════════════════════════════════
+
+variables:
+
+  # ────────────────────────────────────────────────────────────
+  # 📐 SHAPE  (6 variables)
+  # ────────────────────────────────────────────────────────────
+  shape:
+    border-radius:
+      - name: "--switch-track-radius"
+        default: "var(--radius-full)"
+        description: "Track border radius — full pill by default"
+        count: 1
+      - name: "--switch-thumb-radius"
+        default: "var(--radius-full)"
+        description: "Thumb border radius — circle by default"
+        count: 1
+
+    border:
+      - name: "--switch-track-border-width"
+        default: "0px"
+        description: "Track border width (0px for filled, 2px for outline)"
+        count: 1
+      - name: "--switch-track-border-style"
+        default: "solid"
+        count: 1
+
+    shadow:
+      - name: "--switch-thumb-shadow"
+        default: "var(--shadow-sm)"
+        description: "Thumb drop shadow for depth"
+        count: 1
+      - name: "--switch-thumb-shadow-active"
+        default: "var(--shadow-md)"
+        description: "Thumb shadow on press / active"
+        count: 1
+
+    total: 6
+
+  # ────────────────────────────────────────────────────────────
+  # 📏 DIMENSION  (30 variables)
+  # ────────────────────────────────────────────────────────────
+  dimension:
+    track-width:
+      - name: "--switch-track-w-{size}"
+        description: "Track width per density mode (~1.75× height)"
+        per_size:
+          micro: "28px"
+          tiny: "32px"
+          small: "36px"
+          base: "40px"
+          medium: "44px"
+          large: "48px"
+          big: "52px"
+          huge: "60px"
+          mega: "72px"
+          ultra: "88px"
+        count: 10
+
+    track-height:
+      - name: "--switch-track-h-{size}"
+        description: "Track height per density mode"
+        per_size:
+          micro: "16px"
+          tiny: "18px"
+          small: "20px"
+          base: "24px"
+          medium: "26px"
+          large: "28px"
+          big: "32px"
+          huge: "36px"
+          mega: "44px"
+          ultra: "52px"
+        count: 10
+
+    thumb-size:
+      - name: "--switch-thumb-size-{size}"
+        description: "Thumb diameter — progressive gap: 2px (micro→base), 3px (med→big), 4px (huge→ultra)"
+        per_size:
+          micro: "12px"
+          tiny: "14px"
+          small: "16px"
+          base: "20px"
+          medium: "20px"
+          large: "22px"
+          big: "26px"
+          huge: "28px"
+          mega: "36px"
+          ultra: "44px"
+        count: 10
+
+    total: 30
+
+  # ────────────────────────────────────────────────────────────
+  # 🎨 SURFACE  (20 variables)
+  # Track + thumb colors for unchecked & checked states
+  # ────────────────────────────────────────────────────────────
+  surface:
+    track-unchecked:
+      - { name: "--switch-track-bg-off",                default: "var(--surface-base-cm-outline)" }
+      - { name: "--switch-track-bg-off-hover",          default: "var(--surface-base-cm-outline-hover)" }
+      - { name: "--switch-track-border-color-off",      default: "var(--surface-base-cm-outline)" }
+      - { name: "--switch-track-border-color-off-hover", default: "var(--surface-base-cm-outline-hover)" }
+
+    track-checked:
+      - { name: "--switch-track-bg-on",                 default: "var(--primary-component-bg-default)" }
+      - { name: "--switch-track-bg-on-hover",           default: "var(--primary-component-bg-hover)" }
+      - { name: "--switch-track-border-color-on",       default: "var(--primary-component-bg-default)" }
+      - { name: "--switch-track-border-color-on-hover",  default: "var(--primary-component-bg-hover)" }
+
+    thumb:
+      - { name: "--switch-thumb-bg",                    default: "var(--color-fixed-white)" }
+      - { name: "--switch-thumb-bg-hover",              default: "var(--color-fixed-white)" }
+      - { name: "--switch-thumb-border-color",          default: "transparent" }
+      - { name: "--switch-thumb-border-color-checked",  default: "transparent" }
+
+    disabled:
+      - { name: "--switch-track-bg-disabled",           default: "var(--surface-base-cm-outline)" }
+      - { name: "--switch-track-bg-on-disabled",        default: "var(--primary-component-bg-default)" }
+      - { name: "--switch-track-border-color-disabled",  default: "var(--surface-base-cm-outline)" }
+      - { name: "--switch-thumb-bg-disabled",           default: "var(--color-fixed-white)" }
+      - { name: "--switch-opacity-disabled",            default: "0.5" }
+
+    icon:
+      - { name: "--switch-thumb-icon-color-off",        default: "var(--surface-base-ct-subtle)" }
+      - { name: "--switch-thumb-icon-color-on",         default: "var(--primary-component-bg-default)" }
+      - { name: "--switch-thumb-icon-size",             default: "0.65em" }
+
+    total: 20
+
+  # ────────────────────────────────────────────────────────────
+  # 🎨 SURFACE — OUTLINE VARIANT  (16 variables)
+  # Border track when off, filled with semantic role when on
+  # ────────────────────────────────────────────────────────────
+  surface_outline:
+    track-unchecked:
+      - { name: "--switch-outline-track-bg-off",                default: "transparent" }
+      - { name: "--switch-outline-track-bg-off-hover",          default: "var(--surface-base-cm-bg-hover)" }
+      - { name: "--switch-outline-track-border-color-off",      default: "var(--surface-base-cm-outline)" }
+      - { name: "--switch-outline-track-border-color-off-hover", default: "var(--surface-base-cm-outline-hover)" }
+
+    track-checked:
+      - { name: "--switch-outline-track-bg-on",                 default: "var(--primary-component-bg-default)" }
+      - { name: "--switch-outline-track-bg-on-hover",           default: "var(--primary-component-bg-hover)" }
+      - { name: "--switch-outline-track-border-color-on",       default: "var(--primary-component-bg-default)" }
+      - { name: "--switch-outline-track-border-color-on-hover",  default: "var(--primary-component-bg-hover)" }
+
+    thumb:
+      - { name: "--switch-outline-thumb-bg",                    default: "var(--color-fixed-white)" }
+      - { name: "--switch-outline-thumb-bg-hover",              default: "var(--color-fixed-white)" }
+      - { name: "--switch-outline-thumb-border-color",          default: "var(--surface-base-cm-outline)" }
+      - { name: "--switch-outline-thumb-border-color-checked",  default: "transparent" }
+
+    disabled-and-border:
+      - { name: "--switch-outline-track-border-width",          default: "2px",  description: "Visible border for outline variant" }
+      - { name: "--switch-outline-track-bg-disabled",           default: "transparent" }
+      - { name: "--switch-outline-track-bg-on-disabled",        default: "var(--primary-component-bg-default)" }
+      - { name: "--switch-outline-opacity-disabled",            default: "0.5" }
+
+    total: 16
+
+  # ────────────────────────────────────────────────────────────
+  # ✏️ TYPOGRAPHY  (4 variables — for label text)
+  # ────────────────────────────────────────────────────────────
+  typography:
+    - { name: "--switch-label-font-family",      default: "var(--font-family-sans)" }
+    - { name: "--switch-label-font-size",        default: "var(--font-size-14)" }
+    - { name: "--switch-label-font-weight",      default: "var(--font-weight-regular)" }
+    - { name: "--switch-label-line-height",      default: "var(--line-height-normal)" }
+    total: 4
+
+  # ────────────────────────────────────────────────────────────
+  # 🧩 SLOTS  (3 variables)
+  # ────────────────────────────────────────────────────────────
+  slots:
+    - { name: "--switch-gap",                    default: "var(--spacing-8)",  description: "Gap between track and label text" }
+    - { name: "--switch-thumb-scale-active",     default: "1.1",  description: "Thumb scale on press for tactile feedback" }
+    - { name: "--switch-thumb-border-width",     default: "0px",  description: "Thumb border width (0 for filled, outline uses track border)" }
+    total: 3
+
+  # ────────────────────────────────────────────────────────────
+  # ⚡ MOTION  (6 variables)
+  # ────────────────────────────────────────────────────────────
+  motion:
+    - { name: "--switch-transition-property",     default: "background-color, border-color, box-shadow, opacity" }
+    - { name: "--switch-transition-duration",     default: "var(--duration-normal)" }
+    - { name: "--switch-transition-easing",       default: "var(--easing-in-out)" }
+    - { name: "--switch-thumb-transition-duration", default: "var(--duration-normal)" }
+    - { name: "--switch-thumb-transition-easing", default: "var(--easing-spring)" }
+    - { name: "--switch-animation-loading",       default: "none" }
+    total: 6
+
+  # ────────────────────────────────────────────────────────────
+  # ♿ ACCESSIBILITY  (9 variables)
+  # ────────────────────────────────────────────────────────────
+  a11y:
+    - { name: "--switch-focus-outline-width",    default: "2px" }
+    - { name: "--switch-focus-outline-color",    default: "var(--primary-component-outline-default)" }
+    - { name: "--switch-focus-outline-offset",   default: "2px" }
+    - { name: "--switch-min-tap-target",         default: "44px" }
+    - { name: "--switch-required-indicator",     default: "'*'" }
+    - { name: "--switch-required-color",         default: "var(--danger-content-default)" }
+    - { name: "--switch-label-color",            default: "var(--surface-base-ct-default)" }
+    - { name: "--switch-label-color-disabled",   default: "var(--surface-base-ct-subtle)" }
+    total: 8
+
+# Total: 6 + 30 + 20 + 4 + 3 + 6 + 9 = 78 variables

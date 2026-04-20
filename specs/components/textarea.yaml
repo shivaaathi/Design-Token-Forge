@@ -1,0 +1,257 @@
+# /specs/components/textarea.yaml
+# Design Token Forge — Textarea Component Variable Specification
+# Variable-exhaustive L1 component: 114 CSS custom properties
+# covering all 7 axes (Shape, Dimension, Surface, Typography, Slots, Motion, A11y)
+
+component:
+  name: Textarea
+  tag: div
+  prefix: textarea
+  description: >
+    A multiline text input for long-form content. Uses the same wrapper
+    pattern as Input (.textarea-group > label + .textarea-field > textarea)
+    but replaces fixed height with row-based sizing (auto mode) or
+    deterministic height per density (fixed mode). Supports outline and
+    filled variants. Resize handle is variable-controlled. Helper text and
+    character counter slots.
+  category: inputs
+
+sizes: [micro, tiny, small, base, medium, large, big, huge, mega, ultra]
+
+variants:
+  semantic: [outline, filled]
+
+height_modes: [auto, fixed]
+
+states: [default, hover, focus, disabled, readonly, error]
+
+markup: |
+  <div class="textarea-group" data-variant="outline" data-size="base">
+  <div class="textarea-group" data-variant="outline" data-size="base" data-height="fixed">
+    <label class="textarea__label" for="ta1">Description</label>
+    <div class="textarea-field">
+      <textarea id="ta1" placeholder="Enter description…" rows="4"></textarea>
+    </div>
+    <span class="textarea__helper">0 / 500 characters</span>
+  </div>
+
+# ═══════════════════════════════════════════════════════════════
+# VARIABLES — 114 total
+# ═══════════════════════════════════════════════════════════════
+
+variables:
+
+  # ────────────────────────────────────────────────────────────
+  # 📐 SHAPE  (18 variables)
+  # ────────────────────────────────────────────────────────────
+  shape:
+    radius:
+      - name: "--textarea-radius-{size}"
+        sizes: { micro: "var(--radius-xs)", tiny: "var(--radius-sm)", small: "var(--radius-md)", base: "var(--radius-DEFAULT)", medium: "var(--radius-DEFAULT)", large: "var(--radius-DEFAULT)", big: "var(--radius-DEFAULT)", huge: "var(--radius-lg)", mega: "var(--radius-lg)", ultra: "var(--radius-lg)" }
+        count: 10
+    border:
+      - name: "--textarea-border-width"
+        default: "1px"
+      - name: "--textarea-border-style"
+        default: "solid"
+    shadow:
+      - name: "--textarea-shadow"
+        default: "var(--shadow-none)"
+      - name: "--textarea-shadow-focus"
+        default: "var(--shadow-none)"
+    focus_ring:
+      - name: "--textarea-ring-width"
+        default: "2px"
+      - name: "--textarea-ring-color"
+        default: "var(--primary-component-outline-default)"
+      - name: "--textarea-ring-offset"
+        default: "2px"
+      - name: "--textarea-outline-style"
+        default: "solid"
+    total: 18
+
+  # ────────────────────────────────────────────────────────────
+  # 📏 DIMENSION  (36 variables)
+  # ────────────────────────────────────────────────────────────
+  dimension:
+    padding_x:
+      - name: "--textarea-padding-x-{size}"
+        sizes: { micro: "var(--spacing-6)", tiny: "var(--spacing-8)", small: "var(--spacing-10)", base: "var(--spacing-12)", medium: "var(--spacing-14)", large: "var(--spacing-16)", big: "var(--spacing-20)", huge: "var(--spacing-24)", mega: "var(--spacing-28)", ultra: "var(--spacing-36)" }
+        count: 10
+    padding_y:
+      - name: "--textarea-padding-y-{size}"
+        sizes: { micro: "var(--spacing-4)", tiny: "var(--spacing-6)", small: "var(--spacing-8)", base: "var(--spacing-10)", medium: "var(--spacing-12)", large: "var(--spacing-14)", big: "var(--spacing-16)", huge: "var(--spacing-20)", mega: "var(--spacing-24)", ultra: "var(--spacing-28)" }
+        count: 10
+    height:
+      - name: "--textarea-height-{size}"
+        sizes: { micro: "var(--spacing-24)", tiny: "var(--spacing-28)", small: "var(--spacing-32)", base: "var(--spacing-36)", medium: "var(--spacing-40)", large: "var(--spacing-44)", big: "var(--spacing-48)", huge: "var(--spacing-56)", mega: "var(--spacing-64)", ultra: "var(--spacing-80)" }
+        count: 10
+        description: "Fixed height per density (used when data-height=fixed)"
+    rows:
+      - name: "--textarea-min-rows"
+        default: "3"
+      - name: "--textarea-max-rows"
+        default: "none"
+        description: "none = unlimited"
+    resize:
+      - name: "--textarea-resize"
+        default: "vertical"
+        description: "CSS resize property: none | vertical | horizontal | both"
+    sizing:
+      - name: "--textarea-min-width"
+        default: "var(--spacing-120)"
+      - name: "--textarea-max-width"
+        default: "none"
+      - name: "--textarea-inline-size"
+        default: "100%"
+    total: 36
+
+  # ────────────────────────────────────────────────────────────
+  # 🎨 SURFACE — OUTLINE VARIANT  (15 variables)
+  # ────────────────────────────────────────────────────────────
+  surface_outline:
+    - name: "--textarea-outline-bg"
+      default: "transparent"
+    - name: "--textarea-outline-bg-hover"
+      default: "transparent"
+    - name: "--textarea-outline-bg-focus"
+      default: "transparent"
+    - name: "--textarea-outline-bg-disabled"
+      default: "transparent"
+    - name: "--textarea-outline-bg-error"
+      default: "transparent"
+    - name: "--textarea-outline-fg"
+      default: "var(--surface-base-ct-default)"
+    - name: "--textarea-outline-fg-disabled"
+      default: "var(--surface-base-ct-faint)"
+    - name: "--textarea-outline-border-color"
+      default: "var(--surface-base-cm-outline)"
+    - name: "--textarea-outline-border-color-hover"
+      default: "var(--surface-base-cm-outline-hover)"
+    - name: "--textarea-outline-border-color-focus"
+      default: "var(--primary-component-outline-default)"
+    - name: "--textarea-outline-border-color-disabled"
+      default: "var(--surface-base-cm-outline)"
+    - name: "--textarea-outline-border-color-error"
+      default: "var(--danger-component-outline-default)"
+    - name: "--textarea-outline-placeholder"
+      default: "var(--surface-base-ct-faint)"
+    - name: "--textarea-outline-placeholder-disabled"
+      default: "var(--surface-base-ct-faint)"
+    - name: "--textarea-outline-opacity-disabled"
+      default: "0.5"
+    total: 15
+
+  # ────────────────────────────────────────────────────────────
+  # 🎨 SURFACE — FILLED VARIANT  (15 variables)
+  # ────────────────────────────────────────────────────────────
+  surface_filled:
+    - name: "--textarea-filled-bg"
+      default: "var(--surface-base-cm-bg)"
+    - name: "--textarea-filled-bg-hover"
+      default: "var(--surface-base-cm-bg-hover)"
+    - name: "--textarea-filled-bg-focus"
+      default: "var(--surface-base-cm-bg)"
+    - name: "--textarea-filled-bg-disabled"
+      default: "var(--surface-base-cm-bg)"
+    - name: "--textarea-filled-bg-error"
+      default: "var(--surface-base-cm-bg)"
+    - name: "--textarea-filled-fg"
+      default: "var(--surface-base-ct-default)"
+    - name: "--textarea-filled-fg-disabled"
+      default: "var(--surface-base-ct-faint)"
+    - name: "--textarea-filled-border-color"
+      default: "var(--surface-base-cm-outline)"
+    - name: "--textarea-filled-border-color-hover"
+      default: "var(--surface-base-cm-outline-hover)"
+    - name: "--textarea-filled-border-color-focus"
+      default: "var(--primary-component-outline-default)"
+    - name: "--textarea-filled-border-color-disabled"
+      default: "var(--surface-base-cm-outline)"
+    - name: "--textarea-filled-border-color-error"
+      default: "var(--danger-component-outline-default)"
+    - name: "--textarea-filled-placeholder"
+      default: "var(--surface-base-ct-faint)"
+    - name: "--textarea-filled-placeholder-disabled"
+      default: "var(--surface-base-ct-faint)"
+    - name: "--textarea-filled-opacity-disabled"
+      default: "0.5"
+    total: 15
+
+  # ────────────────────────────────────────────────────────────
+  # 🎨 SURFACE — SHARED  (7 variables)
+  # ────────────────────────────────────────────────────────────
+  surface_shared:
+    - name: "--textarea-label-color"
+      default: "var(--surface-base-ct-subtle)"
+    - name: "--textarea-label-color-focus"
+      default: "var(--primary-content-default)"
+    - name: "--textarea-label-color-error"
+      default: "var(--danger-content-default)"
+    - name: "--textarea-label-color-disabled"
+      default: "var(--surface-base-ct-faint)"
+    - name: "--textarea-helper-color"
+      default: "var(--surface-base-ct-subtle)"
+    - name: "--textarea-helper-color-error"
+      default: "var(--danger-content-default)"
+    - name: "--textarea-caret-color"
+      default: "var(--primary-component-bg-default)"
+    total: 7
+
+  # ────────────────────────────────────────────────────────────
+  # ✏️ TYPOGRAPHY  (13 variables)
+  # ────────────────────────────────────────────────────────────
+  typography:
+    - name: "--textarea-font-family"
+      default: "var(--font-family-sans)"
+    font_size:
+      - name: "--textarea-font-size-{size}"
+        sizes: { micro: "var(--font-size-10)", tiny: "var(--font-size-11)", small: "var(--font-size-12)", base: "var(--font-size-14)", medium: "var(--font-size-14)", large: "var(--font-size-16)", big: "var(--font-size-16)", huge: "var(--font-size-18)", mega: "var(--font-size-20)", ultra: "var(--font-size-24)" }
+        count: 10
+    - name: "--textarea-font-weight"
+      default: "var(--font-weight-regular)"
+    - name: "--textarea-line-height"
+      default: "var(--line-height-relaxed)"
+      description: "Relaxed line-height for multiline readability"
+    total: 13
+
+  # ────────────────────────────────────────────────────────────
+  # 🧩 SLOTS  (6 variables)
+  # ────────────────────────────────────────────────────────────
+  slots:
+    - name: "--textarea-label-font-size"
+      default: "var(--font-size-13)"
+    - name: "--textarea-label-font-weight"
+      default: "var(--font-weight-medium)"
+    - name: "--textarea-label-gap"
+      default: "var(--spacing-6)"
+    - name: "--textarea-helper-font-size"
+      default: "var(--font-size-12)"
+    - name: "--textarea-helper-font-weight"
+      default: "var(--font-weight-regular)"
+    - name: "--textarea-helper-gap"
+      default: "var(--spacing-4)"
+    total: 6
+
+  # ────────────────────────────────────────────────────────────
+  # ⚡ MOTION  (3 variables)
+  # ────────────────────────────────────────────────────────────
+  motion:
+    - name: "--textarea-transition-property"
+      default: "border-color, background-color, box-shadow, color, opacity"
+    - name: "--textarea-transition-duration"
+      default: "var(--duration-normal)"
+    - name: "--textarea-transition-easing"
+      default: "var(--easing-in-out)"
+    total: 3
+
+  # ────────────────────────────────────────────────────────────
+  # ♿ ACCESSIBILITY  (1 variable)
+  # ────────────────────────────────────────────────────────────
+  accessibility:
+    - name: "--textarea-min-tap-target"
+      default: "44px"
+    total: 1
+
+# Summary: 18 + 36 + 15 + 15 + 7 + 13 + 6 + 3 + 1 = 114 total
+# Height modes: auto (default, content-driven) | fixed (size-token-driven)

@@ -1,0 +1,409 @@
+# /specs/components/slider.yaml
+# Design Token Forge — Slider Component Variable Specification
+# Variable-exhaustive L1 component: 120 CSS custom properties
+# covering all 7 axes (Shape, Dimension, Surface, Typography, Slots, Motion, A11y)
+#
+# Philosophy: Any slider design imaginable — Material thin track,
+# Apple chunky pill, Spotify branded fill, stepped ticks, range mode —
+# must be achievable by tuning variables alone. No designer should ever
+# need to escape the system.
+
+component:
+  name: Slider
+  tag: div
+  prefix: slider
+  description: >
+    Horizontal (or vertical) range input with track, fill, and thumb.
+    Compound component: track (background rail) + fill (value indicator)
+    + thumb (draggable handle). Optional tick marks, value tooltip, and labels.
+    Supports range mode (two thumbs) via data-range attribute.
+    The most shape-diverse component: track thickness and thumb dimensions
+    are independently variable, enabling any look from a 2px hairline
+    to a 32px iOS-like chunky pill.
+  category: inputs
+
+sizes: [micro, tiny, small, base, medium, large, big, huge, mega, ultra]
+
+variants: []  # No named color variants — visual style is entirely custom-property-driven
+
+states: [default, hover, active, focus-visible, disabled]
+
+# ═══════════════════════════════════════════════════════════════
+# VARIABLES — 120 total
+# ═══════════════════════════════════════════════════════════════
+
+variables:
+
+  # ────────────────────────────────────────────────────────────
+  # 📐 SHAPE  (19 variables)
+  # ────────────────────────────────────────────────────────────
+  shape:
+    track:
+      - name: "--slider-track-radius"
+        default: "var(--radius-full)"
+        description: "Track border radius. full = pill, none = sharp, md = subtle rounding."
+      - name: "--slider-track-border-width"
+        default: "0px"
+      - name: "--slider-track-border-style"
+        default: "solid"
+        options: [solid, dashed, dotted, none]
+      - name: "--slider-track-shadow"
+        default: "var(--shadow-none)"
+        description: "Track shadow. Use shadow-inner for inset effect."
+
+    fill:
+      - name: "--slider-fill-radius"
+        default: "var(--slider-track-radius)"
+        description: "Fill radius. Defaults to matching track radius."
+
+    thumb:
+      - name: "--slider-thumb-radius"
+        default: "var(--radius-full)"
+        description: "Thumb border radius. full = circle, md = rounded square, none = square."
+      - name: "--slider-thumb-border-width"
+        default: "0px"
+      - name: "--slider-thumb-border-style"
+        default: "solid"
+      - name: "--slider-thumb-shadow"
+        default: "var(--shadow-sm)"
+        description: "Default thumb shadow."
+      - name: "--slider-thumb-shadow-hover"
+        default: "var(--shadow-md)"
+        description: "Thumb shadow on hover."
+      - name: "--slider-thumb-shadow-active"
+        default: "var(--shadow-sm)"
+        description: "Thumb shadow during drag."
+
+    ring:
+      - name: "--slider-ring-width"
+        default: "2px"
+        description: "Focus ring width."
+      - name: "--slider-ring-color"
+        default: "var(--primary-component-outline-default)"
+      - name: "--slider-ring-offset"
+        default: "2px"
+
+    outline:
+      - name: "--slider-outline-style"
+        default: "solid"
+      - name: "--slider-outline-width"
+        default: "2px"
+
+    tooltip:
+      - name: "--slider-tooltip-radius"
+        default: "var(--radius-md)"
+      - name: "--slider-tooltip-shadow"
+        default: "var(--shadow-sm)"
+
+    clip:
+      - name: "--slider-clip-path"
+        default: "none"
+
+  # ────────────────────────────────────────────────────────────
+  # 📏 DIMENSION  (39 variables)
+  # ────────────────────────────────────────────────────────────
+  dimension:
+    track-height:
+      - name: "--slider-track-h-{size}"
+        description: "Track thickness per density mode."
+        per_size:
+          micro: "2px"
+          tiny: "3px"
+          small: "4px"
+          base: "6px"
+          medium: "8px"
+          large: "10px"
+          big: "14px"
+          huge: "18px"
+          mega: "24px"
+          ultra: "32px"
+
+    thumb-width:
+      - name: "--slider-thumb-w-{size}"
+        description: "Thumb width per density mode. Separate from height for pill/line shapes."
+        per_size:
+          micro: "10px"
+          tiny: "12px"
+          small: "14px"
+          base: "18px"
+          medium: "20px"
+          large: "24px"
+          big: "28px"
+          huge: "32px"
+          mega: "40px"
+          ultra: "48px"
+
+    thumb-height:
+      - name: "--slider-thumb-h-{size}"
+        description: "Thumb height per density mode. Separate from width for non-circular thumbs."
+        per_size:
+          micro: "10px"
+          tiny: "12px"
+          small: "14px"
+          base: "18px"
+          medium: "20px"
+          large: "24px"
+          big: "28px"
+          huge: "32px"
+          mega: "40px"
+          ultra: "48px"
+
+    track:
+      - name: "--slider-track-min-w"
+        default: "120px"
+        description: "Minimum slider width."
+
+    tick:
+      - name: "--slider-tick-w"
+        default: "2px"
+        description: "Tick mark width."
+      - name: "--slider-tick-h"
+        default: "8px"
+        description: "Tick mark height."
+
+    tooltip:
+      - name: "--slider-tooltip-padding-x"
+        default: "var(--spacing-8)"
+      - name: "--slider-tooltip-padding-y"
+        default: "var(--spacing-4)"
+      - name: "--slider-tooltip-offset"
+        default: "var(--spacing-8)"
+        description: "Gap between thumb top and tooltip."
+      - name: "--slider-tooltip-arrow-size"
+        default: "5px"
+        description: "Tooltip arrow (caret) size."
+
+    spacing:
+      - name: "--slider-tick-offset"
+        default: "var(--spacing-4)"
+        description: "Gap between track bottom and tick marks."
+      - name: "--slider-label-offset"
+        default: "var(--spacing-2)"
+        description: "Gap between tick marks and labels."
+      - name: "--slider-gap"
+        default: "var(--spacing-8)"
+        description: "Gap between slider and its external label."
+
+  # ────────────────────────────────────────────────────────────
+  # 🎨 SURFACE  (27 variables)
+  # ────────────────────────────────────────────────────────────
+  surface:
+    track:
+      - name: "--slider-track-bg"
+        default: "var(--surface-base-cm-outline)"
+        description: "Unfilled track background."
+      - name: "--slider-track-bg-hover"
+        default: "var(--surface-base-cm-outline-hover)"
+      - name: "--slider-track-bg-disabled"
+        default: "var(--surface-base-cm-outline)"
+      - name: "--slider-track-border-color"
+        default: "transparent"
+      - name: "--slider-track-border-color-disabled"
+        default: "transparent"
+
+    fill:
+      - name: "--slider-fill-bg"
+        default: "var(--primary-component-bg-default)"
+        description: "Filled track (value indicator) background."
+      - name: "--slider-fill-bg-hover"
+        default: "var(--primary-component-bg-hover)"
+      - name: "--slider-fill-bg-active"
+        default: "var(--primary-component-bg-pressed)"
+      - name: "--slider-fill-bg-disabled"
+        default: "var(--primary-component-bg-default)"
+
+    thumb:
+      - name: "--slider-thumb-bg"
+        default: "var(--primary-component-bg-default)"
+        description: "Thumb background."
+      - name: "--slider-thumb-bg-hover"
+        default: "var(--primary-component-bg-hover)"
+      - name: "--slider-thumb-bg-active"
+        default: "var(--primary-component-bg-pressed)"
+      - name: "--slider-thumb-bg-disabled"
+        default: "var(--primary-component-bg-default)"
+      - name: "--slider-thumb-border-color"
+        default: "var(--color-fixed-white)"
+        description: "Thumb border for outlined look."
+      - name: "--slider-thumb-border-color-hover"
+        default: "var(--color-fixed-white)"
+      - name: "--slider-thumb-border-color-active"
+        default: "var(--color-fixed-white)"
+
+    halo:
+      - name: "--slider-thumb-halo-bg"
+        default: "var(--primary-container-bg)"
+        description: "Material-style hover ring around thumb."
+      - name: "--slider-thumb-halo-bg-active"
+        default: "var(--primary-container-pressed)"
+      - name: "--slider-thumb-halo-size"
+        default: "40px"
+        description: "Diameter of the halo on hover/active."
+      - name: "--slider-thumb-halo-opacity"
+        default: "0.2"
+
+    tick:
+      - name: "--slider-tick-color"
+        default: "var(--surface-base-cm-outline)"
+      - name: "--slider-tick-color-active"
+        default: "var(--primary-component-bg-default)"
+        description: "Tick color within the filled range."
+      - name: "--slider-tick-color-disabled"
+        default: "var(--surface-base-cm-outline)"
+
+    tooltip:
+      - name: "--slider-tooltip-bg"
+        default: "var(--primary-component-bg-default)"
+      - name: "--slider-tooltip-fg"
+        default: "var(--primary-on-component)"
+      - name: "--slider-tooltip-border-color"
+        default: "transparent"
+
+    disabled:
+      - name: "--slider-opacity-disabled"
+        default: "0.5"
+
+  # ────────────────────────────────────────────────────────────
+  # ✏️ TYPOGRAPHY  (11 variables)
+  # ────────────────────────────────────────────────────────────
+  typography:
+    label:
+      - name: "--slider-label-font-family"
+        default: "var(--font-family-sans)"
+      - name: "--slider-label-font-size"
+        default: "var(--font-size-14)"
+      - name: "--slider-label-font-weight"
+        default: "var(--font-weight-regular)"
+      - name: "--slider-label-line-height"
+        default: "var(--line-height-normal)"
+
+    tooltip:
+      - name: "--slider-tooltip-font-family"
+        default: "var(--font-family-sans)"
+      - name: "--slider-tooltip-font-size"
+        default: "var(--font-size-12)"
+      - name: "--slider-tooltip-font-weight"
+        default: "var(--font-weight-medium)"
+
+    tick-label:
+      - name: "--slider-tick-label-font-size"
+        default: "var(--font-size-11)"
+      - name: "--slider-tick-label-font-weight"
+        default: "var(--font-weight-regular)"
+      - name: "--slider-tick-label-color"
+        default: "var(--surface-base-ct-subtle)"
+
+    value:
+      - name: "--slider-value-font-size"
+        default: "var(--font-size-14)"
+
+  # ────────────────────────────────────────────────────────────
+  # 🧩 SLOTS  (8 variables)
+  # ────────────────────────────────────────────────────────────
+  slots:
+    - name: "--slider-thumb-scale-active"
+      default: "1.15"
+      description: "Thumb scale during drag for tactile feedback."
+    - name: "--slider-thumb-icon-size"
+      default: "0.6em"
+      description: "Optional icon inside thumb (grip dots, etc.)."
+    - name: "--slider-thumb-icon-color"
+      default: "var(--primary-on-component)"
+    - name: "--slider-tooltip-display"
+      default: "none"
+      description: "Show/hide tooltip. Set 'block' to always show."
+      options: [none, block]
+    - name: "--slider-ticks-display"
+      default: "none"
+      description: "Show/hide tick marks."
+      options: [none, flex]
+    - name: "--slider-fill-display"
+      default: "block"
+      description: "Show/hide fill track. 'none' for no-fill minimalist look."
+      options: [block, none]
+    - name: "--slider-label-gap"
+      default: "var(--spacing-8)"
+      description: "Gap between the slider and its nearby labels."
+    - name: "--slider-thumb-content"
+      default: "none"
+      description: "CSS content for thumb ::after pseudo (e.g. grip lines)."
+
+  # ────────────────────────────────────────────────────────────
+  # ⚡ MOTION  (7 variables)
+  # ────────────────────────────────────────────────────────────
+  motion:
+    - name: "--slider-transition-property"
+      default: "background-color, border-color, box-shadow, opacity"
+    - name: "--slider-transition-duration"
+      default: "var(--duration-normal)"
+    - name: "--slider-transition-easing"
+      default: "var(--easing-in-out)"
+    - name: "--slider-thumb-transition-duration"
+      default: "var(--duration-fast)"
+    - name: "--slider-thumb-transition-easing"
+      default: "var(--easing-spring)"
+    - name: "--slider-tooltip-transition-duration"
+      default: "var(--duration-fast)"
+    - name: "--slider-animation-loading"
+      default: "none"
+      description: "Loading animation on track (e.g. pulse)."
+
+  # ────────────────────────────────────────────────────────────
+  # ♿ ACCESSIBILITY  (9 variables)
+  # ────────────────────────────────────────────────────────────
+  a11y:
+    - name: "--slider-focus-outline-width"
+      default: "2px"
+    - name: "--slider-focus-outline-color"
+      default: "var(--primary-component-outline-default)"
+    - name: "--slider-focus-outline-offset"
+      default: "2px"
+    - name: "--slider-min-tap-target"
+      default: "44px"
+      description: "Minimum thumb hit area for touch."
+    - name: "--slider-label-color"
+      default: "var(--surface-base-ct-default)"
+    - name: "--slider-label-color-disabled"
+      default: "var(--surface-base-ct-subtle)"
+    - name: "--slider-required-indicator"
+      default: "'*'"
+    - name: "--slider-required-color"
+      default: "var(--danger-content-default)"
+    - name: "--slider-value-color"
+      default: "var(--surface-base-ct-default)"
+      description: "Color for the displayed current value text."
+
+# ═══════════════════════════════════════════════════════════════
+# ANATOMY REFERENCE
+# ═══════════════════════════════════════════════════════════════
+#
+# <div class="slider" role="slider"
+#      aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"
+#      data-size="base" tabindex="0">
+#   <div class="slider__track">
+#     <div class="slider__fill"></div>
+#   </div>
+#   <div class="slider__thumb">
+#     <span class="slider__thumb-icon">⋮⋮</span>    <!-- optional -->
+#   </div>
+#   <div class="slider__tooltip">50</div>             <!-- optional -->
+#   <div class="slider__ticks">                        <!-- optional -->
+#     <span class="slider__tick"></span>
+#     <span class="slider__tick"></span>
+#   </div>
+# </div>
+#
+# Range mode adds a second thumb:
+# <div class="slider" data-range ...>
+#   <div class="slider__track">
+#     <div class="slider__fill"></div>
+#   </div>
+#   <div class="slider__thumb" data-thumb="start"></div>
+#   <div class="slider__thumb" data-thumb="end"></div>
+# </div>
+#
+# Orientation: data-orientation="vertical" rotates the entire slider.
+#
+# The CSS custom properties drive ALL visual output.
+# JavaScript only manages: value → --_slider-pct CSS property, and
+# keyboard/pointer event handling.

@@ -1,0 +1,156 @@
+/* ════════════════════════════════════════════════════════════════
+   Design Token Forge — Checkbox Token Defaults
+   Layer 0: System defaults for 74 checkbox variables.
+   All values reference global tokens — zero hardcoded visuals.
+   ════════════════════════════════════════════════════════════════ */
+
+.checkbox {
+
+  /* ────────────────────────────────────────────────────────────
+     📐 SHAPE  (16 vars)
+     ──────────────────────────────────────────────────────────── */
+  --checkbox-box-border-width: 2px;
+  --checkbox-box-border-style: solid;
+  --checkbox-box-shadow: none;
+  --checkbox-box-shadow-hover: none;
+  --checkbox-check-stroke-width: 2;
+
+  /* ── Progressive radius per size ── */
+  --checkbox-box-radius-micro: var(--radius-xs);   /* 3px  on 14px box */
+  --checkbox-box-radius-tiny: var(--radius-xs);    /* 3px  on 16px box */
+  --checkbox-box-radius-small: var(--radius-sm);   /* 4px  on 18px box */
+  --checkbox-box-radius-base: var(--radius-sm);    /* 4px  on 20px box */
+  --checkbox-box-radius-medium: var(--radius-md);  /* 6px  on 22px box */
+  --checkbox-box-radius-large: var(--radius-md);   /* 6px  on 24px box */
+  --checkbox-box-radius-big: var(--radius-DEFAULT); /* 8px  on 28px box */
+  --checkbox-box-radius-huge: var(--radius-DEFAULT); /* 8px  on 32px box */
+  --checkbox-box-radius-mega: var(--radius-lg);    /* 12px on 36px box */
+  --checkbox-box-radius-ultra: var(--radius-lg);   /* 12px on 40px box */
+
+  /* ────────────────────────────────────────────────────────────
+     📏 DIMENSION  (10 vars)
+     ──────────────────────────────────────────────────────────── */
+  --checkbox-box-size-micro: 14px;
+  --checkbox-box-size-tiny: 16px;
+  --checkbox-box-size-small: 18px;
+  --checkbox-box-size-base: 20px;
+  --checkbox-box-size-medium: 22px;
+  --checkbox-box-size-large: 24px;
+  --checkbox-box-size-big: 28px;
+  --checkbox-box-size-huge: 32px;
+  --checkbox-box-size-mega: 36px;
+  --checkbox-box-size-ultra: 40px;
+
+  /* ────────────────────────────────────────────────────────────
+     🎨 SURFACE — FILLED  (12 vars)
+     ──────────────────────────────────────────────────────────── */
+
+  /* ── Unchecked (off) ── */
+  --checkbox-box-bg-off: var(--surface-base-cm-bg);
+  --checkbox-box-bg-off-hover: var(--surface-base-cm-bg-hover);
+  --checkbox-box-border-color-off: var(--surface-base-cm-outline);
+  --checkbox-box-border-color-off-hover: var(--surface-base-cm-outline-hover);
+
+  /* ── Checked / indeterminate (on) ── */
+  --checkbox-box-bg-on: var(--primary-component-bg-default);
+  --checkbox-box-bg-on-hover: var(--primary-component-bg-hover);
+  --checkbox-box-border-color-on: var(--primary-component-bg-default);
+  --checkbox-box-border-color-on-hover: var(--primary-component-bg-hover);
+
+  /* ── Check mark ── */
+  --checkbox-check-color: var(--color-fixed-white);
+
+  /* ── Disabled ── */
+  --checkbox-box-bg-on-disabled: var(--primary-component-bg-default);
+  --checkbox-box-border-color-disabled: var(--surface-base-cm-outline);
+  --checkbox-opacity-disabled: 0.5;
+
+  /* ────────────────────────────────────────────────────────────
+     🎨 SURFACE — OUTLINE VARIANT  (13 vars)
+     ──────────────────────────────────────────────────────────── */
+
+  /* ── Outline unchecked (off) — transparent + border ── */
+  --checkbox-outline-box-bg-off: transparent;
+  --checkbox-outline-box-bg-off-hover: var(--surface-base-cm-bg-hover);
+  --checkbox-outline-box-border-color-off: var(--surface-base-cm-outline);
+  --checkbox-outline-box-border-color-off-hover: var(--surface-base-cm-outline-hover);
+
+  /* ── Outline checked (on) — filled with semantic role ── */
+  --checkbox-outline-box-bg-on: var(--primary-component-bg-default);
+  --checkbox-outline-box-bg-on-hover: var(--primary-component-bg-hover);
+  --checkbox-outline-box-border-color-on: var(--primary-component-bg-default);
+  --checkbox-outline-box-border-color-on-hover: var(--primary-component-bg-hover);
+
+  /* ── Outline check mark ── */
+  --checkbox-outline-check-color: var(--color-fixed-white);
+
+  /* ── Outline disabled ── */
+  --checkbox-outline-box-bg-on-disabled: var(--primary-component-bg-default);
+  --checkbox-outline-box-border-color-disabled: var(--surface-base-cm-outline);
+  --checkbox-outline-opacity-disabled: 0.5;
+
+  /* ── Outline border ── */
+  --checkbox-outline-box-border-width: 2px;
+
+  /* ────────────────────────────────────────────────────────────
+     🎨 SURFACE — DANGER / ERROR  (8 vars, shared across variants)
+     ────────────────────────────────────────────────────────── */
+  /* danger — canonical name */
+  --checkbox-box-border-color-danger: var(--danger-component-outline-default);
+  --checkbox-box-border-color-danger-hover: var(--danger-component-outline-hover);
+  --checkbox-box-bg-on-danger: var(--danger-component-bg-default);
+  --checkbox-box-bg-on-danger-hover: var(--danger-component-bg-hover);
+  /* error — backward-compatible alias */
+  --checkbox-box-border-color-error: var(--checkbox-box-border-color-danger);
+  --checkbox-box-border-color-error-hover: var(--checkbox-box-border-color-danger-hover);
+  --checkbox-box-bg-on-error: var(--checkbox-box-bg-on-danger);
+  --checkbox-box-bg-on-error-hover: var(--checkbox-box-bg-on-danger-hover);
+
+  /* ────────────────────────────────────────────────────────────
+     ✏️ TYPOGRAPHY  (14 vars)
+     ──────────────────────────────────────────────────────────── */
+  --checkbox-label-font-family: var(--font-family-sans);
+  --checkbox-label-font-size: var(--font-size-14);
+  --checkbox-label-font-weight: var(--font-weight-regular);
+  --checkbox-label-line-height: var(--line-height-normal);
+
+  /* Per-density label font sizes */
+  --checkbox-label-font-size-micro: var(--font-size-10);
+  --checkbox-label-font-size-tiny: var(--font-size-11);
+  --checkbox-label-font-size-small: var(--font-size-12);
+  --checkbox-label-font-size-base: var(--font-size-14);
+  --checkbox-label-font-size-medium: var(--font-size-14);
+  --checkbox-label-font-size-large: var(--font-size-16);
+  --checkbox-label-font-size-big: var(--font-size-16);
+  --checkbox-label-font-size-huge: var(--font-size-18);
+  --checkbox-label-font-size-mega: var(--font-size-20);
+  --checkbox-label-font-size-ultra: var(--font-size-24);
+
+  /* ────────────────────────────────────────────────────────────
+     🧩 SLOTS  (3 vars)
+     ──────────────────────────────────────────────────────────── */
+  --checkbox-gap: var(--spacing-8);
+  --checkbox-check-size: 75%;
+  --checkbox-box-scale-active: 0.92;
+
+  /* ────────────────────────────────────────────────────────────
+     ⚡ MOTION  (5 vars)
+     ──────────────────────────────────────────────────────────── */
+  --checkbox-transition-property: background-color, border-color, box-shadow, opacity;
+  --checkbox-transition-duration: var(--duration-fast);
+  --checkbox-transition-easing: var(--easing-in-out);
+  --checkbox-check-transition-duration: var(--duration-fast);
+  --checkbox-check-transition-easing: var(--easing-out);
+
+  /* ────────────────────────────────────────────────────────────
+     ♿ ACCESSIBILITY  (8 vars)
+     ──────────────────────────────────────────────────────────── */
+  --checkbox-focus-outline-width: 2px;
+  --checkbox-focus-outline-color: var(--primary-component-outline-default);
+  --checkbox-focus-outline-offset: 2px;
+  --checkbox-min-tap-target: 44px;
+  --checkbox-required-indicator: '*';
+  --checkbox-required-color: var(--danger-content-default);
+  --checkbox-label-color: var(--surface-base-ct-default);
+  --checkbox-label-color-disabled: var(--surface-base-ct-subtle);
+}

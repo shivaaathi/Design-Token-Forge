@@ -1,0 +1,175 @@
+# /specs/components/icon-button.yaml
+# Design Token Forge — IconButton Component Variable Specification
+# Variable-exhaustive L1 component: 120 CSS custom properties
+# covering all 7 axes (Shape, Dimension, Surface, Typography, Slots, Motion, A11y)
+
+component:
+  name: IconButton
+  tag: button
+  prefix: icon-btn
+  description: >
+    Square or circular icon-only action button.
+    No label slot — the icon IS the content.
+    Uses same semantic role and surface-context tokens as Button.
+    4 variants × 10 density modes.
+  category: inputs
+
+sizes: [micro, tiny, small, base, medium, large, big, huge, mega, ultra]
+
+variants:
+  semantic: [primary, secondary, ghost, danger]
+  surface:  [neutral, outline]
+
+states: [default, hover, active, focus-visible, disabled, loading]
+
+# ═══════════════════════════════════════════════════════════════
+# VARIABLES — 120 total
+# ═══════════════════════════════════════════════════════════════
+
+variables:
+
+  # ────────────────────────────────────────────────────────────
+  # 📐 SHAPE  (16 variables)
+  # ────────────────────────────────────────────────────────────
+  shape:
+    border-radius:
+      - name: "--icon-btn-radius-{size}"
+        description: "Border radius per density mode (all 4 corners)"
+        per_size:
+          micro: "var(--radius-xs)"
+          tiny: "var(--radius-sm)"
+          small: "var(--radius-sm)"
+          base: "var(--radius-md)"
+          medium: "var(--radius-md)"
+          large: "var(--radius-DEFAULT)"
+          big: "var(--radius-DEFAULT)"
+          huge: "var(--radius-lg)"
+          mega: "var(--radius-xl)"
+          ultra: "var(--radius-xl)"
+        count: 10
+
+    border:
+      - name: "--icon-btn-border-width"
+        default: "1px"
+        count: 1
+      - name: "--icon-btn-border-style"
+        default: "solid"
+        count: 1
+
+    shadow:
+      - name: "--icon-btn-shadow"
+        default: "var(--shadow-none)"
+      - name: "--icon-btn-shadow-hover"
+        default: "var(--shadow-none)"
+        count: 2
+
+    ring:
+      - name: "--icon-btn-ring-width"
+        default: "2px"
+      - name: "--icon-btn-ring-color"
+        default: "var(--primary-component-outline-default)"
+        count: 2
+
+  # ────────────────────────────────────────────────────────────
+  # 📏 DIMENSION  (20 variables)
+  # ────────────────────────────────────────────────────────────
+  dimension:
+    size:
+      - name: "--icon-btn-size-{size}"
+        description: "Width AND height — always square"
+        per_size:
+          micro: "var(--spacing-24)"
+          tiny: "var(--spacing-28)"
+          small: "var(--spacing-32)"
+          base: "var(--spacing-36)"
+          medium: "var(--spacing-40)"
+          large: "var(--spacing-44)"
+          big: "var(--spacing-48)"
+          huge: "var(--spacing-56)"
+          mega: "var(--spacing-64)"
+          ultra: "var(--spacing-80)"
+        count: 10
+
+    icon-size:
+      - name: "--icon-btn-icon-size-{size}"
+        description: "SVG icon dimensions per density"
+        per_size:
+          micro: "var(--spacing-12)"
+          tiny: "var(--spacing-14)"
+          small: "var(--spacing-16)"
+          base: "var(--spacing-18)"
+          medium: "var(--spacing-20)"
+          large: "var(--spacing-22)"
+          big: "var(--spacing-24)"
+          huge: "var(--spacing-28)"
+          mega: "var(--spacing-32)"
+          ultra: "var(--spacing-40)"
+        count: 10
+
+  # ────────────────────────────────────────────────────────────
+  # 🎨 SURFACE  (72 variables = 6 variants × 12 properties)
+  # Pattern: --icon-btn-{variant}-{property}[-{state}]
+  # ────────────────────────────────────────────────────────────
+  surface:
+    variants: [primary, secondary, ghost, danger, neutral, outline]
+    per_variant:
+      - "--icon-btn-{v}-bg"
+      - "--icon-btn-{v}-bg-hover"
+      - "--icon-btn-{v}-bg-active"
+      - "--icon-btn-{v}-bg-disabled"
+      - "--icon-btn-{v}-fg"
+      - "--icon-btn-{v}-fg-hover"
+      - "--icon-btn-{v}-fg-disabled"
+      - "--icon-btn-{v}-border-color"
+      - "--icon-btn-{v}-border-color-hover"
+      - "--icon-btn-{v}-border-color-active"
+      - "--icon-btn-{v}-border-color-disabled"
+      - "--icon-btn-{v}-opacity-disabled"
+    count_per_variant: 12
+    total: 72
+
+  # ────────────────────────────────────────────────────────────
+  # 🧩 SLOTS  (2 variables)
+  # ────────────────────────────────────────────────────────────
+  slots:
+    icon:
+      - name: "--icon-btn-icon-color"
+        default: "currentColor"
+      - name: "--icon-btn-icon-color-hover"
+        default: "currentColor"
+        count: 2
+
+  # ────────────────────────────────────────────────────────────
+  # ⚡ MOTION  (5 variables)
+  # ────────────────────────────────────────────────────────────
+  motion:
+    - name: "--icon-btn-transition-property"
+      default: "background-color, border-color, color, box-shadow, opacity, transform"
+    - name: "--icon-btn-transition-duration"
+      default: "var(--duration-normal)"
+    - name: "--icon-btn-transition-easing"
+      default: "var(--easing-in-out)"
+    - name: "--icon-btn-animation-enter"
+      default: "none"
+    - name: "--icon-btn-animation-exit"
+      default: "none"
+    count: 5
+
+  # ────────────────────────────────────────────────────────────
+  # ♿ ACCESSIBILITY  (5 variables)
+  # ────────────────────────────────────────────────────────────
+  a11y:
+    - name: "--icon-btn-focus-outline-width"
+      default: "2px"
+    - name: "--icon-btn-focus-outline-color"
+      default: "var(--primary-component-outline-default)"
+    - name: "--icon-btn-focus-outline-offset"
+      default: "2px"
+    - name: "--icon-btn-min-tap-target"
+      default: "44px"
+    - name: "--icon-btn-radius-rounded"
+      default: "var(--radius-full)"
+      description: "Circle mode — applied via data-rounded"
+    count: 5
+
+# Total: 16 (shape) + 20 (dimension) + 72 (surface) + 2 (slots) + 5 (motion) + 5 (a11y) = 120
