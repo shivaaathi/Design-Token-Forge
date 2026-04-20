@@ -1,0 +1,22 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "[claude]": {
+      "mcpServers": {
+        "figma": {
+          "command": "npx",
+          "args": [
+            "figma-console-mcp@latest"
+          ],
+          "env": {
+            "FIGMA_API_TOKEN": "figd_hDGN-Dihb7xtNvgAL1I8q2xY7oFv_U2jc0QQ7BCG"
+          }
+        }
+      }
+    }
+  }
+}

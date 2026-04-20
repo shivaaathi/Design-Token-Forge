@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tokn — Interactive Design System</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #7C3AED;
+      --primary-light: #A78BFA;
+      --primary-dark: #5B21B6;
+      --success: #22C55E;
+      --danger: #EF4444;
+      --bg: #FFFFFF;
+      --bg-alt: #F8F8F8;
+      --border: #E0E0E0;
+      --text: #000000;
+      --text-alt: #606060;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0F0F0F;
+      --bg-alt: #1A1A1A;
+      --border: #404040;
+      --text: #FFFFFF;
+      --text-alt: #B0B0B0;
+      --primary-light: #C4B5FD;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: all 0.3s;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    /* ===== LAYOUT ===== */
+    .page { display: none; padding: 40px 20px; }
+    .page.active { display: block; animation: fadeIn 0.4s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .container { max-width: 1800px; margin: 0 auto; }
+
+    /* ===== NAV ===== */
+    nav {
+      background: var(--bg-alt);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.95);
+    }
+
+    [data-theme="dark"] nav { background: rgba(15,15,15,0.95); }
+
+    .nav-inner {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-brand {
+      font-size: 28px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #7C3AED, #A78BFA);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+      letter-spacing: -2px;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .nav-menu a {
+      padding: 8px 16px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-alt);
+      transition: all 0.2s;
+    }
+
+    .nav-menu a:hover { background: var(--bg); border-color: var(--primary); color: var(--primary); }
+    .nav-menu a.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    /* ===== SECTION ===== */
+    .section { margin-bottom: 60px; }
+    .section h1 { font-size: 48px; margin-bottom: 16px; font-weight: 900; }
+    .section h2 { font-size: 32px; margin-bottom: 12px; font-weight: 800; margin-top: 40px; }
+    .section h3 { font-size: 20px; margin-bottom: 16px; font-weight: 700; }
+    .section > p { font-size: 16px; color: var(--text-alt); line-height: 1.6; margin-bottom: 32px; max-width: 600px; }
+
+    /* ===== GRID ===== */
+    .grid { display: grid; gap: 20px; margin-bottom: 32px; }
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+    /* ===== CARD ===== */
+    .card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.3s;
+    }
+
+    .card:hover { border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+
+    /* ===== INTERACTIVE EDITOR ===== */
+    .editor-row {
+      display: grid;
+      grid-template-columns: 100px 1fr 80px;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 20px;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    .editor-label { font-weight: 600; font-size: 14px; color: var(--text-alt); }
+    
+    .editor-input {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: monospace;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .editor-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
+
+    .color-input { width: 60px; height: 40px; cursor: pointer; border-radius: 6px; }
+
+    .editor-value { font-family: monospace; font-size: 13px; color: var(--text-alt); }
+
+    /* ===== CASCADE VISUALIZATION ===== */
+    .cascade-flow {
+      display: grid;
+      grid-template-columns: 200px 40px 400px 40px 300px;
+      gap: 0;
+      align-items: stretch;
+      margin: 40px 0;
+    }
+
+    .cascade-tier {
+      background: var(--bg-alt);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 30px 20px;
+      position: relative;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .cascade-tier.tier-1 { border-color: var(--primary); background: linear-gradient(135deg, rgba(124,58,237,0.05), transparent); }
+    .cascade-tier.tier-2 { border-color: var(--primary); background: linear-gradient(135deg, rgba(124,58,237,0.08), transparent); }
+    .cascade-tier.tier-3 { border-color: var(--success); background: linear-gradient(135deg, rgba(34,197,94,0.05), transparent); }
+
+    .cascade-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-alt); margin-bottom: 12px; }
+    .cascade-value { font-size: 16px; font-weight: 700; color: var(--text); font-family: monospace; word-break: break-all; }
+    .cascade-example { font-size: 12px; color: var(--text-alt); margin-top: 12px; }
+
+    .cascade-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* ===== COMPONENT PREVIEW ===== */
+    .component-preview {
+      background: var(--bg-alt);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 40px 20px;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .btn-demo {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s;
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-demo:hover { background: var(--primary-dark); transform: translateY(-2px); }
+    .btn-demo.secondary { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .btn-demo.secondary:hover { background: var(--primary); color: white; }
+
+    /* ===== ROLE TREE ===== */
+    .role-tree {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .role-header {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .role-swatch {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .role-name { font-size: 22px; font-weight: 700; text-transform: capitalize; }
+
+    .token-tree {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .token-leaf {
+      padding: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    .token-leaf-name { font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .token-leaf-value { font-family: monospace; font-size: 11px; color: var(--text-alt); }
+
+    /* ===== SURFACE GRID ===== */
+    .surface-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .surface-item {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .surface-item:hover { border-color: var(--primary); transform: translateY(-4px); }
+    .surface-label { font-size: 11px; font-weight: 700; color: var(--text-alt); text-transform: uppercase; margin-top: 12px; }
+
+    /* ===== DEPENDENCY GRAPH ===== */
+    .dependency-viz {
+      background: var(--bg-alt);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      margin: 40px 0;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .node {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      min-width: 120px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .node:hover { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
+    .node.tier-1 { border-color: var(--primary); background: rgba(124,58,237,0.05); }
+    .node.tier-2 { border-color: var(--primary); background: rgba(124,58,237,0.08); }
+    .node.tier-3 { border-color: var(--success); background: rgba(34,197,94,0.05); }
+
+    /* ===== STATS ===== */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+
+    .stat-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .stat-number { font-size: 40px; font-weight: 900; color: var(--primary); }
+    .stat-label { font-size: 14px; color: var(--text-alt); margin-top: 8px; font-weight: 600; }
+
+    /* ===== BUILDER CANVAS ===== */
+    .builder-canvas {
+      background: var(--bg-alt);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      margin: 32px 0;
+      min-height: 400px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      align-content: start;
+    }
+
+    .builder-component {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: move;
+      transition: all 0.2s;
+    }
+
+    .builder-component:hover { border-color: var(--primary); box-shadow: 0 8px 16px rgba(124,58,237,0.2); }
+
+    /* ===== THRESHOLD LINES ===== */
+    .threshold {
+      border-left: 3px solid var(--primary);
+      padding-left: 20px;
+      margin: 40px 0;
+    }
+
+    @media (max-width: 1200px) {
+      .cascade-flow { grid-template-columns: 1fr; gap: 20px; }
+      .cascade-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand" onclick="go('home')">tokn</div>
+    <div class="nav-menu">
+      <a onclick="go('home')" class="active">Home</a>
+      <a onclick="go('editor')">Live Editor</a>
+      <a onclick="go('cascade')">Cascade</a>
+      <a onclick="go('builder')">Builder</a>
+      <a onclick="go('hierarchy')">Hierarchy</a>
+      <button style="padding: 8px 12px; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px;" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="page active">
+  <div class="container">
+    <div class="section">
+      <h1>Tokn</h1>
+      <p>A three-tier design system where <strong>one primitive change cascades through 300+ components</strong>. Watch the power unfold.</p>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-number">256+</div>
+        <div class="stat-label">Primitive Colors</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">52</div>
+        <div class="stat-label">Scale Tokens (Spacing + Typo)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">6</div>
+        <div class="stat-label">Semantic Roles (18 tokens each)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">9</div>
+        <div class="stat-label">Surface Variants</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">93</div>
+        <div class="stat-label">Component Size Tokens</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">300+</div>
+        <div class="stat-label">Component Instances</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>How It Works In 30 Seconds</h2>
+      <p>Edit a primitive color value, and watch it cascade through the entire system instantly.</p>
+      
+      <div class="cascade-flow">
+        <div class="cascade-tier tier-1">
+          <div class="cascade-title">Tier 1: Primitive</div>
+          <div class="cascade-value">#7C3AED</div>
+          <div class="cascade-example">Raw value, no context</div>
+        </div>
+        <div class="cascade-arrow">→</div>
+        <div class="cascade-tier tier-2">
+          <div class="cascade-title">Tier 2: Semantic</div>
+          <div class="cascade-value">--interactive-primary</div>
+          <div class="cascade-example">Named by intent (light & dark)</div>
+        </div>
+        <div class="cascade-arrow">→</div>
+        <div class="cascade-tier tier-3">
+          <div class="cascade-title">Tier 3: Components</div>
+          <div class="cascade-value">Buttons, Links, Badges, Modals...</div>
+          <div class="cascade-example">Everything updates instantly</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="threshold">
+      <h2>Try It Yourself</h2>
+      <p>Go to <strong>Live Editor</strong> and change the primary brand color. Every component preview updates in real-time.</p>
+      <button class="btn-demo" onclick="go('editor')" style="margin-top: 16px;">Open Live Editor →</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDITOR -->
+<div id="editor" class="page">
+  <div class="container">
+    <div class="section">
+      <h1>Live Token Editor</h1>
+      <p>Edit primitive values and watch the cascade happen in real-time. Every component updates instantly.</p>
+    </div>
+
+    <div style="margin-bottom: 40px;">
+      <h3>Primitive Colors (Edit and See Changes)</h3>
+      
+      <div class="editor-row">
+        <div class="editor-label">Brand</div>
+        <input type="text" class="editor-input" id="brandColor" value="#7C3AED" onchange="updatePreview()">
+        <input type="color" class="editor-input color-input" value="#7C3AED" onchange="syncColor('brand')">
+      </div>
+
+      <div class="editor-row">
+        <div class="editor-label">Primary</div>
+        <input type="text" class="editor-input" id="primaryColor" value="#3B82F6" onchange="updatePreview()">
+        <input type="color" class="editor-input color-input" value="#3B82F6" onchange="syncColor('primary')">
+      </div>
+
+      <div class="editor-row">
+        <div class="editor-label">Success</div>
+        <input type="text" class="editor-input" id="successColor" value="#22C55E" onchange="updatePreview()">
+        <input type="color" class="editor-input color-input" value="#22C55E" onchange="syncColor('success')">
+      </div>
+
+      <div class="editor-row">
+        <div class="editor-label">Danger</div>
+        <input type="text" class="editor-input" id="dangerColor" value="#EF4444" onchange="updatePreview()">
+        <input type="color" class="editor-input color-input" value="#EF4444" onchange="syncColor('danger')">
+      </div>
+    </div>
+
+    <div style="margin-bottom: 40px;">
+      <h3>Component Preview (Real-Time Updates)</h3>
+      <div class="component-preview" id="preview">
+        <button class="btn-demo" style="background: #7C3AED;">Primary Button</button>
+        <button class="btn-demo secondary" style="border-color: #3B82F6; color: #3B82F6;">Secondary Button</button>
+        <button class="btn-demo" style="background: #22C55E;">Success Button</button>
+        <button class="btn-demo" style="background: #EF4444;">Danger Button</button>
+      </div>
+    </div>
+
+    <div class="threshold">
+      <h2>What Just Happened?</h2>
+      <p><strong>That was the power of the token system.</strong> You edited 4 primitive colors, and 4 different component classes updated instantly. In a real design system, one change cascades through thousands of component instances across your entire product.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CASCADE -->
+<div id="cascade" class="page">
+  <div class="container">
+    <div class="section">
+      <h1>The Cascade in Detail</h1>
+      <p>How a single primitive color generates an entire role, which powers composite components.</p>
+    </div>
+
+    <div class="section">
+      <h2>Role: Brand (from primary color #7C3AED)</h2>
+      
+      <div class="role-tree">
+        <div class="role-header">
+          <div class="role-swatch" style="background: #7C3AED;"></div>
+          <div class="role-name">Brand Role</div>
+        </div>
+        <div class="token-tree">
+          <div class="token-leaf">
+            <div class="token-leaf-name">content</div>
+            <div class="token-leaf-value">#FFFFFF</div>
+          </div>
+          <div class="token-leaf">
+            <div class="token-leaf-name">component-default</div>
+            <div class="token-leaf-value">#7C3AED</div>
+          </div>
+          <div class="token-leaf">
+            <div class="token-leaf-name">component-hover</div>
+            <div class="token-leaf-value">#6D28D9</div>
+          </div>
+          <div class="token-leaf">
+            <div class="token-leaf-name">component-active</div>
+            <div class="token-leaf-value">#5B21B6</div>
+          </div>
+          <div class="token-leaf">
+            <div class="token-leaf-name">container-default</div>
+            <div class="token-leaf-value">#F3E8FF</div>
+          </div>
+          <div class="token-leaf">
+            <div class="token-leaf-name">container-hover</div>
+            <div class="token-leaf-value">#E9D5FF</div>
+          </div>
+          <div class="token-leaf">
+            <div class="token-leaf-name">outline-default</div>
+            <div class="token-leaf-value">#7C3AED</div>
+          </div>
+          <div class="token-leaf">
+            <div class="token-leaf-name">outline-hover</div>
+            <div class="token-leaf-value">#6D28D9</div>
+          </div>
+          <div class="token-leaf">
+            <div class="token-leaf-name">on-component</div>
+            <div class="token-leaf-value">#FFFFFF</div>
+          </div>
+          <div class="token-leaf">
+            <div class="token-leaf-name">on-container</div>
+            <div class="token-leaf-value">#5B21B6</div>
+          </div>
+          <div class="token-leaf">
+            <div class="token-leaf-name">content-dark</div>
+            <div class="token-leaf-value">#1A1A1A</div>
+          </div>
+          <div class="token-leaf">
+            <div class="token-leaf-name">tint-light</div>
+            <div class="token-leaf-value">#FAF5FF</div>
+          </div>
+        </div>
+      </div>
+
+      <h2>That One Role Powers These Components:</h2>
+      <div class="component-preview" style="border-style: solid; gap: 12px; padding: 32px;">
+        <button class="btn-demo">Brand Button</button>
+        <button class="btn-demo secondary">Brand Outline</button>
+        <div style="width: 100%; height: 60px; background: #F3E8FF; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #5B21B6; font-weight: 600;">Brand Container</div>
+        <span style="display: inline-block; background: #7C3AED; color: white; padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">Brand Badge</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Now Multiply This Across 6 Roles × 18 Tokens = 108 Token Variations</h2>
+      <p>Brand role shown above. Now imagine the same structure for Primary, Success, Danger, Warning, and Info roles. Each with their own color palette, hover states, container variants, and dark mode alternatives.</p>
+    </div>
+  </div>
+</div>
+
+<!-- BUILDER -->
+<div id="builder" class="page">
+  <div class="container">
+    <div class="section">
+      <h1>Component Builder</h1>
+      <p>Compose a UI and see which tokens power it. Every element is built from primitives.</p>
+    </div>
+
+    <div style="margin-bottom: 40px;">
+      <h3>Drag Components Into Canvas Below</h3>
+      <div class="grid-4" style="margin-bottom: 24px;">
+        <div class="card" style="cursor: move; background: #f9fafb; border: 2px dashed var(--border);" draggable="true">
+          <div style="text-align: center; padding: 16px;">
+            <div style="font-size: 32px; margin-bottom: 8px;">🔘</div>
+            <div style="font-weight: 600; font-size: 12px;">Button</div>
+          </div>
+        </div>
+        <div class="card" style="cursor: move; background: #f9fafb; border: 2px dashed var(--border);" draggable="true">
+          <div style="text-align: center; padding: 16px;">
+            <div style="font-size: 32px; margin-bottom: 8px;">📦</div>
+            <div style="font-weight: 600; font-size: 12px;">Card</div>
+          </div>
+        </div>
+        <div class="card" style="cursor: move; background: #f9fafb; border: 2px dashed var(--border);" draggable="true">
+          <div style="text-align: center; padding: 16px;">
+            <div style="font-size: 32px; margin-bottom: 8px;">📝</div>
+            <div style="font-weight: 600; font-size: 12px;">Input</div>
+          </div>
+        </div>
+        <div class="card" style="cursor: move; background: #f9fafb; border: 2px dashed var(--border);" draggable="true">
+          <div style="text-align: center; padding: 16px;">
+            <div style="font-size: 32px; margin-bottom: 8px;">🏷️</div>
+            <div style="font-weight: 600; font-size: 12px;">Badge</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 40px;">
+      <h3>Your Composed UI</h3>
+      <div class="builder-canvas" id="canvas" style="min-height: 300px;">
+        <div style="grid-column: 1/-1; text-align: center; color: var(--text-alt); padding: 60px 20px;">Drag components here to build your UI</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 40px;">
+      <h3>Tokens Used (39 spacing + 13 typography + 108 role tokens)</h3>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="spacingUsed">8</div>
+          <div class="stat-label">Spacing Tokens</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="typoUsed">4</div>
+          <div class="stat-label">Typography Tokens</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="roleUsed">6</div>
+          <div class="stat-label">Role Tokens</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalUsed">18</div>
+          <div class="stat-label">Total Active</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HIERARCHY -->
+<div id="hierarchy" class="page">
+  <div class="container">
+    <div class="section">
+      <h1>The Three-Tier Hierarchy</h1>
+      <p>How primitives become semantic tokens become components.</p>
+    </div>
+
+    <div class="dependency-viz">
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; width: 100%;">
+        <div style="text-align: center;">
+          <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-alt); margin-bottom: 20px;">Tier 1: Primitives</div>
+          <div class="node tier-1">brand-500</div>
+          <div style="margin: 16px 0; color: var(--text-alt);">↓</div>
+          <div class="node tier-1">primary-400</div>
+          <div style="margin: 16px 0; color: var(--text-alt);">↓</div>
+          <div class="node tier-1">success-500</div>
+          <div style="margin: 16px 0; color: var(--text-alt);">↓</div>
+          <div class="node tier-1">danger-400</div>
+        </div>
+
+        <div style="text-align: center;">
+          <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-alt); margin-bottom: 20px;">Tier 2: Semantic</div>
+          <div class="node tier-2">--interactive</div>
+          <div style="margin: 16px 0; color: var(--text-alt);">↓</div>
+          <div class="node tier-2">brand role</div>
+          <div style="margin: 16px 0; color: var(--text-alt);">↓</div>
+          <div class="node tier-2">primary role</div>
+          <div style="margin: 16px 0; color: var(--text-alt);">↓</div>
+          <div class="node tier-2">--bg-secondary</div>
+        </div>
+
+        <div style="text-align: center;">
+          <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-alt); margin-bottom: 20px;">Tier 3: Components</div>
+          <div class="node tier-3">Button</div>
+          <div style="margin: 16px 0; color: var(--text-alt);">↓</div>
+          <div class="node tier-3">Badge</div>
+          <div style="margin: 16px 0; color: var(--text-alt);">↓</div>
+          <div class="node tier-3">Link</div>
+          <div style="margin: 16px 0; color: var(--text-alt);">↓</div>
+          <div class="node tier-3">Card</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="threshold">
+      <h2>Key Insight</h2>
+      <p><strong>Every primitive value is explicitly connected to every component that uses it.</strong> Change brand-500, and Button, Badge, Link, and 50+ other components update. No duplicate values, no disconnected tokens, one source of truth.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function go(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+  document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
+  event.target?.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function toggleTheme() {
+  const theme = document.documentElement.getAttribute('data-theme');
+  const newTheme = theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+}
+
+function syncColor(type) {
+  const picker = document.querySelector(`input[value*="#"][onchange*="${type}"]`).previousElementSibling.value;
+  // This would sync the color picker with text input
+}
+
+function updatePreview() {
+  const brand = document.getElementById('brandColor').value;
+  const primary = document.getElementById('primaryColor').value;
+  const success = document.getElementById('successColor').value;
+  const danger = document.getElementById('dangerColor').value;
+  
+  const preview = document.getElementById('preview');
+  const buttons = preview.querySelectorAll('button');
+  buttons[0].style.background = brand;
+  buttons[1].style.borderColor = primary;
+  buttons[1].style.color = primary;
+  buttons[2].style.background = success;
+  buttons[3].style.background = danger;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const theme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+});
+</script>
+
+</body>
+</html>

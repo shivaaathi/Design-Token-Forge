@@ -1,0 +1,20 @@
+{
+  "name": "figmaworkspace",
+  "version": "1.0.0",
+  "description": "This workspace is configured to use the Figma Model Context Protocol (MCP) server with VS Code.",
+  "main": "index.js",
+  "scripts": {
+    "build": "cp src/socket.js dist/socket.js",
+    "start": "node dist/socket.js",
+    "dev": "node src/socket.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.13.6",
+    "express": "^5.2.1",
+    "ws": "^8.19.0"
+  }
+}

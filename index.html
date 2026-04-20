@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tokn — Design System Portal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ============= TOKENS & PRIMITIVES ============= */
+    :root {
+      /* Light mode defaults */
+      --grey-0: #FFFFFF;
+      --grey-50: #F8F8F8;
+      --grey-100: #F0F0F0;
+      --grey-200: #E0E0E0;
+      --grey-300: #D0D0D0;
+      --grey-400: #B0B0B0;
+      --grey-500: #808080;
+      --grey-600: #606060;
+      --grey-700: #404040;
+      --grey-800: #202020;
+      --grey-900: #000000;
+
+      --brand-400: #5B21B6;
+      --brand-500: #7C3AED;
+      --brand-600: #6D28D9;
+
+      --danger-400: #DC2626;
+      --danger-500: #EF4444;
+
+      --success-400: #15803D;
+      --success-500: #22C55E;
+
+      /* Semantic */
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F8F8F8;
+      --text-primary: #000000;
+      --text-secondary: #606060;
+      --border-primary: #E0E0E0;
+      --border-secondary: #D0D0D0;
+      --interactive-primary: #7C3AED;
+      --interactive-hover: #6D28D9;
+      --interactive-active: #5B21B6;
+
+      /* Spacing */
+      --sp-0: 0px;
+      --sp-4: 4px;
+      --sp-8: 8px;
+      --sp-12: 12px;
+      --sp-16: 16px;
+      --sp-20: 20px;
+      --sp-24: 24px;
+      --sp-32: 32px;
+      --sp-40: 40px;
+      --sp-48: 48px;
+
+      /* Typography */
+      --fs-12: 12px;
+      --fs-14: 14px;
+      --fs-16: 16px;
+      --fs-18: 18px;
+      --fs-20: 20px;
+      --fs-24: 24px;
+      --fs-32: 32px;
+      --fs-40: 40px;
+
+      --fw-regular: 400;
+      --fw-medium: 500;
+      --fw-semi: 600;
+      --fw-bold: 700;
+
+      --lh-tight: 1.2;
+      --lh-normal: 1.4;
+      --lh-relaxed: 1.6;
+
+      --ls-tight: -0.02em;
+      --ls-normal: 0em;
+      --ls-loose: 0.04em;
+
+      /* Elevation */
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+
+      /* Overlay */
+      --overlay-10: rgba(0, 0, 0, 0.1);
+      --overlay-20: rgba(0, 0, 0, 0.2);
+      --overlay-30: rgba(0, 0, 0, 0.3);
+      --overlay-40: rgba(0, 0, 0, 0.4);
+    }
+
+    /* Dark mode */
+    [data-theme="dark"] {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2a2a2a;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0b0;
+      --border-primary: #404040;
+      --border-secondary: #505050;
+      --interactive-primary: #a78bfa;
+      --interactive-hover: #c4b5fd;
+      --interactive-active: #ddd6fe;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: var(--lh-normal);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ============= LAYOUT ============= */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--sp-20);
+    }
+
+    /* ============= NAVIGATION ============= */
+    nav.top-nav {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-primary);
+      sticky: top;
+      z-index: 100;
+    }
+
+    .nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--sp-16) var(--sp-20);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .nav-brand {
+      font-size: var(--fs-20);
+      font-weight: var(--fw-bold);
+      color: var(--interactive-primary);
+      cursor: pointer;
+      letter-spacing: var(--ls-tight);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: var(--sp-24);
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: var(--fs-14);
+      font-weight: var(--fw-medium);
+      padding: var(--sp-8) var(--sp-12);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--interactive-primary);
+      background: var(--border-primary);
+    }
+
+    .nav-controls {
+      display: flex;
+      gap: var(--sp-12);
+      align-items: center;
+    }
+
+    .theme-toggle {
+      background: var(--border-primary);
+      border: none;
+      padding: var(--sp-8) var(--sp-12);
+      border-radius: 4px;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: var(--fs-14);
+      transition: all 0.3s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--border-secondary);
+    }
+
+    .admin-badge {
+      background: var(--danger-500);
+      color: white;
+      padding: var(--sp-4) var(--sp-8);
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: var(--fw-semi);
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
+
+    .admin-badge:hover {
+      opacity: 1;
+    }
+
+    /* ============= PAGES ============= */
+    .page {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* ============= HOME PAGE ============= */
+    .hero {
+      background: linear-gradient(135deg, var(--interactive-primary) 0%, #a78bfa 100%);
+      color: white;
+      padding: var(--sp-48) var(--sp-20);
+      text-align: center;
+      margin: var(--sp-32) 0;
+      border-radius: 8px;
+    }
+
+    .hero h1 {
+      font-size: var(--fs-40);
+      font-weight: var(--fw-bold);
+      margin-bottom: var(--sp-12);
+      letter-spacing: var(--ls-tight);
+    }
+
+    .hero p {
+      font-size: var(--fs-18);
+      margin-bottom: var(--sp-24);
+      opacity: 0.95;
+      line-height: var(--lh-relaxed);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: var(--sp-12) var(--sp-24);
+      background: var(--interactive-primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: var(--fs-16);
+      font-weight: var(--fw-semi);
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: var(--interactive-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn:active {
+      background: var(--interactive-active);
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-primary);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--sp-24);
+      margin: var(--sp-48) 0;
+    }
+
+    .feature-card {
+      background: var(--bg-secondary);
+      padding: var(--sp-24);
+      border-radius: 8px;
+      border: 1px solid var(--border-primary);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .feature-card:hover {
+      border-color: var(--interactive-primary);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .feature-card h3 {
+      font-size: var(--fs-20);
+      margin-bottom: var(--sp-12);
+      color: var(--interactive-primary);
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      line-height: var(--lh-relaxed);
+    }
+
+    /* ============= COMPONENTS PAGE ============= */
+    .component-showcase {
+      background: var(--bg-secondary);
+      padding: var(--sp-32);
+      border-radius: 8px;
+      margin-bottom: var(--sp-32);
+      border: 1px solid var(--border-primary);
+    }
+
+    .component-header {
+      margin-bottom: var(--sp-24);
+      border-bottom: 2px solid var(--interactive-primary);
+      padding-bottom: var(--sp-16);
+    }
+
+    .component-header h2 {
+      font-size: var(--fs-32);
+      margin-bottom: var(--sp-8);
+    }
+
+    .component-header p {
+      color: var(--text-secondary);
+      font-size: var(--fs-14);
+    }
+
+    .component-states {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--sp-20);
+      margin: var(--sp-24) 0;
+    }
+
+    .state-box {
+      background: var(--bg-primary);
+      padding: var(--sp-24);
+      border-radius: 8px;
+      border: 1px solid var(--border-primary);
+      text-align: center;
+    }
+
+    .state-label {
+      font-size: var(--fs-12);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--sp-12);
+      font-weight: var(--fw-semi);
+    }
+
+    /* Button component showcase */
+    .button-demo {
+      padding: var(--sp-12) var(--sp-20);
+      border: none;
+      border-radius: 4px;
+      font-size: var(--fs-16);
+      font-weight: var(--fw-semi);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .button-demo.primary {
+      background: var(--interactive-primary);
+      color: white;
+    }
+
+    .button-demo.primary:hover {
+      background: var(--interactive-hover);
+    }
+
+    .button-demo.primary:active {
+      background: var(--interactive-active);
+    }
+
+    .button-demo.primary:disabled {
+      background: var(--grey-300);
+      color: var(--grey-500);
+      cursor: not-allowed;
+    }
+
+    .button-demo.secondary {
+      background: transparent;
+      border: 1px solid var(--border-primary);
+      color: var(--text-primary);
+    }
+
+    .button-demo.secondary:hover {
+      background: var(--border-primary);
+    }
+
+    /* Card component showcase */
+    .card-demo {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: 8px;
+      padding: var(--sp-20);
+      transition: all 0.3s;
+    }
+
+    .card-demo:hover {
+      border-color: var(--interactive-primary);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-demo h4 {
+      margin-bottom: var(--sp-8);
+    }
+
+    .card-demo p {
+      color: var(--text-secondary);
+      font-size: var(--fs-14);
+      line-height: var(--lh-relaxed);
+    }
+
+    /* Input component showcase */
+    .input-demo {
+      width: 100%;
+      padding: var(--sp-12) var(--sp-16);
+      border: 1px solid var(--border-primary);
+      border-radius: 4px;
+      font-size: var(--fs-16);
+      font-family: inherit;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: all 0.3s;
+    }
+
+    .input-demo:focus {
+      outline: none;
+      border-color: var(--interactive-primary);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+
+    .input-demo:disabled {
+      background: var(--border-primary);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    /* Badge component showcase */
+    .badge-demo {
+      display: inline-block;
+      padding: var(--sp-4) var(--sp-12);
+      border-radius: 20px;
+      font-size: var(--fs-12);
+      font-weight: var(--fw-semi);
+    }
+
+    .badge-demo.primary {
+      background: var(--interactive-primary);
+      color: white;
+    }
+
+    .badge-demo.success {
+      background: var(--success-500);
+      color: white;
+    }
+
+    .badge-demo.danger {
+      background: var(--danger-500);
+      color: white;
+    }
+
+    /* ============= TOKENS PAGE ============= */
+    .token-section {
+      margin-bottom: var(--sp-48);
+    }
+
+    .token-section h2 {
+      font-size: var(--fs-32);
+      margin-bottom: var(--sp-24);
+      padding-bottom: var(--sp-16);
+      border-bottom: 2px solid var(--interactive-primary);
+    }
+
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: var(--sp-20);
+    }
+
+    .token-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .token-item:hover {
+      border-color: var(--interactive-primary);
+      box-shadow: var(--shadow-md);
+    }
+
+    .token-preview {
+      height: 80px;
+      border-bottom: 1px solid var(--border-primary);
+    }
+
+    .token-info {
+      padding: var(--sp-12);
+    }
+
+    .token-name {
+      font-size: var(--fs-12);
+      font-weight: var(--fw-semi);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--sp-4);
+    }
+
+    .token-value {
+      font-size: var(--fs-14);
+      font-weight: var(--fw-medium);
+      color: var(--text-primary);
+      word-break: break-all;
+      font-family: 'Courier New', monospace;
+    }
+
+    .color-swatch {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--fs-12);
+      font-weight: var(--fw-semi);
+      color: white;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .spacing-demo {
+      background: var(--interactive-primary);
+      opacity: 0.3;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ============= HOW IT WORKS PAGE ============= */
+    .architecture {
+      background: var(--bg-secondary);
+      padding: var(--sp-32);
+      border-radius: 8px;
+      margin: var(--sp-32) 0;
+    }
+
+    .tier {
+      margin-bottom: var(--sp-32);
+      padding-bottom: var(--sp-32);
+      border-bottom: 1px solid var(--border-primary);
+    }
+
+    .tier:last-child {
+      border-bottom: none;
+    }
+
+    .tier-number {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      background: var(--interactive-primary);
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 40px;
+      font-weight: var(--fw-bold);
+      margin-bottom: var(--sp-12);
+    }
+
+    .tier h3 {
+      font-size: var(--fs-24);
+      margin-bottom: var(--sp-12);
+    }
+
+    .tier p {
+      color: var(--text-secondary);
+      line-height: var(--lh-relaxed);
+      margin-bottom: var(--sp-16);
+    }
+
+    .tier-examples {
+      background: var(--bg-primary);
+      padding: var(--sp-16);
+      border-radius: 4px;
+      border-left: 3px solid var(--interactive-primary);
+      font-family: 'Courier New', monospace;
+      font-size: var(--fs-12);
+      color: var(--text-secondary);
+    }
+
+    /* ============= ADMIN PAGE ============= */
+    .admin-section {
+      background: var(--bg-secondary);
+      padding: var(--sp-32);
+      border-radius: 8px;
+      border: 2px solid var(--danger-500);
+      margin-bottom: var(--sp-32);
+    }
+
+    .admin-section h2 {
+      color: var(--danger-500);
+      margin-bottom: var(--sp-20);
+    }
+
+    .product-manager {
+      background: var(--bg-primary);
+      padding: var(--sp-20);
+      border-radius: 8px;
+      border: 1px solid var(--border-primary);
+      margin-bottom: var(--sp-24);
+    }
+
+    .product-list {
+      margin-bottom: var(--sp-20);
+    }
+
+    .product-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--sp-12);
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      margin-bottom: var(--sp-8);
+      border: 1px solid var(--border-primary);
+    }
+
+    .product-item.active {
+      border-color: var(--interactive-primary);
+      background: var(--border-primary);
+    }
+
+    .form-group {
+      margin-bottom: var(--sp-16);
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: var(--sp-8);
+      font-weight: var(--fw-semi);
+      font-size: var(--fs-14);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: var(--sp-12);
+      border: 1px solid var(--border-primary);
+      border-radius: 4px;
+      font-size: var(--fs-14);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: var(--sp-12);
+      flex-wrap: wrap;
+    }
+
+    .toast-notification {
+      position: fixed;
+      bottom: var(--sp-20);
+      right: var(--sp-20);
+      background: var(--success-500);
+      color: white;
+      padding: var(--sp-16) var(--sp-24);
+      border-radius: 4px;
+      box-shadow: var(--shadow-lg);
+      animation: slideIn 0.3s ease;
+      z-index: 1000;
+    }
+
+    .toast-notification.error {
+      background: var(--danger-500);
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* ============= FOOTER ============= */
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-primary);
+      padding: var(--sp-32) var(--sp-20);
+      margin-top: var(--sp-48);
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: var(--fs-14);
+    }
+
+    /* ============= RESPONSIVE ============= */
+    @media (max-width: 768px) {
+      .nav-links {
+        flex-wrap: wrap;
+        gap: var(--sp-12);
+      }
+
+      .hero h1 {
+        font-size: var(--fs-32);
+      }
+
+      .feature-grid,
+      .component-states,
+      .token-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 0 var(--sp-16);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============= NAVIGATION ============= -->
+<nav class="top-nav">
+  <div class="nav-content">
+    <div class="nav-brand" onclick="navigate('home')">tokn</div>
+    <ul class="nav-links">
+      <a onclick="navigate('home')">Home</a>
+      <a onclick="navigate('components')">Components</a>
+      <a onclick="navigate('tokens')">Tokens</a>
+      <a onclick="navigate('how-it-works')">How It Works</a>
+    </ul>
+    <div class="nav-controls">
+      <button class="theme-toggle" onclick="toggleTheme()">☀️ / 🌙</button>
+      <div class="admin-badge" onclick="navigate('admin')" title="Design System Admin">⚙️</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ============= PAGES ============= -->
+
+<!-- HOME PAGE -->
+<div id="home" class="page active">
+  <div class="container">
+    <div class="hero">
+      <h1>A Design System That <em>Scales</em></h1>
+      <p>Explore the true power of unified tokens — where one primitive change cascades across your entire design system.</p>
+      <button class="btn" onclick="navigate('components')">Explore Components</button>
+      <button class="btn btn-secondary" onclick="navigate('tokens')" style="margin-left: var(--sp-12);">See All Tokens</button>
+    </div>
+
+    <div style="margin: var(--sp-48) 0;">
+      <h2 style="font-size: var(--fs-32); margin-bottom: var(--sp-24); text-align: center;">Why This Design System Is Different</h2>
+      <div class="feature-grid">
+        <div class="feature-card" onclick="navigate('components')">
+          <h3>Three-Tier Architecture</h3>
+          <p>Primitives → Semantic Tokens → Usage-Ready Components. Clarity at every level.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Real-Time Visualization</h3>
+          <p>See how your colors, spacing, and typography work together across components.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Product Variants</h3>
+          <p>Create multiple product token sets. Switch between them instantly.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Full Coverage</h3>
+          <p>39 spacing values, 13 typography sizes, 6 semantic roles, elevation, overlay, and more.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Developer & Designer Ready</h3>
+          <p>Export JSON, bind to Figma variables, reference in code. Built for teams.</p>
+        </div>
+        <div class="feature-card" onclick="navigate('admin')">
+          <h3>Complete Control</h3>
+          <p>Manage, edit, customize, and iterate on your tokens. Admin portal included.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: var(--bg-secondary); padding: var(--sp-32); border-radius: 8px; margin: var(--sp-48) 0;">
+      <h2 style="font-size: var(--fs-28); margin-bottom: var(--sp-16);">Get Started</h2>
+      <p style="color: var(--text-secondary); line-height: var(--lh-relaxed); margin-bottom: var(--sp-20);">
+        New to this design system? Start by exploring our component library to understand how tokens are applied in real UI elements. Then dive into the token reference to see the complete primitive-to-usage journey.
+      </p>
+      <div style="display: flex; gap: var(--sp-12); flex-wrap: wrap;">
+        <button class="btn" onclick="navigate('components')">View Components</button>
+        <button class="btn btn-secondary" onclick="navigate('how-it-works')">Learn Architecture</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPONENTS PAGE -->
+<div id="components" class="page">
+  <div class="container">
+    <h1 style="font-size: var(--fs-40); margin: var(--sp-32) 0 var(--sp-24) 0;">Component Library</h1>
+    <p style="color: var(--text-secondary); font-size: var(--fs-18); margin-bottom: var(--sp-48); line-height: var(--lh-relaxed);">
+      Every component below is built using our unified token system. Observe how spacing, colors, typography, and elevation work together.
+    </p>
+
+    <!-- BUTTON COMPONENT -->
+    <div class="component-showcase">
+      <div class="component-header">
+        <h2>Buttons</h2>
+        <p>The primary call-to-action element. Supports primary, secondary, and disabled states.</p>
+      </div>
+      <div class="component-states">
+        <div class="state-box">
+          <div class="state-label">Primary Default</div>
+          <button class="button-demo primary">Click Me</button>
+        </div>
+        <div class="state-box">
+          <div class="state-label">Primary Hover</div>
+          <button class="button-demo primary" style="background: var(--interactive-hover);">Click Me</button>
+        </div>
+        <div class="state-box">
+          <div class="state-label">Primary Active</div>
+          <button class="button-demo primary" style="background: var(--interactive-active);">Click Me</button>
+        </div>
+        <div class="state-box">
+          <div class="state-label">Primary Disabled</div>
+          <button class="button-demo primary" disabled>Click Me</button>
+        </div>
+        <div class="state-box">
+          <div class="state-label">Secondary Default</div>
+          <button class="button-demo secondary">Click Me</button>
+        </div>
+        <div class="state-box">
+          <div class="state-label">Secondary Hover</div>
+          <button class="button-demo secondary" style="background: var(--border-primary);">Click Me</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD COMPONENT -->
+    <div class="component-showcase">
+      <div class="component-header">
+        <h2>Cards</h2>
+        <p>Container element for grouping related content. Responds to interaction with elevation.</p>
+      </div>
+      <div class="component-states">
+        <div class="state-box" style="text-align: left;">
+          <div class="state-label">Default State</div>
+          <div class="card-demo">
+            <h4>Card Title</h4>
+            <p>This is a card component built with our spacing and typography tokens.</p>
+          </div>
+        </div>
+        <div class="state-box" style="text-align: left;">
+          <div class="state-label">Hover State</div>
+          <div class="card-demo" style="border-color: var(--interactive-primary); box-shadow: var(--shadow-md);">
+            <h4>Card Title</h4>
+            <p>This is a card component built with our spacing and typography tokens.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INPUT COMPONENT -->
+    <div class="component-showcase">
+      <div class="component-header">
+        <h2>Input Fields</h2>
+        <p>Text input element for user data entry. Supports focus and disabled states.</p>
+      </div>
+      <div class="component-states">
+        <div class="state-box">
+          <div class="state-label">Default</div>
+          <input type="text" class="input-demo" placeholder="Type here...">
+        </div>
+        <div class="state-box">
+          <div class="state-label">Focus</div>
+          <input type="text" class="input-demo" placeholder="Type here..." value="Focused state" style="border-color: var(--interactive-primary); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);">
+        </div>
+        <div class="state-box">
+          <div class="state-label">Disabled</div>
+          <input type="text" class="input-demo" placeholder="Disabled..." disabled>
+        </div>
+      </div>
+    </div>
+
+    <!-- BADGE COMPONENT -->
+    <div class="component-showcase">
+      <div class="component-header">
+        <h2>Badges</h2>
+        <p>Small label element for status, categories, or tags.</p>
+      </div>
+      <div class="component-states">
+        <div class="state-box">
+          <div class="state-label">Primary</div>
+          <span class="badge-demo primary">Active</span>
+        </div>
+        <div class="state-box">
+          <div class="state-label">Success</div>
+          <span class="badge-demo success">Deployed</span>
+        </div>
+        <div class="state-box">
+          <div class="state-label">Danger</div>
+          <span class="badge-demo danger">Alert</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOKENS PAGE -->
+<div id="tokens" class="page">
+  <div class="container">
+    <h1 style="font-size: var(--fs-40); margin: var(--sp-32) 0 var(--sp-24) 0;">Token Reference</h1>
+    <p style="color: var(--text-secondary); font-size: var(--fs-18); margin-bottom: var(--sp-48); line-height: var(--lh-relaxed);">
+      Complete token reference for the design system. All values are production-ready and bound to Figma variables.
+    </p>
+
+    <!-- COLORS -->
+    <div class="token-section">
+      <h2>Semantic Colors</h2>
+      <div class="token-grid">
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--bg-primary); border: 1px solid var(--border-primary); display: flex; align-items: center; justify-content: center;">
+            <span style="color: var(--text-secondary); font-size: var(--fs-12);">Light</span>
+          </div>
+          <div class="token-info">
+            <div class="token-name">bg-primary</div>
+            <div class="token-value">#FFFFFF</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--bg-secondary);"></div>
+          <div class="token-info">
+            <div class="token-name">bg-secondary</div>
+            <div class="token-value">#F8F8F8</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--text-primary);"></div>
+          <div class="token-info">
+            <div class="token-name">text-primary</div>
+            <div class="token-value">#000000</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--interactive-primary);"></div>
+          <div class="token-info">
+            <div class="token-name">interactive</div>
+            <div class="token-value">#7C3AED</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--success-500);"></div>
+          <div class="token-info">
+            <div class="token-name">success</div>
+            <div class="token-value">#22C55E</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--danger-500);"></div>
+          <div class="token-info">
+            <div class="token-name">danger</div>
+            <div class="token-value">#EF4444</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPACING -->
+    <div class="token-section">
+      <h2>Spacing Scale (0px → 120px)</h2>
+      <p style="color: var(--text-secondary); margin-bottom: var(--sp-24);">39 spacing values for layouts, padding, margins, and gaps.</p>
+      <div class="token-grid">
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--spacing-demo);"></div>
+          <div class="token-info">
+            <div class="token-name">sp-4</div>
+            <div class="token-value">4px</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--spacing-demo);"></div>
+          <div class="token-info">
+            <div class="token-name">sp-8</div>
+            <div class="token-value">8px</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--spacing-demo);"></div>
+          <div class="token-info">
+            <div class="token-name">sp-12</div>
+            <div class="token-value">12px</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--spacing-demo);"></div>
+          <div class="token-info">
+            <div class="token-name">sp-16</div>
+            <div class="token-value">16px</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--spacing-demo);"></div>
+          <div class="token-info">
+            <div class="token-name">sp-24</div>
+            <div class="token-value">24px</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--spacing-demo);"></div>
+          <div class="token-info">
+            <div class="token-name">sp-32</div>
+            <div class="token-value">32px</div>
+          </div>
+        </div>
+      </div>
+      <p style="color: var(--text-secondary); font-size: var(--fs-12); margin-top: var(--sp-16);">+ 33 more values from 0px to 120px available in Figma variables</p>
+    </div>
+
+    <!-- TYPOGRAPHY -->
+    <div class="token-section">
+      <h2>Typography Scale</h2>
+      <p style="color: var(--text-secondary); margin-bottom: var(--sp-24);">13 font sizes with line-height and letter-spacing references.</p>
+      <div style="display: grid; gap: var(--sp-20);">
+        <div style="background: var(--bg-secondary); padding: var(--sp-20); border-radius: 8px; border: 1px solid var(--border-primary);">
+          <div style="font-size: var(--fs-12); color: var(--text-secondary); margin-bottom: var(--sp-8);">fs-12 (Small)</div>
+          <div style="font-size: var(--fs-12);">The quick brown fox jumps over the lazy dog</div>
+        </div>
+        <div style="background: var(--bg-secondary); padding: var(--sp-20); border-radius: 8px; border: 1px solid var(--border-primary);">
+          <div style="font-size: var(--fs-14); color: var(--text-secondary); margin-bottom: var(--sp-8);">fs-14</div>
+          <div style="font-size: var(--fs-14);">The quick brown fox jumps over the lazy dog</div>
+        </div>
+        <div style="background: var(--bg-secondary); padding: var(--sp-20); border-radius: 8px; border: 1px solid var(--border-primary);">
+          <div style="font-size: var(--fs-16); color: var(--text-secondary); margin-bottom: var(--sp-8);">fs-16 (Body)</div>
+          <div style="font-size: var(--fs-16);">The quick brown fox jumps over the lazy dog</div>
+        </div>
+        <div style="background: var(--bg-secondary); padding: var(--sp-20); border-radius: 8px; border: 1px solid var(--border-primary);">
+          <div style="font-size: var(--fs-24); color: var(--text-secondary); margin-bottom: var(--sp-8);">fs-24 (Heading)</div>
+          <div style="font-size: var(--fs-24);">The quick brown fox jumps over the lazy dog</div>
+        </div>
+        <div style="background: var(--bg-secondary); padding: var(--sp-20); border-radius: 8px; border: 1px solid var(--border-primary);">
+          <div style="font-size: var(--fs-40); color: var(--text-secondary); margin-bottom: var(--sp-8);">fs-40 (Hero)</div>
+          <div style="font-size: var(--fs-40);">The quick brown fox</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ELEVATION -->
+    <div class="token-section">
+      <h2>Elevation & Shadows</h2>
+      <div class="token-grid">
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--bg-primary); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm);">
+            <span style="font-size: var(--fs-12); color: var(--text-secondary);">Small</span>
+          </div>
+          <div class="token-info">
+            <div class="token-name">shadow-sm</div>
+            <div class="token-value">0 1px 2px</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--bg-primary); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-md);">
+            <span style="font-size: var(--fs-12); color: var(--text-secondary);">Medium</span>
+          </div>
+          <div class="token-info">
+            <div class="token-name">shadow-md</div>
+            <div class="token-value">0 4px 6px</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: var(--bg-primary); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg);">
+            <span style="font-size: var(--fs-12); color: var(--text-secondary);">Large</span>
+          </div>
+          <div class="token-info">
+            <div class="token-name">shadow-lg</div>
+            <div class="token-value">0 10px 15px</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OVERLAY -->
+    <div class="token-section">
+      <h2>Overlay Opacity</h2>
+      <div class="token-grid">
+        <div class="token-item">
+          <div class="token-preview" style="background: linear-gradient(to right, transparent, var(--overlay-10)); border: 1px solid var(--border-primary);"></div>
+          <div class="token-info">
+            <div class="token-name">overlay-10</div>
+            <div class="token-value">10% opacity</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: linear-gradient(to right, transparent, var(--overlay-20)); border: 1px solid var(--border-primary);"></div>
+          <div class="token-info">
+            <div class="token-name">overlay-20</div>
+            <div class="token-value">20% opacity</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: linear-gradient(to right, transparent, var(--overlay-30)); border: 1px solid var(--border-primary);"></div>
+          <div class="token-info">
+            <div class="token-name">overlay-30</div>
+            <div class="token-value">30% opacity</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <div class="token-preview" style="background: linear-gradient(to right, transparent, var(--overlay-40)); border: 1px solid var(--border-primary);"></div>
+          <div class="token-info">
+            <div class="token-name">overlay-40</div>
+            <div class="token-value">40% opacity</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LINE HEIGHT & LETTER SPACING -->
+    <div class="token-section">
+      <h2>Typography Details</h2>
+      <p style="color: var(--text-secondary); margin-bottom: var(--sp-20);">Reference values for line-height and letter-spacing (applied in code).</p>
+      <div style="background: var(--bg-secondary); padding: var(--sp-20); border-radius: 8px; border: 1px solid var(--border-primary);">
+        <div style="margin-bottom: var(--sp-20);">
+          <h4 style="margin-bottom: var(--sp-8);">Line Height</h4>
+          <div style="display: grid; gap: var(--sp-8);">
+            <div><span style="font-family: monospace;">lh-tight: 1.2</span></div>
+            <div><span style="font-family: monospace;">lh-normal: 1.4</span></div>
+            <div><span style="font-family: monospace;">lh-relaxed: 1.6</span></div>
+          </div>
+        </div>
+        <div>
+          <h4 style="margin-bottom: var(--sp-8);">Letter Spacing</h4>
+          <div style="display: grid; gap: var(--sp-8);">
+            <div><span style="font-family: monospace;">ls-tight: -0.02em</span></div>
+            <div><span style="font-family: monospace;">ls-normal: 0em</span></div>
+            <div><span style="font-family: monospace;">ls-loose: 0.04em</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS PAGE -->
+<div id="how-it-works" class="page">
+  <div class="container">
+    <h1 style="font-size: var(--fs-40); margin: var(--sp-32) 0 var(--sp-24) 0;">How This Design System Works</h1>
+    <p style="color: var(--text-secondary); font-size: var(--fs-18); margin-bottom: var(--sp-48); line-height: var(--lh-relaxed);">
+      This design system is built on a three-tier architecture that creates a single source of truth for all design decisions.
+    </p>
+
+    <div class="architecture">
+      <div class="tier">
+        <div class="tier-number">1</div>
+        <h3>Tier 1: Primitives (No Context)</h3>
+        <p>
+          Raw design values with no semantic meaning. These are the atoms of the system — colors organized by hue and luminance, spacing values in pixels, typography sizes in relative units.
+        </p>
+        <div class="tier-examples">
+          --brand-500: #7C3AED<br>
+          --grey-100: #F0F0F0<br>
+          --sp-16: 16px<br>
+          --fs-24: 24px
+        </div>
+      </div>
+
+      <div class="tier">
+        <div class="tier-number">2</div>
+        <h3>Tier 2: Semantic Tokens (Named by Intent)</h3>
+        <p>
+          Semantic aliases that assign meaning to primitives. These tokens answer the question "what is this for?" They exist in light and dark variants, enabling seamless theme switching.
+        </p>
+        <div class="tier-examples">
+          --bg-primary: var(--grey-0)<br>
+          --text-primary: var(--grey-900)<br>
+          --interactive-primary: var(--brand-500)<br>
+          --border-primary: var(--grey-200)
+        </div>
+      </div>
+
+      <div class="tier">
+        <div class="tier-number">3</div>
+        <h3>Tier 3: Usage-Ready Components</h3>
+        <p>
+          Fully built components that apply semantic tokens in context. Buttons, cards, inputs, and all other UI elements are constructed from Tier 2 tokens. When you change a Tier 2 token, all Tier 3 components update automatically.
+        </p>
+        <div class="tier-examples">
+          Button background: var(--interactive-primary)<br>
+          Button hover: var(--interactive-hover)<br>
+          Card padding: var(--sp-20)<br>
+          Card title font: var(--fs-20), var(--fw-semi)
+        </div>
+      </div>
+    </div>
+
+    <div style="background: var(--bg-secondary); padding: var(--sp-32); border-radius: 8px; margin-top: var(--sp-48);">
+      <h2 style="margin-bottom: var(--sp-20);">Why This Structure Matters</h2>
+      <ul style="color: var(--text-secondary); line-height: var(--lh-relaxed); display: grid; gap: var(--sp-16);">
+        <li><strong style="color: var(--text-primary);">Single source of truth:</strong> Change a primitive blue → all brand-related tokens update → entire UI respects the change.</li>
+        <li><strong style="color: var(--text-primary);">Semantic clarity:</strong> Designers and developers speak the same language ("use the interactive-primary color").</li>
+        <li><strong style="color: var(--text-primary);">Theme flexibility:</strong> Light and dark modes are built in. Switch between them instantly across the entire system.</li>
+        <li><strong style="color: var(--text-primary);">Scale instantly:</strong> Add a new primitive color once. It cascades through semantic tokens to all components automatically.</li>
+        <li><strong style="color: var(--text-primary);">Product variants:</strong> Create different product token sets without rebuilding components.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div id="admin" class="page">
+  <div class="container">
+    <h1 style="font-size: var(--fs-40); margin: var(--sp-32) 0 var(--sp-24) 0; color: var(--danger-500);">⚙️ Design System Admin</h1>
+    <p style="color: var(--text-secondary); font-size: var(--fs-18); margin-bottom: var(--sp-48); line-height: var(--lh-relaxed);">
+      Manage your design tokens, create products, customize token values, and maintain the source of truth for your design system.
+    </p>
+
+    <!-- PRODUCT MANAGEMENT -->
+    <div class="admin-section">
+      <h2>Product Management</h2>
+      <div class="product-manager">
+        <div class="form-group">
+          <label for="newProductName">Create New Product</label>
+          <div style="display: flex; gap: var(--sp-12);">
+            <input type="text" id="newProductName" placeholder="e.g., PDF Editor, Web App, Mobile">
+            <button class="btn" onclick="createNewProduct()">Create</button>
+          </div>
+        </div>
+
+        <div style="margin-top: var(--sp-24);">
+          <h3 style="margin-bottom: var(--sp-12); font-size: var(--fs-16);">Active Products</h3>
+          <div class="product-list" id="productList">
+            <div class="product-item active">
+              <span><strong>Default System</strong></span>
+              <span style="font-size: var(--fs-12); color: var(--text-secondary);">Active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOKEN EDITING -->
+    <div class="admin-section">
+      <h2>Token Customization</h2>
+      <div class="product-manager">
+        <div style="margin-bottom: var(--sp-24);">
+          <h3 style="margin-bottom: var(--sp-16); font-size: var(--fs-18);">Edit Colors</h3>
+          <p style="color: var(--text-secondary); margin-bottom: var(--sp-16); font-size: var(--fs-14);">Change primitive colors and watch them cascade through your entire system in real-time.</p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-20); margin-bottom: var(--sp-20);">
+            <div class="form-group">
+              <label for="primaryColor">Primary Brand Color</label>
+              <div style="display: flex; gap: var(--sp-12); align-items: center;">
+                <input type="text" id="primaryColor" value="#7C3AED" placeholder="#RRGGBB" onchange="updateTokens()">
+                <input type="color" id="primaryColorPicker" value="#7C3AED" onchange="syncColor('primary')">
+              </div>
+              <small style="color: var(--text-secondary);">Used in: Interactive, Buttons, Links</small>
+            </div>
+            <div class="form-group">
+              <label for="successColor">Success Color</label>
+              <div style="display: flex; gap: var(--sp-12); align-items: center;">
+                <input type="text" id="successColor" value="#22C55E" placeholder="#RRGGBB" onchange="updateTokens()">
+                <input type="color" id="successColorPicker" value="#22C55E" onchange="syncColor('success')">
+              </div>
+              <small style="color: var(--text-secondary);">Used in: Success states, Validation</small>
+            </div>
+            <div class="form-group">
+              <label for="dangerColor">Danger Color</label>
+              <div style="display: flex; gap: var(--sp-12); align-items: center;">
+                <input type="text" id="dangerColor" value="#EF4444" placeholder="#RRGGBB" onchange="updateTokens()">
+                <input type="color" id="dangerColorPicker" value="#EF4444" onchange="syncColor('danger')">
+              </div>
+              <small style="color: var(--text-secondary);">Used in: Alerts, Destructive actions</small>
+            </div>
+            <div class="form-group">
+              <label for="baseSpacing">Base Spacing Unit (px)</label>
+              <input type="number" id="baseSpacing" value="4" min="1" onchange="updateTokens()" style="width: 100%;">
+              <small style="color: var(--text-secondary);">Multiplied to generate 4, 8, 12, 16, 20... scales</small>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-primary); padding-top: var(--sp-20);">
+          <h3 style="margin-bottom: var(--sp-16); font-size: var(--fs-18);">Color Cascade Visualization</h3>
+          <p style="color: var(--text-secondary); margin-bottom: var(--sp-16); font-size: var(--fs-14);">See how primary color changes affect all dependent tokens.</p>
+          <div id="cascadeVisualization" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--sp-16);">
+            <!-- Will be populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMPORT / EXPORT -->
+    <div class="admin-section">
+      <h2>Import / Export</h2>
+      <div class="product-manager">
+        <div style="margin-bottom: var(--sp-20);">
+          <h3 style="margin-bottom: var(--sp-12); font-size: var(--fs-16);">Export Current Product</h3>
+          <p style="color: var(--text-secondary); margin-bottom: var(--sp-12);">Download your token set as JSON for integration with development tools.</p>
+          <button class="btn" onclick="exportTokens()">Download JSON</button>
+        </div>
+        <div style="border-top: 1px solid var(--border-primary); padding-top: var(--sp-20);">
+          <h3 style="margin-bottom: var(--sp-12); font-size: var(--fs-16);">Import Product Tokens</h3>
+          <p style="color: var(--text-secondary); margin-bottom: var(--sp-12);">Upload a previously exported JSON file to restore or create a new product.</p>
+          <input type="file" id="importFile" accept=".json" style="margin-bottom: var(--sp-12);">
+          <button class="btn" onclick="importTokens()">Import JSON</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 Tokn Design System. Built with precision, powered by unified tokens.</p>
+</footer>
+
+<script>
+// ============= DATA STORE =============
+const DataStore = {
+  currentProduct: 'Default System',
+  products: {},
+  
+  defaultTokens() {
+    return {
+      colors: {
+        'brand-primary': '#7C3AED',
+        'brand-secondary': '#6D28D9',
+        'success': '#22C55E',
+        'danger': '#EF4444',
+        'warning': '#F59E0B',
+        'info': '#3B82F6'
+      },
+      spacing: {
+        'base-unit': 4,
+        'scale': [0, 4, 8, 12, 16, 20, 24, 32, 40, 48, 60, 80, 120]
+      },
+      typography: {
+        'body-size': 16,
+        'sizes': [12, 14, 16, 18, 20, 24, 32, 40],
+        'line-height': [1.2, 1.4, 1.6],
+        'letter-spacing': [-0.02, 0, 0.04]
+      }
+    };
+  },
+  
+  init() {
+    const stored = localStorage.getItem('tokn-products');
+    if (stored) {
+      this.products = JSON.parse(stored);
+    } else {
+      this.products['Default System'] = this.defaultTokens();
+      this.save();
+    }
+  },
+  
+  save() {
+    localStorage.setItem('tokn-products', JSON.stringify(this.products));
+  },
+  
+  getCurrentTokens() {
+    return this.products[this.currentProduct] || this.defaultTokens();
+  },
+  
+  createProduct(name) {
+    if (this.products[name]) {
+      return false;
+    }
+    this.products[name] = this.defaultTokens();
+    this.save();
+    return true;
+  },
+  
+  switchProduct(name) {
+    if (this.products[name]) {
+      this.currentProduct = name;
+      localStorage.setItem('tokn-current-product', name);
+      this.applyTokens();
+      renderProductList();
+      return true;
+    }
+    return false;
+  },
+  
+  deleteProduct(name) {
+    if (name === 'Default System') {
+      return false; // Prevent deleting default
+    }
+    delete this.products[name];
+    if (this.currentProduct === name) {
+      this.currentProduct = 'Default System';
+    }
+    this.save();
+    renderProductList();
+    return true;
+  },
+  
+  updateToken(path, value) {
+    const keys = path.split('.');
+    let obj = this.getCurrentTokens();
+    
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (!obj[keys[i]]) obj[keys[i]] = {};
+      obj = obj[keys[i]];
+    }
+    
+    obj[keys[keys.length - 1]] = value;
+    this.products[this.currentProduct] = this.getCurrentTokens();
+    this.save();
+    this.applyTokens();
+  },
+  
+  applyTokens() {
+    const tokens = this.getCurrentTokens();
+    const root = document.documentElement;
+    
+    // Apply color tokens
+    if (tokens.colors) {
+      root.style.setProperty('--interactive-primary', tokens.colors['brand-primary']);
+      root.style.setProperty('--interactive-hover', tokens.colors['brand-secondary']);
+      root.style.setProperty('--success-500', tokens.colors['success']);
+      root.style.setProperty('--danger-500', tokens.colors['danger']);
+    }
+    
+    // Apply spacing token
+    if (tokens.spacing?.['base-unit']) {
+      const unit = tokens.spacing['base-unit'];
+      root.style.setProperty('--sp-4', (unit * 1) + 'px');
+      root.style.setProperty('--sp-8', (unit * 2) + 'px');
+      root.style.setProperty('--sp-12', (unit * 3) + 'px');
+      root.style.setProperty('--sp-16', (unit * 4) + 'px');
+      root.style.setProperty('--sp-20', (unit * 5) + 'px');
+      root.style.setProperty('--sp-24', (unit * 6) + 'px');
+      root.style.setProperty('--sp-32', (unit * 8) + 'px');
+    }
+    
+    // Apply typography base size
+    if (tokens.typography?.['body-size']) {
+      root.style.setProperty('--fs-16', tokens.typography['body-size'] + 'px');
+    }
+  }
+};
+
+// ============= PAGE NAVIGATION =============
+function navigate(pageId) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
+  });
+
+  // Show selected page
+  const page = document.getElementById(pageId);
+  if (page) {
+    page.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // Update nav links
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.classList.remove('active');
+  });
+  event?.target?.classList.add('active');
+}
+
+// ============= THEME TOGGLE =============
+function toggleTheme() {
+  const html = document.documentElement;
+  const currentTheme = html.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+}
+
+// ============= PRODUCT MANAGEMENT =============
+function renderProductList() {
+  const productList = document.getElementById('productList');
+  productList.innerHTML = '';
+  
+  Object.keys(DataStore.products).forEach(name => {
+    const isActive = name === DataStore.currentProduct;
+    const item = document.createElement('div');
+    item.className = `product-item ${isActive ? 'active' : ''}`;
+    item.innerHTML = `
+      <div>
+        <strong>${name}</strong>
+        <span style="font-size: var(--fs-12); color: var(--text-secondary); display: block; margin-top: var(--sp-4);">
+          ${Object.keys(DataStore.products[name].colors || {}).length} tokens
+        </span>
+      </div>
+      <div style="display: flex; gap: var(--sp-8); align-items: center;">
+        ${!isActive ? `<button class="btn" style="padding: var(--sp-8) var(--sp-12); font-size: var(--fs-12);" onclick="switchProduct('${name}')">Switch</button>` : '<span style="color: var(--text-secondary);">Current</span>'}
+        ${name !== 'Default System' ? `<button class="btn btn-secondary" style="padding: var(--sp-8) var(--sp-12); font-size: var(--fs-12); color: var(--danger-500);" onclick="deleteProduct('${name}')">Delete</button>` : ''}
+      </div>
+    `;
+    productList.appendChild(item);
+  });
+}
+
+function switchProduct(name) {
+  if (DataStore.switchProduct(name)) {
+    showToast(`Switched to "${name}"`, 'success');
+    updateTokenInputs();
+  } else {
+    showToast('Failed to switch product', 'error');
+  }
+}
+
+function deleteProduct(name) {
+  if (confirm(`Delete product "${name}"? This cannot be undone.`)) {
+    if (DataStore.deleteProduct(name)) {
+      showToast(`Product "${name}" deleted`, 'success');
+      renderProductList();
+    }
+  }
+}
+
+function createNewProduct() {
+  const name = document.getElementById('newProductName').value?.trim();
+  if (!name) {
+    showToast('Please enter a product name', 'error');
+    return;
+  }
+  if (DataStore.createProduct(name)) {
+    showToast(`Product "${name}" created!`, 'success');
+    document.getElementById('newProductName').value = '';
+    renderProductList();
+  } else {
+    showToast('Product already exists', 'error');
+  }
+}
+
+// ============= TOKEN UPDATES =============
+function updateTokenInputs() {
+  const tokens = DataStore.getCurrentTokens();
+  document.getElementById('primaryColor').value = tokens.colors['brand-primary'] || '#7C3AED';
+  document.getElementById('successColor').value = tokens.colors['success'] || '#22C55E';
+  document.getElementById('dangerColor').value = tokens.colors['danger'] || '#EF4444';
+  document.getElementById('baseSpacing').value = tokens.spacing['base-unit'] || 4;
+  
+  // Sync color pickers
+  document.getElementById('primaryColorPicker').value = document.getElementById('primaryColor').value;
+  document.getElementById('successColorPicker').value = document.getElementById('successColor').value;
+  document.getElementById('dangerColorPicker').value = document.getElementById('dangerColor').value;
+  
+  renderCascadeVisualization();
+}
+
+function syncColor(type) {
+  const picker = document.getElementById(type + 'ColorPicker').value;
+  document.getElementById(type + 'Color').value = picker;
+  updateTokens();
+}
+
+function renderCascadeVisualization() {
+  const cascade = document.getElementById('cascadeVisualization');
+  cascade.innerHTML = '';
+  
+  const primary = document.getElementById('primaryColor').value;
+  
+  const cascadeData = [
+    { name: 'Primary Primitive', value: primary, uses: 'Source token' },
+    { name: 'Interactive (Default)', value: primary, uses: 'Buttons, links' },
+    { name: 'Interactive (Hover)', value: darkenColor(primary, 15), uses: 'Hover states' },
+    { name: 'Interactive (Active)', value: darkenColor(primary, 30), uses: 'Active states' },
+    { name: 'Brand Token', value: primary, uses: 'Semantic layer' },
+    { name: 'Accent Color', value: lightenColor(primary, 20), uses: 'Secondary actions' }
+  ];
+  
+  cascadeData.forEach(item => {
+    const box = document.createElement('div');
+    box.style.background = 'var(--bg-secondary)';
+    box.style.padding = 'var(--sp-16)';
+    box.style.borderRadius = '8px';
+    box.style.border = '1px solid var(--border-primary)';
+    box.style.transition = 'all 0.3s';
+    
+    const preview = document.createElement('div');
+    preview.style.width = '100%';
+    preview.style.height = '60px';
+    preview.style.background = item.value;
+    preview.style.borderRadius = '4px';
+    preview.style.marginBottom = 'var(--sp-12)';
+    preview.style.border = '1px solid var(--border-secondary)';
+    
+    const name = document.createElement('div');
+    name.style.fontWeight = 'var(--fw-semi)';
+    name.style.fontSize = 'var(--fs-14)';
+    name.style.marginBottom = 'var(--sp-4)';
+    name.textContent = item.name;
+    
+    const value = document.createElement('div');
+    value.style.fontFamily = 'monospace';
+    value.style.fontSize = 'var(--fs-12)';
+    value.style.color = 'var(--text-secondary)';
+    value.style.marginBottom = 'var(--sp-8)';
+    value.textContent = item.value;
+    
+    const uses = document.createElement('div');
+    uses.style.fontSize = 'var(--fs-12)';
+    uses.style.color = 'var(--text-secondary)';
+    uses.textContent = item.uses;
+    
+    box.appendChild(preview);
+    box.appendChild(name);
+    box.appendChild(value);
+    box.appendChild(uses);
+    cascade.appendChild(box);
+  });
+}
+
+function darkenColor(hex, percent) {
+  const num = parseInt(hex.replace('#',''), 16);
+  const r = Math.max(0, (num >> 16) - percent);
+  const g = Math.max(0, ((num >> 8) & 0x00FF) - percent);
+  const b = Math.max(0, (num & 0x0000FF) - percent);
+  return '#' + (0x1000000 + r*0x10000 + g*0x100 + b).toString(16).substring(1);
+}
+
+function lightenColor(hex, percent) {
+  const num = parseInt(hex.replace('#',''), 16);
+  const r = Math.min(255, (num >> 16) + percent);
+  const g = Math.min(255, ((num >> 8) & 0x00FF) + percent);
+  const b = Math.min(255, (num & 0x0000FF) + percent);
+  return '#' + (0x1000000 + r*0x10000 + g*0x100 + b).toString(16).substring(1);
+}
+
+function updateTokens() {
+  const primary = document.getElementById('primaryColor').value;
+  const success = document.getElementById('successColor').value;
+  const danger = document.getElementById('dangerColor').value;
+  const spacing = parseInt(document.getElementById('baseSpacing').value);
+
+  if (!/^#[0-9A-F]{6}$/i.test(primary)) {
+    showToast('Invalid primary color format (use #RRGGBB)', 'error');
+    return;
+  }
+  if (!/^#[0-9A-F]{6}$/i.test(success)) {
+    showToast('Invalid success color format (use #RRGGBB)', 'error');
+    return;
+  }
+  if (!/^#[0-9A-F]{6}$/i.test(danger)) {
+    showToast('Invalid danger color format (use #RRGGBB)', 'error');
+    return;
+  }
+
+  DataStore.updateToken('colors.brand-primary', primary);
+  DataStore.updateToken('colors.success', success);
+  DataStore.updateToken('colors.danger', danger);
+  DataStore.updateToken('spacing.base-unit', spacing);
+  
+  // Sync color pickers
+  document.getElementById('primaryColorPicker').value = primary;
+  document.getElementById('successColorPicker').value = success;
+  document.getElementById('dangerColorPicker').value = danger;
+  
+  // Update cascade visualization
+  renderCascadeVisualization();
+  
+  showToast('Tokens updated and applied globally!', 'success');
+}
+
+// ============= IMPORT / EXPORT =============
+function exportTokens() {
+  const tokens = DataStore.getCurrentTokens();
+  const dataStr = JSON.stringify({
+    product: DataStore.currentProduct,
+    tokens: tokens,
+    exportedAt: new Date().toISOString()
+  }, null, 2);
+  
+  const dataBlob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(dataBlob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `tokn-${DataStore.currentProduct.replace(/\s+/g, '-')}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+  
+  showToast('Tokens exported!', 'success');
+}
+
+function importTokens() {
+  const file = document.getElementById('importFile').files[0];
+  if (!file) {
+    showToast('Please select a file', 'error');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      const productName = data.product || `Imported ${new Date().toLocaleString()}`;
+      const tokens = data.tokens || data;
+      
+      DataStore.products[productName] = tokens;
+      DataStore.save();
+      DataStore.switchProduct(productName);
+      renderProductList();
+      updateTokenInputs();
+      document.getElementById('importFile').value = '';
+      showToast(`Imported product: "${productName}"!`, 'success');
+    } catch (error) {
+      showToast('Invalid JSON file format', 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ============= TOAST NOTIFICATIONS =============
+function showToast(message, type = 'success') {
+  const toast = document.createElement('div');
+  toast.className = `toast-notification ${type}`;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.animation = 'slideOut 0.3s ease forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
+// Add slide-out animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes slideOut {
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+`;
+document.head.appendChild(style);
+
+// ============= INITIALIZATION =============
+window.addEventListener('DOMContentLoaded', function() {
+  // Init theme
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  
+  // Init DataStore
+  DataStore.init();
+  
+  // Load saved product
+  const savedProduct = localStorage.getItem('tokn-current-product');
+  if (savedProduct && DataStore.products[savedProduct]) {
+    DataStore.currentProduct = savedProduct;
+  }
+  
+  // Apply tokens to page
+  DataStore.applyTokens();
+  
+  // Render UI
+  renderProductList();
+  updateTokenInputs();
+});
+</script>
+
+</body>
+</html>

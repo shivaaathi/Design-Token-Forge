@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tokn — Reimagined Portal Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0C0E11;--bg-s:#111418;--bg-e:#181C22;--bg-o:#1E242D;
+  --br-f:rgba(255,255,255,.04);--br-s:rgba(255,255,255,.07);--br-d:rgba(255,255,255,.11);--br-h:rgba(255,255,255,.18);
+  --tx-1:#EEF0F3;--tx-2:#828C9A;--tx-m:#5A6577;
+  --primary:#286CE5;--brand:#E53F28;--success:#0F9146;--danger:#D11F24;--warning:#C68A19;--info:#0891B2;
+  --g-brand:rgba(229,63,40,.14);--g-primary:rgba(40,108,229,.14);
+  --f-ui:'DM Sans',sans-serif;--f-mono:'DM Mono',monospace;--f-disp:'Fraunces',serif;
+  --radius:8px;
+  --tool-w:220px;
+  --topbar-h:48px;
+  --inspector-h:0px;
+}
+html,body{height:100%;background:var(--bg);color:var(--tx-1);font-family:var(--f-ui);font-size:13px;line-height:1.5;overflow:hidden}
+
+/* ─── Shell ─── */
+.shell{display:grid;grid-template-columns:var(--tool-w) 1fr;grid-template-rows:var(--topbar-h) 1fr;height:100vh;transition:grid-template-columns .3s ease}
+
+/* ─── Topbar ─── */
+.topbar{grid-column:1/-1;display:flex;align-items:center;border-bottom:1px solid var(--br-s);background:rgba(12,14,17,.97);backdrop-filter:blur(12px);z-index:20;padding:0 16px;gap:12px}
+.logo-z{width:var(--tool-w);flex-shrink:0;display:flex;align-items:center;gap:10px;padding:0 2px}
+.logo-m{width:26px;height:26px;background:var(--brand);border-radius:7px;display:grid;place-items:center;font-size:13px;box-shadow:0 0 16px var(--g-brand)}
+.logo-w{font-family:var(--f-disp);font-size:17px;font-weight:300;letter-spacing:-.2px}
+.logo-w em{font-style:italic;color:var(--brand)}
+
+.tb-search{display:flex;align-items:center;gap:6px;background:var(--bg-e);border:1px solid var(--br-d);border-radius:7px;padding:5px 10px;width:280px;transition:border-color .15s}
+.tb-search:focus-within{border-color:var(--primary)}
+.tb-search svg{width:14px;height:14px;color:var(--tx-m);flex-shrink:0}
+.tb-search input{background:none;border:none;outline:none;color:var(--tx-1);font-family:var(--f-ui);font-size:12px;width:100%}
+.tb-search input::placeholder{color:var(--tx-m)}
+
+.tb-spacer{flex:1}
+
+/* Mode pills */
+.mode-pills{display:flex;background:var(--bg-e);border:1px solid var(--br-d);border-radius:7px;padding:3px;gap:2px}
+.mode-pill{padding:3px 12px;border-radius:5px;font-size:11.5px;font-weight:500;cursor:pointer;color:var(--tx-m);transition:all .12s;user-select:none}
+.mode-pill.on{background:var(--bg-o);color:var(--tx-1)}
+.mode-pill:hover:not(.on){color:var(--tx-2)}
+
+/* X-Ray toggle */
+.xray-btn{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:7px;font-size:11.5px;font-weight:500;cursor:pointer;border:1px solid var(--br-d);background:transparent;color:var(--tx-m);transition:all .15s;user-select:none}
+.xray-btn.on{background:rgba(40,108,229,.12);border-color:var(--primary);color:var(--primary);box-shadow:0 0 12px rgba(40,108,229,.15)}
+.xray-btn svg{width:14px;height:14px}
+
+.tb-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:7px;font-family:var(--f-ui);font-size:12px;font-weight:500;cursor:pointer;border:none;outline:none;transition:all .14s;background:var(--primary);color:#fff;box-shadow:0 0 18px var(--g-primary)}
+
+/* ─── Tool Panel (left) ─── */
+.tool-panel{background:var(--bg-s);border-right:1px solid var(--br-s);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+.tool-panel::-webkit-scrollbar{width:4px}
+.tool-panel::-webkit-scrollbar-thumb{background:var(--br-d);border-radius:2px}
+
+.tool-section{padding:14px 14px 10px;border-bottom:1px solid var(--br-s)}
+.tool-lbl{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tx-m);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.tool-lbl-tag{font-size:9px;font-weight:500;letter-spacing:0;text-transform:none;padding:1px 5px;border-radius:8px;background:var(--bg-o);color:var(--tx-2)}
+
+/* Surface zone selectors */
+.zone-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.zone-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.zone-name{font-size:11px;color:var(--tx-2);width:52px;flex-shrink:0}
+.zone-sel{flex:1;font-size:10px;padding:3px 6px;border-radius:5px;border:1px solid var(--br-d);background:var(--bg-e);color:var(--tx-1);cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%235A6577' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 4px center;padding-right:16px}
+
+/* Role pills */
+.role-pills{display:flex;flex-wrap:wrap;gap:4px}
+.role-pill{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:16px;font-size:10.5px;color:var(--tx-2);border:1px solid var(--br-d);cursor:pointer;transition:all .12s}
+.role-pill:hover{border-color:var(--br-h);color:var(--tx-1)}
+.role-pill.on{background:var(--bg-o);border-color:var(--br-h);color:var(--tx-1);font-weight:500}
+.role-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+
+/* Density slider */
+.density-track{position:relative;height:24px;margin:6px 0}
+.density-input{width:100%;-webkit-appearance:none;appearance:none;height:4px;background:var(--bg-o);border-radius:2px;outline:none;cursor:pointer}
+.density-input::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--primary);border:2px solid var(--bg);box-shadow:0 0 8px rgba(40,108,229,.3);cursor:pointer}
+.density-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--tx-m);font-family:var(--f-mono);margin-top:2px}
+.density-val{font-family:var(--f-mono);font-size:11px;color:var(--tx-1);text-align:center;margin-top:2px}
+
+/* Theme toggle */
+.theme-row{display:flex;gap:2px;background:var(--bg-e);border:1px solid var(--br-d);border-radius:7px;padding:3px}
+.theme-opt{flex:1;text-align:center;padding:4px 8px;border-radius:5px;font-size:11px;cursor:pointer;color:var(--tx-m);transition:all .12s;user-select:none}
+.theme-opt.on{background:var(--bg-o);color:var(--tx-1)}
+
+/* Stats */
+.tool-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--br-s);border-radius:8px;overflow:hidden;margin-top:6px}
+.tool-stat{background:var(--bg-e);padding:8px 10px}
+.tool-stat-v{font-family:var(--f-mono);font-size:15px;font-weight:500;color:var(--tx-1)}
+.tool-stat-l{font-size:9px;color:var(--tx-m);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+
+/* Deep dive link */
+.deep-link{display:flex;align-items:center;gap:6px;padding:8px 10px;margin:8px 0;border-radius:7px;border:1px solid var(--br-d);color:var(--tx-2);font-size:11px;cursor:pointer;transition:all .12s}
+.deep-link:hover{border-color:var(--br-h);color:var(--tx-1);background:var(--bg-e)}
+.deep-link svg{width:14px;height:14px;flex-shrink:0;color:var(--primary)}
+
+/* ─── Canvas (main area) ─── */
+.canvas-area{display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden}
+
+/* Intro overlay */
+.intro-overlay{position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity .6s ease,visibility .6s ease}
+.intro-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.intro-content{text-align:center;max-width:520px;padding:40px}
+.intro-token-demo{margin-bottom:40px;position:relative;height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.intro-btn-mock{display:inline-flex;align-items:center;justify-content:center;padding:10px 28px;border-radius:8px;font-size:14px;font-weight:500;transition:all .5s ease;cursor:default}
+.intro-tier-label{font-family:var(--f-mono);font-size:11px;padding:3px 10px;border-radius:12px;transition:all .5s ease;letter-spacing:.03em}
+.intro-subtitle{font-size:12px;color:var(--tx-m);line-height:1.7;margin-bottom:28px;max-width:400px;margin-left:auto;margin-right:auto}
+.intro-title{font-family:var(--f-disp);font-size:36px;font-weight:300;letter-spacing:-.5px;margin-bottom:12px}
+.intro-title em{font-style:italic;color:var(--brand)}
+.intro-stats{display:flex;gap:20px;justify-content:center;margin-bottom:32px;font-family:var(--f-mono);font-size:11px;color:var(--tx-m)}
+.intro-stats strong{color:var(--tx-1);font-weight:600;font-size:15px;margin-right:3px}
+.intro-enter{display:inline-flex;align-items:center;gap:8px;padding:10px 28px;border-radius:8px;background:var(--primary);color:#fff;font-size:13px;font-weight:500;cursor:pointer;border:none;outline:none;box-shadow:0 0 24px var(--g-primary);transition:transform .15s,box-shadow .15s}
+.intro-enter:hover{transform:translateY(-2px);box-shadow:0 4px 32px var(--g-primary)}
+
+/* Demo app canvas */
+.demo-canvas{flex:1;overflow:auto;padding:20px;display:flex;align-items:flex-start;justify-content:center}
+.demo-frame{width:100%;max-width:1100px;border:1px solid var(--br-d);border-radius:12px;overflow:hidden;background:var(--bg-s);box-shadow:0 4px 32px rgba(0,0,0,.3);position:relative;min-height:480px}
+/* Mock app inside frame */
+.mock-app{display:grid;grid-template-columns:200px 1fr;min-height:480px;font-size:13px}
+.mock-nav{background:#16191E;border-right:1px solid rgba(255,255,255,.06);padding:24px 20px;display:flex;flex-direction:column;gap:20px}
+.mock-nav-profile{display:flex;align-items:center;gap:10px}
+.mock-av{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.15);display:grid;place-items:center;font-size:14px;font-weight:600;color:#ccc;background:#232730}
+.mock-nav-name{font-size:12px;color:#bbb;font-weight:500}
+.mock-nav-sub{font-size:10px;color:#666}
+.mock-nav-items{display:flex;flex-direction:column;gap:2px}
+.mock-nav-i{padding:8px 10px;border-radius:6px;font-size:12px;color:#8a8a8a;cursor:default;display:flex;align-items:center;gap:8px}
+.mock-nav-i.on{background:rgba(255,255,255,.06);color:#ddd}
+.mock-nav-i .ni-dot{width:8px;height:8px;border-radius:3px}
+.mock-content{background:#1A1D23;display:flex;flex-direction:column}
+.mock-topbar{height:52px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.mock-topbar-title{font-size:14px;font-weight:500;color:#ddd}
+.mock-topbar-icons{display:flex;gap:12px;color:#666}
+.mock-body{flex:1;padding:24px;display:flex;gap:40px}
+.mock-body-left{width:200px;flex-shrink:0}
+.mock-body-left h3{font-size:15px;font-weight:600;color:#ddd;margin-bottom:8px}
+.mock-body-left p{font-size:11px;color:#666;line-height:1.6;margin-bottom:14px}
+.mock-invite-btn{display:inline-flex;align-items:center;padding:7px 16px;border-radius:6px;font-size:12px;font-weight:500;cursor:default}
+.mock-card{flex:1;border-radius:8px;border:1px solid rgba(255,255,255,.06);overflow:hidden}
+.mock-card-row{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.04)}
+.mock-card-row:last-child{border-bottom:none}
+.mock-card-user{display:flex;align-items:center;gap:10px}
+.mock-card-av{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0}
+.mock-card-name{font-size:12px;color:#ccc}
+.mock-card-email{font-size:10px;color:#666}
+.mock-card-role{font-size:11px;color:#888;padding:4px 10px;border:1px solid rgba(255,255,255,.08);border-radius:5px}
+
+/* X-Ray overlays */
+.xray-active .mock-app *[data-xr]{position:relative}
+.xray-active .mock-app *[data-xr]::after{content:attr(data-xr);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:rgba(40,108,229,.95);color:#fff;font-family:var(--f-mono);font-size:9px;padding:2px 6px;border-radius:3px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.xray-active .mock-app *[data-xr]:hover::after{opacity:1}
+.xray-active .mock-app *[data-xr]{outline:1px dashed rgba(40,108,229,.3) !important}
+.xray-active .mock-app *[data-xr]:hover{outline:1px solid rgba(40,108,229,.8) !important;outline-offset:2px}
+
+/* Zone labels (x-ray mode) */
+.zone-label{display:none;position:absolute;font-family:var(--f-mono);font-size:9px;padding:2px 6px;border-radius:3px;z-index:5;pointer-events:none}
+.xray-active .zone-label{display:block}
+
+/* ─── Inspector Panel (bottom) ─── */
+.inspector{background:var(--bg-s);border-top:1px solid var(--br-s);display:flex;flex-direction:column;overflow:hidden;max-height:0;transition:max-height .3s ease}
+.inspector.open{max-height:260px}
+.insp-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--br-s);flex-shrink:0}
+.insp-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--tx-m);display:flex;align-items:center;gap:8px}
+.insp-title-dot{width:8px;height:8px;border-radius:2px;background:var(--primary)}
+.insp-close{width:24px;height:24px;border-radius:5px;display:grid;place-items:center;cursor:pointer;color:var(--tx-m);border:none;background:transparent;font-size:14px;transition:background .12s}
+.insp-close:hover{background:var(--bg-e);color:var(--tx-1)}
+.insp-body{flex:1;overflow-y:auto;padding:12px 16px;display:flex;gap:20px}
+.insp-body::-webkit-scrollbar{height:4px}
+.insp-body::-webkit-scrollbar-thumb{background:var(--br-d);border-radius:2px}
+
+/* Token trace */
+.trace{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.trace-tier{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 12px;border-radius:8px;border:1px solid var(--br-s);background:var(--bg-e);min-width:100px}
+.trace-tier-label{font-family:var(--f-mono);font-size:9px;padding:1px 6px;border-radius:8px;font-weight:500}
+.trace-tier-name{font-size:10px;color:var(--tx-2);text-align:center;line-height:1.3}
+.trace-tier-val{display:flex;align-items:center;gap:4px;font-family:var(--f-mono);font-size:10px;color:var(--tx-1)}
+.trace-tier-swatch{width:12px;height:12px;border-radius:3px;border:1px solid rgba(128,128,128,.2)}
+.trace-arrow{color:var(--tx-m);font-size:14px;flex-shrink:0}
+
+/* Specimen strip */
+.specimen-strip{display:flex;gap:8px;flex-shrink:0;padding:4px 0}
+.specimen{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 12px;border-radius:8px;border:1px solid var(--br-s);background:var(--bg-e)}
+.specimen-label{font-size:9px;color:var(--tx-m);font-family:var(--f-mono)}
+.specimen-btn{padding:5px 12px;border-radius:5px;font-size:11px;font-weight:500;cursor:default;white-space:nowrap}
+
+/* Contextual hint bubble */
+.hint-bubble{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--bg-o);border:1px solid var(--br-d);border-radius:10px;padding:8px 16px;font-size:11px;color:var(--tx-2);box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:100;opacity:0;transition:opacity .3s ease,transform .3s ease;pointer-events:none;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.hint-bubble.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.hint-bubble .hint-icon{color:var(--primary);font-size:13px}
+.hint-dismiss{font-size:10px;color:var(--tx-m);margin-left:8px;cursor:pointer;padding:2px 6px;border-radius:4px;transition:background .1s}
+.hint-dismiss:hover{background:var(--bg-e)}
+
+/* Deep dive overlay */
+.deep-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.deep-overlay.open{opacity:1;visibility:visible}
+.deep-modal{background:var(--bg-s);border:1px solid var(--br-d);border-radius:14px;width:90%;max-width:900px;max-height:80vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.5)}
+.deep-modal::-webkit-scrollbar{width:5px}
+.deep-modal::-webkit-scrollbar-thumb{background:var(--br-d);border-radius:3px}
+.deep-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--br-s);position:sticky;top:0;background:var(--bg-s);z-index:1}
+.deep-title{font-family:var(--f-disp);font-size:18px;font-weight:300;letter-spacing:-.2px}
+.deep-close{width:28px;height:28px;border-radius:6px;display:grid;place-items:center;cursor:pointer;color:var(--tx-m);border:none;background:var(--bg-e);font-size:14px;transition:all .12s}
+.deep-close:hover{background:var(--bg-o);color:var(--tx-1)}
+.deep-body{padding:20px}
+.deep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:3px}
+.deep-cell{height:28px;border-radius:3px;cursor:pointer;transition:transform .1s;border:1px solid rgba(128,128,128,.08);position:relative}
+.deep-cell:hover{transform:scale(1.2);z-index:2;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.deep-section{margin-bottom:24px}
+.deep-section-t{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--tx-m);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.deep-section-t::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--primary)}
+
+/* Responsive */
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .tool-panel{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     CINEMATIC INTRO OVERLAY
+     ═══════════════════════════════════════════ -->
+<div class="intro-overlay" id="intro">
+  <div class="intro-content">
+    <div class="intro-token-demo" id="intro-demo">
+      <div class="intro-btn-mock" id="intro-btn" style="background:#286CE5;color:#fff;border:none">Button</div>
+      <div class="intro-tier-label" id="intro-tier" style="background:rgba(130,140,154,.15);color:var(--tx-2)">T0 · Brand/500 → #286CE5</div>
+    </div>
+    <div class="intro-title">tok<em>n</em></div>
+    <div class="intro-subtitle">A 4-tier contextual token system. Same variable, different surfaces, different values. Don't read about it — play with it.</div>
+    <div class="intro-stats">
+      <span><strong>607</strong> tokens</span>
+      <span><strong>4</strong> tiers</span>
+      <span><strong>9</strong> surfaces</span>
+      <span><strong>6</strong> roles</span>
+      <span><strong>10</strong> densities</span>
+    </div>
+    <button class="intro-enter" id="enter-btn" onclick="enterPortal()">Enter Playground →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MAIN SHELL
+     ═══════════════════════════════════════════ -->
+<div class="shell">
+
+  <!-- ─── Topbar ─── -->
+  <header class="topbar">
+    <div class="logo-z">
+      <div class="logo-m">◎</div><div class="logo-w">tok<em>n</em></div>
+    </div>
+    <div class="tb-search">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="5"/><path d="M10 10l4 4"/></svg>
+      <input type="text" placeholder="Search tokens…  ⌘K" autocomplete="off">
+    </div>
+    <div class="tb-spacer"></div>
+    <div class="mode-pills">
+      <div class="mode-pill on" onclick="setMode('play',this)">Play</div>
+      <div class="mode-pill" onclick="setMode('compare',this)">Compare</div>
+      <div class="mode-pill" onclick="setMode('export',this)">Export</div>
+    </div>
+    <div class="xray-btn" id="xray-toggle" onclick="toggleXray()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M8 2v12M2 8h12"/><circle cx="8" cy="8" r="2.5"/></svg>
+      X-Ray
+    </div>
+    <button class="tb-btn" onclick="openDeep()">Deep Dive</button>
+  </header>
+
+  <!-- ─── Left Tool Panel ─── -->
+  <aside class="tool-panel">
+    
+    <!-- Theme -->
+    <div class="tool-section">
+      <div class="tool-lbl">Token Theme</div>
+      <div class="theme-row">
+        <div class="theme-opt on" onclick="setTheme('light',this)">☀ Light</div>
+        <div class="theme-opt" onclick="setTheme('dark',this)">🌙 Dark</div>
+      </div>
+    </div>
+    
+    <!-- Zone Surfaces -->
+    <div class="tool-section">
+      <div class="tool-lbl">Zone Surfaces <span class="tool-lbl-tag">T2</span></div>
+      <div class="zone-row"><div class="zone-dot" style="background:#8B5CF6"></div><span class="zone-name">Nav</span>
+        <select class="zone-sel" onchange="showHint('T2 surfaces adapt 34 tokens per context')"><option>Inverse</option><option>Base</option><option>Deep</option><option>Container</option></select>
+      </div>
+      <div class="zone-row"><div class="zone-dot" style="background:#3B82F6"></div><span class="zone-name">Page</span>
+        <select class="zone-sel" onchange="showHint('Swapping surface resolves all 34 sub-tokens')"><option>Bright</option><option>Base</option><option>Deep</option><option>Accent</option></select>
+      </div>
+      <div class="zone-row"><div class="zone-dot" style="background:#10B981"></div><span class="zone-name">Users</span>
+        <select class="zone-sel" onchange="showHint('Component + content tokens shift on each surface')"><option>Deep</option><option>Base</option><option>Bright</option><option>Container</option></select>
+      </div>
+      <div class="zone-row"><div class="zone-dot" style="background:#F59E0B"></div><span class="zone-name">Invites</span>
+        <select class="zone-sel" onchange="showHint('Same UI, different context — tokens do the work')"><option>Deep</option><option>Base</option><option>Float</option><option>Over-Container</option></select>
+      </div>
+    </div>
+
+    <!-- Accent Role -->
+    <div class="tool-section">
+      <div class="tool-lbl">Accent Role <span class="tool-lbl-tag">T3</span></div>
+      <div class="role-pills">
+        <div class="role-pill on" onclick="pickRole(this)"><div class="role-dot" style="background:#286CE5"></div>Primary</div>
+        <div class="role-pill" onclick="pickRole(this)"><div class="role-dot" style="background:#E53F28"></div>Brand</div>
+        <div class="role-pill" onclick="pickRole(this)"><div class="role-dot" style="background:#0F9146"></div>Success</div>
+        <div class="role-pill" onclick="pickRole(this)"><div class="role-dot" style="background:#C68A19"></div>Warning</div>
+        <div class="role-pill" onclick="pickRole(this)"><div class="role-dot" style="background:#D11F24"></div>Danger</div>
+        <div class="role-pill" onclick="pickRole(this)"><div class="role-dot" style="background:#0891B2"></div>Info</div>
+      </div>
+    </div>
+
+    <!-- Density -->
+    <div class="tool-section">
+      <div class="tool-lbl">Density <span class="tool-lbl-tag">10 modes</span></div>
+      <div class="density-val" id="density-val">base</div>
+      <div class="density-track">
+        <input type="range" class="density-input" min="0" max="9" value="3" oninput="updateDensity(this.value)">
+      </div>
+      <div class="density-labels"><span>micro</span><span>tiny</span><span>sm</span><span>base</span><span>md</span><span>lg</span><span>big</span><span>huge</span><span>mega</span><span>ultra</span></div>
+    </div>
+
+    <!-- Status Role -->
+    <div class="tool-section">
+      <div class="tool-lbl">Status Badge <span class="tool-lbl-tag">T3</span></div>
+      <div class="role-pills">
+        <div class="role-pill on" onclick="pickStatus(this)"><div class="role-dot" style="background:#C68A19"></div>Pending</div>
+        <div class="role-pill" onclick="pickStatus(this)"><div class="role-dot" style="background:#D11F24"></div>Rejected</div>
+        <div class="role-pill" onclick="pickStatus(this)"><div class="role-dot" style="background:#0F9146"></div>Selected</div>
+      </div>
+    </div>
+
+    <!-- Deep Dive links -->
+    <div class="tool-section" style="border-bottom:none">
+      <div class="tool-lbl">Explore</div>
+      <div class="deep-link" onclick="openDeep()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+        Primitives · 148 colors
+      </div>
+      <div class="deep-link" onclick="openDeep()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="2.5" fill="currentColor"/></svg>
+        Roles · 6 × 18 tokens
+      </div>
+      <div class="deep-link" onclick="openDeep()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="3" width="13" height="10" rx="2"/><path d="M1.5 6h13"/></svg>
+        Surfaces · 9 × 34 tokens
+      </div>
+      <div class="deep-link" onclick="openDeep()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 4h12M2 8h8M2 12h10"/></svg>
+        Numbers · 151 tokens
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div style="padding:8px 14px;margin-top:auto;border-top:1px solid var(--br-s)">
+      <div class="tool-stats">
+        <div class="tool-stat"><div class="tool-stat-v">607</div><div class="tool-stat-l">Total Tokens</div></div>
+        <div class="tool-stat"><div class="tool-stat-v">4</div><div class="tool-stat-l">Tiers</div></div>
+        <div class="tool-stat"><div class="tool-stat-v">9</div><div class="tool-stat-l">Surfaces</div></div>
+        <div class="tool-stat"><div class="tool-stat-v">10</div><div class="tool-stat-l">Densities</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ─── Canvas Area ─── -->
+  <div class="canvas-area" id="canvas-area">
+
+    <!-- Demo app frame -->
+    <div class="demo-canvas">
+      <div class="demo-frame" id="demo-frame">
+        <div class="mock-app" id="mock-app">
+
+          <!-- Zone 1: Nav -->
+          <div class="mock-nav" data-xr="Zone 1 · inversesurface" style="position:relative">
+            <div class="zone-label" style="top:4px;right:4px;background:rgba(139,92,246,.85);color:#fff">Zone: Nav · inverse</div>
+            <div class="mock-nav-profile">
+              <div class="mock-av">S</div>
+              <div>
+                <div class="mock-nav-name">Sylvia Patt</div>
+                <div class="mock-nav-sub">School worker</div>
+              </div>
+            </div>
+            <div class="mock-nav-items">
+              <div class="mock-nav-i"><div class="ni-dot" style="background:#666;border-radius:3px"></div> Applicants</div>
+              <div class="mock-nav-i on"><div class="ni-dot" style="background:#2EACE1;border-radius:3px"></div> School 2</div>
+              <div class="mock-nav-i"><div class="ni-dot" style="background:#E18F2E;border-radius:3px"></div> School 3</div>
+              <div class="mock-nav-i"><div class="ni-dot" style="background:#BD2EE1;border-radius:3px"></div> Organization</div>
+              <div class="mock-nav-i"><div class="ni-dot" style="background:#666;border-radius:3px"></div> Settings</div>
+            </div>
+          </div>
+
+          <!-- Zone 2: Page Content -->
+          <div class="mock-content" style="position:relative">
+            <div class="zone-label" style="top:4px;right:4px;background:rgba(59,130,246,.85);color:#fff">Zone: Page · bright</div>
+            <div class="mock-topbar">
+              <div class="mock-topbar-title" data-xr="ct/strong · #D1D5DB">Settings</div>
+              <div class="mock-topbar-icons">
+                <span data-xr="ct/subtle · #666">🔔</span>
+                <span data-xr="ct/subtle · #666">✉</span>
+              </div>
+            </div>
+
+            <!-- Tabs -->
+            <div style="display:flex;padding:0 24px;border-bottom:1px solid rgba(255,255,255,.06)">
+              <div style="padding:10px 14px;font-size:12px;color:#666;cursor:default">General</div>
+              <div style="padding:10px 14px;font-size:12px;color:#ddd;border-bottom:3px solid #286CE5;margin-bottom:-1px;cursor:default" data-xr="accent/component/bg → #286CE5">Users</div>
+              <div style="padding:10px 14px;font-size:12px;color:#666;cursor:default">Security</div>
+              <div style="padding:10px 14px;font-size:12px;color:#666;cursor:default">Other</div>
+            </div>
+
+            <div class="mock-body">
+              <!-- Left description -->
+              <div class="mock-body-left">
+                <h3 data-xr="ct/strong · #D1D5DB">Users</h3>
+                <p data-xr="ct/subtle · #666">Manage team members, assign roles, and control access.</p>
+                <div class="mock-invite-btn" data-xr="primary/component/bg-default" style="background:#286CE5;color:#fff" onclick="openInspector('button')">Invite People</div>
+              </div>
+
+              <!-- Users card (Zone 3) -->
+              <div class="mock-card" data-xr="Zone 3 · surface-deep" style="position:relative;background:#141720">
+                <div class="zone-label" style="top:-18px;left:0;background:rgba(16,185,129,.85);color:#fff;font-size:8px">Zone: Users · deep</div>
+                
+                <div class="mock-card-row" onclick="openInspector('row')">
+                  <div class="mock-card-user">
+                    <div class="mock-card-av" style="background:#2EACE1">J</div>
+                    <div><div class="mock-card-name" data-xr="ct/strong · surface-deep">John Alexander</div><div class="mock-card-email" data-xr="ct/faint · surface-deep">john@zylker.com</div></div>
+                  </div>
+                  <div class="mock-card-role" data-xr="cm/outline · surface-deep">Admin</div>
+                </div>
+                <div class="mock-card-row" onclick="openInspector('row')">
+                  <div class="mock-card-user">
+                    <div class="mock-card-av" style="background:#BD2EE1">A</div>
+                    <div><div class="mock-card-name">Agnes Brakus</div><div class="mock-card-email">agnes@zylker.com</div></div>
+                  </div>
+                  <div class="mock-card-role">Reviewer</div>
+                </div>
+                <div class="mock-card-row" onclick="openInspector('row')">
+                  <div class="mock-card-user">
+                    <div class="mock-card-av" style="background:#E18F2E">M</div>
+                    <div><div class="mock-card-name">Mathew Hyatt</div><div class="mock-card-email">mathew@zylker.com</div></div>
+                  </div>
+                  <div class="mock-card-role">Reviewer</div>
+                </div>
+
+                <!-- Invites section (Zone 4) -->
+                <div style="border-top:1px solid rgba(255,255,255,.06);margin-top:8px;position:relative">
+                  <div class="zone-label" style="top:-18px;left:0;background:rgba(245,158,11,.85);color:#000;font-size:8px">Zone: Invites · deep</div>
+                  <div class="mock-card-row" onclick="openInspector('badge')">
+                    <div class="mock-card-user">
+                      <div class="mock-card-av" style="background:#2E6AE1">K</div>
+                      <div>
+                        <div style="display:flex;align-items:center;gap:6px">
+                          <span class="mock-card-name">Krystal Davis</span>
+                          <span data-xr="warning/container/bg" style="font-size:9px;padding:2px 6px;border-radius:10px;background:rgba(198,138,25,.15);color:#C68A19;border:1px solid rgba(198,138,25,.25)">Pending</span>
+                        </div>
+                        <div class="mock-card-email">krystal@zylker.com</div>
+                      </div>
+                    </div>
+                    <div style="display:flex;gap:6px">
+                      <span style="font-size:10px;color:#888;padding:4px 10px;border:1px solid rgba(255,255,255,.08);border-radius:5px" data-xr="cm/bg + cm/outline · surface-deep">Resend</span>
+                      <span style="font-size:10px;color:#D11F24;padding:4px 10px;border:1px solid rgba(209,31,36,.25);border-radius:5px" data-xr="danger/component/outline">Revoke</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Inspector (slides up from bottom) ─── -->
+    <div class="inspector" id="inspector">
+      <div class="insp-head">
+        <div class="insp-title"><div class="insp-title-dot"></div><span id="insp-element-name">Button · "Invite People"</span></div>
+        <button class="insp-close" onclick="closeInspector()">✕</button>
+      </div>
+      <div class="insp-body">
+        <!-- Token Resolution Trace -->
+        <div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--tx-m);margin-bottom:8px;font-weight:600">Token Resolution Chain</div>
+          <div class="trace">
+            <div class="trace-tier">
+              <div class="trace-tier-label" style="background:rgba(130,140,154,.15);color:var(--tx-2)">T0</div>
+              <div class="trace-tier-name">Brand/500</div>
+              <div class="trace-tier-val"><div class="trace-tier-swatch" style="background:#286CE5"></div>#286CE5</div>
+            </div>
+            <div class="trace-arrow">→</div>
+            <div class="trace-tier">
+              <div class="trace-tier-label" style="background:rgba(40,108,229,.15);color:var(--primary)">T1</div>
+              <div class="trace-tier-name">primary/<wbr>component/<wbr>bg-default</div>
+              <div class="trace-tier-val"><div class="trace-tier-swatch" style="background:#286CE5"></div>#286CE5</div>
+            </div>
+            <div class="trace-arrow">→</div>
+            <div class="trace-tier">
+              <div class="trace-tier-label" style="background:rgba(229,63,40,.15);color:var(--brand)">T2</div>
+              <div class="trace-tier-name">surface-deep/<wbr>sm/bg</div>
+              <div class="trace-tier-val"><div class="trace-tier-swatch" style="background:#286CE5"></div>#286CE5</div>
+            </div>
+            <div class="trace-arrow">→</div>
+            <div class="trace-tier" style="border-color:var(--primary)">
+              <div class="trace-tier-label" style="background:rgba(15,145,70,.15);color:var(--success)">T3</div>
+              <div class="trace-tier-name">Resolved in<br>current context</div>
+              <div class="trace-tier-val"><div class="trace-tier-swatch" style="background:#286CE5"></div>#286CE5</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="width:1px;background:var(--br-s);flex-shrink:0"></div>
+
+        <!-- Specimen strip -->
+        <div>
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--tx-m);margin-bottom:8px;font-weight:600">All 6 Roles at Current Density</div>
+          <div class="specimen-strip">
+            <div class="specimen"><div class="specimen-btn" style="background:#286CE5;color:#fff">Primary</div><div class="specimen-label">primary</div></div>
+            <div class="specimen"><div class="specimen-btn" style="background:#E53F28;color:#fff">Brand</div><div class="specimen-label">brand</div></div>
+            <div class="specimen"><div class="specimen-btn" style="background:#0F9146;color:#fff">Success</div><div class="specimen-label">success</div></div>
+            <div class="specimen"><div class="specimen-btn" style="background:#C68A19;color:#fff">Warning</div><div class="specimen-label">warning</div></div>
+            <div class="specimen"><div class="specimen-btn" style="background:#D11F24;color:#fff">Danger</div><div class="specimen-label">danger</div></div>
+            <div class="specimen"><div class="specimen-btn" style="background:#0891B2;color:#fff">Info</div><div class="specimen-label">info</div></div>
+          </div>
+        </div>
+
+        <div style="width:1px;background:var(--br-s);flex-shrink:0"></div>
+
+        <!-- Quick copy -->
+        <div style="flex-shrink:0">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--tx-m);margin-bottom:8px;font-weight:600">Quick Copy</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-family:var(--f-mono);font-size:10px;padding:4px 8px;border-radius:4px;background:var(--bg-e);color:var(--tx-2);cursor:pointer;border:1px solid var(--br-s)">--primary-component-bg: #286CE5</div>
+            <div style="font-family:var(--f-mono);font-size:10px;padding:4px 8px;border-radius:4px;background:var(--bg-e);color:var(--tx-2);cursor:pointer;border:1px solid var(--br-s)">{ "$value": "#286CE5" }</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── Contextual Hint Bubble ─── -->
+<div class="hint-bubble" id="hint-bubble">
+  <span class="hint-icon">💡</span>
+  <span id="hint-text">Click any element in the app to inspect its tokens</span>
+  <span class="hint-dismiss" onclick="hideHint()">✕</span>
+</div>
+
+<!-- ─── Deep Dive Modal ─── -->
+<div class="deep-overlay" id="deep-overlay" onclick="if(event.target===this)closeDeep()">
+  <div class="deep-modal">
+    <div class="deep-head">
+      <div class="deep-title">Deep Dive · Full Token Matrix</div>
+      <button class="deep-close" onclick="closeDeep()">✕</button>
+    </div>
+    <div class="deep-body">
+      <div class="deep-section">
+        <div class="deep-section-t">Surface Token Matrix — 9 surfaces × 34 tokens</div>
+        <div style="font-size:11px;color:var(--tx-m);margin-bottom:12px">Every surface context with all sub-tokens. Click any cell to copy hex value.</div>
+        <div class="deep-grid" id="deep-grid"></div>
+      </div>
+      <div class="deep-section">
+        <div class="deep-section-t">Semantic Role Matrix — 6 roles × 18 tokens</div>
+        <div class="deep-grid" id="deep-grid-roles"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   MOCKUP — Interactive Behaviors
+   ═══════════════════════════════════════════ */
+
+// ── Cinematic Intro ──
+const TIERS = [
+  { label:'T0 · Brand/500 → #286CE5', bg:'#286CE5', color:'#fff', tierBg:'rgba(130,140,154,.15)', tierColor:'#828C9A' },
+  { label:'T1 · primary/component/bg-default', bg:'#286CE5', color:'#fff', tierBg:'rgba(40,108,229,.15)', tierColor:'#286CE5' },
+  { label:'T2 · surface-deep/sm/bg → adapts', bg:'#3B82F6', color:'#fff', tierBg:'rgba(229,63,40,.15)', tierColor:'#E53F28' },
+  { label:'T3 · Resolved: primary on deep', bg:'#286CE5', color:'#fff', tierBg:'rgba(15,145,70,.15)', tierColor:'#0F9146' }
+];
+let tierIdx = 0;
+let tierInterval;
+
+function animateTiers() {
+  const btn = document.getElementById('intro-btn');
+  const tier = document.getElementById('intro-tier');
+  tierInterval = setInterval(() => {
+    tierIdx = (tierIdx + 1) % TIERS.length;
+    const t = TIERS[tierIdx];
+    btn.style.background = t.bg;
+    btn.style.color = t.color;
+    tier.textContent = t.label;
+    tier.style.background = t.tierBg;
+    tier.style.color = t.tierColor;
+  }, 1800);
+}
+
+function enterPortal() {
+  clearInterval(tierInterval);
+  document.getElementById('intro').classList.add('hidden');
+  setTimeout(() => showHint('Click any element in the app to inspect its tokens'), 800);
+}
+
+// ── X-Ray Mode ──
+function toggleXray() {
+  const btn = document.getElementById('xray-toggle');
+  const frame = document.getElementById('demo-frame');
+  btn.classList.toggle('on');
+  frame.classList.toggle('xray-active');
+  if (btn.classList.contains('on')) {
+    showHint('X-Ray mode: hover any element to see its token annotation');
+  }
+}
+
+// ── Inspector ──
+function openInspector(type) {
+  const insp = document.getElementById('inspector');
+  const name = document.getElementById('insp-element-name');
+  if (type === 'button') name.textContent = 'Button · "Invite People"';
+  else if (type === 'row') name.textContent = 'User Row · surface-deep context';
+  else if (type === 'badge') name.textContent = 'Status Badge · warning/container';
+  insp.classList.add('open');
+}
+
+function closeInspector() {
+  document.getElementById('inspector').classList.remove('open');
+}
+
+// ── Contextual Hints ──
+let hintTimeout;
+function showHint(text) {
+  const bubble = document.getElementById('hint-bubble');
+  document.getElementById('hint-text').textContent = text;
+  bubble.classList.add('show');
+  clearTimeout(hintTimeout);
+  hintTimeout = setTimeout(() => bubble.classList.remove('show'), 5000);
+}
+function hideHint() {
+  document.getElementById('hint-bubble').classList.remove('show');
+}
+
+// ── Density slider ──
+const MODES = ['micro','tiny','small','base','medium','large','big','huge','mega','ultra'];
+function updateDensity(val) {
+  document.getElementById('density-val').textContent = MODES[val];
+  showHint('Density: ' + MODES[val] + ' — all component tokens scale');
+}
+
+// ── Tool panel interactions ──
+function setMode(mode, el) {
+  document.querySelectorAll('.mode-pill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  if (mode === 'compare') showHint('Compare: split view for side-by-side context comparison');
+  else if (mode === 'export') showHint('Export: contextual export of visible tokens');
+}
+
+function setTheme(theme, el) {
+  el.parentElement.querySelectorAll('.theme-opt').forEach(o => o.classList.remove('on'));
+  el.classList.add('on');
+  showHint('Theme switched — all token values resolve to ' + theme + ' mode');
+}
+
+function pickRole(el) {
+  el.parentElement.querySelectorAll('.role-pill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  showHint('6 semantic roles × 18 tokens each — accent propagates to all CTAs');
+}
+
+function pickStatus(el) {
+  el.parentElement.querySelectorAll('.role-pill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  showHint('Status badge role changed — container and content tokens update');
+}
+
+// ── Deep Dive Modal ──
+function openDeep() {
+  document.getElementById('deep-overlay').classList.add('open');
+  buildDeepGrids();
+}
+function closeDeep() {
+  document.getElementById('deep-overlay').classList.remove('open');
+}
+
+function buildDeepGrids() {
+  // Surface grid mock
+  const g = document.getElementById('deep-grid');
+  if (g.children.length) return;
+  const surfColors = ['#16191E','#1A1D23','#141720','#1C1D26','#111318','#1E2128','#242830','#1F2633','#E8E8E8'];
+  const variations = 34;
+  surfColors.forEach(base => {
+    for (let i = 0; i < variations; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'deep-cell';
+      // Vary lightness slightly for each sub-token
+      const r = parseInt(base.slice(1,3),16), g2 = parseInt(base.slice(3,5),16), b = parseInt(base.slice(5,7),16);
+      const shift = (i - 17) * 4;
+      const nr = Math.max(0,Math.min(255,r+shift)), ng = Math.max(0,Math.min(255,g2+shift)), nb = Math.max(0,Math.min(255,b+shift));
+      cell.style.background = `rgb(${nr},${ng},${nb})`;
+      g.appendChild(cell);
+    }
+  });
+
+  // Role grid mock
+  const rg = document.getElementById('deep-grid-roles');
+  if (rg.children.length) return;
+  const roleColors = ['#286CE5','#E53F28','#0F9146','#C68A19','#D11F24','#0891B2'];
+  roleColors.forEach(base => {
+    for (let i = 0; i < 18; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'deep-cell';
+      const r = parseInt(base.slice(1,3),16), g2 = parseInt(base.slice(3,5),16), b = parseInt(base.slice(5,7),16);
+      const shift = (i - 9) * 12;
+      const nr = Math.max(0,Math.min(255,r+shift)), ng = Math.max(0,Math.min(255,g2+shift)), nb = Math.max(0,Math.min(255,b+shift));
+      cell.style.background = `rgb(${nr},${ng},${nb})`;
+      rg.appendChild(cell);
+    }
+  });
+}
+
+// ── Init ──
+animateTiers();
+</script>
+</body>
+</html>
