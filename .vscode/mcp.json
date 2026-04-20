@@ -4,7 +4,7 @@
       "command": "npx",
       "args": ["-y", "figma-console-mcp@latest"],
       "env": {
-        "FIGMA_ACCESS_TOKEN": "figd_hDGN-Dihb7xtNvgAL1I8q2xY7oFv_U2jc0QQ7BCG",
+        "FIGMA_ACCESS_TOKEN": "YOUR_FIGMA_TOKEN_HERE",
         "ENABLE_MCP_APPS": "true"
       }
     }
