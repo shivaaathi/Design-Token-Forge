@@ -175,7 +175,8 @@ window.DTF = window.DTF || { onThemeChange: null };
     /* Fetch config (always — may have changed) */
     _tryFetch(configPaths, function(cfgText) {
       if (cfgText) {
-        localStorage.setItem('dtf-color-config-' + pid, cfgText);
+        /* Use a separate key so we don't overwrite color-system.html's edited state */
+        localStorage.setItem('dtf-raw-config-' + pid, cfgText);
       }
       /* Fetch per-project CSS (primitives + semantic + surfaces) */
       var fetches = [
@@ -248,7 +249,8 @@ window.DTF = window.DTF || { onThemeChange: null };
       if (!r.ok) throw new Error(r.status);
       return r.text();
     }).then(function(text) {
-      localStorage.setItem('dtf-color-config-' + activeProject, text);
+      /* Use a separate key so we don't overwrite color-system.html's edited state */
+      localStorage.setItem('dtf-raw-config-' + activeProject, text);
       if (typeof window.DTF.onThemeChange === 'function') {
         requestAnimationFrame(window.DTF.onThemeChange);
       }
