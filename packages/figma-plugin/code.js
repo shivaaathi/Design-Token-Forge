@@ -75,45 +75,37 @@ async function buildExistingLookup() {
   return colMap;
 }
 
-/* ── Rename pass — renames existing variables in-place (preserves IDs + bindings) */
+/* ── Persistent variable ID map — tracks Figma IDs across renames ── */
 
-async function applyRenames(renames) {
+function loadIdMap() {
+  var raw = figma.root.getPluginData('dtf-id-map');
+  if (!raw) return {};
+  try { return JSON.parse(raw); } catch (e) { return {}; }
+}
+
+function saveIdMap(map) {
+  figma.root.setPluginData('dtf-id-map', JSON.stringify(map));
+}
+
+/* Apply renames to ID map keys (pure data transform, no Figma API calls) */
+function applyRenamesToIdMap(renames, idMap) {
   if (!renames || typeof renames !== 'object') return 0;
   var entries = Object.entries(renames);
-  if (entries.length === 0) return 0;
-
-  var existing = await buildExistingLookup();
-  var renamed = 0;
-
+  var count = 0;
   for (var i = 0; i < entries.length; i++) {
-    var oldName = entries[i][0];
-    var newName = entries[i][1];
-
-    /* Find which collection has this variable */
-    var colNames = Object.keys(existing);
-    for (var ci = 0; ci < colNames.length; ci++) {
-      var ex = existing[colNames[ci]];
-      var v = ex.varMap[oldName];
-      if (v) {
-        /* If the new name already exists, the old var is a stale duplicate — remove it */
-        if (ex.varMap[newName]) {
-          try { v.remove(); } catch (e) { log('Remove stale duplicate: ' + e.message); }
-          delete ex.varMap[oldName];
-          renamed++;
-          log('Removed stale duplicate: ' + oldName + ' (new name ' + newName + ' already exists)');
-        } else {
-          v.name = newName;
-          /* Update lookup so subsequent sync finds it by new name */
-          delete ex.varMap[oldName];
-          ex.varMap[newName] = v;
-          renamed++;
-          log('Renamed: ' + oldName + ' → ' + newName);
-        }
-        break;
+    var oldSuffix = '::' + entries[i][0];
+    var newSuffix = '::' + entries[i][1];
+    var keys = Object.keys(idMap);
+    for (var k = 0; k < keys.length; k++) {
+      if (keys[k].endsWith(oldSuffix)) {
+        var prefix = keys[k].slice(0, -oldSuffix.length);
+        idMap[prefix + newSuffix] = idMap[keys[k]];
+        delete idMap[keys[k]];
+        count++;
       }
     }
   }
-  return renamed;
+  return count;
 }
 
 /* ── Remove orphan variables not present in token data ──── */
@@ -154,9 +146,10 @@ async function removeOrphans(data, stats) {
 async function syncAll(data) {
   var stats = { collections: 0, variables: 0, aliases: 0, updated: 0, created: 0, renamed: 0, orphansRemoved: 0, errors: [] };
 
-  /* Pre-pass: apply renames before matching by name */
+  /* Load persistent ID map and apply renames to its keys */
+  var idMap = loadIdMap();
   if (data.renames) {
-    stats.renamed = await applyRenames(data.renames);
+    stats.renamed = applyRenamesToIdMap(data.renames, idMap);
   }
 
   var existing = await buildExistingLookup();
@@ -223,7 +216,27 @@ async function syncAll(data) {
 
         try {
           var variable;
-          var existingVar = ex && ex.varMap[v.name];
+          var tokenKey = col.name + '::' + v.name;
+          var existingVar = null;
+
+          /* 1. Try ID map — finds variable even after renames */
+          if (idMap[tokenKey]) {
+            try {
+              var byId = await figma.variables.getVariableByIdAsync(idMap[tokenKey]);
+              if (byId) {
+                existingVar = byId;
+                if (byId.name !== v.name) {
+                  log('ID-match rename: ' + byId.name + ' → ' + v.name);
+                  byId.name = v.name;
+                }
+              }
+            } catch (idErr) { /* Variable deleted by user, fall through */ }
+          }
+
+          /* 2. Fallback: match by name in collection */
+          if (!existingVar && ex) {
+            existingVar = ex.varMap[v.name];
+          }
 
           if (existingVar) {
             /* ─── Update existing variable in-place ─── */
@@ -234,6 +247,9 @@ async function syncAll(data) {
             variable = figma.variables.createVariable(v.name, collection, resolvedType);
             stats.created++;
           }
+
+          /* Track Figma variable ID for future syncs */
+          idMap[tokenKey] = variable.id;
 
           varLookup[col.name + '::' + v.name] = variable;
 
@@ -291,6 +307,20 @@ async function syncAll(data) {
   if (stats.orphansRemoved > 0) {
     log('Removed ' + stats.orphansRemoved + ' orphan variable(s)');
   }
+
+  /* Persist updated ID map (prune stale entries) */
+  var validKeys = {};
+  for (var vci = 0; vci < data.collections.length; vci++) {
+    var vc = data.collections[vci];
+    for (var vvi = 0; vvi < vc.variables.length; vvi++) {
+      validKeys[vc.name + '::' + vc.variables[vvi].name] = true;
+    }
+  }
+  var staleKeys = Object.keys(idMap);
+  for (var ski = 0; ski < staleKeys.length; ski++) {
+    if (!validKeys[staleKeys[ski]]) delete idMap[staleKeys[ski]];
+  }
+  saveIdMap(idMap);
 
   return stats;
 }
