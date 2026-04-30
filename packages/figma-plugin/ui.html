@@ -605,7 +605,7 @@
       notifIcon.textContent = '\u2713';
       notifTitle.textContent = 'Variables are up to date';
       notifBadge.style.display = 'none';
-      notifBody.innerHTML = 'Figma variables match the source of truth.';
+      notifBody.innerHTML = 'Figma variables match the source of truth. <a href="#" id="forceResyncLink" style="color:var(--accent);cursor:pointer">Force re-sync</a>';
       syncBtn.disabled = true;
       syncBtn.textContent = 'Variables are up to date';
       syncBtn.className = 'btn-sync ready';
@@ -825,6 +825,20 @@
     lastSeenHash = ''; hashStableCount = 0; deploySettling = false;
     if (pollTimer) clearInterval(pollTimer);
     startPolling();
+  });
+
+  /* Force re-sync link handler (delegated since the link is created dynamically) */
+  document.addEventListener('click', function(e) {
+    if (e.target && e.target.id === 'forceResyncLink') {
+      e.preventDefault();
+      figmaHash = '';
+      syncBtn.disabled = false;
+      syncBtn.textContent = 'Re-sync Variables';
+      syncBtn.className = 'btn-sync';
+      notifTitle.textContent = 'Force re-sync';
+      notifBody.innerHTML = 'Click <strong>Re-sync Variables</strong> to re-apply all tokens and clean up orphans.';
+      notif.className = 'notif visible has-changes';
+    }
   });
 
   function projectDisplayName(id) {
