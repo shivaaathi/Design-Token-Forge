@@ -6,8 +6,9 @@
 
 figma.showUI(__html__, { width: 480, height: 560 });
 
-var CODE_VERSION = '2026-04-30-v8';
+var CODE_VERSION = '2026-04-30-v9-NEWID';
 log('code.js loaded — version ' + CODE_VERSION);
+figma.notify('DTF Plugin v9 loaded', { timeout: 3000 });
 
 /* ── URL migration via clientStorage (reliable, not blocked like localStorage) ── */
 (async function() {
