@@ -2017,6 +2017,23 @@ function buildSaveableConfig() {
   });
 }
 
+function migrateCustomIds(rolesList, surfPalSrc) {
+  // Force-migrate any custom-N IDs → label slugs everywhere
+  rolesList.forEach(function(r) {
+    if (r.type === 'custom' && /^custom-\d+$/.test(r.id) && r.label) {
+      var oldId = r.id;
+      var newId = slugifyLabel(r.label);
+      if (RESERVED_IDS.has(newId)) newId = newId + '-custom';
+      r.id = newId;
+      if (surfPalSrc) {
+        SURF_NAMES.forEach(function(sn) {
+          if (surfPalSrc[sn] === oldId) surfPalSrc[sn] = newId;
+        });
+      }
+    }
+  });
+}
+
 function loadSavedConfig() {
   try {
     // Try per-project key first, then fall back to global key
@@ -2025,6 +2042,8 @@ function loadSavedConfig() {
     if (!raw) return false;
     var cfg = JSON.parse(raw);
     if (!cfg.roles || !cfg.roles.length) return false;
+    // Migrate stale custom-N IDs before loading
+    migrateCustomIds(cfg.roles, cfg.surfacePaletteSrc);
     roles = cfg.roles.map(function(r) { return Object.assign({}, r); });
     customCounter = cfg.customCounter || 0;
     if (cfg.surfaceMap) {
@@ -2252,10 +2271,14 @@ ghCommitBtn.addEventListener('click', function() {
         .then(function() {
           ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Committed! Waiting for deploy...';
           ghStatusEl.className = 'gh-status ok';
-          // Update baseline for future diffs
+          // Update baseline for future diffs + sync to localStorage
           if (configToSave) {
             originalPaletteKeys = JSON.parse(JSON.stringify(configToSave.paletteKeys));
             projectConfig = configToSave;
+            // Sync roles to localStorage so next reload doesn't revert
+            if (projectId) {
+              localStorage.setItem(STORAGE_KEY_CONFIG + '-' + projectId, buildSaveableConfig());
+            }
           }
           ghPollDeploy();
         })
@@ -2346,6 +2369,9 @@ function buildUpdatedConfig() {
     description: '',
     created: new Date().toISOString().split('T')[0]
   };
+
+  // Guard: migrate any stale custom-N IDs in roles before saving
+  migrateCustomIds(roles, SURF_PALETTE_SRC);
 
   // Update palette keys from current roles (standard + custom)
   cfg.paletteKeys = {};
@@ -2878,20 +2904,7 @@ function switchProject(newId) {
           var savedCfg = JSON.parse(savedRaw);
           if (savedCfg.roles && savedCfg.roles.length) {
             // Migrate legacy custom-N IDs to label slugs
-            savedCfg.roles.forEach(function(r) {
-              if (r.type === 'custom' && /^custom-\\d+$/.test(r.id) && r.label) {
-                var oldId = r.id;
-                var newId = slugifyLabel(r.label);
-                if (RESERVED_IDS.has(newId)) newId = newId + '-custom';
-                r.id = newId;
-                // Migrate surfacePaletteSrc refs
-                if (savedCfg.surfacePaletteSrc) {
-                  SURF_NAMES.forEach(function(sn) {
-                    if (savedCfg.surfacePaletteSrc[sn] === oldId) savedCfg.surfacePaletteSrc[sn] = newId;
-                  });
-                }
-              }
-            });
+            migrateCustomIds(savedCfg.roles, savedCfg.surfacePaletteSrc);
             roles = savedCfg.roles.map(function(r) { return Object.assign({}, r); });
             customCounter = savedCfg.customCounter || 0;
             if (savedCfg.surfaceMap) {

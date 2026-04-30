@@ -233,6 +233,28 @@ function generateSurfaceTokens(surfaceMap, palettes, surfacePaletteSrc) {
 export function generateTokenOverrides(config, basePrimitiveTokens) {
   if (!config?.paletteKeys) return {};
 
+  // ── Migrate stale custom-N palette keys → label slugs ─────────
+  // The editor sometimes saves 'custom-1' instead of the label slug.
+  // Fix it here so the build always produces the correct variable names.
+  if (config.customRoles) {
+    for (const cr of config.customRoles) {
+      if (/^custom-\d+$/.test(cr.id) && cr.label) {
+        const oldId = cr.id;
+        const newId = cr.label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'custom';
+        if (config.paletteKeys[oldId]) {
+          config.paletteKeys[newId] = config.paletteKeys[oldId];
+          delete config.paletteKeys[oldId];
+        }
+        if (config.surfacePaletteSrc) {
+          for (const sn of Object.keys(config.surfacePaletteSrc)) {
+            if (config.surfacePaletteSrc[sn] === oldId) config.surfacePaletteSrc[sn] = newId;
+          }
+        }
+        cr.id = newId;
+      }
+    }
+  }
+
   const palettes = buildPalettes(config.paletteKeys);
   const result = {};
 
