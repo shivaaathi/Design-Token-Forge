@@ -258,20 +258,31 @@ async function syncAll(data) {
             } catch (idErr) { /* Variable deleted by user, fall through */ }
           }
 
-          /* 2. Fallback: match by name in collection */
-          if (!existingVar && ex) {
-            existingVar = ex.varMap[v.name];
-          }
-
-          /* 3. Fallback: match by OLD name from rename map */
+          /* 2. Rename path: find variable by OLD name, rename it in-place
+                (preserves original Figma ID + component bindings).
+                If a duplicate already exists with the NEW name, delete it. */
           if (!existingVar && ex && inverseRenames[v.name]) {
             var oldName = inverseRenames[v.name];
-            existingVar = ex.varMap[oldName];
-            if (existingVar) {
+            var original = ex.varMap[oldName];
+            if (original) {
+              /* Delete any duplicate that was created with the new name */
+              var dup = ex.varMap[v.name];
+              if (dup && dup.id !== original.id) {
+                log('Removing duplicate: ' + v.name + ' (id=' + dup.id + ') — keeping original ' + oldName);
+                try { dup.remove(); stats.orphansRemoved++; } catch (de) {
+                  log('Failed to remove duplicate ' + v.name + ': ' + de.message);
+                }
+              }
               log('Rename in-place: ' + oldName + ' → ' + v.name);
-              existingVar.name = v.name;
+              original.name = v.name;
+              existingVar = original;
               stats.renamed++;
             }
+          }
+
+          /* 3. Fallback: match by current name in collection */
+          if (!existingVar && ex) {
+            existingVar = ex.varMap[v.name];
           }
 
           if (existingVar) {
