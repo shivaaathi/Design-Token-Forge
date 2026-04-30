@@ -29,11 +29,14 @@ const __dirname  = path.dirname(__filename);
 const args    = process.argv.slice(2);
 const PORT    = parseInt(args[args.indexOf('--port') + 1]) || 9500;
 const VERBOSE = args.includes('--verbose');
+const projIdx = args.indexOf('--project');
+const PROJECT_ID = projIdx !== -1 ? args[projIdx + 1] : null;
 
 // ── Paths ─────────────────────────────────────────────────────
 
 const TOKENS_DIR  = path.resolve(__dirname, '../tokens/src');
 const COMP_DIR    = path.resolve(__dirname, '../components/src');
+const ROOT_DIR    = path.resolve(__dirname, '../..');
 const WATCH_FILES = ['primitives.css', 'semantic.css', 'surfaces.css', 'extras.css'];
 
 // ── Rename map (one-time migration for Figma variable renames) ─
@@ -46,6 +49,34 @@ function loadRenames() {
     }
   } catch (_) {}
   return {};
+}
+
+// ── Project config override support ──────────────────────────
+let projectOverrides = {};  // { primitiveTokens, semanticTokens, surfaceTokens }
+let projectConfig = null;
+
+async function loadProjectOverrides() {
+  if (!PROJECT_ID) return;
+  const configPath = path.join(ROOT_DIR, 'projects', PROJECT_ID, 'config.json');
+  if (!fs.existsSync(configPath)) {
+    console.error(`  ✗ Project config not found: ${configPath}`);
+    return;
+  }
+  projectConfig = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+  try {
+    const genPath = path.join(__dirname, 'generate-from-config.js');
+    const { generateTokenOverrides } = await import(genPath);
+    const basePrimitives = parseCSSTokens(path.join(TOKENS_DIR, 'primitives.css'));
+    const overrides = generateTokenOverrides(projectConfig, basePrimitives);
+    projectOverrides = {};
+    if (overrides.primitiveTokens) projectOverrides.primitiveTokens = overrides.primitiveTokens;
+    if (overrides.semanticTokens)  projectOverrides.semanticTokens  = overrides.semanticTokens;
+    if (overrides.surfaceTokens)   projectOverrides.surfaceTokens   = overrides.surfaceTokens;
+    const parts = Object.keys(projectOverrides);
+    if (parts.length) console.log(`  ✓ Config overrides → ${parts.join(', ')}`);
+  } catch (e) {
+    console.warn(`  ⚠ Config override failed: ${e.message}`);
+  }
 }
 
 // ── State ─────────────────────────────────────────────────────
@@ -714,7 +745,8 @@ function rebuildTokens(trigger, files) {
   try {
     const oldData = currentData;
     const oldHash = currentHash;
-    currentData = runExport({ renames: loadRenames() });
+    const exportOpts = Object.assign({}, projectOverrides, { renames: loadRenames() });
+    currentData = runExport(exportOpts);
     currentHash = currentData.contentHash;
     lastChanged = currentData.exported;
 
@@ -825,16 +857,18 @@ if (isMainModule) {
   console.log('  ║  Design Token Forge — Sync Server        ║');
   console.log('  ╚══════════════════════════════════════════╝');
   console.log('');
+  if (PROJECT_ID) console.log(`  Project: ${PROJECT_ID}`);
   console.log(`  Port:    http://localhost:${PORT}`);
   console.log(`  Tokens:  ${TOKENS_DIR}`);
   console.log(`  Watching: ${WATCH_FILES.join(', ')}`);
   console.log('');
 
-  startWatching();
-
-  server.listen(PORT, function () {
-    console.log(`  ✓ Server ready — Figma plugin can connect at http://localhost:${PORT}`);
-    console.log('  ─────────────────────────────────────────');
-    console.log('');
+  loadProjectOverrides().then(() => {
+    startWatching();
+    server.listen(PORT, function () {
+      console.log(`  ✓ Server ready — Figma plugin can connect at http://localhost:${PORT}`);
+      console.log('  ─────────────────────────────────────────');
+      console.log('');
+    });
   });
 }
