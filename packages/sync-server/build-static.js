@@ -335,7 +335,25 @@ async function main() {
     }
     const manifestPath = path.join(BASE_OUT_DIR, 'projects.json');
     fs.writeFileSync(manifestPath, JSON.stringify(projectList, null, 2));
+    // Also update root projects.json (used by local dev)
+    fs.writeFileSync(path.join(ROOT, 'projects.json'), JSON.stringify(projectList, null, 2));
     console.log(`  ✓ projects.json → ${projectList.length} project(s)`);
+
+    // ── Clean up stale project directories from dist/ ───────────
+    const validIds = new Set(projectList.map(p => p.id));
+    const PROTECTED = new Set(['demo', 'packages']);
+    for (const entry of fs.readdirSync(BASE_OUT_DIR, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      if (PROTECTED.has(entry.name)) continue;
+      // If it looks like a project dir (has tokens.json or config.json inside) but isn't in the list, remove it
+      const dirPath = path.join(BASE_OUT_DIR, entry.name);
+      const hasTokens = fs.existsSync(path.join(dirPath, 'tokens.json'));
+      const hasConfig = fs.existsSync(path.join(dirPath, 'config.json'));
+      if ((hasTokens || hasConfig) && !validIds.has(entry.name)) {
+        fs.rmSync(dirPath, { recursive: true, force: true });
+        console.log(`  ✓ Cleaned stale project dir: dist/${entry.name}`);
+      }
+    }
   }
 
   console.log('');

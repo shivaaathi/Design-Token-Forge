@@ -51,12 +51,18 @@ window.DTF = window.DTF || { onThemeChange: null };
 
   function populateSelect(list) {
     if (!list || !list.length) { sel.innerHTML = '<option>(none)</option>'; return; }
+    /* Filter out deleted projects (color-system.html marks them) */
+    var deletedRaw = localStorage.getItem('dtf-deleted-projects');
+    var deleted = [];
+    try { deleted = JSON.parse(deletedRaw) || []; } catch(e) {}
+    var filtered = list.filter(function(p) { return deleted.indexOf(p.id) === -1; });
+    if (!filtered.length) { sel.innerHTML = '<option>(none)</option>'; return; }
     sel.innerHTML = '';
-    for (var i = 0; i < list.length; i++) {
+    for (var i = 0; i < filtered.length; i++) {
       var opt = document.createElement('option');
-      opt.value = list[i].id;
-      opt.textContent = list[i].name || list[i].id;
-      if (list[i].id === currentId) opt.selected = true;
+      opt.value = filtered[i].id;
+      opt.textContent = filtered[i].name || filtered[i].id;
+      if (filtered[i].id === currentId) opt.selected = true;
       sel.appendChild(opt);
     }
   }
@@ -78,6 +84,13 @@ window.DTF = window.DTF || { onThemeChange: null };
     if (list && list.length) {
       populateSelect(list);
       localStorage.setItem('dtf-known-projects', JSON.stringify(list));
+      /* If active project was deleted, reset to first available */
+      var ids = list.map(function(p){ return p.id; });
+      var active = localStorage.getItem('dtf-active-project');
+      if (active && ids.indexOf(active) === -1) {
+        localStorage.setItem('dtf-active-project', list[0].id);
+        sel.value = list[0].id;
+      }
     }
   }).catch(function(){
     if (!knownList || !knownList.length) sel.innerHTML = '<option>(offline)</option>';
