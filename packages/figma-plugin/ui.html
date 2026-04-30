@@ -932,6 +932,11 @@
       setStatus(msg.text, 'work');
     }
 
+    /* URL migration from code.js clientStorage */
+    if (msg.type === 'set-server-url') {
+      setServerUrl(msg.url);
+    }
+
     if (msg.type === 'done') {
       syncing = false;
       var s = msg.stats;
@@ -1062,6 +1067,8 @@
     url = url.replace(/\/+$/, ''); /* strip trailing slash */
     SERVER = url;
     storageSet('dtf-server-url', url);
+    /* Also persist via Figma clientStorage (more reliable than iframe localStorage) */
+    parent.postMessage({ pluginMessage: { type: 'save-server-url', url: url } }, '*');
     serverUrlInput.value = url;
     /* Reset state and reconnect */
     connected = false;

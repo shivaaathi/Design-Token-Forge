@@ -6,6 +6,20 @@
 
 figma.showUI(__html__, { width: 480, height: 560 });
 
+/* ── URL migration via clientStorage (reliable, not blocked like localStorage) ── */
+(async function() {
+  try {
+    var url = await figma.clientStorage.getAsync('dtf-server-url');
+    if (url && url.toLowerCase().indexOf('sridharravi90.github.io') !== -1) {
+      url = 'https://sridhar-ravi-2917.github.io/Design-Token-Forge';
+      await figma.clientStorage.setAsync('dtf-server-url', url);
+    }
+    if (url) {
+      figma.ui.postMessage({ type: 'set-server-url', url: url });
+    }
+  } catch (e) { /* clientStorage unavailable — UI will use its own default */ }
+})();
+
 /* ── Helpers ──────────────────────────────────────────────── */
 
 function hexToRGB(hex) {
@@ -417,5 +431,10 @@ figma.ui.onmessage = async function(msg) {
 
   if (msg.type === 'cancel') {
     figma.closePlugin();
+  }
+
+  /* Persist URL to clientStorage when user changes it in UI */
+  if (msg.type === 'save-server-url' && msg.url) {
+    figma.clientStorage.setAsync('dtf-server-url', msg.url).catch(function() {});
   }
 };
