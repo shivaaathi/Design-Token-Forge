@@ -916,6 +916,8 @@
       var s = msg.stats;
       figmaHash = msg.hash || (tokenData ? tokenData.contentHash : '');
       var text = '';
+      if (s.renamed > 0) text += s.renamed + ' renamed. ';
+      if (s.orphansRemoved > 0) text += s.orphansRemoved + ' orphans removed. ';
       if (s.updated > 0) text += s.updated + ' updated in-place. ';
       if (s.created > 0) text += s.created + ' created. ';
       text += s.variables + ' variables in ' + s.collections + ' collections.'

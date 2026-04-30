@@ -95,12 +95,20 @@ async function applyRenames(renames) {
       var ex = existing[colNames[ci]];
       var v = ex.varMap[oldName];
       if (v) {
-        v.name = newName;
-        /* Update lookup so subsequent sync finds it by new name */
-        delete ex.varMap[oldName];
-        ex.varMap[newName] = v;
-        renamed++;
-        log('Renamed: ' + oldName + ' → ' + newName);
+        /* If the new name already exists, the old var is a stale duplicate — remove it */
+        if (ex.varMap[newName]) {
+          try { v.remove(); } catch (e) { log('Remove stale duplicate: ' + e.message); }
+          delete ex.varMap[oldName];
+          renamed++;
+          log('Removed stale duplicate: ' + oldName + ' (new name ' + newName + ' already exists)');
+        } else {
+          v.name = newName;
+          /* Update lookup so subsequent sync finds it by new name */
+          delete ex.varMap[oldName];
+          ex.varMap[newName] = v;
+          renamed++;
+          log('Renamed: ' + oldName + ' → ' + newName);
+        }
         break;
       }
     }
@@ -108,10 +116,43 @@ async function applyRenames(renames) {
   return renamed;
 }
 
+/* ── Remove orphan variables not present in token data ──── */
+
+async function removeOrphans(data, stats) {
+  /* Build set of expected variable names per collection */
+  var expectedByCol = {};
+  for (var ci = 0; ci < data.collections.length; ci++) {
+    var col = data.collections[ci];
+    var nameSet = {};
+    for (var vi = 0; vi < col.variables.length; vi++) {
+      nameSet[col.variables[vi].name] = true;
+    }
+    expectedByCol[col.name] = nameSet;
+  }
+
+  var removed = 0;
+  var dtfCols = await findDTFCollections();
+  for (var i = 0; i < dtfCols.length; i++) {
+    var c = dtfCols[i];
+    var expected = expectedByCol[c.name];
+    if (!expected) continue; /* Only clean collections we're syncing */
+    for (var j = 0; j < c.variableIds.length; j++) {
+      var v = await figma.variables.getVariableByIdAsync(c.variableIds[j]);
+      if (v && !expected[v.name]) {
+        log('Removing orphan: ' + c.name + ' / ' + v.name);
+        try { v.remove(); removed++; } catch (e) {
+          stats.errors.push('Remove orphan ' + v.name + ': ' + e.message);
+        }
+      }
+    }
+  }
+  return removed;
+}
+
 /* ── Sync all collections — update-in-place, preserving IDs */
 
 async function syncAll(data) {
-  var stats = { collections: 0, variables: 0, aliases: 0, updated: 0, created: 0, renamed: 0, errors: [] };
+  var stats = { collections: 0, variables: 0, aliases: 0, updated: 0, created: 0, renamed: 0, orphansRemoved: 0, errors: [] };
 
   /* Pre-pass: apply renames before matching by name */
   if (data.renames) {
@@ -245,6 +286,12 @@ async function syncAll(data) {
     }
   }
 
+  /* Pass 3: Remove orphan variables not in token data */
+  stats.orphansRemoved = await removeOrphans(data, stats);
+  if (stats.orphansRemoved > 0) {
+    log('Removed ' + stats.orphansRemoved + ' orphan variable(s)');
+  }
+
   return stats;
 }
 
@@ -307,6 +354,7 @@ figma.ui.onmessage = async function(msg) {
         'DTF: ' + stats.variables + ' vars (' + stats.updated + ' updated, ' +
         stats.created + ' created' +
         (stats.renamed > 0 ? ', ' + stats.renamed + ' renamed' : '') +
+        (stats.orphansRemoved > 0 ? ', ' + stats.orphansRemoved + ' orphans removed' : '') +
         '), ' + stats.aliases + ' aliases' +
         (stats.errors.length > 0 ? ' (' + stats.errors.length + ' errors)' : '')
       );
