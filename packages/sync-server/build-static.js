@@ -170,6 +170,20 @@ async function main() {
     }
   }
 
+  // ── Load rename map (one-time migration for Figma variable renames) ──
+  const renamesPath = path.join(__dirname, 'renames.json');
+  if (fs.existsSync(renamesPath)) {
+    try {
+      const renamesData = JSON.parse(fs.readFileSync(renamesPath, 'utf-8'));
+      if (renamesData.renames && Object.keys(renamesData.renames).length > 0) {
+        exportOpts.renames = renamesData.renames;
+        console.log(`  ✓ renames.json  → ${Object.keys(renamesData.renames).length} path renames`);
+      }
+    } catch (e) {
+      console.warn(`  ⚠ Failed to load renames.json: ${e.message}`);
+    }
+  }
+
   const data = serverModule.runExport(exportOpts);
 
   // Inject project identity into the payload

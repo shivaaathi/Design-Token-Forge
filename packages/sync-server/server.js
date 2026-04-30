@@ -36,6 +36,18 @@ const TOKENS_DIR  = path.resolve(__dirname, '../tokens/src');
 const COMP_DIR    = path.resolve(__dirname, '../components/src');
 const WATCH_FILES = ['primitives.css', 'semantic.css', 'surfaces.css', 'extras.css'];
 
+// ── Rename map (one-time migration for Figma variable renames) ─
+const RENAMES_PATH = path.resolve(__dirname, 'renames.json');
+function loadRenames() {
+  try {
+    if (fs.existsSync(RENAMES_PATH)) {
+      const data = JSON.parse(fs.readFileSync(RENAMES_PATH, 'utf-8'));
+      if (data.renames && Object.keys(data.renames).length > 0) return data.renames;
+    }
+  } catch (_) {}
+  return {};
+}
+
 // ── State ─────────────────────────────────────────────────────
 
 let currentData    = null;   // latest exported JSON payload
@@ -609,6 +621,11 @@ export function runExport(opts = {}) {
   const hash = crypto.createHash('sha256')
     .update(JSON.stringify(collections)).digest('hex').slice(0, 12);
 
+  // ── Rename map: old Figma variable paths → new paths ──────────
+  // This allows the plugin to rename existing variables in-place,
+  // preserving internal IDs and component bindings.
+  const renames = opts.renames || {};
+
   return {
     version: '1.0.0',
     source: 'Design Token Forge',
@@ -616,6 +633,7 @@ export function runExport(opts = {}) {
     contentHash: hash,
     stats: { totalCollections: collections.length, totalVariables: totalVars, themes: ['Light', 'Dark'] },
     collections,
+    renames,
     _exportMs: Date.now() - t0
   };
 }
@@ -696,7 +714,7 @@ function rebuildTokens(trigger, files) {
   try {
     const oldData = currentData;
     const oldHash = currentHash;
-    currentData = runExport();
+    currentData = runExport({ renames: loadRenames() });
     currentHash = currentData.contentHash;
     lastChanged = currentData.exported;
 

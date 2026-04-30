@@ -75,10 +75,49 @@ async function buildExistingLookup() {
   return colMap;
 }
 
+/* ── Rename pass — renames existing variables in-place (preserves IDs + bindings) */
+
+async function applyRenames(renames) {
+  if (!renames || typeof renames !== 'object') return 0;
+  var entries = Object.entries(renames);
+  if (entries.length === 0) return 0;
+
+  var existing = await buildExistingLookup();
+  var renamed = 0;
+
+  for (var i = 0; i < entries.length; i++) {
+    var oldName = entries[i][0];
+    var newName = entries[i][1];
+
+    /* Find which collection has this variable */
+    var colNames = Object.keys(existing);
+    for (var ci = 0; ci < colNames.length; ci++) {
+      var ex = existing[colNames[ci]];
+      var v = ex.varMap[oldName];
+      if (v) {
+        v.name = newName;
+        /* Update lookup so subsequent sync finds it by new name */
+        delete ex.varMap[oldName];
+        ex.varMap[newName] = v;
+        renamed++;
+        log('Renamed: ' + oldName + ' → ' + newName);
+        break;
+      }
+    }
+  }
+  return renamed;
+}
+
 /* ── Sync all collections — update-in-place, preserving IDs */
 
 async function syncAll(data) {
-  var stats = { collections: 0, variables: 0, aliases: 0, updated: 0, created: 0, errors: [] };
+  var stats = { collections: 0, variables: 0, aliases: 0, updated: 0, created: 0, renamed: 0, errors: [] };
+
+  /* Pre-pass: apply renames before matching by name */
+  if (data.renames) {
+    stats.renamed = await applyRenames(data.renames);
+  }
+
   var existing = await buildExistingLookup();
 
   /* Pass 1: Create/update collections, modes, and variables.
@@ -266,7 +305,9 @@ figma.ui.onmessage = async function(msg) {
       figma.ui.postMessage({ type: 'done', stats: stats, hash: syncHash });
       figma.notify(
         'DTF: ' + stats.variables + ' vars (' + stats.updated + ' updated, ' +
-        stats.created + ' created), ' + stats.aliases + ' aliases' +
+        stats.created + ' created' +
+        (stats.renamed > 0 ? ', ' + stats.renamed + ' renamed' : '') +
+        '), ' + stats.aliases + ' aliases' +
         (stats.errors.length > 0 ? ' (' + stats.errors.length + ' errors)' : '')
       );
     } catch (e) {
