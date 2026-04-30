@@ -74,9 +74,10 @@ window.DTF = window.DTF || { onThemeChange: null };
     if (d.project && d.project.id && !currentId) currentId = d.project.id;
     return fetch(projectsUrl);
   }).then(function(r){ return r.json(); }).then(function(list){
-    /* Merge with localStorage list — remote may have additional or renamed entries */
-    if (list && list.length && (!knownList || !knownList.length)) {
+    /* Remote projects.json is the source of truth — always use it */
+    if (list && list.length) {
       populateSelect(list);
+      localStorage.setItem('dtf-known-projects', JSON.stringify(list));
     }
   }).catch(function(){
     if (!knownList || !knownList.length) sel.innerHTML = '<option>(offline)</option>';
