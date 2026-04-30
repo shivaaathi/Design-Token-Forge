@@ -128,11 +128,13 @@ async function removeOrphans(data, stats) {
     var c = dtfCols[i];
     var expected = expectedByCol[c.name];
     if (!expected) continue; /* Only clean collections we're syncing */
-    for (var j = 0; j < c.variableIds.length; j++) {
-      var v = await figma.variables.getVariableByIdAsync(c.variableIds[j]);
+    var colVarIds = c.variableIds.slice(); /* snapshot — avoids mutation issues */
+    for (var j = 0; j < colVarIds.length; j++) {
+      var v = await figma.variables.getVariableByIdAsync(colVarIds[j]);
       if (v && !expected[v.name]) {
         log('Removing orphan: ' + c.name + ' / ' + v.name);
         try { v.remove(); removed++; } catch (e) {
+          log('Failed to remove orphan ' + v.name + ': ' + e.message);
           stats.errors.push('Remove orphan ' + v.name + ': ' + e.message);
         }
       }
@@ -150,6 +152,15 @@ async function syncAll(data) {
   var idMap = loadIdMap();
   if (data.renames) {
     stats.renamed = applyRenamesToIdMap(data.renames, idMap);
+  }
+
+  /* Build inverse rename map: newName → oldName for fallback lookup */
+  var inverseRenames = {};
+  if (data.renames) {
+    var renameKeys = Object.keys(data.renames);
+    for (var ri = 0; ri < renameKeys.length; ri++) {
+      inverseRenames[data.renames[renameKeys[ri]]] = renameKeys[ri];
+    }
   }
 
   var existing = await buildExistingLookup();
@@ -236,6 +247,17 @@ async function syncAll(data) {
           /* 2. Fallback: match by name in collection */
           if (!existingVar && ex) {
             existingVar = ex.varMap[v.name];
+          }
+
+          /* 3. Fallback: match by OLD name from rename map */
+          if (!existingVar && ex && inverseRenames[v.name]) {
+            var oldName = inverseRenames[v.name];
+            existingVar = ex.varMap[oldName];
+            if (existingVar) {
+              log('Rename in-place: ' + oldName + ' → ' + v.name);
+              existingVar.name = v.name;
+              stats.renamed++;
+            }
           }
 
           if (existingVar) {
