@@ -12,11 +12,11 @@
     "success": "#16A34A",
     "greyscale": "#747474",
     "desaturated": "#71747C",
-    "custom-1": "#000205"
+    "secondary": "#000205"
   },
   "customRoles": [
     {
-      "id": "custom-1",
+      "id": "secondary",
       "label": "Secondary",
       "keyHex": "#000205"
     }
@@ -394,14 +394,14 @@
     }
   },
   "surfacePaletteSrc": {
-    "bright": "custom-1",
-    "base": "custom-1",
-    "dim": "custom-1",
-    "deep": "custom-1",
+    "bright": "secondary",
+    "base": "secondary",
+    "dim": "secondary",
+    "deep": "secondary",
     "accent": "primary",
-    "container": "custom-1",
-    "over-container": "custom-1",
-    "float": "custom-1",
-    "inverse": "custom-1"
+    "container": "secondary",
+    "over-container": "secondary",
+    "float": "secondary",
+    "inverse": "secondary"
   }
 }
