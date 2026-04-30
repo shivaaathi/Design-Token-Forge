@@ -184,9 +184,20 @@ function scopeForExtras(cssName, type) {
 
 // ── Figma path builders ───────────────────────────────────────
 
+// Step names used by palette engine — the last segment of a prim token name
+const PRIM_STEP_NAMES = new Set(
+  ['white','black','25','50','75','100','150','175','200','250','300','350','400','450','500','550','600','700','750','800','850','900']
+);
+
 function primPath(cssName) {
   const p = cssName.split('-');
-  if (p[0] === 'prim')    return `prim/${p[1]}/${p.slice(2).join('-')}`;
+  if (p[0] === 'prim') {
+    // Last segment is the step name, everything in between is the palette key
+    // e.g. prim-custom-1-25 → prim/custom-1/25
+    const step = p[p.length - 1];
+    const palette = p.slice(1, -1).join('-');
+    return `prim/${palette}/${step}`;
+  }
   if (p[0] === 'spacing') return `spacing/${p.slice(1).join('-')}`;
   if (p[0] === 'font')    return `font/${p.slice(1).join('-')}`;
   return p.join('/');

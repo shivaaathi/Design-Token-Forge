@@ -11,7 +11,8 @@
     "info": "#0EA5E9",
     "success": "#16A34A",
     "greyscale": "#747474",
-    "desaturated": "#71747C"
+    "desaturated": "#71747C",
+    "custom-1": "#646F78"
   },
   "semanticMap": {
     "light": {
@@ -395,5 +396,8 @@
     "over-container": "custom-1",
     "float": "custom-1",
     "inverse": "custom-1"
-  }
+  },
+  "customRoles": [
+    { "id": "custom-1", "label": "Secondary", "keyHex": "#646F78" }
+  ]
 }
