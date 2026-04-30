@@ -6,6 +6,9 @@
 
 figma.showUI(__html__, { width: 480, height: 560 });
 
+var CODE_VERSION = '2026-04-30-v8';
+log('code.js loaded — version ' + CODE_VERSION);
+
 /* ── URL migration via clientStorage (reliable, not blocked like localStorage) ── */
 (async function() {
   try {
@@ -161,6 +164,9 @@ async function removeOrphans(data, stats) {
 
 async function syncAll(data) {
   var stats = { collections: 0, variables: 0, aliases: 0, updated: 0, created: 0, renamed: 0, orphansRemoved: 0, errors: [] };
+
+  log('syncAll start — code version ' + CODE_VERSION);
+  log('Renames in data: ' + (data.renames ? Object.keys(data.renames).length : 0));
 
   /* Load persistent ID map and apply renames to its keys */
   var idMap = loadIdMap();
@@ -419,7 +425,7 @@ figma.ui.onmessage = async function(msg) {
 
   if (msg.type === 'sync') {
     try {
-      figma.ui.postMessage({ type: 'progress', text: 'Syncing T0 → T1 → T2/T3 collections...' });
+      figma.ui.postMessage({ type: 'progress', text: '[' + CODE_VERSION + '] Syncing T0 → T1 → T2/T3...' });
       var stats = await syncAll(msg.data);
       var syncHash = msg.hash || '';
       /* Persist sync state to this document */
