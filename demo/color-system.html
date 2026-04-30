@@ -1923,6 +1923,7 @@ function buildSaveableConfig() {
       return {id: r.id, label: r.label, keyHex: r.keyHex, type: r.type, derive: r.derive || null};
     }),
     customCounter: customCounter,
+    semanticMap: { light: LIGHT_MAP, dark: DARK_MAP },
     surfaceMap: { light: SURF_L, dark: SURF_D, lightAccent: SURF_LA, darkAccent: SURF_DA },
     surfacePaletteSrc: SURF_PALETTE_SRC
   });
@@ -1943,6 +1944,10 @@ function loadSavedConfig() {
       if (cfg.surfaceMap.dark) Object.keys(cfg.surfaceMap.dark).forEach(function(s) { if (SURF_D[s]) Object.assign(SURF_D[s], cfg.surfaceMap.dark[s]); });
       if (cfg.surfaceMap.lightAccent) Object.assign(SURF_LA, cfg.surfaceMap.lightAccent);
       if (cfg.surfaceMap.darkAccent) Object.assign(SURF_DA, cfg.surfaceMap.darkAccent);
+    }
+    if (cfg.semanticMap) {
+      if (cfg.semanticMap.light) LIGHT_MAP = JSON.parse(JSON.stringify(cfg.semanticMap.light));
+      if (cfg.semanticMap.dark)  DARK_MAP  = JSON.parse(JSON.stringify(cfg.semanticMap.dark));
     }
     if (cfg.surfacePaletteSrc) {
       SURF_NAMES.forEach(function(sn) { if (cfg.surfacePaletteSrc[sn]) SURF_PALETTE_SRC[sn] = cfg.surfacePaletteSrc[sn]; });
@@ -2779,6 +2784,10 @@ function switchProject(newId) {
               if (savedCfg.surfaceMap.dark) Object.keys(savedCfg.surfaceMap.dark).forEach(function(s) { if (SURF_D[s]) Object.assign(SURF_D[s], savedCfg.surfaceMap.dark[s]); });
               if (savedCfg.surfaceMap.lightAccent) Object.assign(SURF_LA, savedCfg.surfaceMap.lightAccent);
               if (savedCfg.surfaceMap.darkAccent) Object.assign(SURF_DA, savedCfg.surfaceMap.darkAccent);
+            }
+            if (savedCfg.semanticMap) {
+              if (savedCfg.semanticMap.light) LIGHT_MAP = JSON.parse(JSON.stringify(savedCfg.semanticMap.light));
+              if (savedCfg.semanticMap.dark)  DARK_MAP  = JSON.parse(JSON.stringify(savedCfg.semanticMap.dark));
             }
             if (savedCfg.surfacePaletteSrc) {
               SURF_NAMES.forEach(function(sn) { if (savedCfg.surfacePaletteSrc[sn]) SURF_PALETTE_SRC[sn] = savedCfg.surfacePaletteSrc[sn]; });
