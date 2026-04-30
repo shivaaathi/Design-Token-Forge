@@ -188,10 +188,15 @@ export function generatePalette(keyHex) {
     // Target OKLCH L from the fixed tone
     const targetL = toneToOklchL(tone);
 
-    // Chroma: bell curve peaking at key (index 12), tapering to 0
-    // at white/black. The curve shape controls vibrancy distribution.
-    const distFromKey = Math.abs(i - KEY_INDEX) / Math.max(KEY_INDEX, STEP_NAMES.length - 1 - KEY_INDEX);
-    let chroma = keyC * Math.max(0, 1 - 0.6 * distFromKey ** 1.3);
+    // Chroma: asymmetric bell curve peaking at key (index 13), tapering to 0
+    // at white/black. Light side decays faster (0.6/1.3) to keep tints clean;
+    // dark side decays slower (0.35/1.8) to preserve vibrancy in darks.
+    const isLight = i < KEY_INDEX;
+    const range = isLight ? KEY_INDEX : (STEP_NAMES.length - 1 - KEY_INDEX);
+    const distFromKey = Math.abs(i - KEY_INDEX) / range;
+    const decayFactor = isLight ? 0.6  : 0.35;
+    const decayPower  = isLight ? 1.3  : 1.8;
+    let chroma = keyC * Math.max(0, 1 - decayFactor * distFromKey ** decayPower);
 
     // Hue: constant (perceptual — no drift)
     const hue = keyH;

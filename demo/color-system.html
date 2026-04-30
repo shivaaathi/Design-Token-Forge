@@ -792,20 +792,20 @@ var originalPaletteKeys = null; // snapshot for diff
 // (defaults — overridden by project config if available)
 // ══════════════════════════════════════════════════════════════
 var DEFAULT_LIGHT_MAP = {
-  'content-default':14,'content-strong':15,'content-subtle':10,'content-faint':7,
-  'component-bg-default':13,'component-bg-hover':14,'component-bg-pressed':15,
-  'component-outline-default':9,'component-outline-hover':10,'component-outline-pressed':12,
-  'component-separator':4,
-  'container-bg':2,'container-hover':3,'container-pressed':4,'container-outline':7,'container-separator':4,
-  'on-component':-1,'on-container':15
+  'content-default':'550','content-strong':'600','content-subtle':'350','content-faint':'200',
+  'component-bg-default':'500','component-bg-hover':'550','component-bg-pressed':'600',
+  'component-outline-default':'300','component-outline-hover':'350','component-outline-pressed':'450',
+  'component-separator':'100',
+  'container-bg':'50','container-hover':'75','container-pressed':'100','container-outline':'200','container-separator':'100',
+  'on-component':'fixed-white','on-container':'600'
 };
 var DEFAULT_DARK_MAP = {
-  'content-default':5,'content-strong':4,'content-subtle':7,'content-faint':10,
-  'component-bg-default':12,'component-bg-hover':10,'component-bg-pressed':9,
-  'component-outline-default':12,'component-outline-hover':10,'component-outline-pressed':9,
-  'component-separator':17,
-  'container-bg':18,'container-hover':17,'container-pressed':16,'container-outline':14,'container-separator':17,
-  'on-component':-1,'on-container':4
+  'content-default':'150','content-strong':'100','content-subtle':'200','content-faint':'350',
+  'component-bg-default':'450','component-bg-hover':'350','component-bg-pressed':'300',
+  'component-outline-default':'450','component-outline-hover':'350','component-outline-pressed':'300',
+  'component-separator':'750',
+  'container-bg':'800','container-hover':'750','container-pressed':'700','container-outline':'550','container-separator':'750',
+  'on-component':'fixed-white','on-container':'100'
 };
 var LIGHT_MAP = {};
 var DARK_MAP = {};
@@ -876,8 +876,8 @@ function initRoles() {
   }
   // Override maps from project config if available
   if (projectConfig && projectConfig.semanticMap) {
-    if (projectConfig.semanticMap.light) LIGHT_MAP = JSON.parse(JSON.stringify(projectConfig.semanticMap.light));
-    if (projectConfig.semanticMap.dark)  DARK_MAP  = JSON.parse(JSON.stringify(projectConfig.semanticMap.dark));
+    if (projectConfig.semanticMap.light) LIGHT_MAP = normalizeSemanticMap(JSON.parse(JSON.stringify(projectConfig.semanticMap.light)));
+    if (projectConfig.semanticMap.dark)  DARK_MAP  = normalizeSemanticMap(JSON.parse(JSON.stringify(projectConfig.semanticMap.dark)));
   } else {
     resetMaps();
   }
@@ -1217,16 +1217,16 @@ function injectAllTokens() {
     var lkeys = Object.keys(LIGHT_MAP);
     for (var j = 0; j < lkeys.length; j++) {
       var k = lkeys[j];
-      var idx = LIGHT_MAP[k];
-      root.setProperty('--' + roleId + '-' + k, idx === -1 ? '#FFFFFF' : steps[idx].hex);
+      var stepName = LIGHT_MAP[k];
+      root.setProperty('--' + roleId + '-' + k, getStepHex(pal, stepName));
     }
 
     // T1 semantic (dark)
     var dkeys = Object.keys(DARK_MAP);
     for (var d = 0; d < dkeys.length; d++) {
       var dk = dkeys[d];
-      var di = DARK_MAP[dk];
-      darkCSS += '  --' + roleId + '-' + dk + ': ' + (di === -1 ? '#FFFFFF' : steps[di].hex) + ';\n';
+      var dStep = DARK_MAP[dk];
+      darkCSS += '  --' + roleId + '-' + dk + ': ' + getStepHex(pal, dStep) + ';\n';
     }
   }
 
@@ -1291,18 +1291,45 @@ document.addEventListener('click', function(e) {
   }
 });
 
-function getStepHex(pal, idx) { return idx === -1 ? '#FFFFFF' : (pal && pal.steps[idx] ? pal.steps[idx].hex : '#000000'); }
-function getStepName(idx) { return idx === -1 ? '#FFF' : STEP_OPTIONS[idx]; }
-function getStepTone(idx) { return idx === -1 ? '100' : PE.TONE_SCALE[idx]; }
+function getStepHex(pal, stepName) {
+  if (stepName === 'fixed-white') return '#FFFFFF';
+  if (!pal) return '#000000';
+  for (var i = 0; i < pal.steps.length; i++) {
+    if (pal.steps[i].name === stepName) return pal.steps[i].hex;
+  }
+  return '#000000';
+}
+function getStepTone(stepName) {
+  if (stepName === 'fixed-white') return '100';
+  var si = PE.STEP_NAMES.indexOf(stepName);
+  return si >= 0 ? PE.TONE_SCALE[si] : '?';
+}
+/**
+ * Normalize a semantic map — converts legacy integer indices to step name strings.
+ */
+function normalizeSemanticMap(map) {
+  if (!map) return map;
+  var out = {};
+  var keys = Object.keys(map);
+  for (var i = 0; i < keys.length; i++) {
+    var k = keys[i], v = map[k];
+    if (typeof v === 'number') {
+      out[k] = v === -1 ? 'fixed-white' : PE.STEP_NAMES[v];
+    } else {
+      out[k] = v;
+    }
+  }
+  return out;
+}
 
 function buildPickerButton(pal, map, key, isDark) {
-  var currentIdx = map[key];
-  var hex = getStepHex(pal, currentIdx);
-  var name = getStepName(currentIdx);
+  var currentStep = map[key];
+  var hex = getStepHex(pal, currentStep);
+  var name = currentStep === 'fixed-white' ? '#FFF' : currentStep;
   var origMap = isDark
-    ? (projectConfig && projectConfig.semanticMap ? projectConfig.semanticMap.dark : DEFAULT_DARK_MAP)
-    : (projectConfig && projectConfig.semanticMap ? projectConfig.semanticMap.light : DEFAULT_LIGHT_MAP);
-  var changed = (origMap && origMap[key] !== undefined && origMap[key] !== currentIdx);
+    ? (projectConfig && projectConfig.semanticMap ? normalizeSemanticMap(projectConfig.semanticMap.dark) : DEFAULT_DARK_MAP)
+    : (projectConfig && projectConfig.semanticMap ? normalizeSemanticMap(projectConfig.semanticMap.light) : DEFAULT_LIGHT_MAP);
+  var changed = (origMap && origMap[key] !== undefined && origMap[key] !== currentStep);
   var tc = PE.wcagContrast(hex, '#FFFFFF') > 4 ? '#FFFFFF' : '#000000';
 
   var h = '<div class="step-pick" tabindex="0" data-map-key="' + key + '" data-map-theme="' + (isDark ? 'dark' : 'light') + '"' + (changed ? ' data-changed' : '') + '>';
@@ -1314,7 +1341,7 @@ function buildPickerButton(pal, map, key, isDark) {
   // Dropdown
   h += '<div class="step-dropdown">';
   // Fixed white option
-  h += '<div class="step-opt' + (currentIdx === -1 ? ' step-opt--fixed" data-active' : ' step-opt--fixed"') + ' data-idx="-1">';
+  h += '<div class="step-opt' + (currentStep === 'fixed-white' ? ' step-opt--fixed" data-active' : ' step-opt--fixed"') + ' data-step="fixed-white">';
   h += '<span class="step-opt__sw" style="background:#FFFFFF"></span>';
   h += '<span class="step-opt__name">#FFF</span>';
   h += '<span class="step-opt__hex">#FFFFFF</span>';
@@ -1325,8 +1352,8 @@ function buildPickerButton(pal, map, key, isDark) {
     var sHex = pal ? pal.steps[si].hex : '#888';
     var sName = STEP_OPTIONS[si];
     var sTone = PE.TONE_SCALE[si];
-    var active = (si === currentIdx) ? ' data-active' : '';
-    h += '<div class="step-opt"' + active + ' data-idx="' + si + '">';
+    var active = (sName === currentStep) ? ' data-active' : '';
+    h += '<div class="step-opt"' + active + ' data-step="' + sName + '">';
     h += '<span class="step-opt__sw" style="background:' + sHex + '"></span>';
     h += '<span class="step-opt__name">' + sName + '</span>';
     h += '<span class="step-opt__hex">' + sHex + '</span>';
@@ -1353,9 +1380,9 @@ function renderMap() {
       html += '<div class="map-group-label">' + grp.label + '</div>';
       for (var rr = 0; rr < grp.keys.length; rr++) {
         var key = grp.keys[rr];
-        var idx = map[key];
-        var hex = idx === -1 ? '#FFFFFF' : pal.steps[idx].hex;
-        var stepLabel = idx === -1 ? 'fixed' : pal.steps[idx].name;
+        var stepName = map[key];
+        var hex = getStepHex(pal, stepName);
+        var stepLabel = stepName === 'fixed-white' ? 'fixed' : stepName;
         html += '<div class="map-row">' +
           '<span class="map-swatch" style="background:' + hex + '" onclick="copyHex(\'' + hex + '\')" title="Click to copy"></span>' +
           '<span class="map-name">--' + prefix + '-' + key + '</span>';
@@ -1390,10 +1417,10 @@ function renderMap() {
           e.stopPropagation();
           var key = pick.getAttribute('data-map-key');
           var theme = pick.getAttribute('data-map-theme');
-          var newIdx = parseInt(opt.getAttribute('data-idx'), 10);
-          if (newIdx < -1 || newIdx >= PE.STEP_NAMES.length) return;
-          if (theme === 'dark') DARK_MAP[key] = newIdx;
-          else LIGHT_MAP[key] = newIdx;
+          var newStep = opt.getAttribute('data-step');
+          if (!newStep) return;
+          if (theme === 'dark') DARK_MAP[key] = newStep;
+          else LIGHT_MAP[key] = newStep;
           injectAllTokens();
           renderMap();
         });
@@ -1779,8 +1806,8 @@ function renderExport(format) {
       var lkeys = Object.keys(LIGHT_MAP);
       for (var j = 0; j < lkeys.length; j++) {
         var k = lkeys[j];
-        var idx = LIGHT_MAP[k];
-        output += '  --' + rid + '-' + k + ': ' + (idx === -1 ? '#FFFFFF' : pal2.steps[idx].hex) + ';\n';
+        var stepName = LIGHT_MAP[k];
+        output += '  --' + rid + '-' + k + ': ' + getStepHex(pal2, stepName) + ';\n';
       }
     }
     output += '}\n';
@@ -1880,14 +1907,14 @@ function buildSaveableCSS() {
       var lkeys = Object.keys(LIGHT_MAP);
       for (var j = 0; j < lkeys.length; j++) {
         var k = lkeys[j];
-        var idx = LIGHT_MAP[k];
-        css += '  --' + r.id + '-' + k + ': ' + (idx === -1 ? '#FFFFFF' : pal.steps[idx].hex) + ';\n';
+        var stepName = LIGHT_MAP[k];
+        css += '  --' + r.id + '-' + k + ': ' + getStepHex(pal, stepName) + ';\n';
       }
       var dkeys = Object.keys(DARK_MAP);
       for (var d = 0; d < dkeys.length; d++) {
         var dk = dkeys[d];
-        var di = DARK_MAP[dk];
-        darkCSS += '  --' + r.id + '-' + dk + ': ' + (di === -1 ? '#FFFFFF' : pal.steps[di].hex) + ';\n';
+        var dStep = DARK_MAP[dk];
+        darkCSS += '  --' + r.id + '-' + dk + ': ' + getStepHex(pal, dStep) + ';\n';
       }
     }
   }
@@ -1946,8 +1973,8 @@ function loadSavedConfig() {
       if (cfg.surfaceMap.darkAccent) Object.assign(SURF_DA, cfg.surfaceMap.darkAccent);
     }
     if (cfg.semanticMap) {
-      if (cfg.semanticMap.light) LIGHT_MAP = JSON.parse(JSON.stringify(cfg.semanticMap.light));
-      if (cfg.semanticMap.dark)  DARK_MAP  = JSON.parse(JSON.stringify(cfg.semanticMap.dark));
+      if (cfg.semanticMap.light) LIGHT_MAP = normalizeSemanticMap(JSON.parse(JSON.stringify(cfg.semanticMap.light)));
+      if (cfg.semanticMap.dark)  DARK_MAP  = normalizeSemanticMap(JSON.parse(JSON.stringify(cfg.semanticMap.dark)));
     }
     if (cfg.surfacePaletteSrc) {
       SURF_NAMES.forEach(function(sn) { if (cfg.surfacePaletteSrc[sn]) SURF_PALETTE_SRC[sn] = cfg.surfacePaletteSrc[sn]; });
@@ -2206,8 +2233,8 @@ function buildPreviewDiff() {
   // Check semantic map changes
   var mapChanges = 0;
   if (projectConfig && projectConfig.semanticMap) {
-    var origLight = projectConfig.semanticMap.light || {};
-    var origDark  = projectConfig.semanticMap.dark || {};
+    var origLight = normalizeSemanticMap(projectConfig.semanticMap.light || {});
+    var origDark  = normalizeSemanticMap(projectConfig.semanticMap.dark || {});
     Object.keys(LIGHT_MAP).forEach(function(k) { if (origLight[k] !== LIGHT_MAP[k]) mapChanges++; });
     Object.keys(DARK_MAP).forEach(function(k) { if (origDark[k] !== DARK_MAP[k]) mapChanges++; });
   }
@@ -2444,8 +2471,8 @@ function buildSemanticFileCSS() {
     var lkeys = Object.keys(LIGHT_MAP);
     for (var j = 0; j < lkeys.length; j++) {
       var k = lkeys[j];
-      var idx = LIGHT_MAP[k];
-      lines.push('  --' + rid + '-' + k + ': ' + (idx === -1 ? '#FFFFFF' : steps[idx].hex) + ';');
+      var stepName = LIGHT_MAP[k];
+      lines.push('  --' + rid + '-' + k + ': ' + getStepHex(pal, stepName) + ';');
     }
     lines.push('');
   }
@@ -2458,13 +2485,12 @@ function buildSemanticFileCSS() {
     var rid2 = TOKEN_ROLES[i2];
     var pal2 = palettes[rid2];
     if (!pal2) continue;
-    var steps2 = pal2.steps;
     lines.push('  /* \u2500\u2500 ' + rid2.toUpperCase() + ' (dark) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */');
     var dkeys = Object.keys(DARK_MAP);
     for (var d = 0; d < dkeys.length; d++) {
       var dk = dkeys[d];
-      var di = DARK_MAP[dk];
-      lines.push('  --' + rid2 + '-' + dk + ': ' + (di === -1 ? '#FFFFFF' : steps2[di].hex) + ';');
+      var dStep = DARK_MAP[dk];
+      lines.push('  --' + rid2 + '-' + dk + ': ' + getStepHex(pal2, dStep) + ';');
     }
     lines.push('');
   }

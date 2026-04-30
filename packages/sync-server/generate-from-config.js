@@ -66,22 +66,39 @@ const DEFAULT_SURF_LA = {bg:'25',subtle:'50',elevated:'75',outline:'175',separat
 const DEFAULT_SURF_DA = {bg:'900',subtle:'850',elevated:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'150','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'};
 
 const DEFAULT_LIGHT_MAP = {
-  'content-default':14,'content-strong':15,'content-subtle':10,'content-faint':7,
-  'component-bg-default':13,'component-bg-hover':14,'component-bg-pressed':15,
-  'component-outline-default':9,'component-outline-hover':10,'component-outline-pressed':12,
-  'component-separator':4,
-  'container-bg':2,'container-hover':3,'container-pressed':4,'container-outline':7,'container-separator':4,
-  'on-component':-1,'on-container':15
+  'content-default':'550','content-strong':'600','content-subtle':'350','content-faint':'200',
+  'component-bg-default':'500','component-bg-hover':'550','component-bg-pressed':'600',
+  'component-outline-default':'300','component-outline-hover':'350','component-outline-pressed':'450',
+  'component-separator':'100',
+  'container-bg':'50','container-hover':'75','container-pressed':'100','container-outline':'200','container-separator':'100',
+  'on-component':'fixed-white','on-container':'600'
 };
 
 const DEFAULT_DARK_MAP = {
-  'content-default':5,'content-strong':4,'content-subtle':7,'content-faint':10,
-  'component-bg-default':12,'component-bg-hover':10,'component-bg-pressed':9,
-  'component-outline-default':12,'component-outline-hover':10,'component-outline-pressed':9,
-  'component-separator':17,
-  'container-bg':18,'container-hover':17,'container-pressed':16,'container-outline':14,'container-separator':17,
-  'on-component':-1,'on-container':4
+  'content-default':'150','content-strong':'100','content-subtle':'200','content-faint':'350',
+  'component-bg-default':'450','component-bg-hover':'350','component-bg-pressed':'300',
+  'component-outline-default':'450','component-outline-hover':'350','component-outline-pressed':'300',
+  'component-separator':'750',
+  'container-bg':'800','container-hover':'750','container-pressed':'700','container-outline':'550','container-separator':'750',
+  'on-component':'fixed-white','on-container':'100'
 };
+
+/**
+ * Normalize a semantic map — converts legacy integer indices to step name strings.
+ * This ensures backward compatibility with config.json files that used the old format.
+ */
+function normalizeSemanticMap(map) {
+  if (!map) return map;
+  const normalized = {};
+  for (const [key, val] of Object.entries(map)) {
+    if (typeof val === 'number') {
+      normalized[key] = val === -1 ? 'fixed-white' : STEP_NAMES[val];
+    } else {
+      normalized[key] = val;
+    }
+  }
+  return normalized;
+}
 
 // ── Palette generation ────────────────────────────────────────
 
@@ -125,8 +142,8 @@ function generatePrimitiveTokens(palettes) {
  * Returns { light: { 'primary-content-default': '#hex', ... }, dark: { ... } }
  */
 function generateSemanticTokens(semanticMap, palettes) {
-  const lightMap = semanticMap.light || DEFAULT_LIGHT_MAP;
-  const darkMap  = semanticMap.dark  || DEFAULT_DARK_MAP;
+  const lightMap = normalizeSemanticMap(semanticMap.light) || DEFAULT_LIGHT_MAP;
+  const darkMap  = normalizeSemanticMap(semanticMap.dark)  || DEFAULT_DARK_MAP;
   const light = {};
   const dark = {};
 
@@ -134,12 +151,13 @@ function generateSemanticTokens(semanticMap, palettes) {
     const palKey = ROLE_TO_PALETTE_KEY[role];
     const palette = palettes[palKey];
     if (!palette) continue;
+    const look = stepLookup(palette);
 
-    for (const [prop, idx] of Object.entries(lightMap)) {
-      light[`${role}-${prop}`] = idx === -1 ? '#FFFFFF' : palette.steps[idx].hex;
+    for (const [prop, stepName] of Object.entries(lightMap)) {
+      light[`${role}-${prop}`] = stepName === 'fixed-white' ? '#FFFFFF' : (look[stepName] || '#000000');
     }
-    for (const [prop, idx] of Object.entries(darkMap)) {
-      dark[`${role}-${prop}`] = idx === -1 ? '#FFFFFF' : palette.steps[idx].hex;
+    for (const [prop, stepName] of Object.entries(darkMap)) {
+      dark[`${role}-${prop}`] = stepName === 'fixed-white' ? '#FFFFFF' : (look[stepName] || '#000000');
     }
   }
 

@@ -158,8 +158,13 @@ function generatePalette(keyHex) {
 
     var targetL = toneToOklchL(tone);
 
-    var distFromKey = Math.abs(i - KEY_INDEX) / Math.max(KEY_INDEX, STEP_NAMES.length - 1 - KEY_INDEX);
-    var chroma = keyC * Math.max(0, 1 - 0.6 * Math.pow(distFromKey, 1.3));
+    // Chroma: asymmetric bell curve — light side decays faster, dark side slower
+    var isLight = i < KEY_INDEX;
+    var range = isLight ? KEY_INDEX : (STEP_NAMES.length - 1 - KEY_INDEX);
+    var distFromKey = Math.abs(i - KEY_INDEX) / range;
+    var decayFactor = isLight ? 0.6  : 0.35;
+    var decayPower  = isLight ? 1.3  : 1.8;
+    var chroma = keyC * Math.max(0, 1 - decayFactor * Math.pow(distFromKey, decayPower));
     var hue = keyH;
 
     while (chroma > 0.0005 && !isInSrgb(targetL, chroma, hue)) {
