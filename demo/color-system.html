@@ -874,6 +874,18 @@ function initRoles() {
       }
     }
   }
+  // Restore custom roles from config
+  if (projectConfig && projectConfig.customRoles) {
+    projectConfig.customRoles.forEach(function(cr) {
+      // Only add if not already present
+      var exists = roles.some(function(r) { return r.id === cr.id; });
+      if (!exists) {
+        var hex = (projectConfig.paletteKeys && projectConfig.paletteKeys[cr.id]) || cr.keyHex || '#888888';
+        roles.push({ id: cr.id, label: cr.label || cr.id, keyHex: hex.toUpperCase(), type: 'custom' });
+        customCounter = Math.max(customCounter, parseInt(cr.id.replace('custom-', '')) || 0);
+      }
+    });
+  }
   // Override maps from project config if available
   if (projectConfig && projectConfig.semanticMap) {
     if (projectConfig.semanticMap.light) LIGHT_MAP = normalizeSemanticMap(JSON.parse(JSON.stringify(projectConfig.semanticMap.light)));
@@ -2218,7 +2230,7 @@ function buildPreviewDiff() {
   if (originalPaletteKeys) {
     for (var i = 0; i < roles.length; i++) {
       var r = roles[i];
-      var key = ROLE_TO_PALETTE_KEY[r.id];
+      var key = ROLE_TO_PALETTE_KEY[r.id] || (r.type === 'custom' ? r.id : null);
       if (!key || !originalPaletteKeys[key]) continue;
       var oldHex = originalPaletteKeys[key].toUpperCase();
       var newHex = (r.keyHex || '').toUpperCase();
@@ -2260,7 +2272,7 @@ function buildPreviewDiff() {
   var affectedTokens = 0;
   for (var j = 0; j < roles.length; j++) {
     var r2 = roles[j];
-    var key2 = ROLE_TO_PALETTE_KEY[r2.id];
+    var key2 = ROLE_TO_PALETTE_KEY[r2.id] || (r2.type === 'custom' ? r2.id : null);
     if (key2 && originalPaletteKeys && originalPaletteKeys[key2]) {
       var old2 = originalPaletteKeys[key2].toUpperCase();
       var new2 = (r2.keyHex || '').toUpperCase();
@@ -2286,12 +2298,22 @@ function buildUpdatedConfig() {
     created: new Date().toISOString().split('T')[0]
   };
 
-  // Update palette keys from current roles
+  // Update palette keys from current roles (standard + custom)
   cfg.paletteKeys = {};
   for (var i = 0; i < roles.length; i++) {
     var r = roles[i];
-    var key = ROLE_TO_PALETTE_KEY[r.id];
+    var key = ROLE_TO_PALETTE_KEY[r.id] || (r.type === 'custom' ? r.id : null);
     if (key) cfg.paletteKeys[key] = (r.keyHex || '').toUpperCase();
+  }
+
+  // Save custom roles so the editor can reload them (labels, order, etc.)
+  var customRoles = roles.filter(function(r) { return r.type === 'custom'; });
+  if (customRoles.length) {
+    cfg.customRoles = customRoles.map(function(r) {
+      return { id: r.id, label: r.label, keyHex: r.keyHex };
+    });
+  } else {
+    delete cfg.customRoles;
   }
 
   // Update semantic maps
@@ -2378,12 +2400,15 @@ function buildPrimitivesFileCSS() {
   lines.push('');
   // Map role IDs to primitive prefix names
   var PRIM_PREFIX = { primary:'monochromatic', brand:'brand', danger:'danger', warning:'warning', info:'info', success:'success', greyscale:'greyscale', desaturated:'desaturated' };
-  // Always emit ALL default role palettes — the CSS is shared across projects,
-  // so even if this project deleted a role (e.g. brand), other projects need it.
+  // Emit ALL default role palettes + custom roles
   var allRoles = DEFAULT_ROLES.map(function(dr) {
     var active = getRoleById(dr.id);
     return active || dr;
   });
+  // Append custom roles that aren't in DEFAULT_ROLES
+  for (var ci = 0; ci < roles.length; ci++) {
+    if (roles[ci].type === 'custom') allRoles.push(roles[ci]);
+  }
   for (var i = 0; i < allRoles.length; i++) {
     var r = allRoles[i];
     var pal = palettes[r.id];
