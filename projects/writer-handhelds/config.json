@@ -78,10 +78,10 @@
         "cm-bg": "25",
         "cm-bg-hover": "50",
         "cm-bg-pressed": "75",
-        "cm-outline": "150",
-        "cm-outline-hover": "200",
-        "cm-outline-pressed": "250",
-        "cm-separator": "150"
+        "cm-outline": "100",
+        "cm-outline-hover": "150",
+        "cm-outline-pressed": "150",
+        "cm-separator": "100"
       },
       "base": {
         "bg": "25",
