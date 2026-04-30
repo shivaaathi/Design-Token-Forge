@@ -135,17 +135,19 @@ window.DTF = window.DTF || { onThemeChange: null };
       _notifyAndRefresh();
     }
 
-    /* Always fetch fresh CSS+config from server */
+    /* Fetch fresh CSS+config from server — but only apply file-based CSS
+       if the user hasn't saved edits from Color System for this project. */
+    var hasEdits = !!localStorage.getItem('dtf-color-config-' + pid);
     _fetchProjectAssets(pid, function(freshCSS) {
       if (_pendingPid !== pid) return; /* stale — user switched again */
-      if (freshCSS) {
+      if (freshCSS && !hasEdits) {
         localStorage.setItem('dtf-saved-tokens-' + pid, freshCSS);
         localStorage.setItem('dtf-saved-tokens', freshCSS);
         if (freshCSS !== cached) {
           _injectCSS(freshCSS);
           _notifyAndRefresh();
         }
-      } else if (!cached) {
+      } else if (!cached && !hasEdits) {
         var el = document.getElementById('dtfSavedTokens');
         if (el) el.textContent = '';
         _notifyAndRefresh();
@@ -256,38 +258,41 @@ window.DTF = window.DTF || { onThemeChange: null };
       }
     }).catch(function() {});
 
-    /* Fetch CSS files */
-    var pending = cssFiles.length;
-    var parts = [];
-    cssFiles.forEach(function(file, idx) {
-      var url = depth + '/projects/' + activeProject + '/' + file + '?_cb=' + Date.now();
-      fetch(url).then(function(r) {
-        if (!r.ok) throw new Error(r.status);
-        return r.text();
-      }).then(function(text) {
-        parts[idx] = text;
-      }).catch(function() {}).finally(function() {
-        pending--;
-        if (pending === 0) {
-          var assembled = parts.filter(Boolean).join('\n');
-          if (assembled) {
-            localStorage.setItem('dtf-saved-tokens-' + activeProject, assembled);
-            localStorage.setItem('dtf-saved-tokens', assembled);
-            var el = document.getElementById('dtfSavedTokens');
-            if (el) { el.textContent = assembled; }
-            else {
-              var s = document.createElement('style');
-              s.id = 'dtfSavedTokens';
-              s.textContent = assembled;
-              document.head.appendChild(s);
-            }
-            if (typeof window.DTF.onThemeChange === 'function') {
-              requestAnimationFrame(window.DTF.onThemeChange);
+    /* Fetch CSS files — only overwrite user's saved tokens if no color-system edits exist */
+    var hasEditedConfig = !!localStorage.getItem('dtf-color-config-' + activeProject);
+    if (!hasEditedConfig) {
+      var pending = cssFiles.length;
+      var parts = [];
+      cssFiles.forEach(function(file, idx) {
+        var url = depth + '/projects/' + activeProject + '/' + file + '?_cb=' + Date.now();
+        fetch(url).then(function(r) {
+          if (!r.ok) throw new Error(r.status);
+          return r.text();
+        }).then(function(text) {
+          parts[idx] = text;
+        }).catch(function() {}).finally(function() {
+          pending--;
+          if (pending === 0) {
+            var assembled = parts.filter(Boolean).join('\n');
+            if (assembled) {
+              localStorage.setItem('dtf-saved-tokens-' + activeProject, assembled);
+              localStorage.setItem('dtf-saved-tokens', assembled);
+              var el = document.getElementById('dtfSavedTokens');
+              if (el) { el.textContent = assembled; }
+              else {
+                var s = document.createElement('style');
+                s.id = 'dtfSavedTokens';
+                s.textContent = assembled;
+                document.head.appendChild(s);
+              }
+              if (typeof window.DTF.onThemeChange === 'function') {
+                requestAnimationFrame(window.DTF.onThemeChange);
+              }
             }
           }
-        }
+        });
       });
-    });
+    }
   }
 })();
 
