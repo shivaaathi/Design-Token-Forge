@@ -112,8 +112,8 @@
 
   /* ── OUTLINE (dashed border, transparent bg — default) ── */
   --file-upload-outline-bg: transparent;
-  --file-upload-outline-bg-hover: var(--surface-base-hover);
-  --file-upload-outline-bg-active: var(--surface-base-pressed);
+  --file-upload-outline-bg-hover: var(--surface-base-subtle);
+  --file-upload-outline-bg-active: var(--surface-base-elevated);
   --file-upload-outline-bg-disabled: transparent;
   --file-upload-outline-bg-dragover: var(--primary-container-bg);
   --file-upload-outline-fg: var(--surface-base-ct-default);

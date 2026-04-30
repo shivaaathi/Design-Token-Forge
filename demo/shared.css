@@ -13,8 +13,8 @@
   --demo-fg-faint:var(--surface-base-ct-faint);
   --demo-border:var(--surface-base-outline);
   --demo-surface:var(--surface-base-bg);
-  --demo-surface-alt:var(--surface-base-hover);
-  --demo-surface-deep:var(--surface-base-pressed);
+  --demo-surface-alt:var(--surface-base-subtle);
+  --demo-surface-deep:var(--surface-base-elevated);
   --demo-cm-bg:var(--surface-base-cm-bg);
 }
 html{scroll-behavior:smooth}
@@ -132,8 +132,8 @@ body{
 .surface-strip{display:flex;gap:0}
 .surface-panel{flex:1;min-width:0;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .surface-panel--base{background:var(--surface-base-bg)}
-.surface-panel--alt{background:var(--surface-base-hover)}
-.surface-panel--deep{background:var(--surface-base-pressed)}
+.surface-panel--alt{background:var(--surface-base-subtle)}
+.surface-panel--deep{background:var(--surface-base-elevated)}
 .surface-panel-label{font-size:var(--font-size-10,10px);font-weight:600;color:var(--demo-fg-faint);text-transform:uppercase;letter-spacing:0.04em}
 
 /* ── Slot, Motion, Shadow ──────────────────────────────── */

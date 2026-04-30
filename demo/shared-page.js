@@ -115,8 +115,8 @@ window.DTFPage = (function() {
 
     var levels = [
       { css: 'surface-panel--base', label: 'surface-base-bg' },
-      { css: 'surface-panel--alt',  label: 'surface-base-hover' },
-      { css: 'surface-panel--deep', label: 'surface-base-pressed' }
+      { css: 'surface-panel--alt',  label: 'surface-base-subtle' },
+      { css: 'surface-panel--deep', label: 'surface-base-elevated' }
     ];
 
     levels.forEach(function(lvl) {

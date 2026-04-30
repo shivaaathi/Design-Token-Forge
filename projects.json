@@ -1,0 +1,22 @@
+[
+  {
+    "id": "desktop-pdf-editor",
+    "name": "Desktop PDF Editor",
+    "description": "Default project — the original DTF token set for the Desktop PDF Editor product."
+  },
+  {
+    "id": "testing",
+    "name": "testing",
+    "description": ""
+  },
+  {
+    "id": "writer-handhelds",
+    "name": "writer-handhelds",
+    "description": ""
+  },
+  {
+    "id": "writer-mobile",
+    "name": "Writer Mobile",
+    "description": ""
+  }
+]

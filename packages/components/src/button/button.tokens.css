@@ -206,8 +206,8 @@
 
   /* ── GHOST (transparent bg, --surface-* by default) ─────── */
   --btn-ghost-bg: transparent;
-  --btn-ghost-bg-hover: var(--surface-base-hover);
-  --btn-ghost-bg-active: var(--surface-base-pressed);
+  --btn-ghost-bg-hover: var(--surface-base-subtle);
+  --btn-ghost-bg-active: var(--surface-base-elevated);
   --btn-ghost-bg-disabled: transparent;
   --btn-ghost-fg: var(--surface-base-ct-default);
   --btn-ghost-fg-hover: var(--surface-base-ct-default);
@@ -276,8 +276,8 @@
 
   /* ── OUTLINE (legacy: outlined + neutral/surface context) ── */
   --btn-outline-bg: transparent;
-  --btn-outline-bg-hover: var(--surface-base-hover);
-  --btn-outline-bg-active: var(--surface-base-pressed);
+  --btn-outline-bg-hover: var(--surface-base-subtle);
+  --btn-outline-bg-active: var(--surface-base-elevated);
   --btn-outline-bg-disabled: transparent;
   --btn-outline-fg: var(--surface-base-ct-default);
   --btn-outline-fg-hover: var(--surface-base-ct-strong);

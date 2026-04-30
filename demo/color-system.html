@@ -1406,39 +1406,39 @@ function renderMap() {
 // RENDER: T2 SURFACE CONTEXT MAP (Section 2b)
 // ══════════════════════════════════════════════════════════════
 var SURF_NAMES = ['bright','base','dim','deep','accent','container','over-container','float','inverse'];
-var SURF_PROP_ORDER = ['bg','hover','pressed','outline','separator',
+var SURF_PROP_ORDER = ['bg','subtle','elevated','outline','separator',
   'ct-default','ct-strong','ct-subtle','ct-faint',
   'cm-bg','cm-bg-hover','cm-bg-pressed',
   'cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator'];
 var SURF_PROP_GROUPS = [
-  {label:'Background',keys:['bg','hover','pressed','outline','separator']},
+  {label:'Background',keys:['bg','subtle','elevated','outline','separator']},
   {label:'Content',keys:['ct-default','ct-strong','ct-subtle','ct-faint']},
   {label:'Component Modifier',keys:['cm-bg','cm-bg-hover','cm-bg-pressed','cm-outline','cm-outline-hover','cm-outline-pressed','cm-separator']}
 ];
 
 // Editable surface maps (start as copies of the hardcoded defaults)
 var DEFAULT_SURF_L = {
-  bright:{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'150','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'150'},
-  base:{bg:'25',hover:'50',pressed:'75',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'white','cm-bg-hover':'25','cm-bg-pressed':'50','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'},
-  dim:{bg:'50',hover:'75',pressed:'100',outline:'175',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'300','cm-separator':'175'},
-  deep:{bg:'75',hover:'100',pressed:'150',outline:'175',separator:'200','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'450','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'200','cm-outline-hover':'250','cm-outline-pressed':'300','cm-separator':'200'},
-  container:{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'150','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'150'},
-  'over-container':{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'},
-  float:{bg:'white',hover:'25',pressed:'50',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'550','ct-faint':'400','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'175','cm-outline-hover':'250','cm-outline-pressed':'300','cm-separator':'175'},
-  inverse:{bg:'900',hover:'850',pressed:'800',outline:'700',separator:'700','ct-default':'25','ct-strong':'white','ct-subtle':'250','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'}
+  bright:{bg:'white',subtle:'25',elevated:'50',outline:'150',separator:'150','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'150'},
+  base:{bg:'25',subtle:'50',elevated:'75',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'white','cm-bg-hover':'25','cm-bg-pressed':'50','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'},
+  dim:{bg:'50',subtle:'75',elevated:'100',outline:'175',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'300','cm-separator':'175'},
+  deep:{bg:'75',subtle:'100',elevated:'150',outline:'175',separator:'200','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'450','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'200','cm-outline-hover':'250','cm-outline-pressed':'300','cm-separator':'200'},
+  container:{bg:'white',subtle:'25',elevated:'50',outline:'150',separator:'150','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'25','cm-bg-hover':'50','cm-bg-pressed':'75','cm-outline':'150','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'150'},
+  'over-container':{bg:'white',subtle:'25',elevated:'50',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'600','ct-faint':'400','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'},
+  float:{bg:'white',subtle:'25',elevated:'50',outline:'150',separator:'175','ct-default':'900','ct-strong':'black','ct-subtle':'550','ct-faint':'400','cm-bg':'50','cm-bg-hover':'75','cm-bg-pressed':'100','cm-outline':'175','cm-outline-hover':'250','cm-outline-pressed':'300','cm-separator':'175'},
+  inverse:{bg:'900',subtle:'850',elevated:'800',outline:'700',separator:'700','ct-default':'25','ct-strong':'white','ct-subtle':'250','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'}
 };
 var DEFAULT_SURF_D = {
-  bright:{bg:'850',hover:'800',pressed:'750',outline:'700',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'800','cm-bg-hover':'750','cm-bg-pressed':'700','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
-  base:{bg:'900',hover:'850',pressed:'800',outline:'750',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
-  dim:{bg:'900',hover:'850',pressed:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'},
-  deep:{bg:'black',hover:'900',pressed:'850',outline:'800',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'300','ct-faint':'450','cm-bg':'900','cm-bg-hover':'850','cm-bg-pressed':'800','cm-outline':'700','cm-outline-hover':'600','cm-outline-pressed':'550','cm-separator':'750'},
-  container:{bg:'850',hover:'800',pressed:'750',outline:'700',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'800','cm-bg-hover':'750','cm-bg-pressed':'700','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
-  'over-container':{bg:'800',hover:'750',pressed:'700',outline:'600',separator:'600','ct-default':'50','ct-strong':'white','ct-subtle':'200','ct-faint':'400','cm-bg':'750','cm-bg-hover':'700','cm-bg-pressed':'600','cm-outline':'550','cm-outline-hover':'500','cm-outline-pressed':'450','cm-separator':'600'},
-  float:{bg:'750',hover:'700',pressed:'600',outline:'550',separator:'550','ct-default':'25','ct-strong':'white','ct-subtle':'200','ct-faint':'300','cm-bg':'700','cm-bg-hover':'600','cm-bg-pressed':'550','cm-outline':'500','cm-outline-hover':'450','cm-outline-pressed':'400','cm-separator':'550'},
-  inverse:{bg:'900',hover:'850',pressed:'800',outline:'700',separator:'700','ct-default':'25','ct-strong':'white','ct-subtle':'250','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'}
+  bright:{bg:'850',subtle:'800',elevated:'750',outline:'700',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'800','cm-bg-hover':'750','cm-bg-pressed':'700','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
+  base:{bg:'900',subtle:'850',elevated:'800',outline:'750',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
+  dim:{bg:'900',subtle:'850',elevated:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'},
+  deep:{bg:'black',subtle:'900',elevated:'850',outline:'800',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'300','ct-faint':'450','cm-bg':'900','cm-bg-hover':'850','cm-bg-pressed':'800','cm-outline':'700','cm-outline-hover':'600','cm-outline-pressed':'550','cm-separator':'750'},
+  container:{bg:'850',subtle:'800',elevated:'750',outline:'700',separator:'700','ct-default':'50','ct-strong':'white','ct-subtle':'250','ct-faint':'450','cm-bg':'800','cm-bg-hover':'750','cm-bg-pressed':'700','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'},
+  'over-container':{bg:'800',subtle:'750',elevated:'700',outline:'600',separator:'600','ct-default':'50','ct-strong':'white','ct-subtle':'200','ct-faint':'400','cm-bg':'750','cm-bg-hover':'700','cm-bg-pressed':'600','cm-outline':'550','cm-outline-hover':'500','cm-outline-pressed':'450','cm-separator':'600'},
+  float:{bg:'750',subtle:'700',elevated:'600',outline:'550',separator:'550','ct-default':'25','ct-strong':'white','ct-subtle':'200','ct-faint':'300','cm-bg':'700','cm-bg-hover':'600','cm-bg-pressed':'550','cm-outline':'500','cm-outline-hover':'450','cm-outline-pressed':'400','cm-separator':'550'},
+  inverse:{bg:'900',subtle:'850',elevated:'800',outline:'700',separator:'700','ct-default':'25','ct-strong':'white','ct-subtle':'250','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'700'}
 };
-var DEFAULT_SURF_LA = {bg:'25',hover:'50',pressed:'75',outline:'175',separator:'175','ct-default':'800','ct-strong':'900','ct-subtle':'700','ct-faint':'500','cm-bg':'white','cm-bg-hover':'25','cm-bg-pressed':'50','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'};
-var DEFAULT_SURF_DA = {bg:'900',hover:'850',pressed:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'150','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'};
+var DEFAULT_SURF_LA = {bg:'25',subtle:'50',elevated:'75',outline:'175',separator:'175','ct-default':'800','ct-strong':'900','ct-subtle':'700','ct-faint':'500','cm-bg':'white','cm-bg-hover':'25','cm-bg-pressed':'50','cm-outline':'175','cm-outline-hover':'200','cm-outline-pressed':'250','cm-separator':'175'};
+var DEFAULT_SURF_DA = {bg:'900',subtle:'850',elevated:'800',outline:'750',separator:'750','ct-default':'75','ct-strong':'white','ct-subtle':'150','ct-faint':'400','cm-bg':'850','cm-bg-hover':'800','cm-bg-pressed':'750','cm-outline':'600','cm-outline-hover':'550','cm-outline-pressed':'500','cm-separator':'750'};
 
 var SURF_L = JSON.parse(JSON.stringify(DEFAULT_SURF_L));
 var SURF_D = JSON.parse(JSON.stringify(DEFAULT_SURF_D));
@@ -1598,7 +1598,7 @@ function renderSurfTable() {
   // Surface preview bar at bottom
   html += '<tr><td colspan="5" style="padding:12px 8px"><div class="surf-preview">';
   for (var pi = 0; pi < 5; pi++) {
-    var propN = ['bg','hover','pressed','outline','separator'][pi];
+    var propN = ['bg','subtle','elevated','outline','separator'][pi];
     var pHex = surfStepHex(lMap[propN], n);
     var tc2 = PE.wcagContrast(pHex, '#FFFFFF') > 3 ? '#fff' : '#000';
     html += '<span class="surf-preview__bar" style="background:' + pHex + ';color:' + tc2 + '">' + propN + '</span>';

@@ -110,7 +110,7 @@
 
   /* ── NEUTRAL role ── */
   --progress-neutral-fill: var(--surface-base-ct-faint);
-  --progress-neutral-soft-track: var(--surface-base-hover);
+  --progress-neutral-soft-track: var(--surface-base-subtle);
   --progress-neutral-label: var(--surface-base-ct-default);
 
   /* ── Outline variant ── */

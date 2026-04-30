@@ -197,8 +197,8 @@
 
   /* ── GHOST (transparent bg, --surface-* by default) ──────────────────── */
   --split-btn-ghost-bg: transparent;
-  --split-btn-ghost-bg-hover: var(--surface-base-hover);
-  --split-btn-ghost-bg-active: var(--surface-base-pressed);
+  --split-btn-ghost-bg-hover: var(--surface-base-subtle);
+  --split-btn-ghost-bg-active: var(--surface-base-elevated);
   --split-btn-ghost-bg-disabled: transparent;
   --split-btn-ghost-fg: var(--surface-base-ct-default);
   --split-btn-ghost-fg-hover: var(--surface-base-ct-default);
@@ -239,8 +239,8 @@
 
   /* ── OUTLINE (legacy: outlined + neutral/surface context) ───────── */
   --split-btn-outline-bg: transparent;
-  --split-btn-outline-bg-hover: var(--surface-base-hover);
-  --split-btn-outline-bg-active: var(--surface-base-pressed);
+  --split-btn-outline-bg-hover: var(--surface-base-subtle);
+  --split-btn-outline-bg-active: var(--surface-base-elevated);
   --split-btn-outline-bg-disabled: transparent;
   --split-btn-outline-fg: var(--surface-base-ct-default);
   --split-btn-outline-fg-hover: var(--surface-base-ct-strong);

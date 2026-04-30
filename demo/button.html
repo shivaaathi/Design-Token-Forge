@@ -144,8 +144,8 @@
     <div class="section-body">
       <div class="surface-strip">
         <div class="surface-panel surface-panel--base" id="surfaceBase"><span class="surface-panel-label">surface-base-bg</span></div>
-        <div class="surface-panel surface-panel--alt" id="surfaceAlt"><span class="surface-panel-label">surface-base-hover</span></div>
-        <div class="surface-panel surface-panel--deep" id="surfaceDeep"><span class="surface-panel-label">surface-base-pressed</span></div>
+        <div class="surface-panel surface-panel--alt" id="surfaceAlt"><span class="surface-panel-label">surface-base-subtle</span></div>
+        <div class="surface-panel surface-panel--deep" id="surfaceDeep"><span class="surface-panel-label">surface-base-elevated</span></div>
       </div>
     </div>
   </section>
@@ -586,9 +586,9 @@
       el.style.setProperty('--primary-component-bg-pressed','var(--surface-base-cm-bg-pressed)');
       el.style.setProperty('--primary-on-component','var(--surface-base-ct-default)');
       el.style.setProperty('--primary-content-default','var(--surface-base-ct-default)');
-      el.style.setProperty('--primary-container-bg','var(--surface-base-hover)');
-      el.style.setProperty('--primary-container-hover','var(--surface-base-pressed)');
-      el.style.setProperty('--primary-container-pressed','var(--surface-base-pressed)');
+      el.style.setProperty('--primary-container-bg','var(--surface-base-subtle)');
+      el.style.setProperty('--primary-container-hover','var(--surface-base-elevated)');
+      el.style.setProperty('--primary-container-pressed','var(--surface-base-elevated)');
       el.style.setProperty('--primary-component-outline-default','var(--surface-base-cm-outline)');
       el.style.setProperty('--primary-component-outline-hover','var(--surface-base-cm-outline-hover)');
       el.style.setProperty('--primary-component-outline-pressed','var(--surface-base-cm-outline-pressed)');
@@ -635,14 +635,14 @@
       {label:'BG Hover',token:'--btn-primary-bg-hover',via:'--'+rp+(isN?'-cm-bg-hover':'-component-bg-hover')},
       {label:'FG',token:'--btn-primary-fg',via:'--'+rp+(isN?'-ct-default':'-on-component'),val:cs?cs.color:''},
       {sec:'Outlined ('+r+')'},
-      {label:'BG Hover',token:'--btn-secondary-bg-hover',via:'--'+rp+(isN?'-hover':'-container-bg')},
+      {label:'BG Hover',token:'--btn-secondary-bg-hover',via:'--'+rp+(isN?'-subtle':'-container-bg')},
       {label:'FG',token:'--btn-secondary-fg',via:'--'+rp+(isN?'-ct-default':'-content-default'),val:cs2?cs2.color:''},
       {label:'Border',token:'--btn-secondary-border-color',via:'--'+rp+(isN?'-outline':'-component-outline-default')},
       {sec:'Soft ('+r+')'},
-      {label:'BG',token:'--btn-tertiary-bg',via:'--'+rp+(isN?'-hover':'-container-bg')},
+      {label:'BG',token:'--btn-tertiary-bg',via:'--'+rp+(isN?'-subtle':'-container-bg')},
       {label:'FG',token:'--btn-tertiary-fg',via:'--'+rp+(isN?'-ct-default':'-content-default')},
       {sec:'Ghost ('+r+')'},
-      {label:'BG Hover',token:'--btn-ghost-bg-hover',via:isN?'--surface-'+s+'-hover':'--'+r+'-container-bg'},
+      {label:'BG Hover',token:'--btn-ghost-bg-hover',via:isN?'--surface-'+s+'-subtle':'--'+r+'-container-bg'},
       {label:'FG',token:'--btn-ghost-fg',via:isN?'--surface-'+s+'-ct-default':'--'+r+'-content-default'},
       {sec:'Focus Ring'},
       {label:'Outline',token:'--btn-focus-outline-color',via:'--'+rp+(isN?'-cm-outline':'-component-outline-default')}

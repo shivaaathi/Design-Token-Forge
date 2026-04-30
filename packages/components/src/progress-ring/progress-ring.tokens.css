@@ -88,7 +88,7 @@
 
   /* ── NEUTRAL role ── */
   --ring-neutral-fill: var(--surface-base-ct-faint);
-  --ring-neutral-soft-track: var(--surface-base-hover);
+  --ring-neutral-soft-track: var(--surface-base-subtle);
 
   /* ── Indeterminate ── */
   --ring-indeterminate-fill: var(--primary-component-bg-default);

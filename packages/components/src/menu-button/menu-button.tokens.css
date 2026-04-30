@@ -251,8 +251,8 @@
 
   /* ── OUTLINE (legacy: outlined + neutral/surface context) ───────── */
   --menu-btn-outline-bg: transparent;
-  --menu-btn-outline-bg-hover: var(--surface-base-hover);
-  --menu-btn-outline-bg-active: var(--surface-base-pressed);
+  --menu-btn-outline-bg-hover: var(--surface-base-subtle);
+  --menu-btn-outline-bg-active: var(--surface-base-elevated);
   --menu-btn-outline-bg-disabled: transparent;
   --menu-btn-outline-fg: var(--surface-base-ct-default);
   --menu-btn-outline-fg-hover: var(--surface-base-ct-strong);
