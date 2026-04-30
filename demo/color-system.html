@@ -839,6 +839,22 @@ var currentFormat = 'css';
 var DEFAULT_CUSTOM_COLORS = ['#7C3AED','#EC4899','#F97316','#06B6D4','#8B5CF6','#10B981','#EF4444','#14B8A6'];
 var CUSTOM_NAMES = ['Secondary','Tertiary','Accent','Extra'];
 
+// Reserved role IDs — slug must not collide with these
+var RESERVED_IDS = new Set(['primary','brand','danger','warning','info','success','greyscale','desaturated','monochromatic']);
+function slugifyLabel(label) {
+  return label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'custom';
+}
+function uniqueRoleId(label, excludeId) {
+  var slug = slugifyLabel(label);
+  if (RESERVED_IDS.has(slug)) slug = slug + '-custom';
+  var candidate = slug;
+  var n = 2;
+  while (roles.some(function(r) { return r.id === candidate && r.id !== excludeId; })) {
+    candidate = slug + '-' + n++;
+  }
+  return candidate;
+}
+
 var STORAGE_KEY_TOKENS = 'dtf-saved-tokens';
 var STORAGE_KEY_CONFIG = 'dtf-color-config';
 var STORAGE_KEY_ACTIVE = 'dtf-active-project';
@@ -874,15 +890,32 @@ function initRoles() {
       }
     }
   }
-  // Restore custom roles from config
+  // Restore custom roles from config (handles both slug IDs and legacy custom-N IDs)
   if (projectConfig && projectConfig.customRoles) {
     projectConfig.customRoles.forEach(function(cr) {
-      // Only add if not already present
-      var exists = roles.some(function(r) { return r.id === cr.id; });
+      var id = cr.id;
+      // Migrate legacy custom-N IDs to label-based slugs
+      if (/^custom-\d+$/.test(id) && cr.label) {
+        var newId = slugifyLabel(cr.label);
+        if (RESERVED_IDS.has(newId)) newId = newId + '-custom';
+        // Also migrate surfacePaletteSrc references
+        if (projectConfig.surfacePaletteSrc) {
+          SURF_NAMES.forEach(function(sn) {
+            if (projectConfig.surfacePaletteSrc[sn] === id) projectConfig.surfacePaletteSrc[sn] = newId;
+          });
+        }
+        // Migrate paletteKeys
+        if (projectConfig.paletteKeys && projectConfig.paletteKeys[id]) {
+          projectConfig.paletteKeys[newId] = projectConfig.paletteKeys[id];
+          delete projectConfig.paletteKeys[id];
+        }
+        id = newId;
+      }
+      var exists = roles.some(function(r) { return r.id === id; });
       if (!exists) {
-        var hex = (projectConfig.paletteKeys && projectConfig.paletteKeys[cr.id]) || cr.keyHex || '#888888';
-        roles.push({ id: cr.id, label: cr.label || cr.id, keyHex: hex.toUpperCase(), type: 'custom' });
-        customCounter = Math.max(customCounter, parseInt(cr.id.replace('custom-', '')) || 0);
+        var hex = (projectConfig.paletteKeys && projectConfig.paletteKeys[id]) || cr.keyHex || '#888888';
+        roles.push({ id: id, label: cr.label || id, keyHex: hex.toUpperCase(), type: 'custom' });
+        customCounter++;
       }
     });
   }
@@ -1061,13 +1094,29 @@ function wireRoleEvents() {
       }
     });
   });
-  // Name inputs (custom roles)
+  // Name inputs (custom roles) — renaming also updates the ID
   rolesList.querySelectorAll('[data-role-name]').forEach(function(el) {
     el.addEventListener('change', function() {
       var rid = el.getAttribute('data-role-name');
       var r = getRoleById(rid);
-      if (r) r.label = el.value.trim() || r.label;
+      if (!r) return;
+      var newLabel = el.value.trim() || r.label;
+      r.label = newLabel;
+      var newId = uniqueRoleId(newLabel, rid);
+      if (newId !== rid) {
+        // Update all references to the old ID
+        if (palettes[rid]) { palettes[newId] = palettes[rid]; delete palettes[rid]; }
+        if (certs[rid]) { certs[newId] = certs[rid]; delete certs[rid]; }
+        SURF_NAMES.forEach(function(sn) { if (SURF_PALETTE_SRC[sn] === rid) SURF_PALETTE_SRC[sn] = newId; });
+        if (selectedMapRole === rid) selectedMapRole = newId;
+        if (selectedStepRole === rid) selectedStepRole = newId;
+        if (selectedCertRole === rid) selectedCertRole = newId;
+        r.id = newId;
+      }
       refreshSelectors();
+      renderRolesList();
+      injectSurfaceTokens();
+      renderSurfSrcBar();
     });
   });
   // Delete buttons
@@ -1144,7 +1193,7 @@ document.getElementById('addRoleBtn').addEventListener('click', function() {
   var name = customCounter < CUSTOM_NAMES.length ? CUSTOM_NAMES[customCounter] : 'Custom ' + (customCounter - CUSTOM_NAMES.length + 1);
   var color = DEFAULT_CUSTOM_COLORS[customCounter % DEFAULT_CUSTOM_COLORS.length];
   customCounter++;
-  var id = 'custom-' + customCounter;
+  var id = uniqueRoleId(name);
   roles.push({id:id, label:name, keyHex:color, type:'custom'});
   generateRole(id);
   renderRolesList();
@@ -2828,6 +2877,21 @@ function switchProject(newId) {
         try {
           var savedCfg = JSON.parse(savedRaw);
           if (savedCfg.roles && savedCfg.roles.length) {
+            // Migrate legacy custom-N IDs to label slugs
+            savedCfg.roles.forEach(function(r) {
+              if (r.type === 'custom' && /^custom-\\d+$/.test(r.id) && r.label) {
+                var oldId = r.id;
+                var newId = slugifyLabel(r.label);
+                if (RESERVED_IDS.has(newId)) newId = newId + '-custom';
+                r.id = newId;
+                // Migrate surfacePaletteSrc refs
+                if (savedCfg.surfacePaletteSrc) {
+                  SURF_NAMES.forEach(function(sn) {
+                    if (savedCfg.surfacePaletteSrc[sn] === oldId) savedCfg.surfacePaletteSrc[sn] = newId;
+                  });
+                }
+              }
+            });
             roles = savedCfg.roles.map(function(r) { return Object.assign({}, r); });
             customCounter = savedCfg.customCounter || 0;
             if (savedCfg.surfaceMap) {
