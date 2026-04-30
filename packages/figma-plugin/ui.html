@@ -434,8 +434,8 @@
   var SERVER = storageGet('dtf-server-url') || DEFAULT_SERVER;
 
   /* Auto-migrate old GitHub Pages URL after repo rename */
-  if (SERVER.indexOf('sridharravi90.github.io') !== -1) {
-    SERVER = SERVER.replace('sridharravi90.github.io', 'sridhar-ravi-2917.github.io');
+  if (SERVER.toLowerCase().indexOf('sridharravi90.github.io') !== -1) {
+    SERVER = 'https://sridhar-ravi-2917.github.io/Design-Token-Forge';
     storageSet('dtf-server-url', SERVER);
   }
 
