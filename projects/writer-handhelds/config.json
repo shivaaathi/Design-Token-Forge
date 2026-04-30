@@ -12,11 +12,11 @@
     "success": "#16A34A",
     "greyscale": "#747474",
     "desaturated": "#71747C",
-    "secondary": "#000205"
+    "custom-1": "#000205"
   },
   "customRoles": [
     {
-      "id": "secondary",
+      "id": "custom-1",
       "label": "Secondary",
       "keyHex": "#000205"
     }
@@ -124,7 +124,7 @@
         "subtle": "100",
         "elevated": "150",
         "outline": "175",
-        "separator": "200",
+        "separator": "175",
         "ct-default": "900",
         "ct-strong": "black",
         "ct-subtle": "600",
@@ -132,10 +132,10 @@
         "cm-bg": "50",
         "cm-bg-hover": "75",
         "cm-bg-pressed": "100",
-        "cm-outline": "200",
-        "cm-outline-hover": "250",
-        "cm-outline-pressed": "300",
-        "cm-separator": "200"
+        "cm-outline": "150",
+        "cm-outline-hover": "175",
+        "cm-outline-pressed": "175",
+        "cm-separator": "175"
       },
       "container": {
         "bg": "white",
@@ -269,8 +269,8 @@
         "bg": "black",
         "subtle": "900",
         "elevated": "850",
-        "outline": "800",
-        "separator": "750",
+        "outline": "850",
+        "separator": "800",
         "ct-default": "75",
         "ct-strong": "white",
         "ct-subtle": "300",
@@ -278,10 +278,10 @@
         "cm-bg": "900",
         "cm-bg-hover": "850",
         "cm-bg-pressed": "800",
-        "cm-outline": "700",
-        "cm-outline-hover": "600",
-        "cm-outline-pressed": "550",
-        "cm-separator": "750"
+        "cm-outline": "800",
+        "cm-outline-hover": "850",
+        "cm-outline-pressed": "850",
+        "cm-separator": "800"
       },
       "container": {
         "bg": "850",
@@ -394,14 +394,14 @@
     }
   },
   "surfacePaletteSrc": {
-    "bright": "secondary",
-    "base": "secondary",
-    "dim": "secondary",
-    "deep": "secondary",
+    "bright": "custom-1",
+    "base": "custom-1",
+    "dim": "custom-1",
+    "deep": "custom-1",
     "accent": "primary",
-    "container": "secondary",
-    "over-container": "secondary",
-    "float": "secondary",
-    "inverse": "secondary"
+    "container": "custom-1",
+    "over-container": "custom-1",
+    "float": "custom-1",
+    "inverse": "custom-1"
   }
 }
