@@ -1,6 +1,36 @@
 #!/usr/bin/env node
 /* ═══════════════════════════════════════════════════════════════
-   Design Token Forge — Sync Server
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}  }    for (const d of t.details.slice(0, 5)) console.log(`    → ${JSON.stringify(d)}`);  if (t.status !== 'PASS') {  console.log(`  ${t.status} ${t.name}: ${t.checked} checked, ${t.passed} passed`);for (const t of cert.tests) {console.log(`Overall: ${cert.overall}  (${cert.pass} pass, ${cert.warn} warn, ${cert.fail} fail)`);console.log(`\n=== TRUST CERTIFICATION ===`);const cert = certifyPalette({ steps });// Run certificationconsole.log(`Step names: ${STEP_NAMES.join(', ')}`);console.log(`\nTotal steps: ${steps.length}`);}  );    `${s.name.padEnd(6)} | ${String(s.tone).padStart(3)} | ${s.hex} | ${String(gap).padStart(4)} | ${s.contrast.toFixed(2)}${mark}`  console.log(  const mark = (s.name === '800' || s.name === '850' || s.name === '900' || s.name === 'black') ? ' ◄' : '';  const gap = i > 0 ? TONE_SCALE[i - 1] - TONE_SCALE[i] : '-';  const s = steps[i];for (let i = 0; i < steps.length; i++) {console.log('-------|-----|---------|------|------------------');console.log('Step   | L*  | Hex     | Δ L* | Contrast vs white');console.log('=== NEW DARK END (secondary #646F78) ===');const { steps } = generatePalette(hex);const hex = '#646F78'; // secondary   Design Token Forge — Sync Server
 
    Watches CSS token files for changes, auto-exports Figma JSON,
    and serves a live HTTP API that the Figma plugin polls.
@@ -193,7 +223,7 @@ function primPath(cssName) {
   const p = cssName.split('-');
   if (p[0] === 'prim') {
     // Last segment is the step name, everything in between is the palette key
-    // e.g. prim-custom-1-25 → prim/custom-1/25
+    // e.g. prim-secondary-25 → prim/secondary/25
     const step = p[p.length - 1];
     const palette = p.slice(1, -1).join('-');
     return `prim/${palette}/${step}`;

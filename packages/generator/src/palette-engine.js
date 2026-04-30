@@ -30,7 +30,7 @@ export const KEY_INDEX = 13; // step 500
 //
 // Step 600 (tone 40) → 6.47:1 (AA body text ✓)
 // Step 500 (tone 49) → 4.65:1 (AA large text ✓, on-component ✓)
-// Step 900 (tone 10) → 17.15:1 (AAA ✓)
+// Step 900 (tone 7) → ~18.2:1 (AAA ✓)
 export const TONE_SCALE = [
   100,   // white
    97,   // 25
@@ -50,9 +50,9 @@ export const TONE_SCALE = [
    40,   // 600
    33,   // 700
    28,   // 750
-   22,   // 800
-   17,   // 850
-   10,   // 900
+   21,   // 800
+   14,   // 850
+    7,   // 900
     0,   // black
 ];
 
