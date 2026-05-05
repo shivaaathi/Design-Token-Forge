@@ -251,8 +251,10 @@
    Token Editor — Core Logic
    ═══════════════════════════════════════════════════════════════ */
 
-var OWNER = 'SridharRavi90';
-var REPO  = 'Design-Token-Forge';
+var UPSTREAM_OWNER = 'sridhar-ravi-2917';
+var UPSTREAM_REPO  = 'Design-Token-Forge';
+var OWNER = UPSTREAM_OWNER;
+var REPO  = UPSTREAM_REPO;
 var BRANCH = 'main';
 var API = 'https://api.github.com';
 
@@ -292,6 +294,8 @@ patInput.addEventListener('keydown', function(e) {
 });
 logoutBtn.addEventListener('click', function() {
   pat = '';
+  OWNER = UPSTREAM_OWNER;
+  REPO = UPSTREAM_REPO;
   files = {};
   changes = {};
   authScreen.style.display = '';
@@ -314,7 +318,39 @@ function doConnect() {
     authScreen.style.display = 'none';
     editorScreen.style.display = '';
     logoutBtn.style.display = '';
-    loadAllFiles();
+    // Check write access to upstream
+    return ghFetch('/repos/' + UPSTREAM_OWNER + '/' + UPSTREAM_REPO + '/collaborators/' + user.login + '/permission')
+      .then(function(perm) {
+        if (perm.permission === 'admin' || perm.permission === 'write') {
+          OWNER = UPSTREAM_OWNER;
+          REPO = UPSTREAM_REPO;
+        } else {
+          throw new Error('no-write');
+        }
+      })
+      .catch(function() {
+        // No write access — check for user's fork
+        return ghFetch('/repos/' + user.login + '/' + UPSTREAM_REPO)
+          .then(function(repo) {
+            if (repo.fork) {
+              OWNER = user.login;
+              REPO = UPSTREAM_REPO;
+              toast('Using your fork: ' + OWNER + '/' + REPO, 'ok');
+            } else {
+              throw new Error('not-a-fork');
+            }
+          })
+          .catch(function() {
+            // Auto-fork
+            return ghFetch('/repos/' + UPSTREAM_OWNER + '/' + UPSTREAM_REPO + '/forks', { method: 'POST', body: {} })
+              .then(function(fork) {
+                OWNER = fork.owner.login;
+                REPO = fork.name;
+                toast('Created fork: ' + OWNER + '/' + REPO, 'ok');
+              });
+          });
+      })
+      .then(function() { loadAllFiles(); });
   }).catch(function(err) {
     toast('Auth failed: ' + err.message, 'err');
   }).finally(function() {

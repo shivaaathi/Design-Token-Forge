@@ -2135,8 +2135,10 @@ document.getElementById('resetMapBtn').addEventListener('click', function() {
 // ══════════════════════════════════════════════════════════════
 // DEPLOY TO FIGMA (GitHub Commit)
 // ══════════════════════════════════════════════════════════════
-var GH_OWNER = 'SridharRavi90';
-var GH_REPO  = 'Design-Token-Forge';
+var GH_UPSTREAM_OWNER = 'sridhar-ravi-2917';
+var GH_UPSTREAM_REPO  = 'Design-Token-Forge';
+var GH_OWNER = GH_UPSTREAM_OWNER;
+var GH_REPO  = GH_UPSTREAM_REPO;
 var GH_BRANCH = 'main';
 var GH_API = 'https://api.github.com';
 var ghPat = '';
@@ -2177,8 +2179,53 @@ ghConnectBtn.addEventListener('click', function() {
     ghUser.textContent = '\u2713 ' + u.login;
     ghAuthRow.style.display = 'none';
     ghReadyRow.style.display = 'flex';
-    ghStatusEl.textContent = 'Ready to deploy';
-    ghStatusEl.className = 'gh-status ok';
+    ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Checking repo access...';
+    ghStatusEl.className = 'gh-status';
+    // Check if user has write access to upstream repo
+    return ghFetch('/repos/' + GH_UPSTREAM_OWNER + '/' + GH_UPSTREAM_REPO + '/collaborators/' + u.login + '/permission')
+      .then(function(perm) {
+        if (perm.permission === 'admin' || perm.permission === 'write') {
+          GH_OWNER = GH_UPSTREAM_OWNER;
+          GH_REPO = GH_UPSTREAM_REPO;
+          ghStatusEl.textContent = 'Ready to deploy (direct access)';
+          ghStatusEl.className = 'gh-status ok';
+        } else {
+          throw new Error('no-write');
+        }
+      })
+      .catch(function() {
+        // No write access — look for user's fork
+        return ghFetch('/repos/' + u.login + '/' + GH_UPSTREAM_REPO)
+          .then(function(repo) {
+            if (repo.fork) {
+              GH_OWNER = u.login;
+              GH_REPO = GH_UPSTREAM_REPO;
+              ghStatusEl.textContent = 'Ready to deploy (via your fork: ' + u.login + '/' + GH_UPSTREAM_REPO + ')';
+              ghStatusEl.className = 'gh-status ok';
+            } else {
+              throw new Error('not-a-fork');
+            }
+          })
+          .catch(function() {
+            // No fork found — offer to create one
+            ghStatusEl.innerHTML = 'No write access to upstream. <button id="ghForkBtn" style="margin-left:8px;padding:4px 12px;border-radius:6px;border:1px solid var(--br-d);background:var(--primary);color:#fff;cursor:pointer;font-size:13px">Create Fork</button>';
+            ghStatusEl.className = 'gh-status';
+            document.getElementById('ghForkBtn').addEventListener('click', function() {
+              ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Forking repository...';
+              ghFetch('/repos/' + GH_UPSTREAM_OWNER + '/' + GH_UPSTREAM_REPO + '/forks', { method: 'POST', body: {} })
+                .then(function(fork) {
+                  GH_OWNER = fork.owner.login;
+                  GH_REPO = fork.name;
+                  ghStatusEl.textContent = 'Ready to deploy (via your fork: ' + GH_OWNER + '/' + GH_REPO + ')';
+                  ghStatusEl.className = 'gh-status ok';
+                })
+                .catch(function(e) {
+                  ghStatusEl.textContent = '\u2717 Fork failed: ' + e.message;
+                  ghStatusEl.className = 'gh-status err';
+                });
+            });
+          });
+      });
   }).catch(function(e) {
     ghStatusEl.textContent = 'Auth failed: ' + e.message;
     ghStatusEl.className = 'gh-status err';
@@ -2191,6 +2238,8 @@ ghPatInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') ghCo
 
 ghLogoutBtn.addEventListener('click', function() {
   ghPat = '';
+  GH_OWNER = GH_UPSTREAM_OWNER;
+  GH_REPO = GH_UPSTREAM_REPO;
   ghAuthRow.style.display = 'flex';
   ghReadyRow.style.display = 'none';
   ghStatusEl.textContent = '';
