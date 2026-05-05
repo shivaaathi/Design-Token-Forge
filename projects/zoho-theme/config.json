@@ -1,0 +1,16 @@
+{
+  "id": "zoho-theme",
+  "name": "Zoho Theme",
+  "description": "Joseph Arulappan",
+  "created": "2026-05-05",
+  "paletteKeys": {
+    "monochromatic": "#286CE5",
+    "brand": "#E53F28",
+    "danger": "#DC2626",
+    "warning": "#D97706",
+    "info": "#0EA5E9",
+    "success": "#16A34A",
+    "greyscale": "#747474",
+    "desaturated": "#71747C"
+  }
+}
