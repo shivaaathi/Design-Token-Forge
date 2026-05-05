@@ -140,15 +140,29 @@ function generatePrimitiveTokens(palettes) {
 /**
  * Generate semantic tokens from semantic map + palettes.
  * Returns { light: { 'primary-content-default': '#hex', ... }, dark: { ... } }
+ *
+ * @param {Object} semanticMap — { light: {...}, dark: {...} }
+ * @param {Object} palettes — generated palette objects keyed by palette name
+ * @param {Array} [customRoles] — custom roles from config (already migrated)
  */
-function generateSemanticTokens(semanticMap, palettes) {
+function generateSemanticTokens(semanticMap, palettes, customRoles) {
   const lightMap = normalizeSemanticMap(semanticMap.light) || DEFAULT_LIGHT_MAP;
   const darkMap  = normalizeSemanticMap(semanticMap.dark)  || DEFAULT_DARK_MAP;
   const light = {};
   const dark = {};
 
-  for (const role of TOKEN_ROLES) {
-    const palKey = ROLE_TO_PALETTE_KEY[role];
+  // Include built-in roles + any custom roles from config
+  const allRoles = [...TOKEN_ROLES];
+  if (customRoles) {
+    for (const cr of customRoles) {
+      if (cr.id && !allRoles.includes(cr.id)) {
+        allRoles.push(cr.id);
+      }
+    }
+  }
+
+  for (const role of allRoles) {
+    const palKey = ROLE_TO_PALETTE_KEY[role] || role;
     const palette = palettes[palKey];
     if (!palette) continue;
     const look = stepLookup(palette);
@@ -260,15 +274,25 @@ export function generateTokenOverrides(config, basePrimitiveTokens) {
 
   // Primitives: overlay config-derived colors onto existing tokens
   // (preserves spacing, font-size, font-weight, etc. from CSS)
+  // Strip all prim-* color tokens from base — they are fully regenerated from config.
+  // This prevents stale palette names (e.g. custom-1) from persisting.
+  const baseLight = {};
+  const baseDark = {};
+  for (const [k, v] of Object.entries(basePrimitiveTokens.light || {})) {
+    if (!k.startsWith('prim-')) baseLight[k] = v;
+  }
+  for (const [k, v] of Object.entries(basePrimitiveTokens.dark || {})) {
+    if (!k.startsWith('prim-')) baseDark[k] = v;
+  }
   const colorTokens = generatePrimitiveTokens(palettes);
   result.primitiveTokens = {
-    light: { ...basePrimitiveTokens.light, ...colorTokens.light },
-    dark:  { ...basePrimitiveTokens.dark,  ...colorTokens.dark }
+    light: { ...baseLight, ...colorTokens.light },
+    dark:  { ...baseDark,  ...colorTokens.dark }
   };
 
   // Semantics: full replacement if config has semanticMap
   if (config.semanticMap) {
-    result.semanticTokens = generateSemanticTokens(config.semanticMap, palettes);
+    result.semanticTokens = generateSemanticTokens(config.semanticMap, palettes, config.customRoles);
   }
 
   // Surfaces: full replacement if config has surfaceMap, defaults if not
