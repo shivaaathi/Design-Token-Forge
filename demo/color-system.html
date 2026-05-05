@@ -2617,6 +2617,20 @@ function buildPrimitivesFileCSS() {
 
 // Build semantic.css from current palettes
 function buildSemanticFileCSS() {
+  // Include built-in TOKEN_ROLES + any custom roles that have palettes
+  // Each entry: { prefix: CSS token prefix, palKey: key in palettes{} }
+  var allSemantic = [];
+  for (var ti = 0; ti < TOKEN_ROLES.length; ti++) {
+    allSemantic.push({ prefix: TOKEN_ROLES[ti], palKey: TOKEN_ROLES[ti] });
+  }
+  for (var cr = 0; cr < roles.length; cr++) {
+    var crId = roles[cr].id;
+    if (TOKEN_ROLES.indexOf(crId) < 0 && crId !== 'greyscale' && crId !== 'desaturated' && palettes[crId]) {
+      var crPrefix = roles[cr].label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      allSemantic.push({ prefix: crPrefix, palKey: crId });
+    }
+  }
+
   var lines = [];
   lines.push('/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550');
   lines.push('   Design Token Forge \u2014 T1 Semantic Role Tokens');
@@ -2627,11 +2641,10 @@ function buildSemanticFileCSS() {
   lines.push('/* \u2500\u2500 Light Theme (default) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */');
   lines.push(':root {');
   lines.push('');
-  for (var i = 0; i < TOKEN_ROLES.length; i++) {
-    var rid = TOKEN_ROLES[i];
-    var pal = palettes[rid];
+  for (var i = 0; i < allSemantic.length; i++) {
+    var rid = allSemantic[i].prefix;
+    var pal = palettes[allSemantic[i].palKey];
     if (!pal) continue;
-    var steps = pal.steps;
     lines.push('  /* \u2500\u2500 ' + rid.toUpperCase() + ' \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */');
     var lkeys = Object.keys(LIGHT_MAP);
     for (var j = 0; j < lkeys.length; j++) {
@@ -2646,9 +2659,9 @@ function buildSemanticFileCSS() {
   lines.push('/* \u2500\u2500 Dark Theme \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */');
   lines.push('[data-theme="dark"] {');
   lines.push('');
-  for (var i2 = 0; i2 < TOKEN_ROLES.length; i2++) {
-    var rid2 = TOKEN_ROLES[i2];
-    var pal2 = palettes[rid2];
+  for (var i2 = 0; i2 < allSemantic.length; i2++) {
+    var rid2 = allSemantic[i2].prefix;
+    var pal2 = palettes[allSemantic[i2].palKey];
     if (!pal2) continue;
     lines.push('  /* \u2500\u2500 ' + rid2.toUpperCase() + ' (dark) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */');
     var dkeys = Object.keys(DARK_MAP);
