@@ -251,10 +251,9 @@
    Token Editor — Core Logic
    ═══════════════════════════════════════════════════════════════ */
 
-var UPSTREAM_OWNER = 'sridhar-ravi-2917';
-var UPSTREAM_REPO  = 'Design-Token-Forge';
-var OWNER = UPSTREAM_OWNER;
-var REPO  = UPSTREAM_REPO;
+var REPO_NAME = 'Design-Token-Forge';
+var OWNER = '';
+var REPO  = REPO_NAME;
 var BRANCH = 'main';
 var API = 'https://api.github.com';
 
@@ -294,8 +293,8 @@ patInput.addEventListener('keydown', function(e) {
 });
 logoutBtn.addEventListener('click', function() {
   pat = '';
-  OWNER = UPSTREAM_OWNER;
-  REPO = UPSTREAM_REPO;
+  OWNER = '';
+  REPO = REPO_NAME;
   files = {};
   changes = {};
   authScreen.style.display = '';
@@ -318,36 +317,25 @@ function doConnect() {
     authScreen.style.display = 'none';
     editorScreen.style.display = '';
     logoutBtn.style.display = '';
-    // Check write access to upstream
-    return ghFetch('/repos/' + UPSTREAM_OWNER + '/' + UPSTREAM_REPO + '/collaborators/' + user.login + '/permission')
-      .then(function(perm) {
-        if (perm.permission === 'admin' || perm.permission === 'write') {
-          OWNER = UPSTREAM_OWNER;
-          REPO = UPSTREAM_REPO;
+    // Default: user's own repo
+    OWNER = user.login;
+    REPO = REPO_NAME;
+    return ghFetch('/repos/' + user.login + '/' + REPO_NAME)
+      .then(function(repo) {
+        if (repo.permissions && repo.permissions.push) {
+          OWNER = user.login;
+          REPO = REPO_NAME;
         } else {
-          throw new Error('no-write');
+          throw new Error('no-push');
         }
       })
       .catch(function() {
-        // No write access — check for user's fork
-        return ghFetch('/repos/' + user.login + '/' + UPSTREAM_REPO)
-          .then(function(repo) {
-            if (repo.fork) {
-              OWNER = user.login;
-              REPO = UPSTREAM_REPO;
-              toast('Using your fork: ' + OWNER + '/' + REPO, 'ok');
-            } else {
-              throw new Error('not-a-fork');
-            }
-          })
-          .catch(function() {
-            // Auto-fork
-            return ghFetch('/repos/' + UPSTREAM_OWNER + '/' + UPSTREAM_REPO + '/forks', { method: 'POST', body: {} })
-              .then(function(fork) {
-                OWNER = fork.owner.login;
-                REPO = fork.name;
-                toast('Created fork: ' + OWNER + '/' + REPO, 'ok');
-              });
+        // Auto-fork if user doesn't have the repo
+        return ghFetch('/repos/sridhar-ravi-2917/' + REPO_NAME + '/forks', { method: 'POST', body: {} })
+          .then(function(fork) {
+            OWNER = fork.owner.login;
+            REPO = fork.name;
+            toast('Created fork: ' + OWNER + '/' + REPO, 'ok');
           });
       })
       .then(function() { loadAllFiles(); });

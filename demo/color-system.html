@@ -2135,10 +2135,9 @@ document.getElementById('resetMapBtn').addEventListener('click', function() {
 // ══════════════════════════════════════════════════════════════
 // DEPLOY TO FIGMA (GitHub Commit)
 // ══════════════════════════════════════════════════════════════
-var GH_UPSTREAM_OWNER = 'sridhar-ravi-2917';
-var GH_UPSTREAM_REPO  = 'Design-Token-Forge';
-var GH_OWNER = GH_UPSTREAM_OWNER;
-var GH_REPO  = GH_UPSTREAM_REPO;
+var GH_REPO_NAME = 'Design-Token-Forge';
+var GH_OWNER = '';
+var GH_REPO  = GH_REPO_NAME;
 var GH_BRANCH = 'main';
 var GH_API = 'https://api.github.com';
 var ghPat = '';
@@ -2179,52 +2178,42 @@ ghConnectBtn.addEventListener('click', function() {
     ghUser.textContent = '\u2713 ' + u.login;
     ghAuthRow.style.display = 'none';
     ghReadyRow.style.display = 'flex';
-    ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Checking repo access...';
+    // Default: commit to the user's own repo
+    GH_OWNER = u.login;
+    GH_REPO = GH_REPO_NAME;
+    ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Checking your repo...';
     ghStatusEl.className = 'gh-status';
-    // Check if user has write access to upstream repo
-    return ghFetch('/repos/' + GH_UPSTREAM_OWNER + '/' + GH_UPSTREAM_REPO + '/collaborators/' + u.login + '/permission')
-      .then(function(perm) {
-        if (perm.permission === 'admin' || perm.permission === 'write') {
-          GH_OWNER = GH_UPSTREAM_OWNER;
-          GH_REPO = GH_UPSTREAM_REPO;
-          ghStatusEl.textContent = 'Ready to deploy (direct access)';
+    // Verify user has their own repo (fork or original)
+    return ghFetch('/repos/' + u.login + '/' + GH_REPO_NAME)
+      .then(function(repo) {
+        // Check write permission
+        if (repo.permissions && repo.permissions.push) {
+          GH_OWNER = u.login;
+          GH_REPO = GH_REPO_NAME;
+          ghStatusEl.textContent = 'Ready \u2014 deploying to ' + u.login + '/' + GH_REPO_NAME;
           ghStatusEl.className = 'gh-status ok';
         } else {
-          throw new Error('no-write');
+          throw new Error('no-push');
         }
       })
       .catch(function() {
-        // No write access — look for user's fork
-        return ghFetch('/repos/' + u.login + '/' + GH_UPSTREAM_REPO)
-          .then(function(repo) {
-            if (repo.fork) {
-              GH_OWNER = u.login;
-              GH_REPO = GH_UPSTREAM_REPO;
-              ghStatusEl.textContent = 'Ready to deploy (via your fork: ' + u.login + '/' + GH_UPSTREAM_REPO + ')';
+        // User doesn't have their own repo — offer to fork
+        ghStatusEl.innerHTML = 'You don\u2019t have a <strong>' + GH_REPO_NAME + '</strong> repo yet. <button id="ghForkBtn" style="margin-left:8px;padding:4px 12px;border-radius:6px;border:1px solid var(--br-d);background:var(--primary);color:#fff;cursor:pointer;font-size:13px">Fork it now</button>';
+        ghStatusEl.className = 'gh-status';
+        document.getElementById('ghForkBtn').addEventListener('click', function() {
+          ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Forking repository...';
+          ghFetch('/repos/sridhar-ravi-2917/' + GH_REPO_NAME + '/forks', { method: 'POST', body: {} })
+            .then(function(fork) {
+              GH_OWNER = fork.owner.login;
+              GH_REPO = fork.name;
+              ghStatusEl.textContent = 'Ready \u2014 deploying to ' + GH_OWNER + '/' + GH_REPO;
               ghStatusEl.className = 'gh-status ok';
-            } else {
-              throw new Error('not-a-fork');
-            }
-          })
-          .catch(function() {
-            // No fork found — offer to create one
-            ghStatusEl.innerHTML = 'No write access to upstream. <button id="ghForkBtn" style="margin-left:8px;padding:4px 12px;border-radius:6px;border:1px solid var(--br-d);background:var(--primary);color:#fff;cursor:pointer;font-size:13px">Create Fork</button>';
-            ghStatusEl.className = 'gh-status';
-            document.getElementById('ghForkBtn').addEventListener('click', function() {
-              ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Forking repository...';
-              ghFetch('/repos/' + GH_UPSTREAM_OWNER + '/' + GH_UPSTREAM_REPO + '/forks', { method: 'POST', body: {} })
-                .then(function(fork) {
-                  GH_OWNER = fork.owner.login;
-                  GH_REPO = fork.name;
-                  ghStatusEl.textContent = 'Ready to deploy (via your fork: ' + GH_OWNER + '/' + GH_REPO + ')';
-                  ghStatusEl.className = 'gh-status ok';
-                })
-                .catch(function(e) {
-                  ghStatusEl.textContent = '\u2717 Fork failed: ' + e.message;
-                  ghStatusEl.className = 'gh-status err';
-                });
+            })
+            .catch(function(e) {
+              ghStatusEl.textContent = '\u2717 Fork failed: ' + e.message;
+              ghStatusEl.className = 'gh-status err';
             });
-          });
+        });
       });
   }).catch(function(e) {
     ghStatusEl.textContent = 'Auth failed: ' + e.message;
@@ -2238,8 +2227,8 @@ ghPatInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') ghCo
 
 ghLogoutBtn.addEventListener('click', function() {
   ghPat = '';
-  GH_OWNER = GH_UPSTREAM_OWNER;
-  GH_REPO = GH_UPSTREAM_REPO;
+  GH_OWNER = '';
+  GH_REPO = GH_REPO_NAME;
   ghAuthRow.style.display = 'flex';
   ghReadyRow.style.display = 'none';
   ghStatusEl.textContent = '';
@@ -2488,11 +2477,30 @@ function ghMultiCommit(files, message) {
 
 function ghPollDeploy() {
   var start = Date.now();
+  var noRunsCount = 0;
   var iv = setInterval(function() {
     ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/actions/runs?branch=' + GH_BRANCH + '&per_page=1')
       .then(function(data) {
-        if (!data.workflow_runs || !data.workflow_runs.length) return;
+        if (!data.workflow_runs || !data.workflow_runs.length) {
+          noRunsCount++;
+          if (noRunsCount >= 3) {
+            clearInterval(iv);
+            ghStatusEl.innerHTML = '\u2713 Committed! <span style="opacity:.7">GitHub Pages deploy may need to be enabled in your repo Settings \u2192 Pages.</span>';
+            ghStatusEl.className = 'gh-status ok';
+          }
+          return;
+        }
         var run = data.workflow_runs[0];
+        // Only track runs that started after our commit
+        if (new Date(run.created_at).getTime() < start - 10000) {
+          noRunsCount++;
+          if (noRunsCount >= 4) {
+            clearInterval(iv);
+            ghStatusEl.innerHTML = '\u2713 Committed! Deploy workflow hasn\u2019t started \u2014 check Actions tab in your repo.';
+            ghStatusEl.className = 'gh-status ok';
+          }
+          return;
+        }
         var elapsed = Math.round((Date.now() - start) / 1000);
         if (run.status === 'completed') {
           clearInterval(iv);
@@ -2506,8 +2514,16 @@ function ghPollDeploy() {
         } else {
           ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Deploying... (' + elapsed + 's)';
         }
-      }).catch(function() {});
-    if (Date.now() - start > 300000) { clearInterval(iv); ghStatusEl.textContent = 'Deploy status unknown'; }
+      }).catch(function() {
+        // Actions API might 404 if Actions not enabled on fork
+        noRunsCount++;
+        if (noRunsCount >= 3) {
+          clearInterval(iv);
+          ghStatusEl.innerHTML = '\u2713 Committed successfully! <span style="opacity:.7">Enable GitHub Pages in repo Settings to auto-deploy.</span>';
+          ghStatusEl.className = 'gh-status ok';
+        }
+      });
+    if (Date.now() - start > 120000) { clearInterval(iv); ghStatusEl.textContent = '\u2713 Committed! Deploy may still be running \u2014 check your repo Actions tab.'; ghStatusEl.className = 'gh-status ok'; }
   }, 5000);
 }
 

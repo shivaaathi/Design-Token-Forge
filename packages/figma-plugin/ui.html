@@ -361,7 +361,7 @@
   <summary>Server URL</summary>
   <div class="server-config-inner">
     <div class="server-url-row">
-      <input type="text" id="serverUrlInput" placeholder="https://sridhar-ravi-2917.github.io/Design-Token-Forge" spellcheck="false">
+      <input type="text" id="serverUrlInput" placeholder="https://your-username.github.io/Design-Token-Forge" spellcheck="false">
       <button class="btn-url-save" id="saveUrlBtn">Save</button>
     </div>
     <div class="server-presets">
@@ -430,14 +430,8 @@
   function storageGet(k) { try { return localStorage.getItem(k); } catch(e) { return _mem[k] || null; } }
   function storageSet(k,v) { try { localStorage.setItem(k,v); } catch(e) { _mem[k]=v; } }
 
-  var DEFAULT_SERVER = 'http://localhost:9500';
+  var DEFAULT_SERVER = '';
   var SERVER = storageGet('dtf-server-url') || DEFAULT_SERVER;
-
-  /* Auto-migrate old GitHub Pages URL after repo rename */
-  if (SERVER.toLowerCase().indexOf('sridharravi90.github.io') !== -1) {
-    SERVER = 'https://sridhar-ravi-2917.github.io/Design-Token-Forge';
-    storageSet('dtf-server-url', SERVER);
-  }
 
   serverUrlInput.value = SERVER;
 
@@ -492,6 +486,12 @@
 
   /* ── Polling ─────────────────────────────────────────── */
   function startPolling() {
+    if (!SERVER) {
+      connected = false;
+      connBar.className = 'conn-bar disconnected';
+      connText.textContent = 'Enter your GitHub Pages URL above to connect';
+      return;
+    }
     poll();
     pollTimer = setInterval(poll, POLL_MS);
   }
@@ -1092,9 +1092,16 @@
   document.getElementById('presetLocal').addEventListener('click', function() {
     setServerUrl('http://localhost:9500');
   });
-  var GH_PAGES_URL = 'https://sridhar-ravi-2917.github.io/Design-Token-Forge';
   document.getElementById('presetGH').addEventListener('click', function() {
-    setServerUrl(GH_PAGES_URL);
+    var current = serverUrlInput.value.trim();
+    // If already has a github.io URL, keep it; otherwise prompt with placeholder
+    if (current.indexOf('github.io') !== -1) {
+      setServerUrl(current);
+    } else {
+      serverUrlInput.value = 'https://your-username.github.io/Design-Token-Forge';
+      serverUrlInput.focus();
+      serverUrlInput.select();
+    }
   });
 
   /* ── Project selector ──────────────────────────────── */
