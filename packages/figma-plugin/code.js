@@ -6,7 +6,7 @@
 
 figma.showUI(__html__, { width: 480, height: 560 });
 
-var CODE_VERSION = '2026-05-06-v9';
+var CODE_VERSION = '2026-05-06-v10';
 log('code.js loaded — version ' + CODE_VERSION);
 
 /* ── URL migration via clientStorage (reliable, not blocked like localStorage) ── */
@@ -274,7 +274,6 @@ async function syncAll(data) {
             try {
               var byId = await figma.variables.getVariableByIdAsync(idMap[tokenKey]);
               if (byId) {
-                existingVar = byId;
                 if (byId.name !== v.name) {
                   /* Before renaming, remove any duplicate with the target name
                      to prevent naming conflicts (mirrors Step 2 logic) */
@@ -289,10 +288,25 @@ async function syncAll(data) {
                   }
                   log('ID-match rename: ' + byId.name + ' → ' + v.name);
                   byId.name = v.name;
-                  stats.renamed++;
+                  /* Verify rename actually took effect */
+                  if (byId.name === v.name) {
+                    existingVar = byId;
+                    stats.renamed++;
+                  } else {
+                    log('WARN: rename did not take effect for ' + v.name + ' (still ' + byId.name + ')');
+                    /* Clear idMap entry so Steps 2/3 can find it */
+                    delete idMap[tokenKey];
+                  }
+                } else {
+                  /* Name already matches — use as-is */
+                  existingVar = byId;
                 }
               }
-            } catch (idErr) { /* Variable deleted by user, fall through */ }
+            } catch (idErr) {
+              log('Step1 error for ' + v.name + ': ' + (idErr.message || idErr));
+              /* DO NOT set existingVar — let Steps 2/3 handle it */
+              delete idMap[tokenKey];
+            }
           }
 
           /* 2. Rename path: find variable by OLD name, rename it in-place
@@ -384,6 +398,46 @@ async function syncAll(data) {
     } else {
       stats.errors.push('Alias target not found: ' + lookupKey);
     }
+  }
+
+  /* Pass 2.5: Verify variable names — force-fix any that didn't rename correctly.
+     This is a safety net for edge cases where byId.name = newName silently fails. */
+  var nameFixes = 0;
+  for (var nci = 0; nci < data.collections.length; nci++) {
+    var ncol = data.collections[nci];
+    for (var nvi = 0; nvi < ncol.variables.length; nvi++) {
+      var nv = ncol.variables[nvi];
+      var nKey = ncol.name + '::' + nv.name;
+      var nVar = varLookup[nKey];
+      if (nVar && nVar.name !== nv.name) {
+        log('Pass2.5 force-rename: ' + nVar.name + ' → ' + nv.name);
+        try {
+          /* Find and remove any variable blocking the target name */
+          var dtfCols2 = await findDTFCollections();
+          for (var dci = 0; dci < dtfCols2.length; dci++) {
+            if (dtfCols2[dci].name === ncol.name) {
+              for (var dvi = 0; dvi < dtfCols2[dci].variableIds.length; dvi++) {
+                var blocker = await figma.variables.getVariableByIdAsync(dtfCols2[dci].variableIds[dvi]);
+                if (blocker && blocker.name === nv.name && blocker.id !== nVar.id) {
+                  log('Pass2.5: removing blocker ' + nv.name + ' (id=' + blocker.id + ')');
+                  blocker.remove();
+                }
+              }
+              break;
+            }
+          }
+          nVar.name = nv.name;
+          nameFixes++;
+        } catch (nfe) {
+          log('Pass2.5 rename failed for ' + nv.name + ': ' + nfe.message);
+          stats.errors.push('Force-rename ' + nv.name + ': ' + nfe.message);
+        }
+      }
+    }
+  }
+  if (nameFixes > 0) {
+    log('Pass2.5: fixed ' + nameFixes + ' variable names');
+    stats.renamed += nameFixes;
   }
 
   /* Pass 3: Remove orphan variables not in token data */
@@ -479,6 +533,15 @@ figma.ui.onmessage = async function(msg) {
 
   if (msg.type === 'cancel') {
     figma.closePlugin();
+  }
+
+  /* Reset ID map — useful when rename state is corrupted */
+  if (msg.type === 'reset-idmap') {
+    saveIdMap({});
+    figma.root.setPluginData('dtf-hash', '');
+    log('ID map and hash cleared — next sync will use name-based matching');
+    figma.ui.postMessage({ type: 'progress', text: 'ID map cleared. Click sync to re-sync fresh.' });
+    figma.notify('DTF: ID map cleared — press Sync to apply fresh');
   }
 
   /* Persist URL to clientStorage when user changes it in UI */

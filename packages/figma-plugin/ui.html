@@ -612,7 +612,7 @@
       notifIcon.textContent = '\u2713';
       notifTitle.textContent = 'Variables are up to date';
       notifBadge.style.display = 'none';
-      notifBody.innerHTML = 'Figma variables match the source of truth. <a href="#" id="forceResyncLink" style="color:var(--accent);cursor:pointer">Force re-sync</a>';
+      notifBody.innerHTML = 'Figma variables match the source of truth. <a href="#" id="forceResyncLink" style="color:var(--accent);cursor:pointer">Force re-sync</a> · <a href="#" id="resetIdMapLink" style="color:#888;cursor:pointer;font-size:10px">Reset ID map</a>';
       syncBtn.disabled = true;
       syncBtn.textContent = 'Variables are up to date';
       syncBtn.className = 'btn-sync ready';
@@ -844,6 +844,17 @@
       syncBtn.className = 'btn-sync';
       notifTitle.textContent = 'Force re-sync';
       notifBody.innerHTML = 'Click <strong>Re-sync Variables</strong> to re-apply all tokens and clean up orphans.';
+      notif.className = 'notif visible has-changes';
+    }
+    if (e.target && e.target.id === 'resetIdMapLink') {
+      e.preventDefault();
+      parent.postMessage({ pluginMessage: { type: 'reset-idmap' } }, '*');
+      figmaHash = '';
+      syncBtn.disabled = false;
+      syncBtn.textContent = 'Re-sync Variables (fresh)';
+      syncBtn.className = 'btn-sync';
+      notifTitle.textContent = 'ID Map Reset';
+      notifBody.innerHTML = 'Internal mapping cleared. Click <strong>Re-sync</strong> to apply — renames will use name matching.';
       notif.className = 'notif visible has-changes';
     }
   });
