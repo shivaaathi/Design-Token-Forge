@@ -712,7 +712,23 @@
   var MAX_SYNC_VERIFY = 5;
 
   syncBtn.addEventListener('click', function() {
-    if (!tokenData || syncing) return;
+    if (syncing) return;
+    if (!tokenData) {
+      /* tokenData may be null if file was already in-sync and tokens were never fetched */
+      syncBtn.textContent = 'Fetching tokens\u2026';
+      syncBtn.disabled = true;
+      fetchTokenData();
+      setTimeout(function() {
+        syncBtn.disabled = false;
+        if (tokenData) {
+          syncBtn.click();
+        } else {
+          syncBtn.textContent = 'Re-sync Variables';
+          setStatus('Could not fetch tokens — try again', 'err');
+        }
+      }, 2000);
+      return;
+    }
 
     /* On static hosts, always re-verify that status & tokens hashes match
        to prevent syncing stale CDN data during a deploy */
@@ -848,6 +864,8 @@
       notifTitle.textContent = 'Force re-sync';
       notifBody.innerHTML = 'Click <strong>Re-sync Variables</strong> to re-apply all tokens and clean up orphans.';
       notif.className = 'notif visible has-changes';
+      /* Ensure tokenData is loaded (may be null if file was already in-sync) */
+      if (!tokenData) fetchTokenData();
     }
     if (e.target && e.target.id === 'resetIdMapLink') {
       e.preventDefault();
@@ -860,6 +878,8 @@
       notifTitle.textContent = 'ID Map Reset';
       notifBody.innerHTML = 'Internal mapping cleared. Click <strong>Re-sync Variables (fresh)</strong> to apply — renames will use name matching.';
       notif.className = 'notif visible has-changes';
+      /* Ensure tokenData is loaded (may be null if file was already in-sync) */
+      if (!tokenData) fetchTokenData();
     }
   });
 
