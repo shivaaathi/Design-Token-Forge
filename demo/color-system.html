@@ -3097,6 +3097,8 @@ projGhConnectBtn.addEventListener('click', function() {
   // Temporarily set ghPat for the fetch
   ghPat = token;
   ghFetch('/user').then(function(u) {
+    GH_OWNER = u.login;
+    GH_REPO = GH_REPO_NAME;
     projGhUser.textContent = u.login;
     syncDialogGhState();
     // Also sync the Deploy section if visible
