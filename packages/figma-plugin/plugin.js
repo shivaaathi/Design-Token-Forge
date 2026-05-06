@@ -6,9 +6,8 @@
 
 figma.showUI(__html__, { width: 480, height: 560 });
 
-var CODE_VERSION = '2026-04-30-v9-NEWID';
+var CODE_VERSION = '2026-05-06-v11';
 log('code.js loaded — version ' + CODE_VERSION);
-figma.notify('DTF Plugin v9 loaded', { timeout: 3000 });
 
 /* ── URL migration via clientStorage (reliable, not blocked like localStorage) ── */
 (async function() {
@@ -18,9 +17,11 @@ figma.notify('DTF Plugin v9 loaded', { timeout: 3000 });
       url = 'https://sridhar-ravi-2917.github.io/Design-Token-Forge';
       await figma.clientStorage.setAsync('dtf-server-url', url);
     }
-    if (url) {
-      figma.ui.postMessage({ type: 'set-server-url', url: url });
+    if (!url) {
+      url = 'https://sridhar-ravi-2917.github.io/Design-Token-Forge';
+      await figma.clientStorage.setAsync('dtf-server-url', url);
     }
+    figma.ui.postMessage({ type: 'set-server-url', url: url });
   } catch (e) { /* clientStorage unavailable — UI will use its own default */ }
 })();
 
@@ -117,7 +118,13 @@ function applyRenamesToIdMap(renames, idMap) {
     for (var k = 0; k < keys.length; k++) {
       if (keys[k].endsWith(oldSuffix)) {
         var prefix = keys[k].slice(0, -oldSuffix.length);
-        idMap[prefix + newSuffix] = idMap[keys[k]];
+        var newKey = prefix + newSuffix;
+        /* If the new key already exists (duplicate from a previous partial sync),
+           prefer the original variable being renamed — it has component bindings */
+        if (idMap[newKey]) {
+          log('idMap rename: overwriting duplicate key ' + newKey + ' (old id=' + idMap[newKey] + ' → keeping id=' + idMap[keys[k]] + ')');
+        }
+        idMap[newKey] = idMap[keys[k]];
         delete idMap[keys[k]];
         count++;
       }
@@ -168,11 +175,16 @@ async function syncAll(data) {
 
   log('syncAll start — code version ' + CODE_VERSION);
   log('Renames in data: ' + (data.renames ? Object.keys(data.renames).length : 0));
+  log('Collections in data: ' + data.collections.length);
 
   /* Load persistent ID map and apply renames to its keys */
   var idMap = loadIdMap();
+  var idMapSize = Object.keys(idMap).length;
+  log('idMap loaded with ' + idMapSize + ' entries');
   if (data.renames) {
-    stats.renamed = applyRenamesToIdMap(data.renames, idMap);
+    var renameCount = applyRenamesToIdMap(data.renames, idMap);
+    stats.renamed = renameCount;
+    log('idMap renames applied: ' + renameCount + ' keys transformed');
   }
 
   /* Build inverse rename map: newName → oldName for fallback lookup */
@@ -185,6 +197,63 @@ async function syncAll(data) {
   }
 
   var existing = await buildExistingLookup();
+  var existingColNames = Object.keys(existing);
+  log('Existing DTF collections in Figma: ' + existingColNames.join(', '));
+  for (var eli = 0; eli < existingColNames.length; eli++) {
+    var elName = existingColNames[eli];
+    var elVarCount = Object.keys(existing[elName].varMap).length;
+    log('  ' + elName + ': ' + elVarCount + ' variables');
+  }
+
+  /* ── Pass 0: DIRECT PRE-SYNC RENAME ────────────────────────────────
+     Bypass all lookup logic — iterate actual Figma variables in each
+     collection and rename any that match a renames entry directly.
+     This guarantees renames happen regardless of idMap/varMap state. */
+  if (data.renames && Object.keys(data.renames).length > 0) {
+    var directRenames = 0;
+    var allDTFCols = await findDTFCollections();
+    for (var dri = 0; dri < allDTFCols.length; dri++) {
+      var drCol = allDTFCols[dri];
+      var drVarIds = drCol.variableIds.slice();
+      for (var drvi = 0; drvi < drVarIds.length; drvi++) {
+        var drVar = await figma.variables.getVariableByIdAsync(drVarIds[drvi]);
+        if (!drVar) continue;
+        var newName = data.renames[drVar.name];
+        if (newName) {
+          /* Check if another variable already has the target name */
+          for (var drdi = 0; drdi < drVarIds.length; drdi++) {
+            if (drdi === drvi) continue;
+            var drDup = await figma.variables.getVariableByIdAsync(drVarIds[drdi]);
+            if (drDup && drDup.name === newName) {
+              log('Pass0: removing blocker ' + newName + ' (id=' + drDup.id + ')');
+              try { drDup.remove(); } catch (dre) { log('Pass0 remove failed: ' + dre.message); }
+            }
+          }
+          log('Pass0 RENAME: ' + drVar.name + ' → ' + newName + ' (id=' + drVar.id + ')');
+          try {
+            drVar.name = newName;
+            if (drVar.name === newName) {
+              directRenames++;
+              /* Update idMap to reflect new name */
+              idMap[drCol.name + '::' + newName] = drVar.id;
+            } else {
+              log('Pass0 WARN: rename assignment did not stick for ' + newName + ' (got ' + drVar.name + ')');
+            }
+          } catch (drErr) {
+            log('Pass0 ERROR renaming ' + drVar.name + ': ' + drErr.message);
+            stats.errors.push('Pass0 rename ' + drVar.name + ': ' + drErr.message);
+          }
+        }
+      }
+    }
+    log('Pass0 direct renames completed: ' + directRenames);
+    stats.renamed += directRenames;
+
+    /* Rebuild existing lookup since names changed */
+    if (directRenames > 0) {
+      existing = await buildExistingLookup();
+    }
+  }
 
   /* Pass 1: Create/update collections, modes, and variables.
      Build a lookup so aliases can be resolved in pass 2. */
@@ -256,13 +325,39 @@ async function syncAll(data) {
             try {
               var byId = await figma.variables.getVariableByIdAsync(idMap[tokenKey]);
               if (byId) {
-                existingVar = byId;
                 if (byId.name !== v.name) {
+                  /* Before renaming, remove any duplicate with the target name
+                     to prevent naming conflicts (mirrors Step 2 logic) */
+                  if (ex) {
+                    var dupById = ex.varMap[v.name];
+                    if (dupById && dupById.id !== byId.id) {
+                      log('Step1: removing duplicate ' + v.name + ' (id=' + dupById.id + ') before renaming ' + byId.name);
+                      try { dupById.remove(); stats.orphansRemoved++; } catch (de) {
+                        log('Failed to remove duplicate: ' + de.message);
+                      }
+                    }
+                  }
                   log('ID-match rename: ' + byId.name + ' → ' + v.name);
                   byId.name = v.name;
+                  /* Verify rename actually took effect */
+                  if (byId.name === v.name) {
+                    existingVar = byId;
+                    stats.renamed++;
+                  } else {
+                    log('WARN: rename did not take effect for ' + v.name + ' (still ' + byId.name + ')');
+                    /* Clear idMap entry so Steps 2/3 can find it */
+                    delete idMap[tokenKey];
+                  }
+                } else {
+                  /* Name already matches — use as-is */
+                  existingVar = byId;
                 }
               }
-            } catch (idErr) { /* Variable deleted by user, fall through */ }
+            } catch (idErr) {
+              log('Step1 error for ' + v.name + ': ' + (idErr.message || idErr));
+              /* DO NOT set existingVar — let Steps 2/3 handle it */
+              delete idMap[tokenKey];
+            }
           }
 
           /* 2. Rename path: find variable by OLD name, rename it in-place
@@ -356,6 +451,46 @@ async function syncAll(data) {
     }
   }
 
+  /* Pass 2.5: Verify variable names — force-fix any that didn't rename correctly.
+     This is a safety net for edge cases where byId.name = newName silently fails. */
+  var nameFixes = 0;
+  for (var nci = 0; nci < data.collections.length; nci++) {
+    var ncol = data.collections[nci];
+    for (var nvi = 0; nvi < ncol.variables.length; nvi++) {
+      var nv = ncol.variables[nvi];
+      var nKey = ncol.name + '::' + nv.name;
+      var nVar = varLookup[nKey];
+      if (nVar && nVar.name !== nv.name) {
+        log('Pass2.5 force-rename: ' + nVar.name + ' → ' + nv.name);
+        try {
+          /* Find and remove any variable blocking the target name */
+          var dtfCols2 = await findDTFCollections();
+          for (var dci = 0; dci < dtfCols2.length; dci++) {
+            if (dtfCols2[dci].name === ncol.name) {
+              for (var dvi = 0; dvi < dtfCols2[dci].variableIds.length; dvi++) {
+                var blocker = await figma.variables.getVariableByIdAsync(dtfCols2[dci].variableIds[dvi]);
+                if (blocker && blocker.name === nv.name && blocker.id !== nVar.id) {
+                  log('Pass2.5: removing blocker ' + nv.name + ' (id=' + blocker.id + ')');
+                  blocker.remove();
+                }
+              }
+              break;
+            }
+          }
+          nVar.name = nv.name;
+          nameFixes++;
+        } catch (nfe) {
+          log('Pass2.5 rename failed for ' + nv.name + ': ' + nfe.message);
+          stats.errors.push('Force-rename ' + nv.name + ': ' + nfe.message);
+        }
+      }
+    }
+  }
+  if (nameFixes > 0) {
+    log('Pass2.5: fixed ' + nameFixes + ' variable names');
+    stats.renamed += nameFixes;
+  }
+
   /* Pass 3: Remove orphan variables not in token data */
   stats.orphansRemoved = await removeOrphans(data, stats);
   if (stats.orphansRemoved > 0) {
@@ -375,6 +510,31 @@ async function syncAll(data) {
     if (!validKeys[staleKeys[ski]]) delete idMap[staleKeys[ski]];
   }
   saveIdMap(idMap);
+
+  /* Final diagnostic: check for any remaining old-name variables */
+  if (data.renames) {
+    var oldNames = Object.keys(data.renames);
+    var remaining = [];
+    var finalCols = await findDTFCollections();
+    for (var fci = 0; fci < finalCols.length; fci++) {
+      var fc = finalCols[fci];
+      for (var fvi = 0; fvi < fc.variableIds.length; fvi++) {
+        var fv = await figma.variables.getVariableByIdAsync(fc.variableIds[fvi]);
+        if (fv && data.renames[fv.name]) {
+          remaining.push(fc.name + '/' + fv.name);
+        }
+      }
+    }
+    if (remaining.length > 0) {
+      log('WARNING: ' + remaining.length + ' variables still have old names after sync:');
+      for (var rmi = 0; rmi < Math.min(remaining.length, 10); rmi++) {
+        log('  ' + remaining[rmi]);
+      }
+      stats.errors.push(remaining.length + ' variables failed to rename (check console)');
+    } else {
+      log('✓ All renames verified — no old names remain');
+    }
+  }
 
   return stats;
 }
@@ -449,6 +609,15 @@ figma.ui.onmessage = async function(msg) {
 
   if (msg.type === 'cancel') {
     figma.closePlugin();
+  }
+
+  /* Reset ID map — useful when rename state is corrupted */
+  if (msg.type === 'reset-idmap') {
+    saveIdMap({});
+    figma.root.setPluginData('dtf-hash', '');
+    log('ID map and hash cleared — next sync will use name-based matching');
+    figma.ui.postMessage({ type: 'progress', text: 'ID map cleared. Click sync to re-sync fresh.' });
+    figma.notify('DTF: ID map cleared — press Sync to apply fresh');
   }
 
   /* Persist URL to clientStorage when user changes it in UI */

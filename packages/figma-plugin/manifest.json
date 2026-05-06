@@ -2,7 +2,7 @@
   "name": "Design Token Forge",
   "id": "7488498115726500615",
   "api": "1.0.0",
-  "main": "plugin.js",
+  "main": "code.js",
   "capabilities": [],
   "enableProposedApi": true,
   "editorType": ["figma"],
