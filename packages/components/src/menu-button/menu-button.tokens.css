@@ -49,7 +49,7 @@
   --menu-btn-shadow: var(--shadow-none);
   --menu-btn-shadow-hover: var(--shadow-none);
   --menu-btn-shadow-active: var(--shadow-none);
-  --menu-btn-shadow-elevated: var(--shadow-sm);
+  --menu-btn-shadow-strong: var(--shadow-sm);
 
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (40 vars)
@@ -252,7 +252,7 @@
   /* ── OUTLINE (legacy: outlined + neutral/surface context) ───────── */
   --menu-btn-outline-bg: transparent;
   --menu-btn-outline-bg-hover: var(--surface-base-subtle);
-  --menu-btn-outline-bg-active: var(--surface-base-elevated);
+  --menu-btn-outline-bg-active: var(--surface-base-strong);
   --menu-btn-outline-bg-disabled: transparent;
   --menu-btn-outline-fg: var(--surface-base-ct-default);
   --menu-btn-outline-fg-hover: var(--surface-base-ct-strong);

@@ -360,8 +360,8 @@
 /* ════════════════════════════════════════════════════════════════
    17. ELEVATED / SHADOW
    ════════════════════════════════════════════════════════════════ */
-.progress-bar[data-elevated] {
-  box-shadow: var(--progress-shadow-elevated);
+.progress-bar[data-strong] {
+  box-shadow: var(--progress-shadow-strong);
   border-radius: var(--_pg-radius);
 }
 

@@ -125,7 +125,7 @@ Naming: `--{role}-{group}-{property}` (e.g., `--primary-component-bg-default`, `
 | Surface | Purpose |
 |---------|---------|
 | surface-base | Default canvas / page background |
-| surface-bright | Brightest / elevated |
+| surface-bright | Brightest / strong |
 | surface-deep | Deeply layered — sidebars, wells |
 | surface-accent | Primary-tinted accent |
 | surface-dim | Receded / dimmed |

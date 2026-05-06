@@ -628,8 +628,8 @@
   --primary-on-component: var(--surface-base-ct-default);
   --primary-content-default: var(--surface-base-ct-default);
   --primary-container-bg: var(--surface-base-subtle);
-  --primary-container-hover: var(--surface-base-elevated);
-  --primary-container-pressed: var(--surface-base-elevated);
+  --primary-container-hover: var(--surface-base-strong);
+  --primary-container-pressed: var(--surface-base-strong);
   --primary-component-outline-default: var(--surface-base-cm-outline);
   --primary-component-outline-hover: var(--surface-base-cm-outline-hover);
   --primary-component-outline-pressed: var(--surface-base-cm-outline-pressed);
@@ -809,8 +809,8 @@
 }
 
 /* Elevated shadow override */
-.split-btn[data-elevated] {
-  box-shadow: var(--split-btn-shadow-elevated);
+.split-btn[data-strong] {
+  box-shadow: var(--split-btn-shadow-strong);
 }
 
 /* ════════════════════════════════════════════════════════════════

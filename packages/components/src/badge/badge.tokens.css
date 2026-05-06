@@ -32,7 +32,7 @@
 
   /* Shadow */
   --badge-shadow: var(--shadow-none);
-  --badge-shadow-elevated: var(--shadow-sm);
+  --badge-shadow-strong: var(--shadow-sm);
 
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (30 vars)

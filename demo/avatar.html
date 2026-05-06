@@ -143,7 +143,7 @@
   <!-- ─── 7. SURFACE CONTEXT ──────────────────────────── -->
   <section class="section" id="sec-surface">
     <div class="section-header"><h2>Surface Context</h2><span class="section-tag">3 BG Levels</span></div>
-    <p class="section-desc">Avatars on base, elevated, and sunken backgrounds to verify contrast and ring visibility.</p>
+    <p class="section-desc">Avatars on base, strong, and sunken backgrounds to verify contrast and ring visibility.</p>
     <div class="section-body"><div class="surface-strip" id="surfaceStrip"></div></div>
   </section>
 
@@ -345,7 +345,7 @@
     else if (!opts.noGlobalRole && G.role) av.dataset.role = G.role;
     if (opts.disabled) av.dataset.disabled = '';
     if (opts.loading) av.dataset.loading = '';
-    if (opts.elevated) av.dataset.elevated = '';
+    if (opts.strong) av.dataset.strong = '';
     av.setAttribute('role','img');
     av.setAttribute('aria-label', opts.name || 'User');
 
@@ -480,7 +480,7 @@
       {label:'Initials', fn:function(o){o.initials='JD';o.role='primary';o.noGlobalRole=true;return o}},
       {label:'Icon',     fn:function(o){return o}}
     ];
-    var states = [{label:'Default',st:{}},{label:'Disabled',st:{disabled:true}},{label:'Loading',st:{loading:true}},{label:'Elevated',st:{elevated:true}}];
+    var states = [{label:'Default',st:{}},{label:'Disabled',st:{disabled:true}},{label:'Loading',st:{loading:true}},{label:'Elevated',st:{strong:true}}];
 
     var hdr = document.createElement('div');
     hdr.style.cssText = 'display:grid;grid-template-columns:90px repeat('+states.length+',1fr);gap:12px;margin-bottom:8px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;opacity:.6';
@@ -501,7 +501,7 @@
           var opts = mode.fn({name:'User',size:'large',shape:sh,forceDefault:true});
           if (s.st.disabled) opts.disabled = true;
           if (s.st.loading) opts.loading = true;
-          if (s.st.elevated) opts.elevated = true;
+          if (s.st.strong) opts.strong = true;
           cell.appendChild(makeAvatar(opts));
           row.appendChild(cell);
         });
@@ -515,7 +515,7 @@
     var surfaces = [
       {label:'surface-base-bg',      cls:'surface-panel--base'},
       {label:'surface-base-subtle',   cls:'surface-panel--alt'},
-      {label:'surface-base-elevated', cls:'surface-panel--deep'}
+      {label:'surface-base-strong', cls:'surface-panel--deep'}
     ];
     surfaces.forEach(function(s){
       var panel = document.createElement('div');
@@ -581,7 +581,7 @@
     // Badge positioned
     el.appendChild(card(makeAvatar({name:'With Badge',image:true,initials:'JD',hue:160,status:'online',size:'huge'}),'+ Badge'));
     // Elevated with shadow
-    el.appendChild(card(makeAvatar({name:'Elevated',image:true,initials:'EP',hue:30,elevated:true,size:'huge'}),'Elevated'));
+    el.appendChild(card(makeAvatar({name:'Elevated',image:true,initials:'EP',hue:30,strong:true,size:'huge'}),'Elevated'));
     // Count overflow
     var countAv = makeAvatar({name:'3 more',initials:'+3',noGlobalRole:true,size:'huge'});
     countAv.classList.add('avatar--count');

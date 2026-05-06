@@ -192,8 +192,8 @@
 
 /* ────────────────────────────────────────────────────────────────   11b. ELEVATED (shadow)
    ────────────────────────────────────────────────────────────────── */
-.avatar[data-elevated] {
-  box-shadow: var(--avatar-shadow-elevated);
+.avatar[data-strong] {
+  box-shadow: var(--avatar-shadow-strong);
 }
 
 /* ──────────────────────────────────────────────────────────────────

@@ -31,7 +31,7 @@
 
   /* Shadow */
   --progress-shadow: var(--shadow-none);
-  --progress-shadow-elevated: var(--shadow-xs);
+  --progress-shadow-strong: var(--shadow-xs);
 
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (32 vars)

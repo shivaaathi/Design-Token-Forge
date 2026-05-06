@@ -17,7 +17,7 @@
 
   /* Shadow */
   --ring-shadow: var(--shadow-none);
-  --ring-shadow-elevated: var(--shadow-xs);
+  --ring-shadow-strong: var(--shadow-xs);
 
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (31 vars)

@@ -306,8 +306,8 @@
 /* ════════════════════════════════════════════════════════════════
    15. ELEVATED / SHADOW
    ════════════════════════════════════════════════════════════════ */
-.progress-ring[data-elevated] {
-  box-shadow: var(--ring-shadow-elevated);
+.progress-ring[data-strong] {
+  box-shadow: var(--ring-shadow-strong);
   border-radius: 50%;
 }
 

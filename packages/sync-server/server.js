@@ -164,7 +164,7 @@ function detectType(name, value) {
 
 function scopeForSurfaceProp(prop) {
   // bg, hover, pressed → fill scopes
-  if (['bg', 'subtle', 'elevated'].includes(prop))
+  if (['bg', 'subtle', 'strong'].includes(prop))
     return ['FRAME_FILL', 'SHAPE_FILL'];
   // outline, separator → stroke
   if (['outline', 'separator'].includes(prop))
@@ -264,7 +264,7 @@ function extrasPath(cssName) {
 
 function surfacePropToT2Path(prop) {
   // bg, hover, pressed, outline, separator → surfaces/*
-  if (['bg', 'subtle', 'elevated', 'outline', 'separator'].includes(prop))
+  if (['bg', 'subtle', 'strong', 'outline', 'separator'].includes(prop))
     return `default/surfaces/${prop}`;
   // ct-* → content/*
   if (prop.startsWith('ct-'))

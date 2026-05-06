@@ -33,7 +33,7 @@
 
   /* Shadow */
   --avatar-shadow: var(--shadow-none);
-  --avatar-shadow-elevated: var(--shadow-sm);
+  --avatar-shadow-strong: var(--shadow-sm);
 
   /* ────────────────────────────────────────────────────────────
      📏 DIMENSION  (12 vars)

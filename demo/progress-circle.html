@@ -23,7 +23,7 @@
   .surface-panel { padding:32px 24px; display:flex; flex-wrap:wrap; gap:24px; justify-content:center; }
   .surface-panel--base { background:var(--surface-base-bg); }
   .surface-panel--alt { background:var(--surface-base-subtle); }
-  .surface-panel--deep { background:var(--surface-base-elevated); }
+  .surface-panel--deep { background:var(--surface-base-strong); }
   .surface-panel-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; opacity:0.5; width:100%; text-align:center; }
   .anatomy-wrap { display:flex; flex-direction:column; gap:24px; }
   .anatomy-item { padding:20px; border-radius:12px; border:1px solid var(--demo-border); display:flex; align-items:center; gap:24px; flex-wrap:wrap; }
@@ -174,7 +174,7 @@
           <span class="surface-panel-label">surface-base-subtle</span>
         </div>
         <div class="surface-panel surface-panel--deep" id="surfaceDeep">
-          <span class="surface-panel-label">surface-base-elevated</span>
+          <span class="surface-panel-label">surface-base-strong</span>
         </div>
       </div>
     </div>
@@ -373,7 +373,7 @@
     if(v !== 'filled') el.dataset.variant = v;
     if(opts.indeterminate) el.dataset.indeterminate = '';
     if(opts.disabled) el.dataset.disabled = '';
-    if(opts.elevated) el.dataset.elevated = '';
+    if(opts.strong) el.dataset.strong = '';
     if(opts.linecap) el.dataset.linecap = opts.linecap;
 
     el.setAttribute('role','progressbar');
@@ -541,7 +541,7 @@
     ce.appendChild(te);
     var ge = cel('div','ring-grid'); ge.style.justifyContent = 'center';
     ['filled','outline','soft'].forEach(function(v){
-      ge.appendChild(makeRing({value:65, size:'huge', variant:v, elevated:true, label:true}));
+      ge.appendChild(makeRing({value:65, size:'huge', variant:v, strong:true, label:true}));
     });
     ce.appendChild(ge);
     el.appendChild(ce);

@@ -102,7 +102,7 @@ window.DTFPage = (function() {
   /* ── Surface Context Panels ──────────────────────────── */
 
   /**
-   * Render 3 surface level panels (base / elevated / sunken)
+   * Render 3 surface level panels (base / strong / sunken)
    * using the shared CSS classes. Calls makeContent(panel) for each
    * so the page supplies its own component instances.
    *
@@ -116,7 +116,7 @@ window.DTFPage = (function() {
     var levels = [
       { css: 'surface-panel--base', label: 'surface-base-bg' },
       { css: 'surface-panel--alt',  label: 'surface-base-subtle' },
-      { css: 'surface-panel--deep', label: 'surface-base-elevated' }
+      { css: 'surface-panel--deep', label: 'surface-base-strong' }
     ];
 
     levels.forEach(function(lvl) {

@@ -26,7 +26,7 @@
 
   font-family: var(--datepicker-day-font-family);
 
-  /* z-index: only elevated when used as a popover overlay */
+  /* z-index: only strong when used as a popover overlay */
   z-index: var(--datepicker-z-index);
 }
 

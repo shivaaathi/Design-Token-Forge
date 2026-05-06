@@ -45,7 +45,7 @@
 
 | # | Component | Prefix | Sizes | Variants | Key design surface |
 |---|-----------|--------|-------|----------|--------------------|
-| 24 | Card | `card` | micro→ultra | flat,raised,elevated,outline | Shadow + radius = brand signature |
+| 24 | Card | `card` | micro→ultra | flat,raised,strong,outline | Shadow + radius = brand signature |
 | 25 | Divider | `divider` | all 10 | solid,dashed,dotted | Orientation, label slot |
 | 26 | Accordion | `accordion` | base | default,bordered,separated | Expand icon, border pattern |
 | 27 | Tabs | `tabs` | small→large | underline,boxed,pills | Active indicator shape/position |

@@ -144,7 +144,7 @@
   <!-- ─── 7. SURFACE CONTEXT ──────────────────────────── -->
   <section class="section" id="sec-surface">
     <div class="section-header"><h2>Surface Context</h2><span class="section-tag">3 BG Levels</span></div>
-    <p class="section-desc">Badges on base, elevated, and sunken backgrounds to verify contrast and border visibility.</p>
+    <p class="section-desc">Badges on base, strong, and sunken backgrounds to verify contrast and border visibility.</p>
     <div class="section-body"><div class="surface-strip" id="surfaceStrip"></div></div>
   </section>
 
@@ -334,7 +334,7 @@
     if (opts.interactive) el.dataset.interactive = '';
     if (opts.disabled) el.dataset.disabled = '';
     if (opts.loading) el.dataset.loading = '';
-    if (opts.elevated) el.dataset.elevated = '';
+    if (opts.strong) el.dataset.strong = '';
     if (opts.pulse) el.dataset.pulse = '';
     if (opts.icon) {
       var ic = document.createElement('span');
@@ -577,10 +577,10 @@
     // Elevated with shadow
     var elevTitle = document.createElement('div');
     elevTitle.style.cssText = 'width:100%;font-size:13px;font-weight:600;opacity:.7;margin-top:16px;margin-bottom:4px';
-    elevTitle.textContent = 'Elevated (data-elevated) — shadow:';
+    elevTitle.textContent = 'Elevated (data-strong) — shadow:';
     el.appendChild(elevTitle);
     ['filled','outline','soft'].forEach(function(v){
-      el.appendChild(makeBadge({label:'Elevated',variant:v,elevated:true}));
+      el.appendChild(makeBadge({label:'Elevated',variant:v,strong:true}));
     });
   }
 
