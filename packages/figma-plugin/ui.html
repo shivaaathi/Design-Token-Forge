@@ -474,6 +474,7 @@
   var connected = false;
   var hasExistingVars = false;
   var undoDetected = false;
+  var pendingResync = false;  /* true after Reset ID map / Force re-sync — pauses poll UI updates */
 
   /* ── Deploy-in-flight detection (GitHub Pages) ───────── */
   var lastSeenHash = '';          /* hash from previous poll */
@@ -561,7 +562,7 @@
   }
 
   function checkForChanges(data) {
-    if (syncing) return;
+    if (syncing || pendingResync) return;
 
     /* Block sync while deploy is mid-flight */
     if (deploySettling) {
@@ -786,6 +787,7 @@
 
   function doSync() {
     syncing = true;
+    pendingResync = false;
     syncBtn.disabled = true;
     syncBtn.textContent = 'Syncing\u2026';
     setStatus('Updating variables in-place\u2026', 'work');
@@ -839,6 +841,7 @@
     if (e.target && e.target.id === 'forceResyncLink') {
       e.preventDefault();
       figmaHash = '';
+      pendingResync = true;
       syncBtn.disabled = false;
       syncBtn.textContent = 'Re-sync Variables';
       syncBtn.className = 'btn-sync';
@@ -850,11 +853,12 @@
       e.preventDefault();
       parent.postMessage({ pluginMessage: { type: 'reset-idmap' } }, '*');
       figmaHash = '';
+      pendingResync = true;
       syncBtn.disabled = false;
       syncBtn.textContent = 'Re-sync Variables (fresh)';
       syncBtn.className = 'btn-sync';
       notifTitle.textContent = 'ID Map Reset';
-      notifBody.innerHTML = 'Internal mapping cleared. Click <strong>Re-sync</strong> to apply — renames will use name matching.';
+      notifBody.innerHTML = 'Internal mapping cleared. Click <strong>Re-sync Variables (fresh)</strong> to apply — renames will use name matching.';
       notif.className = 'notif visible has-changes';
     }
   });
