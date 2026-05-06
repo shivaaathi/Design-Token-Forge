@@ -430,7 +430,7 @@
   function storageGet(k) { try { return localStorage.getItem(k); } catch(e) { return _mem[k] || null; } }
   function storageSet(k,v) { try { localStorage.setItem(k,v); } catch(e) { _mem[k]=v; } }
 
-  var DEFAULT_SERVER = '';
+  var DEFAULT_SERVER = 'https://sridhar-ravi-2917.github.io/Design-Token-Forge';
   var SERVER = storageGet('dtf-server-url') || DEFAULT_SERVER;
 
   serverUrlInput.value = SERVER;

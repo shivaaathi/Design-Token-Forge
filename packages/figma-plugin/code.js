@@ -6,7 +6,7 @@
 
 figma.showUI(__html__, { width: 480, height: 560 });
 
-var CODE_VERSION = '2026-04-30-v8';
+var CODE_VERSION = '2026-05-06-v9';
 log('code.js loaded — version ' + CODE_VERSION);
 
 /* ── URL migration via clientStorage (reliable, not blocked like localStorage) ── */
@@ -17,9 +17,11 @@ log('code.js loaded — version ' + CODE_VERSION);
       url = 'https://sridhar-ravi-2917.github.io/Design-Token-Forge';
       await figma.clientStorage.setAsync('dtf-server-url', url);
     }
-    if (url) {
-      figma.ui.postMessage({ type: 'set-server-url', url: url });
+    if (!url) {
+      url = 'https://sridhar-ravi-2917.github.io/Design-Token-Forge';
+      await figma.clientStorage.setAsync('dtf-server-url', url);
     }
+    figma.ui.postMessage({ type: 'set-server-url', url: url });
   } catch (e) { /* clientStorage unavailable — UI will use its own default */ }
 })();
 
@@ -116,7 +118,13 @@ function applyRenamesToIdMap(renames, idMap) {
     for (var k = 0; k < keys.length; k++) {
       if (keys[k].endsWith(oldSuffix)) {
         var prefix = keys[k].slice(0, -oldSuffix.length);
-        idMap[prefix + newSuffix] = idMap[keys[k]];
+        var newKey = prefix + newSuffix;
+        /* If the new key already exists (duplicate from a previous partial sync),
+           prefer the original variable being renamed — it has component bindings */
+        if (idMap[newKey]) {
+          log('idMap rename: overwriting duplicate key ' + newKey + ' (old id=' + idMap[newKey] + ' → keeping id=' + idMap[keys[k]] + ')');
+        }
+        idMap[newKey] = idMap[keys[k]];
         delete idMap[keys[k]];
         count++;
       }
@@ -167,11 +175,16 @@ async function syncAll(data) {
 
   log('syncAll start — code version ' + CODE_VERSION);
   log('Renames in data: ' + (data.renames ? Object.keys(data.renames).length : 0));
+  log('Collections in data: ' + data.collections.length);
 
   /* Load persistent ID map and apply renames to its keys */
   var idMap = loadIdMap();
+  var idMapSize = Object.keys(idMap).length;
+  log('idMap loaded with ' + idMapSize + ' entries');
   if (data.renames) {
-    stats.renamed = applyRenamesToIdMap(data.renames, idMap);
+    var renameCount = applyRenamesToIdMap(data.renames, idMap);
+    stats.renamed = renameCount;
+    log('idMap renames applied: ' + renameCount + ' keys transformed');
   }
 
   /* Build inverse rename map: newName → oldName for fallback lookup */
@@ -184,7 +197,13 @@ async function syncAll(data) {
   }
 
   var existing = await buildExistingLookup();
-
+  var existingColNames = Object.keys(existing);
+  log('Existing DTF collections in Figma: ' + existingColNames.join(', '));
+  for (var eli = 0; eli < existingColNames.length; eli++) {
+    var elName = existingColNames[eli];
+    var elVarCount = Object.keys(existing[elName].varMap).length;
+    log('  ' + elName + ': ' + elVarCount + ' variables');
+  }
   /* Pass 1: Create/update collections, modes, and variables.
      Build a lookup so aliases can be resolved in pass 2. */
   var varLookup = {}; // "CollectionName::VarPath" => figma Variable obj
@@ -257,8 +276,20 @@ async function syncAll(data) {
               if (byId) {
                 existingVar = byId;
                 if (byId.name !== v.name) {
+                  /* Before renaming, remove any duplicate with the target name
+                     to prevent naming conflicts (mirrors Step 2 logic) */
+                  if (ex) {
+                    var dupById = ex.varMap[v.name];
+                    if (dupById && dupById.id !== byId.id) {
+                      log('Step1: removing duplicate ' + v.name + ' (id=' + dupById.id + ') before renaming ' + byId.name);
+                      try { dupById.remove(); stats.orphansRemoved++; } catch (de) {
+                        log('Failed to remove duplicate: ' + de.message);
+                      }
+                    }
+                  }
                   log('ID-match rename: ' + byId.name + ' → ' + v.name);
                   byId.name = v.name;
+                  stats.renamed++;
                 }
               }
             } catch (idErr) { /* Variable deleted by user, fall through */ }
