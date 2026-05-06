@@ -6,7 +6,7 @@
 
 :root {
 
-  /* ── Primary (key ≈ #286CE5) ────────────────────────── */
+  /* ── Monochromatic (key ≈ #286CE5) ────────────────────────── */
   --prim-monochromatic-white: #FFFFFF;
   --prim-monochromatic-25: #F2F7FF;
   --prim-monochromatic-50: #EAF1FF;
@@ -26,8 +26,8 @@
   --prim-monochromatic-700: #133BB9;
   --prim-monochromatic-750: #0C2FA6;
   --prim-monochromatic-800: #041C8D;
-  --prim-monochromatic-850: #010674;
-  --prim-monochromatic-900: #010150;
+  --prim-monochromatic-850: #020B76;
+  --prim-monochromatic-900: #010045;
   --prim-monochromatic-black: #000000;
 
   /* ── Brand (key ≈ #E53F28) ────────────────────────── */
@@ -50,8 +50,8 @@
   --prim-brand-700: #901903;
   --prim-brand-750: #7C1302;
   --prim-brand-800: #610D02;
-  --prim-brand-850: #480600;
-  --prim-brand-900: #300200;
+  --prim-brand-850: #4B0700;
+  --prim-brand-900: #280200;
   --prim-brand-black: #000000;
 
   /* ── Danger (key ≈ #DC2626) ────────────────────────── */
@@ -74,8 +74,8 @@
   --prim-danger-700: #94070E;
   --prim-danger-750: #80040A;
   --prim-danger-800: #640306;
-  --prim-danger-850: #4A0103;
-  --prim-danger-900: #310001;
+  --prim-danger-850: #4E0103;
+  --prim-danger-900: #290001;
   --prim-danger-black: #000000;
 
   /* ── Warning (key ≈ #D97706) ────────────────────────── */
@@ -98,8 +98,8 @@
   --prim-warning-700: #704102;
   --prim-warning-750: #613701;
   --prim-warning-800: #4B2901;
-  --prim-warning-850: #371C00;
-  --prim-warning-900: #231000;
+  --prim-warning-850: #3A1E00;
+  --prim-warning-900: #1D0C00;
   --prim-warning-black: #000000;
 
   /* ── Info (key ≈ #0EA5E9) ────────────────────────── */
@@ -122,8 +122,8 @@
   --prim-info-700: #04537E;
   --prim-info-750: #03466D;
   --prim-info-800: #023655;
-  --prim-info-850: #00263E;
-  --prim-info-900: #001729;
+  --prim-info-850: #012841;
+  --prim-info-900: #001322;
   --prim-info-black: #000000;
 
   /* ── Success (key ≈ #16A34A) ────────────────────────── */
@@ -146,8 +146,8 @@
   --prim-success-700: #035F17;
   --prim-success-750: #025112;
   --prim-success-800: #023F0C;
-  --prim-success-850: #002D06;
-  --prim-success-900: #001C03;
+  --prim-success-850: #003007;
+  --prim-success-900: #001702;
   --prim-success-black: #000000;
 
   /* ── Greyscale (key ≈ #747474) ────────────────────────── */
@@ -170,8 +170,8 @@
   --prim-greyscale-700: #4E4E4E;
   --prim-greyscale-750: #424242;
   --prim-greyscale-800: #323232;
-  --prim-greyscale-850: #242424;
-  --prim-greyscale-900: #151515;
+  --prim-greyscale-850: #262626;
+  --prim-greyscale-900: #111111;
   --prim-greyscale-black: #000000;
 
   /* ── Desaturated (key ≈ #71747C) ────────────────────────── */
@@ -194,8 +194,8 @@
   --prim-desaturated-700: #4B4D55;
   --prim-desaturated-750: #404249;
   --prim-desaturated-800: #303239;
-  --prim-desaturated-850: #222329;
-  --prim-desaturated-900: #14151A;
+  --prim-desaturated-850: #24252C;
+  --prim-desaturated-900: #0F1116;
   --prim-desaturated-black: #000000;
 
   /* ── Secondary (key ≈ #000205) ────────────────────────── */
@@ -218,90 +218,7 @@
   --prim-secondary-700: #454F58;
   --prim-secondary-750: #3B434C;
   --prim-secondary-800: #2C343B;
-  --prim-secondary-850: #1D252B;
-  --prim-secondary-900: #10161C;
+  --prim-secondary-850: #20272D;
+  --prim-secondary-900: #0C1217;
   --prim-secondary-black: #000000;
-
-
-  /* ═══════════════════════════════════════════════════════════
-     Spacing  (43 tokens, dense in 1–15 px range)
-     ═══════════════════════════════════════════════════════════ */
-  --spacing-none: 0px;
-  --spacing-1: 1px;
-  --spacing-2: 2px;
-  --spacing-3: 3px;
-  --spacing-4: 4px;
-  --spacing-5: 5px;
-  --spacing-6: 6px;
-  --spacing-8: 8px;
-  --spacing-10: 10px;
-  --spacing-11: 11px;
-  --spacing-12: 12px;
-  --spacing-13: 13px;
-  --spacing-14: 14px;
-  --spacing-15: 15px;
-  --spacing-16: 16px;
-  --spacing-18: 18px;
-  --spacing-20: 20px;
-  --spacing-22: 22px;
-  --spacing-24: 24px;
-  --spacing-25: 25px;
-  --spacing-26: 26px;
-  --spacing-28: 28px;
-  --spacing-30: 30px;
-  --spacing-32: 32px;
-  --spacing-36: 36px;
-  --spacing-40: 40px;
-  --spacing-44: 44px;
-  --spacing-45: 45px;
-  --spacing-48: 48px;
-  --spacing-50: 50px;
-  --spacing-54: 54px;
-  --spacing-56: 56px;
-  --spacing-60: 60px;
-  --spacing-64: 64px;
-  --spacing-70: 70px;
-  --spacing-72: 72px;
-  --spacing-80: 80px;
-  --spacing-90: 90px;
-  --spacing-96: 96px;
-  --spacing-100: 100px;
-  --spacing-112: 112px;
-  --spacing-120: 120px;
-
-  /* ═══════════════════════════════════════════════════════════
-     Typography
-     ═══════════════════════════════════════════════════════════ */
-  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-family-sans: var(--font-family);
-  --font-family-mono: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
-  --font-size-10: 10px;
-  --font-size-11: 11px;
-  --font-size-12: 12px;
-  --font-size-13: 13px;
-  --font-size-14: 14px;
-  --font-size-16: 16px;
-  --font-size-18: 18px;
-  --font-size-20: 20px;
-  --font-size-24: 24px;
-  --font-size-26: 26px;
-  --font-size-28: 28px;
-  --font-size-32: 32px;
-  --font-size-40: 40px;
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --font-weight-extrabold: 900;
-  --line-height-tight: 1.25;
-  --line-height-snug: 1.375;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.625;
-  --line-height-loose: 2;
-  --letter-spacing-tighter: -0.05em;
-  --letter-spacing-tight: -0.025em;
-  --letter-spacing-normal: 0em;
-  --letter-spacing-wide: 0.025em;
-  --letter-spacing-wider: 0.05em;
-  --letter-spacing-widest: 0.1em;
 }
