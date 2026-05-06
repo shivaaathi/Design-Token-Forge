@@ -68,7 +68,7 @@
       "bright": {
         "bg": "white",
         "subtle": "25",
-        "elevated": "50",
+        "strong": "50",
         "outline": "100",
         "separator": "100",
         "ct-default": "900",
@@ -81,12 +81,13 @@
         "cm-outline": "100",
         "cm-outline-hover": "150",
         "cm-outline-pressed": "150",
-        "cm-separator": "100"
+        "cm-separator": "100",
+        "elevated": "50"
       },
       "base": {
         "bg": "25",
         "subtle": "50",
-        "elevated": "75",
+        "strong": "75",
         "outline": "100",
         "separator": "100",
         "ct-default": "900",
@@ -99,12 +100,13 @@
         "cm-outline": "100",
         "cm-outline-hover": "150",
         "cm-outline-pressed": "150",
-        "cm-separator": "100"
+        "cm-separator": "100",
+        "elevated": "75"
       },
       "dim": {
         "bg": "50",
         "subtle": "75",
-        "elevated": "100",
+        "strong": "100",
         "outline": "150",
         "separator": "150",
         "ct-default": "900",
@@ -117,12 +119,13 @@
         "cm-outline": "150",
         "cm-outline-hover": "175",
         "cm-outline-pressed": "175",
-        "cm-separator": "150"
+        "cm-separator": "150",
+        "elevated": "100"
       },
       "deep": {
         "bg": "75",
         "subtle": "100",
-        "elevated": "150",
+        "strong": "150",
         "outline": "175",
         "separator": "175",
         "ct-default": "900",
@@ -135,12 +138,13 @@
         "cm-outline": "150",
         "cm-outline-hover": "175",
         "cm-outline-pressed": "175",
-        "cm-separator": "150"
+        "cm-separator": "150",
+        "elevated": "150"
       },
       "container": {
         "bg": "white",
         "subtle": "25",
-        "elevated": "50",
+        "strong": "50",
         "outline": "150",
         "separator": "150",
         "ct-default": "900",
@@ -153,12 +157,13 @@
         "cm-outline": "150",
         "cm-outline-hover": "200",
         "cm-outline-pressed": "250",
-        "cm-separator": "150"
+        "cm-separator": "150",
+        "elevated": "50"
       },
       "over-container": {
         "bg": "white",
         "subtle": "25",
-        "elevated": "50",
+        "strong": "50",
         "outline": "150",
         "separator": "175",
         "ct-default": "900",
@@ -171,12 +176,13 @@
         "cm-outline": "175",
         "cm-outline-hover": "200",
         "cm-outline-pressed": "250",
-        "cm-separator": "175"
+        "cm-separator": "175",
+        "elevated": "50"
       },
       "float": {
         "bg": "white",
         "subtle": "25",
-        "elevated": "50",
+        "strong": "50",
         "outline": "150",
         "separator": "175",
         "ct-default": "900",
@@ -189,12 +195,13 @@
         "cm-outline": "175",
         "cm-outline-hover": "250",
         "cm-outline-pressed": "300",
-        "cm-separator": "175"
+        "cm-separator": "175",
+        "elevated": "50"
       },
       "inverse": {
         "bg": "900",
         "subtle": "850",
-        "elevated": "800",
+        "strong": "800",
         "outline": "700",
         "separator": "700",
         "ct-default": "25",
@@ -207,14 +214,15 @@
         "cm-outline": "600",
         "cm-outline-hover": "550",
         "cm-outline-pressed": "500",
-        "cm-separator": "700"
+        "cm-separator": "700",
+        "elevated": "800"
       }
     },
     "dark": {
       "bright": {
         "bg": "900",
         "subtle": "850",
-        "elevated": "800",
+        "strong": "750",
         "outline": "800",
         "separator": "800",
         "ct-default": "50",
@@ -227,12 +235,13 @@
         "cm-outline": "750",
         "cm-outline-hover": "700",
         "cm-outline-pressed": "700",
-        "cm-separator": "750"
+        "cm-separator": "750",
+        "elevated": "800"
       },
       "base": {
         "bg": "900",
         "subtle": "850",
-        "elevated": "800",
+        "strong": "800",
         "outline": "800",
         "separator": "800",
         "ct-default": "50",
@@ -245,12 +254,13 @@
         "cm-outline": "750",
         "cm-outline-hover": "700",
         "cm-outline-pressed": "700",
-        "cm-separator": "750"
+        "cm-separator": "750",
+        "elevated": "800"
       },
       "dim": {
         "bg": "black",
         "subtle": "900",
-        "elevated": "850",
+        "strong": "800",
         "outline": "850",
         "separator": "850",
         "ct-default": "75",
@@ -263,12 +273,13 @@
         "cm-outline": "800",
         "cm-outline-hover": "750",
         "cm-outline-pressed": "750",
-        "cm-separator": "800"
+        "cm-separator": "800",
+        "elevated": "850"
       },
       "deep": {
         "bg": "black",
         "subtle": "900",
-        "elevated": "850",
+        "strong": "850",
         "outline": "850",
         "separator": "850",
         "ct-default": "75",
@@ -281,12 +292,13 @@
         "cm-outline": "800",
         "cm-outline-hover": "750",
         "cm-outline-pressed": "750",
-        "cm-separator": "800"
+        "cm-separator": "800",
+        "elevated": "850"
       },
       "container": {
         "bg": "850",
         "subtle": "800",
-        "elevated": "750",
+        "strong": "750",
         "outline": "700",
         "separator": "700",
         "ct-default": "50",
@@ -299,12 +311,13 @@
         "cm-outline": "600",
         "cm-outline-hover": "550",
         "cm-outline-pressed": "500",
-        "cm-separator": "700"
+        "cm-separator": "700",
+        "elevated": "750"
       },
       "over-container": {
         "bg": "800",
         "subtle": "750",
-        "elevated": "700",
+        "strong": "700",
         "outline": "600",
         "separator": "600",
         "ct-default": "50",
@@ -317,12 +330,13 @@
         "cm-outline": "550",
         "cm-outline-hover": "500",
         "cm-outline-pressed": "450",
-        "cm-separator": "600"
+        "cm-separator": "600",
+        "elevated": "700"
       },
       "float": {
         "bg": "750",
         "subtle": "700",
-        "elevated": "600",
+        "strong": "600",
         "outline": "550",
         "separator": "550",
         "ct-default": "25",
@@ -335,12 +349,13 @@
         "cm-outline": "500",
         "cm-outline-hover": "450",
         "cm-outline-pressed": "400",
-        "cm-separator": "550"
+        "cm-separator": "550",
+        "elevated": "600"
       },
       "inverse": {
         "bg": "900",
         "subtle": "850",
-        "elevated": "800",
+        "strong": "800",
         "outline": "700",
         "separator": "700",
         "ct-default": "25",
@@ -353,13 +368,14 @@
         "cm-outline": "600",
         "cm-outline-hover": "550",
         "cm-outline-pressed": "500",
-        "cm-separator": "700"
+        "cm-separator": "700",
+        "elevated": "800"
       }
     },
     "lightAccent": {
       "bg": "25",
       "subtle": "50",
-      "elevated": "75",
+      "strong": "75",
       "outline": "175",
       "separator": "175",
       "ct-default": "800",
@@ -372,12 +388,13 @@
       "cm-outline": "175",
       "cm-outline-hover": "200",
       "cm-outline-pressed": "250",
-      "cm-separator": "175"
+      "cm-separator": "175",
+      "elevated": "75"
     },
     "darkAccent": {
       "bg": "900",
       "subtle": "850",
-      "elevated": "800",
+      "strong": "800",
       "outline": "750",
       "separator": "750",
       "ct-default": "75",
@@ -390,7 +407,8 @@
       "cm-outline": "600",
       "cm-outline-hover": "550",
       "cm-outline-pressed": "500",
-      "cm-separator": "750"
+      "cm-separator": "750",
+      "elevated": "800"
     }
   },
   "surfacePaletteSrc": {
