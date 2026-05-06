@@ -6,7 +6,7 @@
 
 figma.showUI(__html__, { width: 480, height: 560 });
 
-var CODE_VERSION = '2026-05-06-v10';
+var CODE_VERSION = '2026-05-06-v11';
 log('code.js loaded — version ' + CODE_VERSION);
 
 /* ── URL migration via clientStorage (reliable, not blocked like localStorage) ── */
@@ -204,6 +204,57 @@ async function syncAll(data) {
     var elVarCount = Object.keys(existing[elName].varMap).length;
     log('  ' + elName + ': ' + elVarCount + ' variables');
   }
+
+  /* ── Pass 0: DIRECT PRE-SYNC RENAME ────────────────────────────────
+     Bypass all lookup logic — iterate actual Figma variables in each
+     collection and rename any that match a renames entry directly.
+     This guarantees renames happen regardless of idMap/varMap state. */
+  if (data.renames && Object.keys(data.renames).length > 0) {
+    var directRenames = 0;
+    var allDTFCols = await findDTFCollections();
+    for (var dri = 0; dri < allDTFCols.length; dri++) {
+      var drCol = allDTFCols[dri];
+      var drVarIds = drCol.variableIds.slice();
+      for (var drvi = 0; drvi < drVarIds.length; drvi++) {
+        var drVar = await figma.variables.getVariableByIdAsync(drVarIds[drvi]);
+        if (!drVar) continue;
+        var newName = data.renames[drVar.name];
+        if (newName) {
+          /* Check if another variable already has the target name */
+          for (var drdi = 0; drdi < drVarIds.length; drdi++) {
+            if (drdi === drvi) continue;
+            var drDup = await figma.variables.getVariableByIdAsync(drVarIds[drdi]);
+            if (drDup && drDup.name === newName) {
+              log('Pass0: removing blocker ' + newName + ' (id=' + drDup.id + ')');
+              try { drDup.remove(); } catch (dre) { log('Pass0 remove failed: ' + dre.message); }
+            }
+          }
+          log('Pass0 RENAME: ' + drVar.name + ' → ' + newName + ' (id=' + drVar.id + ')');
+          try {
+            drVar.name = newName;
+            if (drVar.name === newName) {
+              directRenames++;
+              /* Update idMap to reflect new name */
+              idMap[drCol.name + '::' + newName] = drVar.id;
+            } else {
+              log('Pass0 WARN: rename assignment did not stick for ' + newName + ' (got ' + drVar.name + ')');
+            }
+          } catch (drErr) {
+            log('Pass0 ERROR renaming ' + drVar.name + ': ' + drErr.message);
+            stats.errors.push('Pass0 rename ' + drVar.name + ': ' + drErr.message);
+          }
+        }
+      }
+    }
+    log('Pass0 direct renames completed: ' + directRenames);
+    stats.renamed += directRenames;
+
+    /* Rebuild existing lookup since names changed */
+    if (directRenames > 0) {
+      existing = await buildExistingLookup();
+    }
+  }
+
   /* Pass 1: Create/update collections, modes, and variables.
      Build a lookup so aliases can be resolved in pass 2. */
   var varLookup = {}; // "CollectionName::VarPath" => figma Variable obj
@@ -459,6 +510,31 @@ async function syncAll(data) {
     if (!validKeys[staleKeys[ski]]) delete idMap[staleKeys[ski]];
   }
   saveIdMap(idMap);
+
+  /* Final diagnostic: check for any remaining old-name variables */
+  if (data.renames) {
+    var oldNames = Object.keys(data.renames);
+    var remaining = [];
+    var finalCols = await findDTFCollections();
+    for (var fci = 0; fci < finalCols.length; fci++) {
+      var fc = finalCols[fci];
+      for (var fvi = 0; fvi < fc.variableIds.length; fvi++) {
+        var fv = await figma.variables.getVariableByIdAsync(fc.variableIds[fvi]);
+        if (fv && data.renames[fv.name]) {
+          remaining.push(fc.name + '/' + fv.name);
+        }
+      }
+    }
+    if (remaining.length > 0) {
+      log('WARNING: ' + remaining.length + ' variables still have old names after sync:');
+      for (var rmi = 0; rmi < Math.min(remaining.length, 10); rmi++) {
+        log('  ' + remaining[rmi]);
+      }
+      stats.errors.push(remaining.length + ' variables failed to rename (check console)');
+    } else {
+      log('✓ All renames verified — no old names remain');
+    }
+  }
 
   return stats;
 }
