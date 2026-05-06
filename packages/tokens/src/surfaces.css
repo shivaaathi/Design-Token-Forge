@@ -9,7 +9,7 @@
   /* ── SURFACE-BRIGHT (src: secondary) ── */
   --surface-bright-bg: #FFFFFF;
   --surface-bright-subtle: #F5FAFF;
-  --surface-bright-elevated: #EBF2F8;
+  --surface-bright-strong: #EBF2F8;
   --surface-bright-outline: #D6DEE5;
   --surface-bright-separator: #D6DEE5;
   --surface-bright-ct-default: #0C1217;
@@ -26,7 +26,7 @@
   /* ── SURFACE-BASE (src: secondary) ── */
   --surface-base-bg: #F5FAFF;
   --surface-base-subtle: #EBF2F8;
-  --surface-base-elevated: #E2E9F0;
+  --surface-base-strong: #E2E9F0;
   --surface-base-outline: #D6DEE5;
   --surface-base-separator: #D6DEE5;
   --surface-base-ct-default: #0C1217;
@@ -43,7 +43,7 @@
   /* ── SURFACE-DIM (src: secondary) ── */
   --surface-dim-bg: #EBF2F8;
   --surface-dim-subtle: #E2E9F0;
-  --surface-dim-elevated: #D6DEE5;
+  --surface-dim-strong: #D6DEE5;
   --surface-dim-outline: #C8D0D8;
   --surface-dim-separator: #C8D0D8;
   --surface-dim-ct-default: #0C1217;
@@ -60,7 +60,7 @@
   /* ── SURFACE-DEEP (src: secondary) ── */
   --surface-deep-bg: #E2E9F0;
   --surface-deep-subtle: #D6DEE5;
-  --surface-deep-elevated: #C8D0D8;
+  --surface-deep-strong: #C8D0D8;
   --surface-deep-outline: #BAC2CA;
   --surface-deep-separator: #BAC2CA;
   --surface-deep-ct-default: #0C1217;
@@ -77,7 +77,7 @@
   /* ── SURFACE-ACCENT (src: primary) ── */
   --surface-accent-bg: #F6F9FF;
   --surface-accent-subtle: #EAF1FF;
-  --surface-accent-elevated: #DDE9FF;
+  --surface-accent-strong: #DDE9FF;
   --surface-accent-outline: #A3C1FE;
   --surface-accent-separator: #A3C1FE;
   --surface-accent-ct-default: #021587;
@@ -94,7 +94,7 @@
   /* ── SURFACE-CONTAINER (src: secondary) ── */
   --surface-container-bg: #FFFFFF;
   --surface-container-subtle: #F5FAFF;
-  --surface-container-elevated: #EBF2F8;
+  --surface-container-strong: #EBF2F8;
   --surface-container-outline: #C8D0D8;
   --surface-container-separator: #C8D0D8;
   --surface-container-ct-default: #0C1217;
@@ -111,7 +111,7 @@
   /* ── SURFACE-OVER-CONTAINER (src: secondary) ── */
   --surface-over-container-bg: #FFFFFF;
   --surface-over-container-subtle: #F5FAFF;
-  --surface-over-container-elevated: #EBF2F8;
+  --surface-over-container-strong: #EBF2F8;
   --surface-over-container-outline: #C8D0D8;
   --surface-over-container-separator: #BAC2CA;
   --surface-over-container-ct-default: #0C1217;
@@ -128,7 +128,7 @@
   /* ── SURFACE-FLOAT (src: secondary) ── */
   --surface-float-bg: #FFFFFF;
   --surface-float-subtle: #F5FAFF;
-  --surface-float-elevated: #EBF2F8;
+  --surface-float-strong: #EBF2F8;
   --surface-float-outline: #C8D0D8;
   --surface-float-separator: #BAC2CA;
   --surface-float-ct-default: #0C1217;
