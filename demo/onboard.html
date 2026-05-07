@@ -454,7 +454,7 @@
     };
 
     try {
-      /* Step 1: Create repo */
+      /* Step 1: Create repo (skip if already exists from a previous attempt) */
       setProgress('ps-repo', 'active');
       const createResp = await fetch('https://api.github.com/user/repos', {
         method: 'POST', headers,
@@ -467,7 +467,12 @@
       });
       if (!createResp.ok) {
         const err = await createResp.json();
-        throw new Error(err.message || 'Failed to create repository');
+        // 422 with "already exists" means previous attempt created it — continue
+        const isAlreadyExists = createResp.status === 422 && JSON.stringify(err).includes('already exists');
+        if (!isAlreadyExists) {
+          const hint = createResp.status === 401 ? ' — check that your token has the "repo" scope checked.' : '';
+          throw new Error((err.message || 'Repository creation failed.') + hint);
+        }
       }
       setProgress('ps-repo', 'done');
 
@@ -606,12 +611,19 @@
     if (!commitResp.ok) throw new Error('Failed to create commit');
     const commitData = await commitResp.json();
 
-    // Create main branch ref
+    // Create or update main branch ref
     const refResp = await fetch(`https://api.github.com/repos/${user}/${repo}/git/refs`, {
       method: 'POST', headers,
       body: JSON.stringify({ ref: 'refs/heads/main', sha: commitData.sha })
     });
-    if (!refResp.ok) throw new Error('Failed to create branch');
+    if (!refResp.ok) {
+      // If ref already exists (retry scenario), force-update it
+      const updateResp = await fetch(`https://api.github.com/repos/${user}/${repo}/git/refs/heads/main`, {
+        method: 'PATCH', headers,
+        body: JSON.stringify({ sha: commitData.sha, force: true })
+      });
+      if (!updateResp.ok) throw new Error('Failed to create/update branch');
+    }
 
     // Set default branch to main
     await fetch(`https://api.github.com/repos/${user}/${repo}`, {
