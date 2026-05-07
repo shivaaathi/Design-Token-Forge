@@ -2911,9 +2911,9 @@ function populateProjectSelect() {
     return '<option value="' + p.id + '"' + (p.id === projectId ? ' selected' : '') + '>' + escHtml(p.name || p.id) + '</option>';
   }).join('');
   projSelect.innerHTML = opts || '<option>(no projects)</option>';
-  // Disable rename/delete when only 1 project, none selected, or not the owner
+  // Disable rename/delete when none selected or not the owner
   var canManage = visible.length > 0 && projectId && isProjectOwner();
-  var canDelete = visible.length > 1 && projectId && isProjectOwner();
+  var canDelete = visible.length > 0 && projectId && isProjectOwner();
   if (projRenameBtn) projRenameBtn.disabled = !canManage;
   if (projDeleteBtn) projDeleteBtn.disabled = !canDelete;
 }
