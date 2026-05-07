@@ -315,7 +315,23 @@ window.DTF = window.DTF || { onThemeChange: null };
     if (!confirm('Delete project "' + (proj.name || proj.id) + '"? This cannot be undone.')) return;
     if (!ghToken) { alert('Connect GitHub (PAT) in Color System to delete projects.'); return; }
     var ghUser = localStorage.getItem('dtf-gh-user') || 'unknown';
-    /* Recursively delete all files in the project folder */
+
+    /* Immediately update UI (don't wait for API) */
+    cachedList = cachedList.filter(function(p){ return p.id !== proj.id; });
+    localStorage.setItem('dtf-known-projects', JSON.stringify(cachedList));
+    var delList = [];
+    try { delList = JSON.parse(localStorage.getItem('dtf-deleted-projects') || '[]'); } catch(e) {}
+    if (delList.indexOf(proj.id) === -1) delList.push(proj.id);
+    localStorage.setItem('dtf-deleted-projects', JSON.stringify(delList));
+    renderPanel(getVisibleProjects(cachedList));
+    if (currentId === proj.id) {
+      var visible = getVisibleProjects(cachedList);
+      if (visible.length) { selectProject(visible[0].id); }
+      else { localStorage.removeItem('dtf-active-project'); window.location.href = 'onboard.html'; return; }
+    }
+    syncBtnLabel();
+
+    /* Background: delete files from repo + write log */
     var dirPath = 'projects/' + proj.id;
     fetch(ghApiBase + '/contents/' + dirPath + '?ref=main', { headers: ghHdrs })
       .then(function(r){ return r.ok ? r.json() : Promise.reject(r); })
@@ -330,34 +346,8 @@ window.DTF = window.DTF || { onThemeChange: null };
         });
         return Promise.all(delPromises);
       })
-      .then(function(){
-        /* Write deletion log entry to projects/_log.json */
-        return _appendDeletionLog(proj, ghUser);
-      })
-      .then(function(){
-        /* Mark deleted locally */
-        var delList = [];
-        try { delList = JSON.parse(localStorage.getItem('dtf-deleted-projects') || '[]'); } catch(e) {}
-        if (delList.indexOf(proj.id) === -1) delList.push(proj.id);
-        localStorage.setItem('dtf-deleted-projects', JSON.stringify(delList));
-        /* Remove from cached list */
-        cachedList = cachedList.filter(function(p){ return p.id !== proj.id; });
-        localStorage.setItem('dtf-known-projects', JSON.stringify(cachedList));
-        /* If we deleted the active project, switch to first visible */
-        if (currentId === proj.id) {
-          var visible = getVisibleProjects(cachedList);
-          if (visible.length) {
-            selectProject(visible[0].id);
-          } else {
-            localStorage.removeItem('dtf-active-project');
-            window.location.href = 'onboard.html';
-            return;
-          }
-        }
-        renderPanel(getVisibleProjects(cachedList));
-        syncBtnLabel();
-      })
-      .catch(function(err){ alert('Delete failed. Check permissions.'); console.error(err); });
+      .then(function(){ return _appendDeletionLog(proj, ghUser); })
+      .catch(function(err){ console.error('[DTF] Delete API failed:', err); });
   }
 
   /* ── Append entry to projects/_log.json in the repo ── */

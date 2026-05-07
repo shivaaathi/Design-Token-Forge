@@ -6,28 +6,10 @@
     "description": "Design tokens for Canada"
   },
   {
-    "id": "cuba",
-    "name": "Cuba",
-    "owner": "gayathri-rp-19560",
-    "description": "Design tokens for Cuba"
-  },
-  {
     "id": "desktop-pdf-editor",
     "name": "Desktop PDF Editor",
     "owner": "sridhar-ravi-2917",
     "description": "Default project — the original DTF token set for the Desktop PDF Editor product."
-  },
-  {
-    "id": "lapd",
-    "name": "LAPD",
-    "owner": "gayathri-rp-19560",
-    "description": "Design tokens for LAPD"
-  },
-  {
-    "id": "ny",
-    "name": "NY",
-    "owner": "gayathri-rp-19560",
-    "description": "Design tokens for NY"
   },
   {
     "id": "writer-handhelds",
