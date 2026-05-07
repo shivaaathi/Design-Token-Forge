@@ -7,9 +7,18 @@
   'use strict';
 
   /* ── Menu Data ──────────────────────────────────────────── */
+  /* Check if user has any projects */
+  var hasProjects = false;
+  try {
+    var kp = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]');
+    hasProjects = kp.length > 0;
+  } catch(e) {}
+
+  var onboardLabel = hasProjects ? 'Create Project' : 'Start Your Own Project';
+
   var NAV_ITEMS = [
     { group: 'Get Started' },
-    { label: 'Start Your Own Project', href: 'onboard.html', hint: 'New' },
+    { label: onboardLabel, href: 'onboard.html', hint: 'New' },
     { sep: true },
     { group: 'Admin' },
     { label: 'Color System',    href: 'color-system.html',    hint: 'Live'        },
@@ -75,12 +84,14 @@
 
   var navHtml = ''
     + '<div class="nav-crumb">'
-    +   '<a href="index.html" class="nav-home" aria-label="Component Explorer" title="Component Explorer">'
-    +     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
-    +       '<path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1v-9"/>'
-    +     '</svg>'
-    +   '</a>'
-    +   '<span class="nav-sep">/</span>'
+    +   (hasProjects
+        ? '<a href="index.html" class="nav-home" aria-label="Component Explorer" title="Component Explorer">'
+        +   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+        +     '<path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1v-9"/>'
+        +   '</svg>'
+        + '</a>'
+        + '<span class="nav-sep">/</span>'
+        : '')
     +   '<div class="nav-switcher">'
     +     '<button class="nav-switcher-btn" id="navSwitcher" aria-expanded="false" aria-haspopup="true" type="button">'
     +       esc(pageLabel)

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Start Your Own Project — Design Token Forge</title>
+<title>Create Project — Design Token Forge</title>
 <link rel="stylesheet" href="../packages/tokens/src/index.css">
 <link rel="stylesheet" href="shared.css?v=20260507b">
 <style>
@@ -179,8 +179,8 @@
 <div class="wizard-container">
 
   <div class="wizard-header">
-    <h1>🚀 Start Your Own Project</h1>
-    <p>Add your project to Design Token Forge. Configure your brand colors & connect GitHub — your tokens will deploy automatically.</p>
+    <h1 id="wizardTitle">🚀 Start Your Own Project</h1>
+    <p id="wizardDesc">Add your project to Design Token Forge. Configure your brand colors & connect GitHub — your tokens will deploy automatically.</p>
   </div>
 
   <!-- Steps indicator -->
@@ -263,6 +263,15 @@
 <script src="shared.js?v=20260507b"></script>
 <script>
 (function() {
+  /* ── Adjust heading if user already has projects ── */
+  try {
+    var kp = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]');
+    if (kp.length > 0) {
+      document.getElementById('wizardTitle').textContent = '\ud83d\ude80 Create Project';
+      document.getElementById('wizardDesc').textContent = 'Add another project to Design Token Forge. Configure your brand colors & connect GitHub \u2014 your tokens will deploy automatically.';
+    }
+  } catch(e) {}
+
   /* ── Config ─────────────────────────────────────── */
   const GH_REPO_NAME = 'Design-Token-Forge';
   const GH_REPO_OWNER = 'sridhar-ravi-2917'; // upstream repo owner
