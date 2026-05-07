@@ -89,55 +89,23 @@ window.DTF = window.DTF || { onThemeChange: null };
     populateSelect(knownList, false);
   }
 
-  /* Also try fetching from status/projects endpoints as fallback */
-  fetch(statusUrl).then(function(r){ return r.json(); }).then(function(d){
-    if (d.project && d.project.id && !currentId) currentId = d.project.id;
-    return fetch(projectsUrl);
-  }).then(function(r){ return r.json(); }).then(function(list){
-    /* Remote projects.json is the source of truth.
-       Only keep local-only projects that were JUST created (pending deploy). */
-    if (list && list.length) {
-      /* Clean up dtf-deleted-projects: if remote no longer has an ID, it's truly gone */
-      var remoteIds = list.map(function(p){ return p.id; });
-      try {
-        var delList = JSON.parse(localStorage.getItem('dtf-deleted-projects') || '[]');
-        var cleaned = delList.filter(function(id){ return remoteIds.indexOf(id) !== -1; });
-        if (cleaned.length !== delList.length) localStorage.setItem('dtf-deleted-projects', JSON.stringify(cleaned));
-      } catch(e) {}
-      /* Use remote list as base — this ensures deleted projects disappear */
-      populateSelect(list, true);
-      localStorage.setItem('dtf-known-projects', JSON.stringify(list));
-      /* If active project was deleted, reset to first available */
-      var active = localStorage.getItem('dtf-active-project');
-      if (active && remoteIds.indexOf(active) === -1) {
-        localStorage.setItem('dtf-active-project', list[0].id);
-        sel.value = list[0].id;
-      }
-    } else {
-      /* Remote returned empty — redirect to onboard */
-      if (!isOnboardPage) { window.location.href = 'onboard.html'; return; }
-    }
-  }).catch(function(){
-    if (!knownList || !knownList.length) sel.innerHTML = '<option>(offline)</option>';
-  });
-
-  /* When user switches project, update active and reload tokens */
-  /* Re-fetch latest projects from GitHub API when dropdown is clicked (bypasses CDN cache) */
+  /* Also try fetching live project list from GitHub API (bypasses CDN cache) */
   var ghApiBase = 'https://api.github.com/repos/sridhar-ravi-2917/Design-Token-Forge';
-  sel.addEventListener('mousedown', function() {
-    var token = localStorage.getItem('dtf-gh-pat') || '';
-    var hdrs = token
-      ? { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
-      : { 'Accept': 'application/vnd.github+json' };
-    fetch(ghApiBase + '/contents/projects?ref=main&_cb=' + Date.now(), { headers: hdrs })
+  var ghToken = localStorage.getItem('dtf-gh-pat') || '';
+  var ghHdrs = ghToken
+    ? { 'Authorization': 'Bearer ' + ghToken, 'Accept': 'application/vnd.github+json' }
+    : { 'Accept': 'application/vnd.github+json' };
+
+  function fetchLiveProjects(cb) {
+    fetch(ghApiBase + '/contents/projects?ref=main&_cb=' + Date.now(), { headers: ghHdrs })
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(dirs){
-        if (!dirs || !Array.isArray(dirs)) return;
+        if (!dirs || !Array.isArray(dirs)) { cb(null); return; }
         var projects = dirs.filter(function(d){ return d.type === 'dir'; });
         var results = []; var pending = projects.length;
-        if (pending === 0) { populateSelect([], true); return; }
+        if (pending === 0) { cb([]); return; }
         projects.forEach(function(dir){
-          fetch(ghApiBase + '/contents/projects/' + dir.name + '/config.json?ref=main', { headers: hdrs })
+          fetch(ghApiBase + '/contents/projects/' + dir.name + '/config.json?ref=main', { headers: ghHdrs })
             .then(function(r){ return r.ok ? r.json() : null; })
             .then(function(file){
               if (file && file.content) {
@@ -149,13 +117,58 @@ window.DTF = window.DTF || { onThemeChange: null };
             }).catch(function(){})
             .finally(function(){
               pending--;
-              if (pending === 0) {
-                populateSelect(results, true);
-                localStorage.setItem('dtf-known-projects', JSON.stringify(results));
-              }
+              if (pending === 0) cb(results);
             });
         });
-      }).catch(function(){});
+      }).catch(function(){ cb(null); });
+  }
+
+  fetchLiveProjects(function(list) {
+    if (list && list.length) {
+      /* Clean up dtf-deleted-projects: if remote no longer has an ID, it's truly gone */
+      var remoteIds = list.map(function(p){ return p.id; });
+      try {
+        var delList = JSON.parse(localStorage.getItem('dtf-deleted-projects') || '[]');
+        var cleaned = delList.filter(function(id){ return remoteIds.indexOf(id) !== -1; });
+        if (cleaned.length !== delList.length) localStorage.setItem('dtf-deleted-projects', JSON.stringify(cleaned));
+      } catch(e) {}
+      /* Merge with localStorage to preserve just-created projects not yet in remote */
+      var localKnown = [];
+      try { localKnown = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]'); } catch(e) {}
+      var activeId = localStorage.getItem('dtf-active-project') || '';
+      var activeLocal = localKnown.find(function(p){ return p.id === activeId; });
+      if (activeLocal && !list.some(function(p){ return p.id === activeId; })) {
+        list.push(activeLocal); // preserve just-created project
+      }
+      populateSelect(list, true);
+      localStorage.setItem('dtf-known-projects', JSON.stringify(list));
+      /* If active project was deleted, reset to first available */
+      if (activeId && !remoteIds.some(function(id){ return id === activeId; }) && !activeLocal) {
+        localStorage.setItem('dtf-active-project', list[0].id);
+        sel.value = list[0].id;
+      }
+    } else if (list !== null && list.length === 0) {
+      /* Remote confirmed empty — check if there's a just-created local project */
+      var localList = [];
+      try { localList = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]'); } catch(e) {}
+      if (localList.length > 0) {
+        populateSelect(localList, false);
+      } else if (!isOnboardPage) {
+        window.location.href = 'onboard.html'; return;
+      }
+    }
+    /* If API failed (list === null), keep localStorage-based dropdown as-is */
+  });
+
+  /* When user switches project, update active and reload tokens */
+  /* Re-fetch latest projects from GitHub API when dropdown is clicked */
+  sel.addEventListener('mousedown', function() {
+    fetchLiveProjects(function(list) {
+      if (list && list.length) {
+        populateSelect(list, true);
+        localStorage.setItem('dtf-known-projects', JSON.stringify(list));
+      }
+    });
   });
 
   sel.addEventListener('change', function() {

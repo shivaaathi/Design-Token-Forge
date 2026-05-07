@@ -3429,7 +3429,7 @@ projCreateBtn.addEventListener('click', function() {
       } catch(e) {}
 
       // Discover additional projects (async — updates dropdown when done)
-      discoverProjects(function(found) {
+      discoverProjectsLive(function(found) {
         if (found && found.length) {
           // Remote is source of truth — but preserve the active project if not in remote yet
           var remoteIds = found.map(function(p) { return p.id; });
