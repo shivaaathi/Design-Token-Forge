@@ -2922,9 +2922,10 @@ function renameProject() {
 function deleteProject() {
   if (!projectId || knownProjects.length <= 1) return;
   if (!isProjectOwner()) { alert('You cannot delete this project. It belongs to "' + (projectConfig && projectConfig.owner || 'another user') + '".'); return; }
+  if (!ghPat) { alert('Please connect to GitHub first (Deploy section) so the project can be permanently removed.'); return; }
   var proj = knownProjects.find(function(p) { return p.id === projectId; });
   var displayName = proj ? (proj.name || proj.id) : projectId;
-  var confirmed = confirm('Delete project "' + displayName + '"?\n\nThis will remove the project and its config. This cannot be undone.');
+  var confirmed = confirm('Delete project "' + displayName + '"?\n\nThis will permanently remove the project from the repository for everyone. This cannot be undone.');
   if (!confirmed) return;
   var delId = projectId;
   // Remove from knownProjects
@@ -2937,20 +2938,25 @@ function deleteProject() {
   localStorage.removeItem(STORAGE_KEY_TOKENS + '-' + delId);
   localStorage.removeItem(STORAGE_KEY_CONFIG + '-' + delId);
   localStorage.removeItem(STORAGE_KEY_SAVE_TS + '-' + delId);
-  // Delete from GitHub if connected
-  if (ghPat) {
-    var cfgPath = '/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/projects/' + delId + '/config.json';
-    ghFetch(cfgPath).then(function(file) {
-      return ghFetch(cfgPath, {
-        method: 'DELETE',
-        body: { message: 'Delete project: ' + delId, sha: file.sha }
+  // Delete ALL files in the project directory from GitHub
+  var dirPath = '/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/projects/' + delId;
+  ghFetch(dirPath).then(function(files) {
+    if (!Array.isArray(files)) files = [files];
+    // Delete files sequentially to avoid race conditions
+    return files.reduce(function(chain, file) {
+      return chain.then(function() {
+        return ghFetch(dirPath + '/' + file.name, {
+          method: 'DELETE',
+          body: { message: 'Delete project ' + delId + ': ' + file.name, sha: file.sha }
+        });
       });
-    }).then(function() {
-      showSaveMsg('Project "' + displayName + '" deleted from GitHub');
-    }).catch(function(e) {
-      console.warn('[DTF] GitHub delete failed:', e.message);
-    });
-  }
+    }, Promise.resolve());
+  }).then(function() {
+    showSaveMsg('Project "' + displayName + '" permanently deleted from GitHub');
+  }).catch(function(e) {
+    console.warn('[DTF] GitHub delete failed:', e.message);
+    showSaveMsg('Local delete OK — GitHub removal failed: ' + e.message);
+  });
   // Switch to first remaining project
   var nextId = knownProjects.length > 0 ? knownProjects[0].id : '';
   if (nextId) {
@@ -2960,7 +2966,6 @@ function deleteProject() {
     localStorage.removeItem(STORAGE_KEY_ACTIVE);
     populateProjectSelect();
   }
-  showSaveMsg('Project "' + displayName + '" deleted');
 }
 
 function switchProject(newId) {

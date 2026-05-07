@@ -5,9 +5,9 @@
     "description": "Default project — the original DTF token set for the Desktop PDF Editor product."
   },
   {
-    "id": "testing",
-    "name": "testing",
-    "description": ""
+    "id": "writer",
+    "name": "Writer",
+    "description": "Design tokens for Writer"
   },
   {
     "id": "writer-handhelds",
@@ -18,5 +18,10 @@
     "id": "writer-mobile",
     "name": "Writer Mobile",
     "description": ""
+  },
+  {
+    "id": "zoho-theme",
+    "name": "Zoho Theme",
+    "description": "Joseph Arulappan"
   }
 ]
