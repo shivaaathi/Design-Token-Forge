@@ -3126,6 +3126,18 @@ projSelect.addEventListener('change', function() {
   switchProject(projSelect.value);
 });
 
+// Re-fetch projects from remote every time the dropdown is opened
+projSelect.addEventListener('mousedown', function() {
+  discoverProjects(function(found) {
+    if (found && found.length) {
+      knownProjects = [];
+      mergeKnownProjects(found);
+      persistKnownProjects();
+      populateProjectSelect();
+    }
+  });
+});
+
 // Discover projects via local fetch (scan known dirs) or GitHub API
 function discoverProjects(callback) {
   // Always use projects.json as source of truth (includes owner field)

@@ -105,6 +105,18 @@ window.DTF = window.DTF || { onThemeChange: null };
   });
 
   /* When user switches project, update active and reload tokens */
+  /* Re-fetch latest projects from remote when dropdown is clicked */
+  sel.addEventListener('mousedown', function() {
+    fetch(depth + '/projects.json?_cb=' + Date.now())
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(list){
+        if (list && list.length) {
+          populateSelect(list);
+          localStorage.setItem('dtf-known-projects', JSON.stringify(list));
+        }
+      }).catch(function(){});
+  });
+
   sel.addEventListener('change', function() {
     var newId = sel.value;
     if (!newId) return;
