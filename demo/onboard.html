@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Start Your Own Project — Design Token Forge</title>
 <link rel="stylesheet" href="../packages/tokens/src/index.css">
-<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="shared.css?v=20260507b">
 <style>
 /* ── Wizard Layout ────────────────────────────────── */
 .wizard-container {
@@ -300,8 +300,8 @@
   </div>
 </div>
 
-<script src="nav.js"></script>
-<script src="shared.js?v=20260507"></script>
+<script src="nav.js?v=20260507b"></script>
+<script src="shared.js?v=20260507b"></script>
 <script>
 (function() {
   /* ── Config ─────────────────────────────────────── */
@@ -478,8 +478,6 @@
           if (repo.permissions && repo.permissions.push) {
             repoOwner = GH_REPO_OWNER;
             hasAccess = true;
-          } else {
-            throw new Error('You can see the repo but don\'t have write access. Ask your team lead to add you as a collaborator.');
           }
         }
       }
@@ -491,7 +489,7 @@
         ghStatusEl.textContent = '✓ Connected as ' + user.login + ' — write access to ' + repoOwner + '/' + GH_REPO_NAME;
         ghStatusEl.className = 'gh-status ok';
       } else {
-        throw new Error('No write access to ' + GH_REPO_OWNER + '/' + GH_REPO_NAME + '. Ask your team lead to add you as a collaborator.');
+        throw new Error('You don\'t have write access yet. Ask your team lead to add "' + user.login + '" as a collaborator on github.com/' + GH_REPO_OWNER + '/' + GH_REPO_NAME + '.');
       }
     } catch(err) {
       ghStatusEl.textContent = '✗ ' + err.message;
