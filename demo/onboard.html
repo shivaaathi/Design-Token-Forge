@@ -486,6 +486,9 @@
         ghOwner = repoOwner;
         ghPat = token;
         repoVerified = true;
+        // Persist credentials so color-system.html can restore the session
+        localStorage.setItem('dtf-gh-user', user.login);
+        localStorage.setItem('dtf-gh-pat', token);
         ghStatusEl.textContent = '✓ Connected as ' + user.login + ' — write access to ' + repoOwner + '/' + GH_REPO_NAME;
         ghStatusEl.className = 'gh-status ok';
         ghConnectBtn.disabled = true;
@@ -635,7 +638,7 @@
       let known = [];
       try { known = JSON.parse(knownRaw) || []; } catch(e) {}
       if (!known.some(p => p.id === slug)) {
-        known.push({ id: slug, name: name });
+        known.push({ id: slug, name: name, owner: ghUsername });
         localStorage.setItem('dtf-known-projects', JSON.stringify(known));
       }
 
