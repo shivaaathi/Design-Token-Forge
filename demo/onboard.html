@@ -593,6 +593,26 @@
         localStorage.setItem('dtf-known-projects', JSON.stringify(known));
       }
 
+      /* Save project config to localStorage so color-system picks up colors immediately
+         (CDN won't have the config.json yet since deploy hasn't completed) */
+      const localConfig = JSON.stringify({
+        roles: [
+          {id:'primary',  label:'Primary',  keyHex: colors.monochromatic.toUpperCase(), type:'fixed', derive:null},
+          {id:'brand',    label:'Brand',    keyHex: colors.brand.toUpperCase(), type:'fixed', derive:null},
+          {id:'danger',   label:'Danger',   keyHex: colors.danger.toUpperCase(), type:'fixed', derive:null},
+          {id:'warning',  label:'Warning',  keyHex: colors.warning.toUpperCase(), type:'fixed', derive:null},
+          {id:'info',     label:'Info',     keyHex: colors.info.toUpperCase(), type:'fixed', derive:null},
+          {id:'success',  label:'Success',  keyHex: colors.success.toUpperCase(), type:'fixed', derive:null},
+          {id:'greyscale', label:'Greyscale', keyHex:null, type:'auto', derive:'greyscale'},
+          {id:'desaturated', label:'Desaturated', keyHex:null, type:'auto', derive:'desaturated'}
+        ],
+        customCounter: 0,
+        semanticMap: config.semanticMap,
+        surfaceMap: null,
+        surfacePaletteSrc: config.surfacePaletteSrc
+      });
+      localStorage.setItem('dtf-color-config-' + slug, localConfig);
+
       /* Redirect to color-system immediately */
       window.location.href = 'color-system.html';
 
