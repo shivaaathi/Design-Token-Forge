@@ -90,16 +90,6 @@
   font-family: monospace; text-align: center;
 }
 
-/* ── Token link ───────────────────────────────────── */
-.token-link {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 12px; border-radius: 6px;
-  background: #24292f; color: #fff; font-size: 12px; font-weight: 600;
-  text-decoration: none; transition: opacity 150ms;
-}
-.token-link:hover { opacity: 0.85; }
-.token-link svg { width: 16px; height: 16px; }
-
 /* ── Action buttons ───────────────────────────────── */
 .wizard-actions {
   display: flex; gap: 12px; margin-top: 32px;
@@ -126,6 +116,25 @@
 }
 .btn-launch:hover { opacity: 0.9; }
 .btn-launch:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── GitHub connect inline ────────────────────────── */
+.gh-connect-row {
+  display: flex; gap: 8px; align-items: center;
+}
+.gh-connect-row .form-input { flex: 1; }
+.gh-connect-row .btn { padding: 10px 16px; font-size: 12px; }
+.gh-status {
+  font-size: 12px; margin-top: 8px; padding: 8px 12px; border-radius: 6px;
+  display: none;
+}
+.gh-status.ok {
+  display: block; background: var(--success-container-bg, #DCFCE7);
+  color: var(--success-content-default, #166534);
+}
+.gh-status.err {
+  display: block; background: var(--danger-container-bg, #FEF2F2);
+  color: var(--danger-content-default, #991B1B);
+}
 
 /* ── Progress / Status ────────────────────────────── */
 .launch-progress {
@@ -200,86 +209,85 @@
 
   <div class="wizard-header">
     <h1>🚀 Start Your Own Project</h1>
-    <p>Configure your brand, connect your GitHub, and launch. Your own token system will be live in under 2 minutes — no terminal needed.</p>
+    <p>Add your project to Design Token Forge. Configure your brand colors & connect GitHub — your tokens will deploy automatically.</p>
   </div>
 
   <!-- Steps indicator -->
   <div class="wizard-steps">
     <div class="step-pill active" data-step="1">1. Project &amp; Colors</div>
     <div class="step-pill" data-step="2">2. Connect GitHub</div>
-    <div class="step-pill" data-step="3">3. Launch</div>
+    <div class="step-pill" data-step="3">3. Create</div>
   </div>
 
   <!-- ═══ Step 1: Project + Colors ═══ -->
   <div class="step-panel active" id="step1">
     <div class="form-group">
       <label for="projName">Project Name</label>
-      <input class="form-input" type="text" id="projName" placeholder="e.g. My App" value="">
-      <p class="hint">Your product or team name.</p>
+      <input class="form-input" type="text" id="projName" placeholder="e.g. Writer, CRM, Mobile App">
+      <p class="hint">Your product or team name. This becomes a project inside the shared Design Token Forge system.</p>
     </div>
     <div class="form-group">
       <label>Brand Colors</label>
-      <p class="hint" style="margin-bottom:12px">Pick your key colors. The system generates full 24-step palettes for light &amp; dark themes automatically.<br>Don't worry — you can edit these anytime later by updating <code>config.json</code> in your repo.</p>
+      <p class="hint" style="margin-bottom:12px">Pick your key colors. The system generates full 24-step palettes for light &amp; dark themes.<br>Don't worry — you can edit these anytime later from the Color System page.</p>
       <div class="color-grid" id="colorGrid"></div>
     </div>
   </div>
 
-  <!-- ═══ Step 2: GitHub Connection ═══ -->
+  <!-- ═══ Step 2: Connect GitHub ═══ -->
   <div class="step-panel" id="step2">
+    <p style="font-size:13px;color:var(--demo-fg-subtle);margin-bottom:20px;line-height:1.6;">
+      Connect your GitHub account to commit your project config. You need write access to the <strong>Design-Token-Forge</strong> repository (ask your team lead to add you as a collaborator if needed).
+    </p>
+
     <div class="form-group">
-      <label for="ghUser">GitHub Username</label>
-      <input class="form-input" type="text" id="ghUser" placeholder="e.g. jane-doe">
-    </div>
-    <div class="form-group">
-      <label for="ghRepo">Repository Name</label>
-      <input class="form-input" type="text" id="ghRepo" placeholder="e.g. my-design-tokens" value="">
-      <p class="hint">A new repo will be created with this name on your GitHub account.</p>
-    </div>
-    <div class="form-group">
-      <label for="ghToken">Personal Access Token
-        <a href="https://github.com/settings/tokens/new?scopes=repo,workflow&description=Design+Token+Forge+Setup" target="_blank" rel="noopener" style="font-weight:400;font-size:11px;margin-left:8px;color:var(--primary-content-default, #286CE5);text-decoration:underline;">Don't have one? Create token →</a>
+      <label for="ghToken">
+        Personal Access Token
+        <a href="https://github.com/settings/tokens/new?scopes=repo,workflow&description=Design+Token+Forge" target="_blank" rel="noopener" style="font-weight:400;font-size:11px;margin-left:8px;color:var(--primary-content-default, #286CE5);text-decoration:underline;">Don't have one? Create here →</a>
       </label>
-      <input class="form-input" type="password" id="ghToken" placeholder="ghp_xxxx...">
+      <div class="gh-connect-row">
+        <input class="form-input" type="password" id="ghToken" placeholder="ghp_xxxx...">
+        <button class="btn btn-primary" id="ghConnectBtn">Connect</button>
+      </div>
       <p class="hint">
-        Used once to create the repo and push files on your behalf. Never stored.
-        Select scopes: <strong>repo</strong> + <strong>workflow</strong> (the link above pre-selects them).
+        When creating the token, check the <strong>repo</strong> scope (the main "repo" checkbox, not just sub-items).
+        Used to commit your project config. Stored only in this browser session.
       </p>
+      <div class="gh-status" id="ghStatus"></div>
     </div>
   </div>
 
-  <!-- ═══ Step 3: Launch ═══ -->
+  <!-- ═══ Step 3: Create ═══ -->
   <div class="step-panel" id="step3">
     <p style="font-size:14px;color:var(--demo-fg-subtle);margin-bottom:16px;">
-      Everything is ready. Click <strong>Launch</strong> to create your repository, push the token files, and deploy to GitHub Pages.
+      Ready to create your project. This commits your configuration and triggers a deploy.
     </p>
 
     <div style="padding:16px;border-radius:8px;background:var(--demo-cm-bg);border:1px solid var(--demo-border);margin-bottom:20px;font-size:12px;line-height:1.8;">
       <strong>Project:</strong> <span id="summaryName">—</span><br>
-      <strong>Repo:</strong> <span id="summaryRepo">—</span><br>
-      <strong>URL:</strong> <span id="summaryUrl" style="font-family:monospace">—</span>
+      <strong>Slug:</strong> <code id="summarySlug">—</code><br>
+      <strong>Committing as:</strong> <span id="summaryUser">—</span>
     </div>
 
-    <button class="btn btn-launch" id="launchBtn">🚀 Launch My Project</button>
+    <button class="btn btn-launch" id="launchBtn">🚀 Create My Project</button>
 
     <div class="launch-progress" id="launchProgress">
-      <div class="progress-step" id="ps-repo"><span class="progress-icon">○</span> Creating repository</div>
-      <div class="progress-step" id="ps-files"><span class="progress-icon">○</span> Pushing token files</div>
-      <div class="progress-step" id="ps-pages"><span class="progress-icon">○</span> Enabling GitHub Pages</div>
-      <div class="progress-step" id="ps-deploy"><span class="progress-icon">○</span> Waiting for first deploy</div>
+      <div class="progress-step" id="ps-commit"><span class="progress-icon">○</span> Committing project config</div>
+      <div class="progress-step" id="ps-deploy"><span class="progress-icon">○</span> Triggering deploy</div>
+      <div class="progress-step" id="ps-live"><span class="progress-icon">○</span> Waiting for deployment</div>
     </div>
 
     <div class="error-box" id="errorBox"></div>
 
     <div class="success-panel" id="successPanel">
-      <h3>🎉 Your project is live!</h3>
-      <p>Your design tokens are deployed and ready to connect from Figma.</p>
+      <h3>🎉 Project created!</h3>
+      <p>Your project is being deployed. It will be available at:</p>
       <a class="success-url" id="successUrl" href="#" target="_blank">—</a>
       <div class="success-figma">
-        <strong>Connect from Figma:</strong><br>
-        1. Open the <strong>Design Token Forge</strong> plugin<br>
-        2. Expand <strong>Server URL</strong> at the bottom<br>
-        3. Paste: <code id="successFigmaUrl">—</code><br>
-        4. Click <strong>Save</strong> → then <strong>Create Variables</strong>
+        <strong>Next steps:</strong><br>
+        1. Open the <strong>Design Token Forge</strong> Figma plugin<br>
+        2. Set Server URL to: <code id="successFigmaUrl">—</code><br>
+        3. Select your project "<span id="successProjName">—</span>" from the dropdown<br>
+        4. Click <strong>Create Variables</strong>
       </div>
     </div>
   </div>
@@ -293,12 +301,20 @@
 </div>
 
 <script src="nav.js"></script>
-<script src="shared.js?v=20260416"></script>
+<script src="shared.js?v=20260507"></script>
 <script>
 (function() {
+  /* ── Config ─────────────────────────────────────── */
+  const GH_REPO_NAME = 'Design-Token-Forge';
+  const GH_API = 'https://api.github.com';
+
   /* ── State ──────────────────────────────────────── */
   let currentStep = 1;
   const totalSteps = 3;
+  let ghPat = '';
+  let ghOwner = '';
+  let ghUsername = '';
+  let repoVerified = false;
 
   const defaultColors = {
     monochromatic: '#286CE5',
@@ -328,9 +344,9 @@
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
   const projName = document.getElementById('projName');
-  const ghUser = document.getElementById('ghUser');
-  const ghRepo = document.getElementById('ghRepo');
-  const ghToken = document.getElementById('ghToken');
+  const ghTokenInput = document.getElementById('ghToken');
+  const ghConnectBtn = document.getElementById('ghConnectBtn');
+  const ghStatusEl = document.getElementById('ghStatus');
   const launchBtn = document.getElementById('launchBtn');
   const errorBox = document.getElementById('errorBox');
 
@@ -358,9 +374,11 @@
       if (!projName.value.trim()) { projName.focus(); return false; }
     }
     if (step === 2) {
-      if (!ghUser.value.trim()) { ghUser.focus(); return false; }
-      if (!ghRepo.value.trim()) { ghRepo.focus(); return false; }
-      if (!ghToken.value.trim()) { ghToken.focus(); return false; }
+      if (!repoVerified) {
+        ghStatusEl.textContent = 'Please connect your GitHub account first.';
+        ghStatusEl.className = 'gh-status err';
+        return false;
+      }
     }
     return true;
   }
@@ -377,11 +395,6 @@
     if (target < currentStep) goToStep(target);
     else if (target === currentStep + 1 && validate(currentStep)) goToStep(target);
   }));
-
-  /* ── Auto-generate repo name from project name ──── */
-  projName.addEventListener('input', () => {
-    ghRepo.value = projName.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-tokens';
-  });
 
   /* ── Color grid ─────────────────────────────────── */
   const colorGrid = document.getElementById('colorGrid');
@@ -414,90 +427,191 @@
   }
   buildColorGrid();
 
-  /* ── Summary ────────────────────────────────────── */
-  function populateSummary() {
-    const user = ghUser.value.trim();
-    const repo = ghRepo.value.trim();
-    document.getElementById('summaryName').textContent = projName.value.trim();
-    document.getElementById('summaryRepo').textContent = `github.com/${user}/${repo}`;
-    document.getElementById('summaryUrl').textContent = `https://${user}.github.io/${repo}/`;
+  /* ── GitHub Connect ─────────────────────────────── */
+  ghConnectBtn.addEventListener('click', connectGitHub);
+
+  async function connectGitHub() {
+    const token = ghTokenInput.value.trim();
+    if (!token) { ghTokenInput.focus(); return; }
+
+    ghConnectBtn.disabled = true;
+    ghConnectBtn.textContent = 'Connecting…';
+    ghStatusEl.className = 'gh-status';
+    ghStatusEl.style.display = 'none';
+
+    try {
+      // 1. Verify token & get username
+      const userResp = await fetch(GH_API + '/user', {
+        headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+      });
+      if (!userResp.ok) {
+        if (userResp.status === 401) throw new Error('Invalid token. Make sure you checked the "repo" scope when creating it.');
+        throw new Error('Authentication failed (HTTP ' + userResp.status + ')');
+      }
+      const user = await userResp.json();
+      ghUsername = user.login;
+
+      // 2. Check access to Design-Token-Forge repo
+      const repoResp = await fetch(GH_API + '/repos/' + user.login + '/' + GH_REPO_NAME, {
+        headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+      });
+
+      if (repoResp.ok) {
+        const repo = await repoResp.json();
+        if (repo.permissions && repo.permissions.push) {
+          ghOwner = user.login;
+          ghPat = token;
+          repoVerified = true;
+          ghStatusEl.textContent = '✓ Connected as ' + user.login + ' — write access to ' + user.login + '/' + GH_REPO_NAME;
+          ghStatusEl.className = 'gh-status ok';
+        } else {
+          throw new Error('You have read access but not write access. Ask your team lead to add you as a collaborator.');
+        }
+      } else {
+        // Try the upstream repo (maybe it's under a different owner)
+        // Search for any fork of Design-Token-Forge they have push to
+        throw new Error('Repository "' + user.login + '/' + GH_REPO_NAME + '" not found. You need your own fork or write access. Ask your team lead to add you as a collaborator on the main repo.');
+      }
+    } catch(err) {
+      ghStatusEl.textContent = '✗ ' + err.message;
+      ghStatusEl.className = 'gh-status err';
+      repoVerified = false;
+    } finally {
+      ghConnectBtn.disabled = false;
+      ghConnectBtn.textContent = 'Connect';
+    }
   }
 
-  /* ── Launch ─────────────────────────────────────── */
+  /* ── Summary ────────────────────────────────────── */
+  function getSlug() {
+    return projName.value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').substring(0, 40);
+  }
+
+  function populateSummary() {
+    document.getElementById('summaryName').textContent = projName.value.trim();
+    document.getElementById('summarySlug').textContent = getSlug();
+    document.getElementById('summaryUser').textContent = ghUsername;
+  }
+
+  /* ── Launch (Create Project) ────────────────────── */
   launchBtn.addEventListener('click', launch);
 
   async function launch() {
     launchBtn.disabled = true;
-    launchBtn.textContent = 'Launching…';
+    launchBtn.textContent = 'Creating…';
     errorBox.classList.remove('visible');
     document.getElementById('launchProgress').classList.add('visible');
     document.getElementById('successPanel').classList.remove('visible');
 
-    const user = ghUser.value.trim();
-    const repo = ghRepo.value.trim();
-    const token = ghToken.value.trim();
     const name = projName.value.trim();
-    const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-
+    const slug = getSlug();
     const headers = {
-      'Authorization': 'token ' + token,
+      'Authorization': 'Bearer ' + ghPat,
       'Accept': 'application/vnd.github+json',
       'Content-Type': 'application/json',
       'X-GitHub-Api-Version': '2022-11-28'
     };
 
     try {
-      /* Step 1: Create repo (skip if already exists from a previous attempt) */
-      setProgress('ps-repo', 'active');
-      const createResp = await fetch('https://api.github.com/user/repos', {
-        method: 'POST', headers,
-        body: JSON.stringify({
-          name: repo,
-          description: `Design Token Forge — ${name}`,
-          auto_init: false,
-          private: false
-        })
-      });
-      if (!createResp.ok) {
-        const err = await createResp.json();
-        // 422 with "already exists" means previous attempt created it — continue
-        const isAlreadyExists = createResp.status === 422 && JSON.stringify(err).includes('already exists');
-        if (!isAlreadyExists) {
-          const hint = createResp.status === 401 ? ' — check that your token has the "repo" scope checked.' : '';
-          throw new Error((err.message || 'Repository creation failed.') + hint);
+      /* Step 1: Commit project config */
+      setProgress('ps-commit', 'active');
+
+      const config = {
+        id: slug,
+        name: name,
+        description: 'Design tokens for ' + name,
+        created: new Date().toISOString().split('T')[0],
+        paletteKeys: { ...colors },
+        semanticMap: {
+          light: {
+            'content-default':'550','content-strong':'600','content-subtle':'350','content-faint':'200',
+            'component-bg-default':'500','component-bg-hover':'550','component-bg-pressed':'600',
+            'component-outline-default':'300','component-outline-hover':'350','component-outline-pressed':'450',
+            'component-separator':'100',
+            'container-bg':'50','container-hover':'75','container-pressed':'100',
+            'container-outline':'200','container-separator':'100',
+            'on-component':'fixed-white','on-container':'600'
+          },
+          dark: {
+            'content-default':'150','content-strong':'100','content-subtle':'200','content-faint':'350',
+            'component-bg-default':'450','component-bg-hover':'350','component-bg-pressed':'300',
+            'component-outline-default':'450','component-outline-hover':'350','component-outline-pressed':'300',
+            'component-separator':'750',
+            'container-bg':'800','container-hover':'750','container-pressed':'700',
+            'container-outline':'550','container-separator':'750',
+            'on-component':'fixed-white','on-container':'100'
+          }
+        },
+        surfacePaletteSrc: {
+          bright:'greyscale',base:'greyscale',dim:'greyscale',deep:'greyscale',
+          accent:'monochromatic',container:'greyscale','over-container':'greyscale',
+          float:'greyscale',inverse:'greyscale'
         }
+      };
+
+      const filePath = 'projects/' + slug + '/config.json';
+      const fileContent = JSON.stringify(config, null, 2) + '\n';
+      const encodedContent = btoa(unescape(encodeURIComponent(fileContent)));
+
+      // Check if file already exists (retry case)
+      let existingSha = null;
+      try {
+        const checkResp = await fetch(`${GH_API}/repos/${ghOwner}/${GH_REPO_NAME}/contents/${filePath}?ref=main`, { headers });
+        if (checkResp.ok) {
+          const existing = await checkResp.json();
+          existingSha = existing.sha;
+        }
+      } catch(e) { /* doesn't exist, that's fine */ }
+
+      // Create or update the file
+      const commitBody = {
+        message: (existingSha ? 'Update' : 'Create') + ' project: ' + name,
+        content: encodedContent,
+        branch: 'main'
+      };
+      if (existingSha) commitBody.sha = existingSha;
+
+      const commitResp = await fetch(`${GH_API}/repos/${ghOwner}/${GH_REPO_NAME}/contents/${filePath}`, {
+        method: 'PUT', headers,
+        body: JSON.stringify(commitBody)
+      });
+
+      if (!commitResp.ok) {
+        const err = await commitResp.json();
+        throw new Error(err.message || 'Failed to commit config file');
       }
-      setProgress('ps-repo', 'done');
+      setProgress('ps-commit', 'done');
 
-      /* Step 2: Push files */
-      setProgress('ps-files', 'active');
-      const files = buildProjectFiles(id, name, colors);
-      await pushFiles(user, repo, token, headers, files);
-      setProgress('ps-files', 'done');
-
-      /* Step 3: Enable GitHub Pages */
-      setProgress('ps-pages', 'active');
-      await enablePages(user, repo, headers);
-      setProgress('ps-pages', 'done');
-
-      /* Step 4: Wait for deploy */
+      /* Step 2: Trigger deploy workflow */
       setProgress('ps-deploy', 'active');
-      const pagesUrl = `https://${user}.github.io/${repo}`;
-      await waitForDeploy(user, repo, headers, pagesUrl);
+      // The push to main should auto-trigger the deploy workflow.
+      // Also try dispatching it manually in case paths filter excludes this.
+      try {
+        await fetch(`${GH_API}/repos/${ghOwner}/${GH_REPO_NAME}/actions/workflows/deploy-tokens.yml/dispatches`, {
+          method: 'POST', headers,
+          body: JSON.stringify({ ref: 'main' })
+        });
+      } catch(e) { /* non-critical, push trigger should handle it */ }
       setProgress('ps-deploy', 'done');
 
+      /* Step 3: Wait for deployment */
+      setProgress('ps-live', 'active');
+      await sleep(8000); // Give GitHub Pages time to deploy
+      setProgress('ps-live', 'done');
+
       /* Show success */
+      const baseUrl = `https://${ghOwner}.github.io/${GH_REPO_NAME}`;
       document.getElementById('successPanel').classList.add('visible');
-      const fullUrl = pagesUrl + '/';
-      document.getElementById('successUrl').href = fullUrl;
-      document.getElementById('successUrl').textContent = fullUrl;
-      document.getElementById('successFigmaUrl').textContent = pagesUrl;
+      document.getElementById('successUrl').href = baseUrl;
+      document.getElementById('successUrl').textContent = baseUrl;
+      document.getElementById('successFigmaUrl').textContent = baseUrl;
+      document.getElementById('successProjName').textContent = name;
 
     } catch (err) {
       errorBox.textContent = '❌ ' + err.message;
       errorBox.classList.add('visible');
       launchBtn.disabled = false;
-      launchBtn.textContent = '🚀 Retry Launch';
+      launchBtn.textContent = '🚀 Retry';
     }
   }
 
@@ -508,163 +622,6 @@
     if (state === 'active') icon.textContent = '⏳';
     else if (state === 'done') icon.textContent = '✓';
     else if (state === 'error') icon.textContent = '✗';
-  }
-
-  /* ── Build project files ────────────────────────── */
-  function buildProjectFiles(id, name, colors) {
-    const config = {
-      id, name, description: `Custom design tokens for ${name}`,
-      paletteKeys: { ...colors },
-      semanticMap: {
-        light: {
-          'content-default':'550','content-strong':'600','content-subtle':'350','content-faint':'200',
-          'component-bg-default':'500','component-bg-hover':'550','component-bg-pressed':'600',
-          'component-outline-default':'300','component-outline-hover':'350','component-outline-pressed':'450',
-          'component-separator':'100',
-          'container-bg':'50','container-hover':'75','container-pressed':'100',
-          'container-outline':'200','container-separator':'100',
-          'on-component':'fixed-white','on-container':'600'
-        },
-        dark: {
-          'content-default':'150','content-strong':'100','content-subtle':'200','content-faint':'350',
-          'component-bg-default':'450','component-bg-hover':'350','component-bg-pressed':'300',
-          'component-outline-default':'450','component-outline-hover':'350','component-outline-pressed':'300',
-          'component-separator':'750',
-          'container-bg':'800','container-hover':'750','container-pressed':'700',
-          'container-outline':'550','container-separator':'750',
-          'on-component':'fixed-white','on-container':'100'
-        }
-      },
-      surfacePaletteSrc: {
-        bright:'greyscale',base:'greyscale',dim:'greyscale',deep:'greyscale',
-        accent:'monochromatic',container:'greyscale','over-container':'greyscale',
-        float:'greyscale',inverse:'greyscale'
-      }
-    };
-
-    return {
-      'config.json': JSON.stringify(config, null, 2),
-      'package.json': JSON.stringify({
-        name: id, version: '1.0.0', private: true,
-        description: `Design Token Forge — ${name}`,
-        type: 'module',
-        scripts: { build: 'node build.js' },
-        engines: { node: '>=18' }
-      }, null, 2),
-      'README.md': `# ${name} — Design Tokens\n\nAuto-generated by Design Token Forge.\nEdit \`config.json\` to update colors, then push to \`main\`. GitHub Actions deploys automatically.\n\n**Figma plugin URL:** \`https://${ghUser.value.trim()}.github.io/${ghRepo.value.trim()}\`\n`,
-      '.gitignore': 'node_modules/\ndist/\n.DS_Store\n'
-    };
-  }
-
-  /* ── Push files via GitHub Trees API ────────────── */
-  async function pushFiles(user, repo, token, headers, files) {
-    // We need build.js and workflow from our server
-    let buildJs = '';
-    let workflowYml = '';
-    try {
-      const [bjResp, wfResp] = await Promise.all([
-        fetch('_onboard-build-template.js'),
-        fetch('_onboard-workflow-template.yml')
-      ]);
-      if (bjResp.ok) buildJs = await bjResp.text();
-      if (wfResp.ok) workflowYml = await wfResp.text();
-    } catch(e) { /* will use fallback below */ }
-
-    if (buildJs) files['build.js'] = buildJs;
-    if (workflowYml) files['.github/workflows/deploy-tokens.yml'] = workflowYml;
-
-    // Create blobs for each file
-    const tree = [];
-    for (const [filePath, content] of Object.entries(files)) {
-      const blobResp = await fetch(`https://api.github.com/repos/${user}/${repo}/git/blobs`, {
-        method: 'POST', headers,
-        body: JSON.stringify({ content: content, encoding: 'utf-8' })
-      });
-      if (!blobResp.ok) throw new Error('Failed to create blob for ' + filePath);
-      const blob = await blobResp.json();
-      tree.push({ path: filePath, mode: '100644', type: 'blob', sha: blob.sha });
-    }
-
-    // Create tree
-    const treeResp = await fetch(`https://api.github.com/repos/${user}/${repo}/git/trees`, {
-      method: 'POST', headers,
-      body: JSON.stringify({ tree })
-    });
-    if (!treeResp.ok) throw new Error('Failed to create git tree');
-    const treeData = await treeResp.json();
-
-    // Create commit
-    const commitResp = await fetch(`https://api.github.com/repos/${user}/${repo}/git/commits`, {
-      method: 'POST', headers,
-      body: JSON.stringify({
-        message: 'Initial token setup via Design Token Forge',
-        tree: treeData.sha
-      })
-    });
-    if (!commitResp.ok) throw new Error('Failed to create commit');
-    const commitData = await commitResp.json();
-
-    // Create or update main branch ref
-    const refResp = await fetch(`https://api.github.com/repos/${user}/${repo}/git/refs`, {
-      method: 'POST', headers,
-      body: JSON.stringify({ ref: 'refs/heads/main', sha: commitData.sha })
-    });
-    if (!refResp.ok) {
-      // If ref already exists (retry scenario), force-update it
-      const updateResp = await fetch(`https://api.github.com/repos/${user}/${repo}/git/refs/heads/main`, {
-        method: 'PATCH', headers,
-        body: JSON.stringify({ sha: commitData.sha, force: true })
-      });
-      if (!updateResp.ok) throw new Error('Failed to create/update branch');
-    }
-
-    // Set default branch to main
-    await fetch(`https://api.github.com/repos/${user}/${repo}`, {
-      method: 'PATCH', headers,
-      body: JSON.stringify({ default_branch: 'main' })
-    });
-  }
-
-  /* ── Enable GitHub Pages via Actions ────────────── */
-  async function enablePages(user, repo, headers) {
-    // Enable Pages with GitHub Actions as source
-    const resp = await fetch(`https://api.github.com/repos/${user}/${repo}/pages`, {
-      method: 'POST', headers,
-      body: JSON.stringify({ build_type: 'workflow' })
-    });
-    // 409 means already enabled — that's fine
-    if (!resp.ok && resp.status !== 409) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err.message || 'Failed to enable GitHub Pages');
-    }
-  }
-
-  /* ── Wait for deploy to complete ────────────────── */
-  async function waitForDeploy(user, repo, headers, pagesUrl) {
-    // Poll the Actions workflow runs until one completes (max 90s)
-    const deadline = Date.now() + 90000;
-    await sleep(5000); // Give Actions time to start
-
-    while (Date.now() < deadline) {
-      try {
-        const resp = await fetch(`https://api.github.com/repos/${user}/${repo}/actions/runs?per_page=1`, { headers });
-        if (resp.ok) {
-          const data = await resp.json();
-          if (data.workflow_runs && data.workflow_runs.length > 0) {
-            const run = data.workflow_runs[0];
-            if (run.status === 'completed') {
-              if (run.conclusion === 'success') return;
-              throw new Error('Deploy workflow failed. Check Actions tab on your repo.');
-            }
-          }
-        }
-      } catch(e) {
-        if (e.message.includes('Deploy workflow failed')) throw e;
-      }
-      await sleep(5000);
-    }
-    // Timeout — but might still be deploying
-    return; // Don't throw, they can check manually
   }
 
   function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
