@@ -17,19 +17,26 @@ window.DTF = window.DTF || { onThemeChange: null };
   var nav = document.querySelector('.nav-actions');
   if (!nav) return;
 
-  /* Determine base URL: ../status.json for demo pages, ./status.json for root */
   var depth = (location.pathname.indexOf('/demo/') !== -1) ? '..' : '.';
-  var statusUrl = depth + '/status.json?_cb=' + Date.now();
-  var projectsUrl = depth + '/projects.json?_cb=' + Date.now();
 
-  /* Build DOM */
+  /* ── Build DOM — custom dropdown ── */
   var wrap = document.createElement('div');
   wrap.className = 'nav-project';
   var label = document.createElement('span');
   label.className = 'nav-project-label';
   label.textContent = 'Project';
-  var sel = document.createElement('select');
-  sel.innerHTML = '<option>…</option>';
+
+  var ddWrap = document.createElement('div');
+  ddWrap.className = 'nav-proj-wrap';
+  var ddBtn = document.createElement('button');
+  ddBtn.className = 'nav-proj-btn';
+  ddBtn.type = 'button';
+  ddBtn.textContent = '…';
+  var ddPanel = document.createElement('div');
+  ddPanel.className = 'nav-proj-panel';
+  ddWrap.appendChild(ddBtn);
+  ddWrap.appendChild(ddPanel);
+
   var newBtn = document.createElement('button');
   newBtn.className = 'nav-project-new';
   newBtn.type = 'button';
@@ -38,64 +45,105 @@ window.DTF = window.DTF || { onThemeChange: null };
     window.location.href = 'color-system.html?new-project=1';
   });
   wrap.appendChild(label);
-  wrap.appendChild(sel);
+  wrap.appendChild(ddWrap);
   wrap.appendChild(newBtn);
 
-  /* Insert before theme toggle */
   var toggle = document.getElementById('themeToggle');
   if (toggle) nav.insertBefore(wrap, toggle);
   else nav.appendChild(wrap);
 
-  /* Load current project from localStorage (synced by Color System editor) */
+  /* ── State ── */
   var currentId = localStorage.getItem('dtf-active-project') || '';
+  var panelOpen = false;
+  var cachedList = []; /* last-known project list for switching */
 
-  var isOnboardPage = (location.pathname.indexOf('onboard.html') !== -1);
-
-  function populateSelect(list, isRemote) {
-    if (!list || !list.length) {
-      if (isRemote && !isOnboardPage) { window.location.href = 'onboard.html'; return; }
-      sel.innerHTML = '<option>(none)</option>'; return;
-    }
-    /* Filter out deleted projects (color-system.html marks them) */
-    var deletedRaw = localStorage.getItem('dtf-deleted-projects');
-    var deleted = [];
-    try { deleted = JSON.parse(deletedRaw) || []; } catch(e) {}
-    var filtered = list.filter(function(p) { return deleted.indexOf(p.id) === -1; });
-    /* Filter by owner: only show projects belonging to the logged-in user */
-    var ghUser = (localStorage.getItem('dtf-gh-user') || '').toLowerCase();
-    var upstreamOwner = 'sridhar-ravi-2917';
-    if (ghUser && ghUser !== upstreamOwner.toLowerCase()) {
-      filtered = filtered.filter(function(p) { return p.owner && p.owner.toLowerCase() === ghUser; });
-    }
-    if (!filtered.length) {
-      if (isRemote && !isOnboardPage) { window.location.href = 'onboard.html'; return; }
-      sel.innerHTML = '<option>(none)</option>'; return;
-    }
-    sel.innerHTML = '';
-    for (var i = 0; i < filtered.length; i++) {
-      var opt = document.createElement('option');
-      opt.value = filtered[i].id;
-      opt.textContent = filtered[i].name || filtered[i].id;
-      if (filtered[i].id === currentId) opt.selected = true;
-      sel.appendChild(opt);
-    }
-  }
-
-  /* Primary source: localStorage knownProjects (set by color-system.html) */
-  var knownRaw = localStorage.getItem('dtf-known-projects');
-  var knownList = null;
-  try { knownList = JSON.parse(knownRaw); } catch(e) {}
-  if (knownList && knownList.length) {
-    populateSelect(knownList, false);
-  }
-
-  /* Also try fetching live project list from GitHub API (bypasses CDN cache) */
+  /* GitHub API setup */
   var ghApiBase = 'https://api.github.com/repos/sridhar-ravi-2917/Design-Token-Forge';
   var ghToken = localStorage.getItem('dtf-gh-pat') || '';
   var ghHdrs = ghToken
     ? { 'Authorization': 'Bearer ' + ghToken, 'Accept': 'application/vnd.github+json' }
     : { 'Accept': 'application/vnd.github+json' };
+  var upstreamOwner = 'sridhar-ravi-2917';
 
+  /* Set button text to active project name */
+  function syncBtnLabel() {
+    var active = cachedList.find(function(p){ return p.id === currentId; });
+    ddBtn.textContent = active ? (active.name || active.id) : (currentId || '…');
+  }
+
+  /* ── Visibility filter (owner + deleted) ── */
+  function getVisibleProjects(list) {
+    var deletedRaw = localStorage.getItem('dtf-deleted-projects');
+    var deleted = [];
+    try { deleted = JSON.parse(deletedRaw) || []; } catch(e) {}
+    var filtered = list.filter(function(p) { return deleted.indexOf(p.id) === -1; });
+    var ghUser = (localStorage.getItem('dtf-gh-user') || '').toLowerCase();
+    if (ghUser && ghUser !== upstreamOwner.toLowerCase()) {
+      filtered = filtered.filter(function(p) { return p.owner && p.owner.toLowerCase() === ghUser; });
+    }
+    return filtered;
+  }
+
+  /* ── Render items into panel ── */
+  function renderPanel(list) {
+    ddPanel.innerHTML = '';
+    if (!list.length) {
+      var empty = document.createElement('div');
+      empty.className = 'nav-proj-loading';
+      empty.textContent = 'No projects';
+      ddPanel.appendChild(empty);
+      return;
+    }
+    list.forEach(function(proj) {
+      var row = document.createElement('button');
+      row.className = 'nav-proj-item';
+      row.type = 'button';
+      if (proj.id === currentId) row.setAttribute('data-active', '');
+
+      var nameEl = document.createElement('span');
+      nameEl.className = 'nav-proj-item-name';
+      nameEl.textContent = proj.name || proj.id;
+      row.appendChild(nameEl);
+
+      /* Action buttons (rename + delete) */
+      var actions = document.createElement('span');
+      actions.className = 'nav-proj-item-actions';
+
+      var renBtn = document.createElement('button');
+      renBtn.className = 'nav-proj-item-act';
+      renBtn.type = 'button';
+      renBtn.title = 'Rename';
+      renBtn.innerHTML = '&#9998;'; /* ✎ pencil */
+      renBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        doRename(proj);
+      });
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'nav-proj-item-act del';
+      delBtn.type = 'button';
+      delBtn.title = 'Delete';
+      delBtn.innerHTML = '&#128465;'; /* 🗑 */
+      delBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        doDelete(proj);
+      });
+
+      actions.appendChild(renBtn);
+      actions.appendChild(delBtn);
+      row.appendChild(actions);
+
+      /* Click row → switch project */
+      row.addEventListener('click', function() {
+        selectProject(proj.id);
+        closePanel();
+      });
+
+      ddPanel.appendChild(row);
+    });
+  }
+
+  /* ── Fetch live projects from GitHub API ── */
   function fetchLiveProjects(cb) {
     fetch(ghApiBase + '/contents/projects?ref=main&_cb=' + Date.now(), { headers: ghHdrs })
       .then(function(r){ return r.ok ? r.json() : null; })
@@ -123,77 +171,213 @@ window.DTF = window.DTF || { onThemeChange: null };
       }).catch(function(){ cb(null); });
   }
 
-  fetchLiveProjects(function(list) {
-    if (list && list.length) {
-      /* Clean up dtf-deleted-projects: if remote no longer has an ID, it's truly gone */
-      var remoteIds = list.map(function(p){ return p.id; });
-      try {
-        var delList = JSON.parse(localStorage.getItem('dtf-deleted-projects') || '[]');
-        var cleaned = delList.filter(function(id){ return remoteIds.indexOf(id) !== -1; });
-        if (cleaned.length !== delList.length) localStorage.setItem('dtf-deleted-projects', JSON.stringify(cleaned));
-      } catch(e) {}
-      /* Merge with localStorage to preserve just-created projects not yet in remote */
-      var localKnown = [];
-      try { localKnown = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]'); } catch(e) {}
-      var activeId = localStorage.getItem('dtf-active-project') || '';
-      var activeLocal = localKnown.find(function(p){ return p.id === activeId; });
-      if (activeLocal && !list.some(function(p){ return p.id === activeId; })) {
-        list.push(activeLocal); // preserve just-created project
-      }
-      populateSelect(list, true);
-      localStorage.setItem('dtf-known-projects', JSON.stringify(list));
-      /* If active project was deleted, reset to first available */
-      if (activeId && !remoteIds.some(function(id){ return id === activeId; }) && !activeLocal) {
-        localStorage.setItem('dtf-active-project', list[0].id);
-        sel.value = list[0].id;
-      }
-    } else if (list !== null && list.length === 0) {
-      /* Remote confirmed empty — check if there's a just-created local project */
-      var localList = [];
-      try { localList = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]'); } catch(e) {}
-      if (localList.length > 0) {
-        populateSelect(localList, false);
-      } else if (!isOnboardPage) {
-        window.location.href = 'onboard.html'; return;
-      }
-    }
-    /* If API failed (list === null), keep localStorage-based dropdown as-is */
-  });
-
-  /* When user switches project, update active and reload tokens */
-  /* Re-fetch latest projects from GitHub API when dropdown is clicked */
-  sel.addEventListener('mousedown', function() {
+  /* ── Open / close panel ── */
+  function openPanel() {
+    panelOpen = true;
+    ddPanel.setAttribute('data-open', '');
+    /* Show loading state immediately */
+    ddPanel.innerHTML = '';
+    var loader = document.createElement('div');
+    loader.className = 'nav-proj-loading';
+    loader.textContent = 'Loading…';
+    ddPanel.appendChild(loader);
+    /* Fetch fresh list */
     fetchLiveProjects(function(list) {
+      if (!panelOpen) return; /* closed before fetch completed */
       if (list && list.length) {
-        populateSelect(list, true);
+        /* Clean deleted */
+        var remoteIds = list.map(function(p){ return p.id; });
+        try {
+          var delList = JSON.parse(localStorage.getItem('dtf-deleted-projects') || '[]');
+          var cleaned = delList.filter(function(id){ return remoteIds.indexOf(id) !== -1; });
+          if (cleaned.length !== delList.length) localStorage.setItem('dtf-deleted-projects', JSON.stringify(cleaned));
+        } catch(e) {}
+        /* Merge just-created local projects */
+        var localKnown = [];
+        try { localKnown = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]'); } catch(e) {}
+        var activeLocal = localKnown.find(function(p){ return p.id === currentId; });
+        if (activeLocal && !list.some(function(p){ return p.id === currentId; })) {
+          list.push(activeLocal);
+        }
         localStorage.setItem('dtf-known-projects', JSON.stringify(list));
+        cachedList = list;
+        var visible = getVisibleProjects(list);
+        renderPanel(visible);
+        syncBtnLabel();
+      } else if (list !== null && list.length === 0) {
+        var localList = [];
+        try { localList = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]'); } catch(e) {}
+        if (localList.length > 0) {
+          cachedList = localList;
+          renderPanel(getVisibleProjects(localList));
+        } else {
+          window.location.href = 'onboard.html';
+        }
+      } else {
+        /* API failed — show cached */
+        renderPanel(getVisibleProjects(cachedList));
       }
     });
+  }
+
+  function closePanel() {
+    panelOpen = false;
+    ddPanel.removeAttribute('data-open');
+  }
+
+  /* Toggle on button click */
+  ddBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (panelOpen) closePanel();
+    else openPanel();
   });
 
-  sel.addEventListener('change', function() {
-    var newId = sel.value;
-    if (!newId) return;
-    localStorage.setItem('dtf-active-project', newId);
+  /* Close on outside click */
+  document.addEventListener('click', function(e) {
+    if (panelOpen && !ddWrap.contains(e.target)) closePanel();
+  });
 
-    /* ── On deployed per-project sites, navigate to the other project's URL ── */
+  /* Close on Escape */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && panelOpen) closePanel();
+  });
+
+  /* ── Select a project ── */
+  function selectProject(newId) {
+    if (!newId || newId === currentId) return;
+    currentId = newId;
+    localStorage.setItem('dtf-active-project', newId);
+    syncBtnLabel();
+
+    /* On deployed per-project sites, navigate to the other project's URL */
     var loc = location.pathname;
-    /* Check if current URL contains a project slug right before /demo/ */
-    var knownIds = (knownList || []).map(function(p) { return p.id; });
+    var knownIds = cachedList.map(function(p) { return p.id; });
     var segments = loc.split('/');
     var demoIdx = segments.lastIndexOf('demo');
     if (demoIdx > 0) {
       var curSlug = segments[demoIdx - 1];
-      /* Only redirect if curSlug is a known project ID (not repo name, not 'dist') */
       if (curSlug && curSlug !== newId && knownIds.indexOf(curSlug) !== -1) {
         segments[demoIdx - 1] = newId;
         location.href = segments.join('/');
         return;
       }
     }
-
-    /* ── Local / non-per-project-deployed: swap CSS in place ── */
     _applyProjectTokens(newId);
+  }
+
+  /* ── Rename project (API call) ── */
+  function doRename(proj) {
+    var newName = prompt('Rename project:', proj.name || proj.id);
+    if (!newName || newName === proj.name) return;
+    if (!ghToken) { alert('Connect GitHub (PAT) in Color System to rename projects.'); return; }
+    /* Fetch current config.json to get its SHA */
+    var cfgPath = 'projects/' + proj.id + '/config.json';
+    fetch(ghApiBase + '/contents/' + cfgPath + '?ref=main', { headers: ghHdrs })
+      .then(function(r){ return r.ok ? r.json() : Promise.reject(r); })
+      .then(function(file){
+        var cfg = JSON.parse(atob(file.content.replace(/\n/g, '')));
+        cfg.name = newName;
+        var body = JSON.stringify({
+          message: 'Rename project ' + proj.id + ' to ' + newName,
+          content: btoa(JSON.stringify(cfg, null, 2)),
+          sha: file.sha,
+          branch: 'main'
+        });
+        return fetch(ghApiBase + '/contents/' + cfgPath, {
+          method: 'PUT', headers: ghHdrs, body: body
+        });
+      })
+      .then(function(r){
+        if (!r.ok) return Promise.reject(r);
+        proj.name = newName;
+        /* Update localStorage */
+        cachedList.forEach(function(p){ if(p.id === proj.id) p.name = newName; });
+        localStorage.setItem('dtf-known-projects', JSON.stringify(cachedList));
+        syncBtnLabel();
+        renderPanel(getVisibleProjects(cachedList));
+      })
+      .catch(function(err){ alert('Rename failed. Check permissions.'); console.error(err); });
+  }
+
+  /* ── Delete project (API call) ── */
+  function doDelete(proj) {
+    if (!confirm('Delete project "' + (proj.name || proj.id) + '"? This cannot be undone.')) return;
+    if (!ghToken) { alert('Connect GitHub (PAT) in Color System to delete projects.'); return; }
+    /* Recursively delete all files in the project folder */
+    var dirPath = 'projects/' + proj.id;
+    fetch(ghApiBase + '/contents/' + dirPath + '?ref=main', { headers: ghHdrs })
+      .then(function(r){ return r.ok ? r.json() : Promise.reject(r); })
+      .then(function(items){
+        if (!Array.isArray(items)) items = [items];
+        var delPromises = items.filter(function(f){ return f.type === 'file'; }).map(function(f){
+          return fetch(ghApiBase + '/contents/' + f.path, {
+            method: 'DELETE',
+            headers: ghHdrs,
+            body: JSON.stringify({ message: 'Delete ' + f.path, sha: f.sha, branch: 'main' })
+          });
+        });
+        return Promise.all(delPromises);
+      })
+      .then(function(){
+        /* Mark deleted locally */
+        var delList = [];
+        try { delList = JSON.parse(localStorage.getItem('dtf-deleted-projects') || '[]'); } catch(e) {}
+        if (delList.indexOf(proj.id) === -1) delList.push(proj.id);
+        localStorage.setItem('dtf-deleted-projects', JSON.stringify(delList));
+        /* Remove from cached list */
+        cachedList = cachedList.filter(function(p){ return p.id !== proj.id; });
+        localStorage.setItem('dtf-known-projects', JSON.stringify(cachedList));
+        /* If we deleted the active project, switch to first visible */
+        if (currentId === proj.id) {
+          var visible = getVisibleProjects(cachedList);
+          if (visible.length) {
+            selectProject(visible[0].id);
+          } else {
+            localStorage.removeItem('dtf-active-project');
+            window.location.href = 'onboard.html';
+            return;
+          }
+        }
+        renderPanel(getVisibleProjects(cachedList));
+        syncBtnLabel();
+      })
+      .catch(function(err){ alert('Delete failed. Check permissions.'); console.error(err); });
+  }
+
+  /* ── Initial load: populate from localStorage cache, then set button label ── */
+  var knownRaw = localStorage.getItem('dtf-known-projects');
+  try { cachedList = JSON.parse(knownRaw) || []; } catch(e) {}
+  syncBtnLabel();
+
+  /* Also do a background fetch on page load to validate active project still exists */
+  fetchLiveProjects(function(list) {
+    if (list && list.length) {
+      var remoteIds = list.map(function(p){ return p.id; });
+      try {
+        var delList = JSON.parse(localStorage.getItem('dtf-deleted-projects') || '[]');
+        var cleaned = delList.filter(function(id){ return remoteIds.indexOf(id) !== -1; });
+        if (cleaned.length !== delList.length) localStorage.setItem('dtf-deleted-projects', JSON.stringify(cleaned));
+      } catch(e) {}
+      var localKnown = [];
+      try { localKnown = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]'); } catch(e) {}
+      var activeLocal = localKnown.find(function(p){ return p.id === currentId; });
+      if (activeLocal && !list.some(function(p){ return p.id === currentId; })) {
+        list.push(activeLocal);
+      }
+      cachedList = list;
+      localStorage.setItem('dtf-known-projects', JSON.stringify(list));
+      syncBtnLabel();
+      /* If active project was deleted remotely, reset */
+      if (currentId && !remoteIds.some(function(id){ return id === currentId; }) && !activeLocal) {
+        var visible = getVisibleProjects(list);
+        if (visible.length) selectProject(visible[0].id);
+        else { window.location.href = 'onboard.html'; }
+      }
+    } else if (list !== null && list.length === 0) {
+      var localList = [];
+      try { localList = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]'); } catch(e) {}
+      if (!localList.length) { window.location.href = 'onboard.html'; }
+    }
   });
 
   /* Helper: apply project tokens by swapping <style> and fetching config */
