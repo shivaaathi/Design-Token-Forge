@@ -150,9 +150,9 @@ body{min-height:100vh;display:flex;flex-direction:column}
 <div class="hub-links">
   <div class="hub-row-label">Get Started</div>
   <div class="hub-row">
-    <a class="hub-link" href="onboard.html" style="border-color:var(--primary-component-outline-default);background:var(--primary-container-bg,#f0f7ff)">
+    <a class="hub-link" id="hubOnboardLink" href="onboard.html" style="border-color:var(--primary-component-outline-default);background:var(--primary-container-bg,#f0f7ff)">
       <span class="hub-link-icon">&#128640;</span>
-      <span class="hub-link-text"><span class="hub-link-title">Start Your Own Project</span><span class="hub-link-hint">Configure &amp; deploy to your repo</span></span>
+      <span class="hub-link-text"><span class="hub-link-title" id="hubOnboardTitle">Start Your Own Project</span><span class="hub-link-hint">Configure &amp; deploy to your repo</span></span>
     </a>
   </div>
   <div class="hub-row-label">Admin</div>
@@ -433,6 +433,17 @@ body{min-height:100vh;display:flex;flex-direction:column}
 <script src="nav.js"></script>
 <script src="shared.js?v=20260416"></script>
 <script>
+/* ── Adjust onboard link text ──────────────────────── */
+(function(){
+  try {
+    var kp = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]');
+    if (kp.length > 0) {
+      var el = document.getElementById('hubOnboardTitle');
+      if (el) el.textContent = 'Create Project';
+    }
+  } catch(e) {}
+})();
+
 /* ── Search & Filter ────────────────────────────────── */
 (function(){
   const search = document.querySelector('.hub-search');

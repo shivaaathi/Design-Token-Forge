@@ -49,8 +49,13 @@ window.DTF = window.DTF || { onThemeChange: null };
   /* Load current project from localStorage (synced by Color System editor) */
   var currentId = localStorage.getItem('dtf-active-project') || '';
 
-  function populateSelect(list) {
-    if (!list || !list.length) { sel.innerHTML = '<option>(none)</option>'; return; }
+  var isOnboardPage = (location.pathname.indexOf('onboard.html') !== -1);
+
+  function populateSelect(list, isRemote) {
+    if (!list || !list.length) {
+      if (isRemote && !isOnboardPage) { window.location.href = 'onboard.html'; return; }
+      sel.innerHTML = '<option>(none)</option>'; return;
+    }
     /* Filter out deleted projects (color-system.html marks them) */
     var deletedRaw = localStorage.getItem('dtf-deleted-projects');
     var deleted = [];
@@ -62,7 +67,10 @@ window.DTF = window.DTF || { onThemeChange: null };
     if (ghUser && ghUser !== upstreamOwner.toLowerCase()) {
       filtered = filtered.filter(function(p) { return p.owner && p.owner.toLowerCase() === ghUser; });
     }
-    if (!filtered.length) { sel.innerHTML = '<option>(none)</option>'; return; }
+    if (!filtered.length) {
+      if (isRemote && !isOnboardPage) { window.location.href = 'onboard.html'; return; }
+      sel.innerHTML = '<option>(none)</option>'; return;
+    }
     sel.innerHTML = '';
     for (var i = 0; i < filtered.length; i++) {
       var opt = document.createElement('option');
@@ -78,7 +86,7 @@ window.DTF = window.DTF || { onThemeChange: null };
   var knownList = null;
   try { knownList = JSON.parse(knownRaw); } catch(e) {}
   if (knownList && knownList.length) {
-    populateSelect(knownList);
+    populateSelect(knownList, false);
   }
 
   /* Also try fetching from status/projects endpoints as fallback */
@@ -89,16 +97,25 @@ window.DTF = window.DTF || { onThemeChange: null };
     /* Remote projects.json is the source of truth.
        Only keep local-only projects that were JUST created (pending deploy). */
     if (list && list.length) {
+      /* Clean up dtf-deleted-projects: if remote no longer has an ID, it's truly gone */
+      var remoteIds = list.map(function(p){ return p.id; });
+      try {
+        var delList = JSON.parse(localStorage.getItem('dtf-deleted-projects') || '[]');
+        var cleaned = delList.filter(function(id){ return remoteIds.indexOf(id) !== -1; });
+        if (cleaned.length !== delList.length) localStorage.setItem('dtf-deleted-projects', JSON.stringify(cleaned));
+      } catch(e) {}
       /* Use remote list as base — this ensures deleted projects disappear */
-      populateSelect(list);
+      populateSelect(list, true);
       localStorage.setItem('dtf-known-projects', JSON.stringify(list));
       /* If active project was deleted, reset to first available */
-      var ids = list.map(function(p){ return p.id; });
       var active = localStorage.getItem('dtf-active-project');
-      if (active && ids.indexOf(active) === -1) {
+      if (active && remoteIds.indexOf(active) === -1) {
         localStorage.setItem('dtf-active-project', list[0].id);
         sel.value = list[0].id;
       }
+    } else {
+      /* Remote returned empty — redirect to onboard */
+      if (!isOnboardPage) { window.location.href = 'onboard.html'; return; }
     }
   }).catch(function(){
     if (!knownList || !knownList.length) sel.innerHTML = '<option>(offline)</option>';
@@ -111,7 +128,7 @@ window.DTF = window.DTF || { onThemeChange: null };
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(list){
         if (list && list.length) {
-          populateSelect(list);
+          populateSelect(list, true);
           localStorage.setItem('dtf-known-projects', JSON.stringify(list));
         }
       }).catch(function(){});
