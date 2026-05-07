@@ -540,6 +540,7 @@
       const config = {
         id: slug,
         name: name,
+        owner: ghUsername,
         description: 'Design tokens for ' + name,
         created: new Date().toISOString().split('T')[0],
         paletteKeys: { ...colors },

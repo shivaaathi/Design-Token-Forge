@@ -2235,8 +2235,26 @@ ghLogoutBtn.addEventListener('click', function() {
   ghPatInput.value = '';
 });
 
+// ── Ownership Guard ────────────────────────────────────────
+// Returns true if current GitHub user is allowed to modify this project.
+// Projects without an owner field are unrestricted (legacy).
+function isProjectOwner() {
+  if (!projectConfig || !projectConfig.owner) return true; // legacy projects have no owner
+  if (!GH_OWNER) return false; // not connected to GitHub
+  return projectConfig.owner.toLowerCase() === GH_OWNER.toLowerCase();
+}
+
+function showOwnershipError() {
+  var ownerName = (projectConfig && projectConfig.owner) || 'unknown';
+  ghStatusEl.textContent = '\u2717 You cannot modify this project. It belongs to "' + ownerName + '".';
+  ghStatusEl.className = 'gh-status err';
+}
+
 ghCommitBtn.addEventListener('click', function() {
   if (!ghPat) return;
+
+  // ── OWNERSHIP GATE: Block if not project owner ──
+  if (!isProjectOwner()) { showOwnershipError(); return; }
 
   // ── WCAG GATE: Block deploy if any palette fails certification ──
   var failedRoles = [];
@@ -2866,9 +2884,9 @@ function populateProjectSelect() {
     return '<option value="' + p.id + '"' + (p.id === projectId ? ' selected' : '') + '>' + escHtml(p.name || p.id) + '</option>';
   }).join('');
   projSelect.innerHTML = opts;
-  // Disable rename/delete when only 1 project or none selected
-  var canManage = knownProjects.length > 0 && projectId;
-  var canDelete = knownProjects.length > 1 && projectId;
+  // Disable rename/delete when only 1 project, none selected, or not the owner
+  var canManage = knownProjects.length > 0 && projectId && isProjectOwner();
+  var canDelete = knownProjects.length > 1 && projectId && isProjectOwner();
   if (projRenameBtn) projRenameBtn.disabled = !canManage;
   if (projDeleteBtn) projDeleteBtn.disabled = !canDelete;
 }
@@ -2888,6 +2906,7 @@ function syncGlobalKeys() {
 // ── Rename Project ───────────────────────────────────────
 function renameProject() {
   if (!projectId || knownProjects.length === 0) return;
+  if (!isProjectOwner()) { alert('You cannot rename this project. It belongs to "' + (projectConfig && projectConfig.owner || 'another user') + '".'); return; }
   var proj = knownProjects.find(function(p) { return p.id === projectId; });
   var currentName = proj ? (proj.name || proj.id) : projectId;
   var newName = prompt('Rename project:', currentName);
@@ -2902,6 +2921,7 @@ function renameProject() {
 // ── Delete Project ───────────────────────────────────────
 function deleteProject() {
   if (!projectId || knownProjects.length <= 1) return;
+  if (!isProjectOwner()) { alert('You cannot delete this project. It belongs to "' + (projectConfig && projectConfig.owner || 'another user') + '".'); return; }
   var proj = knownProjects.find(function(p) { return p.id === projectId; });
   var displayName = proj ? (proj.name || proj.id) : projectId;
   var confirmed = confirm('Delete project "' + displayName + '"?\n\nThis will remove the project and its config. This cannot be undone.');
