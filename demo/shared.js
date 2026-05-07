@@ -143,8 +143,19 @@ window.DTF = window.DTF || { onThemeChange: null };
     });
   }
 
-  /* ── Fetch live projects from GitHub API ── */
+  /* ── Fetch live projects — prefer projects.json (fast, no rate limit), fallback to API ── */
+  var pagesBase = depth + '/projects.json?_cb=' + Date.now();
+
   function fetchLiveProjects(cb) {
+    fetch(pagesBase).then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(list){
+        if (list && Array.isArray(list) && list.length) { cb(list); return; }
+        /* Fallback: GitHub Contents API (needs PAT if rate-limited) */
+        _fetchFromApi(cb);
+      }).catch(function(){ _fetchFromApi(cb); });
+  }
+
+  function _fetchFromApi(cb) {
     fetch(ghApiBase + '/contents/projects?ref=main&_cb=' + Date.now(), { headers: ghHdrs })
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(dirs){

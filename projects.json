@@ -6,12 +6,6 @@
     "description": "Default project — the original DTF token set for the Desktop PDF Editor product."
   },
   {
-    "id": "munich",
-    "name": "Munich",
-    "owner": "gayathri-rp-19560",
-    "description": "Design tokens for Munich"
-  },
-  {
     "id": "writer-handhelds",
     "name": "writer-handhelds",
     "owner": "sridhar-ravi-2917",
@@ -22,11 +16,5 @@
     "name": "Writer Mobile",
     "owner": "sridhar-ravi-2917",
     "description": ""
-  },
-  {
-    "id": "zoho-theme",
-    "name": "Zoho Theme",
-    "owner": "sridhar-ravi-2917",
-    "description": "Joseph Arulappan"
   }
 ]
