@@ -291,9 +291,7 @@
     danger: '#DC2626',
     warning: '#D97706',
     info: '#0EA5E9',
-    success: '#16A34A',
-    greyscale: '#747474',
-    desaturated: '#71747C'
+    success: '#16A34A'
   };
   const colorLabels = {
     monochromatic: 'Primary',
@@ -301,9 +299,7 @@
     danger: 'Danger / Error',
     warning: 'Warning',
     info: 'Info',
-    success: 'Success',
-    greyscale: 'Greyscale',
-    desaturated: 'Neutral'
+    success: 'Success'
   };
   const colors = { ...defaultColors };
 
@@ -514,7 +510,7 @@
         owner: ghUsername,
         description: 'Design tokens for ' + name,
         created: new Date().toISOString().split('T')[0],
-        paletteKeys: { ...colors },
+        paletteKeys: { ...colors, greyscale: '#747474', desaturated: '#71747C' },
         semanticMap: {
           light: {
             'content-default':'550','content-strong':'600','content-subtle':'350','content-faint':'200',
