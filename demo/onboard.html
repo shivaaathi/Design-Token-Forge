@@ -152,36 +152,7 @@
 .progress-step.error { color: var(--danger-content-default, #DC2626); }
 .progress-icon { width: 20px; text-align: center; font-size: 14px; }
 
-/* ── Success panel ────────────────────────────────── */
-.success-panel {
-  margin-top: 24px; padding: 24px; border-radius: 12px;
-  background: var(--success-container-bg, #DCFCE7);
-  border: 1px solid var(--success-component-outline-default, #16A34A);
-  display: none;
-}
-.success-panel.visible { display: block; }
-.success-panel h3 {
-  font-size: 18px; font-weight: 700; margin-bottom: 8px;
-  color: var(--success-content-strong, #14532D);
-}
-.success-panel p {
-  font-size: 13px; color: var(--success-content-default, #166534);
-  line-height: 1.6; margin-bottom: 12px;
-}
-.success-url {
-  display: block; padding: 12px 16px; border-radius: 8px;
-  background: #fff; border: 1px solid var(--success-component-outline-default, #16A34A);
-  font-family: monospace; font-size: 14px; font-weight: 600;
-  color: var(--primary-content-default, #286CE5);
-  text-decoration: none; word-break: break-all;
-}
-.success-url:hover { text-decoration: underline; }
-.success-figma {
-  margin-top: 16px; padding: 14px; border-radius: 8px;
-  background: #fff; border: 1px solid var(--demo-border);
-  font-size: 12px; color: var(--demo-fg-subtle); line-height: 1.8;
-}
-.success-figma strong { color: var(--demo-fg-strong); }
+
 
 /* ── Error box ────────────────────────────────────── */
 .error-box {
@@ -273,23 +244,11 @@
     <div class="launch-progress" id="launchProgress">
       <div class="progress-step" id="ps-commit"><span class="progress-icon">○</span> Committing project config</div>
       <div class="progress-step" id="ps-deploy"><span class="progress-icon">○</span> Triggering deploy</div>
-      <div class="progress-step" id="ps-live"><span class="progress-icon">○</span> Waiting for deployment</div>
     </div>
 
     <div class="error-box" id="errorBox"></div>
 
-    <div class="success-panel" id="successPanel">
-      <h3>🎉 Project created!</h3>
-      <p>Your project is deployed. Redirecting to the Color System editor in a moment…</p>
-      <a class="success-url" id="successUrl" href="#" target="_blank">—</a>
-      <div class="success-figma">
-        <strong>Next steps:</strong><br>
-        1. Open the <strong>Design Token Forge</strong> Figma plugin<br>
-        2. Set Server URL to: <code id="successFigmaUrl">—</code><br>
-        3. Select your project "<span id="successProjName">—</span>" from the dropdown<br>
-        4. Click <strong>Create Variables</strong>
-      </div>
-    </div>
+
   </div>
 
   <!-- ── Navigation buttons ─────────────────────────── -->
@@ -525,7 +484,7 @@
     launchBtn.textContent = 'Creating…';
     errorBox.classList.remove('visible');
     document.getElementById('launchProgress').classList.add('visible');
-    document.getElementById('successPanel').classList.remove('visible');
+
 
     const name = projName.value.trim();
     const slug = getSlug();
@@ -619,19 +578,6 @@
       } catch(e) { /* non-critical, push trigger should handle it */ }
       setProgress('ps-deploy', 'done');
 
-      /* Step 3: Wait for deployment */
-      setProgress('ps-live', 'active');
-      await sleep(8000); // Give GitHub Pages time to deploy
-      setProgress('ps-live', 'done');
-
-      /* Show success */
-      const baseUrl = `https://${ghOwner}.github.io/${GH_REPO_NAME}`;
-      document.getElementById('successPanel').classList.add('visible');
-      document.getElementById('successUrl').href = baseUrl;
-      document.getElementById('successUrl').textContent = baseUrl;
-      document.getElementById('successFigmaUrl').textContent = baseUrl;
-      document.getElementById('successProjName').textContent = name;
-
       /* Activate the new project in localStorage so it's immediately selected */
       localStorage.setItem('dtf-active-project', slug);
       const knownRaw = localStorage.getItem('dtf-known-projects');
@@ -642,10 +588,8 @@
         localStorage.setItem('dtf-known-projects', JSON.stringify(known));
       }
 
-      /* Auto-redirect to color-system after a short delay */
-      setTimeout(() => {
-        window.location.href = 'color-system.html';
-      }, 3000);
+      /* Redirect to color-system immediately */
+      window.location.href = 'color-system.html';
 
     } catch (err) {
       errorBox.textContent = '❌ ' + err.message;
