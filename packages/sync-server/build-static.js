@@ -336,7 +336,7 @@ async function main() {
       const cfgPath = path.join(projectsDir, entry.name, 'config.json');
       if (!fs.existsSync(cfgPath)) continue;
       const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf-8'));
-      projectList.push({ id: cfg.id, name: cfg.name, description: cfg.description || '' });
+      projectList.push({ id: cfg.id, name: cfg.name, owner: cfg.owner || '', description: cfg.description || '' });
     }
     const manifestPath = path.join(BASE_OUT_DIR, 'projects.json');
     fs.writeFileSync(manifestPath, JSON.stringify(projectList, null, 2));

@@ -56,6 +56,12 @@ window.DTF = window.DTF || { onThemeChange: null };
     var deleted = [];
     try { deleted = JSON.parse(deletedRaw) || []; } catch(e) {}
     var filtered = list.filter(function(p) { return deleted.indexOf(p.id) === -1; });
+    /* Filter by owner: only show projects belonging to the logged-in user */
+    var ghUser = (localStorage.getItem('dtf-gh-user') || '').toLowerCase();
+    var upstreamOwner = 'sridhar-ravi-2917';
+    if (ghUser && ghUser !== upstreamOwner.toLowerCase()) {
+      filtered = filtered.filter(function(p) { return p.owner && p.owner.toLowerCase() === ghUser; });
+    }
     if (!filtered.length) { sel.innerHTML = '<option>(none)</option>'; return; }
     sel.innerHTML = '';
     for (var i = 0; i < filtered.length; i++) {

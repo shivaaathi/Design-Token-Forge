@@ -2136,11 +2136,11 @@ document.getElementById('resetMapBtn').addEventListener('click', function() {
 // DEPLOY TO FIGMA (GitHub Commit)
 // ══════════════════════════════════════════════════════════════
 var GH_REPO_NAME = 'Design-Token-Forge';
-var GH_OWNER = '';
+var GH_OWNER = localStorage.getItem('dtf-gh-user') || '';
 var GH_REPO  = GH_REPO_NAME;
 var GH_BRANCH = 'main';
 var GH_API = 'https://api.github.com';
-var ghPat = '';
+var ghPat = localStorage.getItem('dtf-gh-pat') || '';
 var ghPanel = document.getElementById('ghPanel');
 var ghPatInput = document.getElementById('ghPatInput');
 var ghConnectBtn = document.getElementById('ghConnectBtn');
@@ -2150,6 +2150,15 @@ var ghUser = document.getElementById('ghUser');
 var ghCommitBtn = document.getElementById('ghCommitBtn');
 var ghLogoutBtn = document.getElementById('ghLogoutBtn');
 var ghStatusEl = document.getElementById('ghStatus');
+
+// Auto-restore GitHub session from localStorage
+if (ghPat && GH_OWNER) {
+  ghAuthRow.style.display = 'none';
+  ghReadyRow.style.display = 'flex';
+  ghUser.textContent = '\u2713 ' + GH_OWNER;
+  ghStatusEl.textContent = 'Ready \u2014 ' + GH_OWNER;
+  ghStatusEl.className = 'gh-status ok';
+}
 
 document.getElementById('deployBtn').addEventListener('click', function() {
   ghPanel.style.display = ghPanel.style.display === 'none' ? '' : 'none';
@@ -2180,7 +2189,11 @@ ghConnectBtn.addEventListener('click', function() {
     ghReadyRow.style.display = 'flex';
     // Default: commit to the user's own repo
     GH_OWNER = u.login;
+    localStorage.setItem('dtf-gh-user', u.login);
+    localStorage.setItem('dtf-gh-pat', ghPat);
     GH_REPO = GH_REPO_NAME;
+    // Re-filter project list now that we know the user
+    populateProjectSelect();
     ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Checking your repo...';
     ghStatusEl.className = 'gh-status';
     // Verify user has their own repo (fork or original)
@@ -2229,10 +2242,13 @@ ghLogoutBtn.addEventListener('click', function() {
   ghPat = '';
   GH_OWNER = '';
   GH_REPO = GH_REPO_NAME;
+  localStorage.removeItem('dtf-gh-user');
+  localStorage.removeItem('dtf-gh-pat');
   ghAuthRow.style.display = 'flex';
   ghReadyRow.style.display = 'none';
   ghStatusEl.textContent = '';
   ghPatInput.value = '';
+  populateProjectSelect();
 });
 
 // ── Ownership Guard ────────────────────────────────────────
@@ -2879,14 +2895,25 @@ function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').substring(0, 40);
 }
 
+function getVisibleProjects() {
+  // Admin (upstream owner) sees all; others see only their own projects
+  var user = GH_OWNER ? GH_OWNER.toLowerCase() : '';
+  if (!user || user === GH_UPSTREAM_OWNER.toLowerCase()) return knownProjects;
+  return knownProjects.filter(function(p) {
+    if (!p.owner) return false; // legacy projects without owner — only admin sees them
+    return p.owner.toLowerCase() === user;
+  });
+}
+
 function populateProjectSelect() {
-  var opts = knownProjects.map(function(p) {
+  var visible = getVisibleProjects();
+  var opts = visible.map(function(p) {
     return '<option value="' + p.id + '"' + (p.id === projectId ? ' selected' : '') + '>' + escHtml(p.name || p.id) + '</option>';
   }).join('');
-  projSelect.innerHTML = opts;
+  projSelect.innerHTML = opts || '<option>(no projects)</option>';
   // Disable rename/delete when only 1 project, none selected, or not the owner
-  var canManage = knownProjects.length > 0 && projectId && isProjectOwner();
-  var canDelete = knownProjects.length > 1 && projectId && isProjectOwner();
+  var canManage = visible.length > 0 && projectId && isProjectOwner();
+  var canDelete = visible.length > 1 && projectId && isProjectOwner();
   if (projRenameBtn) projRenameBtn.disabled = !canManage;
   if (projDeleteBtn) projDeleteBtn.disabled = !canDelete;
 }
@@ -3098,18 +3125,7 @@ projSelect.addEventListener('change', function() {
 
 // Discover projects via local fetch (scan known dirs) or GitHub API
 function discoverProjects(callback) {
-  // If GitHub connected, use Contents API
-  if (ghPat) {
-    ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/projects')
-      .then(function(items) {
-        var dirs = items.filter(function(i) { return i.type === 'dir'; });
-        var projects = dirs.map(function(d) { return {id: d.name, name: d.name}; });
-        callback(projects);
-      })
-      .catch(function() { callback([]); });
-    return;
-  }
-  // Fetch remote projects.json — this is the source of truth
+  // Always use projects.json as source of truth (includes owner field)
   fetch(depth + '/projects.json?_cb=' + Date.now())
     .then(function(r) { return r.ok ? r.json() : null; })
     .catch(function() { return null; })
@@ -3119,7 +3135,7 @@ function discoverProjects(callback) {
       } else {
         // Offline fallback: use current project only
         var found = [];
-        if (projectId) found.push({id: projectId, name: (projectConfig && projectConfig.name) || projectId});
+        if (projectId) found.push({id: projectId, name: (projectConfig && projectConfig.name) || projectId, owner: (projectConfig && projectConfig.owner) || ''});
         callback(found);
       }
     });
