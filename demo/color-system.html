@@ -3369,13 +3369,20 @@ projCreateBtn.addEventListener('click', function() {
       // Discover additional projects (async — updates dropdown when done)
       discoverProjects(function(found) {
         if (found && found.length) {
-          // Remote is source of truth — replace local list entirely
+          // Remote is source of truth — but preserve locally-created projects not yet deployed
+          var user = GH_OWNER ? GH_OWNER.toLowerCase() : '';
+          var remoteIds = found.map(function(p) { return p.id; });
+          var pendingLocal = knownProjects.filter(function(p) {
+            // Keep projects owned by current user that aren't in remote yet
+            return p.owner && p.owner.toLowerCase() === user && remoteIds.indexOf(p.id) === -1;
+          });
           knownProjects = [];
           mergeKnownProjects(found);
+          mergeKnownProjects(pendingLocal);
           // If active project no longer exists, switch to first available
-          var ids = found.map(function(p) { return p.id; });
+          var ids = knownProjects.map(function(p) { return p.id; });
           if (projectId && ids.indexOf(projectId) === -1) {
-            projectId = found[0].id;
+            projectId = knownProjects[0].id;
             localStorage.setItem(STORAGE_KEY_ACTIVE, projectId);
             switchProject(projectId);
           }
