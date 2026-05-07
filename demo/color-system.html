@@ -2894,8 +2894,13 @@ function mergeKnownProjects(list) {
     var p = list[i];
     if (!p || !p.id) continue;
     if (deletedProjectIds.indexOf(p.id) !== -1) continue;
-    if (!knownProjects.some(function(k) { return k.id === p.id; })) {
+    var existing = knownProjects.find(function(k) { return k.id === p.id; });
+    if (!existing) {
       knownProjects.push(p);
+    } else {
+      // Update missing fields (e.g. owner) from newer data
+      if (p.owner && !existing.owner) existing.owner = p.owner;
+      if (p.name && !existing.name) existing.name = p.name;
     }
   }
 }
@@ -3375,7 +3380,7 @@ projCreateBtn.addEventListener('click', function() {
       if (projectId) localStorage.setItem(STORAGE_KEY_ACTIVE, projectId);
       // Seed knownProjects with current project (shown until remote loads)
       if (projectId) {
-        mergeKnownProjects([{id: projectId, name: (projectConfig && projectConfig.name) || projectId}]);
+        mergeKnownProjects([{id: projectId, name: (projectConfig && projectConfig.name) || projectId, owner: (projectConfig && projectConfig.owner) || ''}]);
       }
       // Restore any previously-persisted projects from localStorage
       try {
