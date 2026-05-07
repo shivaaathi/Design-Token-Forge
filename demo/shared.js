@@ -96,8 +96,14 @@ window.DTF = window.DTF || { onThemeChange: null };
     }
 
     var ghUser = (localStorage.getItem('dtf-gh-user') || '').toLowerCase();
-    var mine = list.filter(function(p) { return !p.owner || p.owner.toLowerCase() === ghUser; });
-    var others = list.filter(function(p) { return p.owner && p.owner.toLowerCase() !== ghUser; });
+    var mine, others;
+    if (!ghUser) {
+      /* No user logged in — show all as own (no grouping) */
+      mine = list; others = [];
+    } else {
+      mine = list.filter(function(p) { return !p.owner || p.owner.toLowerCase() === ghUser; });
+      others = list.filter(function(p) { return p.owner && p.owner.toLowerCase() !== ghUser; });
+    }
 
     mine.forEach(function(proj) { ddPanel.appendChild(_buildRow(proj, true)); });
 
