@@ -122,15 +122,39 @@ window.DTF = window.DTF || { onThemeChange: null };
   });
 
   /* When user switches project, update active and reload tokens */
-  /* Re-fetch latest projects from remote when dropdown is clicked */
+  /* Re-fetch latest projects from GitHub API when dropdown is clicked (bypasses CDN cache) */
+  var ghApiBase = 'https://api.github.com/repos/sridhar-ravi-2917/Design-Token-Forge';
   sel.addEventListener('mousedown', function() {
-    fetch(depth + '/projects.json?_cb=' + Date.now())
+    var token = localStorage.getItem('dtf-gh-pat') || '';
+    var hdrs = token
+      ? { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+      : { 'Accept': 'application/vnd.github+json' };
+    fetch(ghApiBase + '/contents/projects?ref=main&_cb=' + Date.now(), { headers: hdrs })
       .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(list){
-        if (list && list.length) {
-          populateSelect(list, true);
-          localStorage.setItem('dtf-known-projects', JSON.stringify(list));
-        }
+      .then(function(dirs){
+        if (!dirs || !Array.isArray(dirs)) return;
+        var projects = dirs.filter(function(d){ return d.type === 'dir'; });
+        var results = []; var pending = projects.length;
+        if (pending === 0) { populateSelect([], true); return; }
+        projects.forEach(function(dir){
+          fetch(ghApiBase + '/contents/projects/' + dir.name + '/config.json?ref=main', { headers: hdrs })
+            .then(function(r){ return r.ok ? r.json() : null; })
+            .then(function(file){
+              if (file && file.content) {
+                try {
+                  var cfg = JSON.parse(atob(file.content.replace(/\n/g, '')));
+                  results.push({ id: cfg.id || dir.name, name: cfg.name || dir.name, owner: cfg.owner || '' });
+                } catch(e) { results.push({ id: dir.name, name: dir.name, owner: '' }); }
+              }
+            }).catch(function(){})
+            .finally(function(){
+              pending--;
+              if (pending === 0) {
+                populateSelect(results, true);
+                localStorage.setItem('dtf-known-projects', JSON.stringify(results));
+              }
+            });
+        });
       }).catch(function(){});
   });
 
