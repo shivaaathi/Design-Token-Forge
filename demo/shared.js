@@ -80,8 +80,16 @@ window.DTF = window.DTF || { onThemeChange: null };
     if (d.project && d.project.id && !currentId) currentId = d.project.id;
     return fetch(projectsUrl);
   }).then(function(r){ return r.json(); }).then(function(list){
-    /* Remote projects.json is the source of truth — always use it */
+    /* Remote projects.json — merge with localStorage (don't lose locally-added projects) */
     if (list && list.length) {
+      var localRaw = localStorage.getItem('dtf-known-projects');
+      var local = [];
+      try { local = JSON.parse(localRaw) || []; } catch(e) {}
+      /* Add any local projects not in remote (e.g. just created, deploy pending) */
+      var remoteIds = list.map(function(p){ return p.id; });
+      for (var li = 0; li < local.length; li++) {
+        if (remoteIds.indexOf(local[li].id) === -1) list.push(local[li]);
+      }
       populateSelect(list);
       localStorage.setItem('dtf-known-projects', JSON.stringify(list));
       /* If active project was deleted, reset to first available */

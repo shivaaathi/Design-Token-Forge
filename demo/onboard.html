@@ -280,7 +280,7 @@
 
     <div class="success-panel" id="successPanel">
       <h3>🎉 Project created!</h3>
-      <p>Your project is being deployed. It will be available at:</p>
+      <p>Your project is deployed. Redirecting to the Color System editor in a moment…</p>
       <a class="success-url" id="successUrl" href="#" target="_blank">—</a>
       <div class="success-figma">
         <strong>Next steps:</strong><br>
@@ -638,6 +638,11 @@
         known.push({ id: slug, name: name });
         localStorage.setItem('dtf-known-projects', JSON.stringify(known));
       }
+
+      /* Auto-redirect to color-system after a short delay */
+      setTimeout(() => {
+        window.location.href = 'color-system.html';
+      }, 3000);
 
     } catch (err) {
       errorBox.textContent = '❌ ' + err.message;
