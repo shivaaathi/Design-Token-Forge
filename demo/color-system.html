@@ -3017,14 +3017,16 @@ function deleteProject() {
     populateProjectSelect();
   });
 
-  // Switch to first remaining project
-  var nextId = knownProjects.length > 0 ? knownProjects[0].id : '';
-  if (nextId) {
-    switchProject(nextId);
+  // Switch to next project or redirect to onboard if none left
+  var visible = getVisibleProjects();
+  if (visible.length > 0) {
+    switchProject(visible[0].id);
   } else {
     projectId = '';
     localStorage.removeItem(STORAGE_KEY_ACTIVE);
     populateProjectSelect();
+    // No projects left for this user — redirect to onboard
+    window.location.href = 'onboard.html';
   }
 }
 
