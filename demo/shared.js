@@ -12,7 +12,7 @@ window.DTF = window.DTF || { onThemeChange: null };
   /* color-system.html has its own dedicated project bar — skip it there */
   var path = location.pathname;
   var filename = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
-  if (filename === 'color-system.html') return;
+  if (filename === 'color-system.html' || filename === 'onboard.html') return;
 
   var nav = document.querySelector('.nav-actions');
   if (!nav) return;
