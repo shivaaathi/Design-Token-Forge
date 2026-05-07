@@ -306,7 +306,14 @@ window.DTF = window.DTF || { onThemeChange: null };
   function doRename(proj) {
     var newName = prompt('Rename project:', proj.name || proj.id);
     if (!newName || newName === proj.name) return;
-    if (!ghToken) { alert('Connect GitHub (PAT) in Color System to rename projects.'); return; }
+    if (!ghToken) {
+      var token = prompt('Enter your GitHub personal access token (repo scope) to rename:');
+      if (!token || !token.trim()) return;
+      token = token.trim();
+      localStorage.setItem('dtf-gh-pat', token);
+      ghToken = token;
+      ghHdrs = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
+    }
     /* Fetch current config.json to get its SHA */
     var cfgPath = 'projects/' + proj.id + '/config.json';
     fetch(ghApiBase + '/contents/' + cfgPath + '?ref=main', { headers: ghHdrs })
@@ -338,7 +345,16 @@ window.DTF = window.DTF || { onThemeChange: null };
 
   /* ── Delete project (API call) ── */
   function doDelete(proj) {
-    if (!ghToken) { alert('Connect GitHub (PAT) in Color System to delete projects.'); return; }
+    var token = ghToken;
+    if (!token) {
+      token = prompt('To delete "' + (proj.name || proj.id) + '", enter your GitHub personal access token (repo scope):');
+      if (!token || !token.trim()) return;
+      token = token.trim();
+      /* Save for this session */
+      localStorage.setItem('dtf-gh-pat', token);
+      ghToken = token;
+      ghHdrs = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
+    }
     var ghUser = localStorage.getItem('dtf-gh-user') || '';
 
     /* Only the project owner (or upstream admin) can delete */
