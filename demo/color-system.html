@@ -2977,6 +2977,9 @@ function deleteProject() {
   localStorage.removeItem(STORAGE_KEY_CONFIG + '-' + delId);
   localStorage.removeItem(STORAGE_KEY_SAVE_TS + '-' + delId);
 
+  // Determine the owner doing the delete (used for redirect logic)
+  var delOwner = (projectConfig && projectConfig.owner) ? projectConfig.owner.toLowerCase() : '';
+
   // Delete ALL files in the project directory from the UPSTREAM repo
   var dirPath = '/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects/' + delId;
   function ghDeleteFetch(endpoint, opts) {
@@ -3003,13 +3006,23 @@ function deleteProject() {
       });
     }, Promise.resolve());
   }).then(function() {
-    showSaveMsg('Project "' + displayName + '" permanently deleted');
+    // Delete succeeded — check if user has any remaining projects
+    var remaining = knownProjects.filter(function(p) {
+      return p.owner && p.owner.toLowerCase() === delOwner;
+    });
+    if (remaining.length > 0) {
+      switchProject(remaining[0].id);
+    } else {
+      projectId = '';
+      localStorage.removeItem(STORAGE_KEY_ACTIVE);
+      window.location.href = 'onboard.html';
+    }
   }).catch(function(e) {
     console.warn('[DTF] GitHub delete failed:', e.message);
     showSaveMsg('Delete failed: ' + e.message);
     // Rollback local state since remote delete failed
     if (!knownProjects.some(function(p) { return p.id === delId; })) {
-      knownProjects.push({id: delId, name: displayName});
+      knownProjects.push({id: delId, name: displayName, owner: delOwner});
       persistKnownProjects();
     }
     deletedProjectIds = deletedProjectIds.filter(function(id) { return id !== delId; });
@@ -3017,17 +3030,8 @@ function deleteProject() {
     populateProjectSelect();
   });
 
-  // Switch to next project or redirect to onboard if none left
-  var visible = getVisibleProjects();
-  if (visible.length > 0) {
-    switchProject(visible[0].id);
-  } else {
-    projectId = '';
-    localStorage.removeItem(STORAGE_KEY_ACTIVE);
-    populateProjectSelect();
-    // No projects left for this user — redirect to onboard
-    window.location.href = 'onboard.html';
-  }
+  // Immediately update UI while API runs
+  populateProjectSelect();
 }
 
 function switchProject(newId) {
