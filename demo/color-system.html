@@ -2977,10 +2977,18 @@ function deleteProject() {
   localStorage.removeItem(STORAGE_KEY_CONFIG + '-' + delId);
   localStorage.removeItem(STORAGE_KEY_SAVE_TS + '-' + delId);
 
-  // Determine the owner doing the delete (used for redirect logic)
-  var delOwner = (projectConfig && projectConfig.owner) ? projectConfig.owner.toLowerCase() : '';
+  // Immediately redirect/switch — don't wait for API
+  var visible = getVisibleProjects();
+  if (visible.length > 0) {
+    switchProject(visible[0].id);
+  } else {
+    projectId = '';
+    localStorage.removeItem(STORAGE_KEY_ACTIVE);
+    window.location.href = 'onboard.html';
+    return; // page is navigating away
+  }
 
-  // Delete ALL files in the project directory from the UPSTREAM repo
+  // Delete ALL files in the project directory from the UPSTREAM repo (background)
   var dirPath = '/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects/' + delId;
   function ghDeleteFetch(endpoint, opts) {
     opts = opts || {};
@@ -3005,33 +3013,9 @@ function deleteProject() {
         });
       });
     }, Promise.resolve());
-  }).then(function() {
-    // Delete succeeded — check if user has any remaining projects
-    var remaining = knownProjects.filter(function(p) {
-      return p.owner && p.owner.toLowerCase() === delOwner;
-    });
-    if (remaining.length > 0) {
-      switchProject(remaining[0].id);
-    } else {
-      projectId = '';
-      localStorage.removeItem(STORAGE_KEY_ACTIVE);
-      window.location.href = 'onboard.html';
-    }
   }).catch(function(e) {
     console.warn('[DTF] GitHub delete failed:', e.message);
-    showSaveMsg('Delete failed: ' + e.message);
-    // Rollback local state since remote delete failed
-    if (!knownProjects.some(function(p) { return p.id === delId; })) {
-      knownProjects.push({id: delId, name: displayName, owner: delOwner});
-      persistKnownProjects();
-    }
-    deletedProjectIds = deletedProjectIds.filter(function(id) { return id !== delId; });
-    localStorage.setItem(STORAGE_KEY_DELETED, JSON.stringify(deletedProjectIds));
-    populateProjectSelect();
   });
-
-  // Immediately update UI while API runs
-  populateProjectSelect();
 }
 
 function switchProject(newId) {
