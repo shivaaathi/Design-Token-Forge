@@ -2262,11 +2262,10 @@ function isProjectOwner() {
     if (entry && entry.owner) ownerFromConfig = entry.owner;
   }
   if (!ownerFromConfig) return true; // legacy projects have no owner — allow
-  // If GH_OWNER not set but project has owner, check if the PAT can be verified
-  // For locally-created projects (owner in knownProjects), allow management
-  // since only the owner's session would have this entry with their username
   var user = GH_OWNER || localStorage.getItem('dtf-gh-user') || '';
   if (!user) return true; // can't verify — allow (delete will prompt for token anyway)
+  // Admin (upstream repo owner) can manage all projects
+  if (user.toLowerCase() === 'sridhar-ravi-2917') return true;
   return ownerFromConfig.toLowerCase() === user.toLowerCase();
 }
 
