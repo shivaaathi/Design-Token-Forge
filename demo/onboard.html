@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Start Your Own Project — Design Token Forge</title>
+<link rel="stylesheet" href="../packages/tokens/src/index.css">
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── Wizard Layout ────────────────────────────────── */
+.wizard-container {
+  max-width: 820px; width: 100%; margin: 0 auto;
+  padding: 40px 40px 80px;
+}
+.wizard-header {
+  margin-bottom: 32px;
+}
+.wizard-header h1 {
+  font-size: 28px; font-weight: 800; color: var(--demo-fg-strong);
+  margin-bottom: 8px;
+}
+.wizard-header p {
+  font-size: 14px; color: var(--demo-fg-subtle); line-height: 1.6;
+}
+
+/* ── Steps ────────────────────────────────────────── */
+.wizard-steps {
+  display: flex; gap: 4px; margin-bottom: 32px;
+}
+.step-pill {
+  flex: 1; padding: 10px 12px; border-radius: 8px;
+  background: var(--demo-cm-bg); border: 1px solid var(--demo-border);
+  font-size: 11px; font-weight: 700; text-align: center;
+  color: var(--demo-fg-faint); transition: all 200ms;
+  cursor: pointer;
+}
+.step-pill.active {
+  background: var(--primary-component-bg-default, #286CE5);
+  border-color: var(--primary-component-bg-default, #286CE5);
+  color: #fff;
+}
+.step-pill.done {
+  background: var(--success-container-bg, #DCFCE7);
+  border-color: var(--success-component-outline-default, #16A34A);
+  color: var(--success-content-default, #166534);
+}
+
+/* ── Step panels ──────────────────────────────────── */
+.step-panel { display: none; }
+.step-panel.active { display: block; }
+
+/* ── Form elements ────────────────────────────────── */
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group label {
+  display: block; font-size: 12px; font-weight: 700;
+  color: var(--demo-fg-strong); margin-bottom: 6px;
+}
+.form-group .hint {
+  font-size: 11px; color: var(--demo-fg-faint); margin-top: 4px;
+}
+.form-input {
+  width: 100%; padding: 10px 12px; border-radius: 6px;
+  border: 1px solid var(--demo-border); background: var(--demo-surface);
+  font-size: 13px; color: var(--demo-fg); font-family: inherit;
+}
+.form-input:focus {
+  outline: 2px solid var(--primary-component-bg-default, #286CE5);
+  outline-offset: -1px; border-color: transparent;
+}
+
+/* ── Color pickers ────────────────────────────────── */
+.color-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;
+}
+.color-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 8px;
+  border: 1px solid var(--demo-border); background: var(--demo-surface);
+}
+.color-item label {
+  font-size: 11px; font-weight: 600; color: var(--demo-fg-subtle);
+  flex: 1; text-transform: capitalize;
+}
+.color-swatch {
+  width: 32px; height: 32px; border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.1); cursor: pointer;
+  position: relative; overflow: hidden;
+}
+.color-swatch input[type="color"] {
+  position: absolute; inset: -8px; width: calc(100% + 16px); height: calc(100% + 16px);
+  border: none; cursor: pointer;
+}
+.color-hex {
+  width: 80px; padding: 4px 8px; border-radius: 4px;
+  border: 1px solid var(--demo-border); font-size: 11px;
+  font-family: monospace; text-align: center;
+}
+
+/* ── Preview panel ────────────────────────────────── */
+.preview-bar {
+  display: flex; gap: 4px; margin-top: 16px; padding: 12px;
+  border-radius: 8px; background: var(--demo-cm-bg);
+  border: 1px solid var(--demo-border); flex-wrap: wrap;
+}
+.preview-swatch {
+  width: 28px; height: 28px; border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* ── Action buttons ───────────────────────────────── */
+.wizard-actions {
+  display: flex; gap: 12px; margin-top: 32px;
+  padding-top: 24px; border-top: 1px solid var(--demo-border);
+}
+.btn {
+  padding: 12px 24px; border-radius: 8px; font-size: 13px;
+  font-weight: 600; cursor: pointer; border: none;
+  transition: all 150ms; font-family: inherit;
+}
+.btn-primary {
+  background: var(--primary-component-bg-default, #286CE5);
+  color: #fff;
+}
+.btn-primary:hover { opacity: 0.9; }
+.btn-secondary {
+  background: var(--demo-cm-bg); color: var(--demo-fg);
+  border: 1px solid var(--demo-border);
+}
+.btn-secondary:hover { background: var(--demo-border); }
+
+/* ── Download section ─────────────────────────────── */
+.download-section {
+  margin-top: 24px; padding: 20px; border-radius: 12px;
+  background: var(--success-container-bg, #DCFCE7);
+  border: 1px solid var(--success-component-outline-default, #16A34A);
+}
+.download-section h3 {
+  font-size: 16px; font-weight: 700; margin-bottom: 8px;
+  color: var(--success-content-strong, #14532D);
+}
+.download-section p {
+  font-size: 13px; color: var(--success-content-default, #166534);
+  line-height: 1.6; margin-bottom: 12px;
+}
+
+/* ── Instructions accordion ───────────────────────── */
+.instructions {
+  margin-top: 24px; padding: 20px; border-radius: 12px;
+  border: 1px solid var(--demo-border); background: var(--demo-surface);
+}
+.instructions h3 {
+  font-size: 16px; font-weight: 700; margin-bottom: 12px;
+}
+.instructions ol {
+  padding-left: 20px; font-size: 13px; line-height: 2;
+  color: var(--demo-fg-subtle);
+}
+.instructions ol li { margin-bottom: 4px; }
+.instructions code {
+  background: var(--demo-cm-bg); padding: 2px 6px; border-radius: 3px;
+  font-size: 12px; font-family: 'SF Mono', Monaco, Menlo, monospace;
+}
+.instructions pre {
+  margin: 12px 0; padding: 12px 16px; border-radius: 8px;
+  background: #1e1e2e; color: #cdd6f4; font-size: 12px;
+  font-family: 'SF Mono', Monaco, Menlo, monospace;
+  overflow-x: auto; line-height: 1.6;
+}
+
+/* ── Responsive ───────────────────────────────────── */
+@media(max-width: 600px) {
+  .wizard-container { padding: 20px; }
+  .color-grid { grid-template-columns: 1fr; }
+  .wizard-steps { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<nav class="explorer-nav" aria-label="Site navigation"></nav>
+
+<div class="wizard-container">
+
+  <div class="wizard-header">
+    <h1>🚀 Start Your Own Project</h1>
+    <p>Configure your brand colors and download a ready-to-deploy token project. Push it to your GitHub repo and the Figma plugin will sync directly from your own GitHub Pages.</p>
+  </div>
+
+  <!-- Steps indicator -->
+  <div class="wizard-steps">
+    <div class="step-pill active" data-step="1">1. Project Info</div>
+    <div class="step-pill" data-step="2">2. Brand Colors</div>
+    <div class="step-pill" data-step="3">3. Download & Deploy</div>
+  </div>
+
+  <!-- ═══ Step 1: Project Info ═══ -->
+  <div class="step-panel active" id="step1">
+    <div class="form-group">
+      <label for="projName">Project Name</label>
+      <input class="form-input" type="text" id="projName" placeholder="e.g. My App" value="My Project">
+      <p class="hint">Human-readable name for your project.</p>
+    </div>
+    <div class="form-group">
+      <label for="projId">Project ID</label>
+      <input class="form-input" type="text" id="projId" placeholder="e.g. my-app" value="my-project">
+      <p class="hint">URL-safe identifier (lowercase, dashes). Used in file paths.</p>
+    </div>
+    <div class="form-group">
+      <label for="projDesc">Description (optional)</label>
+      <input class="form-input" type="text" id="projDesc" placeholder="e.g. Token set for our mobile app">
+    </div>
+    <div class="form-group">
+      <label for="ghUser">Your GitHub Username</label>
+      <input class="form-input" type="text" id="ghUser" placeholder="e.g. jane-doe">
+      <p class="hint">Used to generate your GitHub Pages URL.</p>
+    </div>
+    <div class="form-group">
+      <label for="ghRepo">Repository Name</label>
+      <input class="form-input" type="text" id="ghRepo" placeholder="e.g. my-design-tokens" value="my-design-tokens">
+      <p class="hint">The GitHub repo you'll create. Your tokens will deploy to <code>https://<span id="urlPreview">your-username</span>.github.io/<span id="repoPreview">my-design-tokens</span>/</code></p>
+    </div>
+  </div>
+
+  <!-- ═══ Step 2: Brand Colors ═══ -->
+  <div class="step-panel" id="step2">
+    <p style="font-size:13px;color:var(--demo-fg-subtle);margin-bottom:16px;">Pick your brand colors. The system generates a 24-step palette from each key color for light & dark themes.</p>
+
+    <div class="color-grid" id="colorGrid">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="preview-bar" id="previewBar" style="display:none">
+      <!-- Filled by JS on color change -->
+    </div>
+  </div>
+
+  <!-- ═══ Step 3: Download & Deploy ═══ -->
+  <div class="step-panel" id="step3">
+    <div class="download-section">
+      <h3>✓ Your project is ready!</h3>
+      <p>Download the starter files below and push them to your GitHub repository. The included GitHub Actions workflow will automatically build and deploy your tokens.</p>
+      <button class="btn btn-primary" id="downloadBtn">⬇ Download Starter (.zip)</button>
+    </div>
+
+    <div class="instructions">
+      <h3>Setup Instructions</h3>
+      <ol>
+        <li>Create a new GitHub repository: <code id="instrRepo">my-design-tokens</code></li>
+        <li>Extract the downloaded zip and push all files:
+          <pre>cd my-design-tokens
+git init
+git add .
+git commit -m "Initial token setup"
+git branch -M main
+git remote add origin https://github.com/<span id="instrGH">your-username</span>/<span id="instrRepo2">my-design-tokens</span>.git
+git push -u origin main</pre>
+        </li>
+        <li>Enable GitHub Pages in your repo:
+          <br>Settings → Pages → Source: <strong>GitHub Actions</strong>
+        </li>
+        <li>Wait for the first deploy (check Actions tab — takes ~1 minute)</li>
+        <li>Open the <strong>Design Token Forge</strong> plugin in Figma</li>
+        <li>Expand <em>Server URL</em> and enter:
+          <pre id="instrUrl">https://your-username.github.io/my-design-tokens</pre>
+        </li>
+        <li>Click <strong>Save</strong> → The plugin connects and shows your tokens</li>
+        <li>Click <strong>Create Variables</strong> to sync all tokens into your Figma file</li>
+      </ol>
+    </div>
+
+    <div class="instructions" style="margin-top:16px;">
+      <h3>Updating Tokens Later</h3>
+      <ol>
+        <li>Edit <code>config.json</code> in your repo (change colors, mappings, etc.)</li>
+        <li>Commit and push to <code>main</code></li>
+        <li>GitHub Actions rebuilds automatically (~1 min)</li>
+        <li>The Figma plugin detects the change and shows "Token changes detected"</li>
+        <li>Click <strong>Update Variables</strong> — done!</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ── Navigation buttons ─────────────────────────── -->
+  <div class="wizard-actions">
+    <button class="btn btn-secondary" id="prevBtn" style="display:none">← Back</button>
+    <div style="flex:1"></div>
+    <button class="btn btn-primary" id="nextBtn">Next →</button>
+  </div>
+</div>
+
+<script src="nav.js"></script>
+<script src="shared.js?v=20260416"></script>
+<script>
+(function() {
+  /* ── State ────────────────────────────────────── */
+  let currentStep = 1;
+  const totalSteps = 3;
+
+  const defaultColors = {
+    monochromatic: '#286CE5',
+    brand: '#E53F28',
+    danger: '#DC2626',
+    warning: '#D97706',
+    info: '#0EA5E9',
+    success: '#16A34A',
+    greyscale: '#747474',
+    desaturated: '#71747C'
+  };
+
+  const colorLabels = {
+    monochromatic: 'Primary',
+    brand: 'Brand / Accent',
+    danger: 'Danger / Error',
+    warning: 'Warning',
+    info: 'Info',
+    success: 'Success',
+    greyscale: 'Greyscale',
+    desaturated: 'Neutral'
+  };
+
+  const colors = { ...defaultColors };
+
+  /* ── Elements ─────────────────────────────────── */
+  const steps = document.querySelectorAll('.step-pill');
+  const panels = document.querySelectorAll('.step-panel');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const projName = document.getElementById('projName');
+  const projId = document.getElementById('projId');
+  const ghUser = document.getElementById('ghUser');
+  const ghRepo = document.getElementById('ghRepo');
+  const urlPreview = document.getElementById('urlPreview');
+  const repoPreview = document.getElementById('repoPreview');
+
+  /* ── Step navigation ──────────────────────────── */
+  function goToStep(n) {
+    currentStep = n;
+    steps.forEach(s => {
+      const sn = parseInt(s.dataset.step);
+      s.classList.toggle('active', sn === n);
+      s.classList.toggle('done', sn < n);
+    });
+    panels.forEach((p, i) => p.classList.toggle('active', i === n - 1));
+    prevBtn.style.display = n === 1 ? 'none' : '';
+    nextBtn.textContent = n === totalSteps ? 'Done' : 'Next →';
+    if (n === totalSteps) {
+      nextBtn.style.display = 'none';
+      populateStep3();
+    } else {
+      nextBtn.style.display = '';
+    }
+  }
+
+  nextBtn.addEventListener('click', () => {
+    if (currentStep < totalSteps) goToStep(currentStep + 1);
+  });
+  prevBtn.addEventListener('click', () => {
+    if (currentStep > 1) goToStep(currentStep - 1);
+  });
+  steps.forEach(s => s.addEventListener('click', () => goToStep(parseInt(s.dataset.step))));
+
+  /* ── Auto-generate ID from name ───────────────── */
+  projName.addEventListener('input', () => {
+    projId.value = projName.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  });
+
+  /* ── URL preview ──────────────────────────────── */
+  function updateUrlPreview() {
+    urlPreview.textContent = ghUser.value || 'your-username';
+    repoPreview.textContent = ghRepo.value || 'my-design-tokens';
+  }
+  ghUser.addEventListener('input', updateUrlPreview);
+  ghRepo.addEventListener('input', updateUrlPreview);
+
+  /* ── Color grid ───────────────────────────────── */
+  const colorGrid = document.getElementById('colorGrid');
+  const previewBar = document.getElementById('previewBar');
+
+  function buildColorGrid() {
+    colorGrid.innerHTML = '';
+    for (const [key, hex] of Object.entries(defaultColors)) {
+      const item = document.createElement('div');
+      item.className = 'color-item';
+      item.innerHTML = `
+        <label>${colorLabels[key] || key}</label>
+        <div class="color-swatch">
+          <input type="color" data-key="${key}" value="${colors[key]}">
+        </div>
+        <input type="text" class="color-hex" data-key="${key}" value="${colors[key]}" maxlength="7">
+      `;
+      colorGrid.appendChild(item);
+    }
+
+    // Event listeners
+    colorGrid.querySelectorAll('input[type="color"]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        colors[e.target.dataset.key] = e.target.value;
+        const hexInp = colorGrid.querySelector(`input[type="text"][data-key="${e.target.dataset.key}"]`);
+        if (hexInp) hexInp.value = e.target.value;
+        updatePreview();
+      });
+    });
+    colorGrid.querySelectorAll('input[type="text"].color-hex').forEach(inp => {
+      inp.addEventListener('input', e => {
+        const val = e.target.value.trim();
+        if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+          colors[e.target.dataset.key] = val;
+          const colorInp = colorGrid.querySelector(`input[type="color"][data-key="${e.target.dataset.key}"]`);
+          if (colorInp) colorInp.value = val;
+          updatePreview();
+        }
+      });
+    });
+  }
+
+  function updatePreview() {
+    previewBar.style.display = 'flex';
+    previewBar.innerHTML = '';
+    for (const [key, hex] of Object.entries(colors)) {
+      const swatch = document.createElement('div');
+      swatch.className = 'preview-swatch';
+      swatch.style.backgroundColor = hex;
+      swatch.title = `${key}: ${hex}`;
+      previewBar.appendChild(swatch);
+    }
+  }
+
+  buildColorGrid();
+
+  /* ── Step 3 population ────────────────────────── */
+  function populateStep3() {
+    const user = ghUser.value || 'your-username';
+    const repo = ghRepo.value || 'my-design-tokens';
+    document.getElementById('instrRepo').textContent = repo;
+    document.getElementById('instrGH').textContent = user;
+    document.getElementById('instrRepo2').textContent = repo;
+    document.getElementById('instrUrl').textContent = `https://${user}.github.io/${repo}`;
+  }
+
+  /* ── Download ZIP ─────────────────────────────── */
+  document.getElementById('downloadBtn').addEventListener('click', generateAndDownload);
+
+  function generateAndDownload() {
+    if (!BUILD_JS_CONTENT || !WORKFLOW_CONTENT) {
+      alert('Template files are still loading. Please wait a moment and try again.');
+      return;
+    }
+    const config = {
+      id: projId.value || 'my-project',
+      name: projName.value || 'My Project',
+      description: document.getElementById('projDesc').value || '',
+      paletteKeys: { ...colors },
+      semanticMap: {
+        light: {
+          'content-default': '550', 'content-strong': '600', 'content-subtle': '350', 'content-faint': '200',
+          'component-bg-default': '500', 'component-bg-hover': '550', 'component-bg-pressed': '600',
+          'component-outline-default': '300', 'component-outline-hover': '350', 'component-outline-pressed': '450',
+          'component-separator': '100',
+          'container-bg': '50', 'container-hover': '75', 'container-pressed': '100',
+          'container-outline': '200', 'container-separator': '100',
+          'on-component': 'fixed-white', 'on-container': '600'
+        },
+        dark: {
+          'content-default': '150', 'content-strong': '100', 'content-subtle': '200', 'content-faint': '350',
+          'component-bg-default': '450', 'component-bg-hover': '350', 'component-bg-pressed': '300',
+          'component-outline-default': '450', 'component-outline-hover': '350', 'component-outline-pressed': '300',
+          'component-separator': '750',
+          'container-bg': '800', 'container-hover': '750', 'container-pressed': '700',
+          'container-outline': '550', 'container-separator': '750',
+          'on-component': 'fixed-white', 'on-container': '100'
+        }
+      },
+      surfacePaletteSrc: {
+        bright: 'greyscale', base: 'greyscale', dim: 'greyscale', deep: 'greyscale',
+        accent: 'monochromatic', container: 'greyscale', 'over-container': 'greyscale',
+        float: 'greyscale', inverse: 'greyscale'
+      }
+    };
+
+    // Build file contents
+    const files = {
+      'config.json': JSON.stringify(config, null, 2),
+      'package.json': JSON.stringify({
+        name: config.id,
+        version: '1.0.0',
+        private: true,
+        description: `Design Token Forge project — ${config.name}`,
+        type: 'module',
+        scripts: { build: 'node build.js' },
+        engines: { node: '>=18' }
+      }, null, 2),
+      'build.js': BUILD_JS_CONTENT,
+      '.github/workflows/deploy-tokens.yml': WORKFLOW_CONTENT,
+      '.gitignore': 'node_modules/\ndist/\n.DS_Store\n',
+      'README.md': generateReadme(config)
+    };
+
+    downloadAsZip(files, config.id + '-starter');
+  }
+
+  function generateReadme(config) {
+    const user = ghUser.value || 'your-username';
+    const repo = ghRepo.value || 'my-design-tokens';
+    return `# ${config.name} — Design Token Forge
+
+Custom design tokens that sync directly to Figma via the DTF plugin.
+
+## Quick Start
+
+1. Push this repo to GitHub
+2. Enable GitHub Pages (Settings → Pages → Source: **GitHub Actions**)
+3. Open the DTF plugin in Figma → Server URL → \`https://${user}.github.io/${repo}\`
+4. Click **Create Variables** to sync
+
+## Updating Tokens
+
+Edit \`config.json\` to change colors or mappings, then push to \`main\`.  
+GitHub Actions builds automatically and the Figma plugin detects changes.
+
+## Files
+
+| File | Purpose |
+|------|---------|
+| \`config.json\` | Brand colors, semantic mappings, surface config |
+| \`build.js\` | Generates Figma-compatible token JSON from config |
+| \`.github/workflows/deploy-tokens.yml\` | Auto-deploys to GitHub Pages on push |
+
+## Deploy URL
+
+\`https://${user}.github.io/${repo}\`
+`;
+  }
+
+  /* ── File contents loaded from assets ──────────── */
+  let BUILD_JS_CONTENT = '';
+  let WORKFLOW_CONTENT = '';
+
+  // Load template files from sibling assets
+  (async function loadTemplates() {
+    try {
+      const buildResp = await fetch('_onboard-build-template.js');
+      if (buildResp.ok) BUILD_JS_CONTENT = await buildResp.text();
+    } catch(e) { console.warn('Could not load build template:', e); }
+    try {
+      const wfResp = await fetch('_onboard-workflow-template.yml');
+      if (wfResp.ok) WORKFLOW_CONTENT = await wfResp.text();
+    } catch(e) { console.warn('Could not load workflow template:', e); }
+  })();
+
+  /* REMOVED old inlined content — now loaded via fetch above */
+  const PLACEHOLDER_REMOVED = true;
+
+  /* ── ZIP generation (using JSZip-like approach with Blob) ── */
+  /* Minimal ZIP generator — no dependencies */
+  function downloadAsZip(files, zipName) {
+    // Use a simple approach: generate individual file downloads or
+    // use the Compression Streams API. For simplicity, create a
+    // tar-like bundle downloadable as individual files.
+    // Actually, let's use a proper minimal ZIP implementation.
+
+    const encoder = new TextEncoder();
+    const parts = [];
+    const centralDir = [];
+    let offset = 0;
+
+    for (const [filePath, content] of Object.entries(files)) {
+      const fileData = encoder.encode(content);
+      const fileName = encoder.encode(filePath);
+      const crc = crc32(fileData);
+
+      // Local file header
+      const localHeader = new Uint8Array(30 + fileName.length);
+      const lv = new DataView(localHeader.buffer);
+      lv.setUint32(0, 0x04034b50, true);  // signature
+      lv.setUint16(4, 20, true);           // version needed
+      lv.setUint16(6, 0, true);            // flags
+      lv.setUint16(8, 0, true);            // compression (stored)
+      lv.setUint16(10, 0, true);           // mod time
+      lv.setUint16(12, 0, true);           // mod date
+      lv.setUint32(14, crc, true);         // crc32
+      lv.setUint32(18, fileData.length, true); // compressed size
+      lv.setUint32(22, fileData.length, true); // uncompressed size
+      lv.setUint16(26, fileName.length, true); // filename length
+      lv.setUint16(28, 0, true);           // extra field length
+      localHeader.set(fileName, 30);
+
+      // Central directory entry
+      const cdEntry = new Uint8Array(46 + fileName.length);
+      const cv = new DataView(cdEntry.buffer);
+      cv.setUint32(0, 0x02014b50, true);
+      cv.setUint16(4, 20, true);
+      cv.setUint16(6, 20, true);
+      cv.setUint16(8, 0, true);
+      cv.setUint16(10, 0, true);
+      cv.setUint16(12, 0, true);
+      cv.setUint16(14, 0, true);
+      cv.setUint32(16, crc, true);
+      cv.setUint32(20, fileData.length, true);
+      cv.setUint32(24, fileData.length, true);
+      cv.setUint16(28, fileName.length, true);
+      cv.setUint16(30, 0, true);
+      cv.setUint16(32, 0, true);
+      cv.setUint16(34, 0, true);
+      cv.setUint16(36, 0, true);
+      cv.setUint32(38, 0, true);
+      cv.setUint32(42, offset, true);
+      cdEntry.set(fileName, 46);
+
+      parts.push(localHeader);
+      parts.push(fileData);
+      centralDir.push(cdEntry);
+      offset += localHeader.length + fileData.length;
+    }
+
+    const cdOffset = offset;
+    let cdSize = 0;
+    for (const cd of centralDir) {
+      parts.push(cd);
+      cdSize += cd.length;
+    }
+
+    // End of central directory
+    const eocd = new Uint8Array(22);
+    const ev = new DataView(eocd.buffer);
+    ev.setUint32(0, 0x06054b50, true);
+    ev.setUint16(4, 0, true);
+    ev.setUint16(6, 0, true);
+    ev.setUint16(8, centralDir.length, true);
+    ev.setUint16(10, centralDir.length, true);
+    ev.setUint32(12, cdSize, true);
+    ev.setUint32(16, cdOffset, true);
+    ev.setUint16(20, 0, true);
+    parts.push(eocd);
+
+    const blob = new Blob(parts, { type: 'application/zip' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = zipName + '.zip';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function crc32(data) {
+    let crc = 0xFFFFFFFF;
+    for (let i = 0; i < data.length; i++) {
+      crc ^= data[i];
+      for (let j = 0; j < 8; j++) {
+        crc = (crc >>> 1) ^ (crc & 1 ? 0xEDB88320 : 0);
+      }
+    }
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+
+})();
+</script>
+</body>
+</html>

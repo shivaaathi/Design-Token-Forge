@@ -8,6 +8,9 @@
 
   /* ── Menu Data ──────────────────────────────────────────── */
   var NAV_ITEMS = [
+    { group: 'Get Started' },
+    { label: 'Start Your Own Project', href: 'onboard.html', hint: 'New' },
+    { sep: true },
     { group: 'Admin' },
     { label: 'Color System',    href: 'color-system.html',    hint: 'Live'        },
     { label: 'Token Editor',    href: 'editor.html',          hint: 'Editor'      },

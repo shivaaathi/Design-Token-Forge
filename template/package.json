@@ -1,0 +1,14 @@
+{
+  "name": "my-design-tokens",
+  "version": "1.0.0",
+  "private": true,
+  "description": "My custom Design Token Forge project — syncs tokens to Figma via GitHub Pages.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js --watch"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
