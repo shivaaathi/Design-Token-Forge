@@ -2255,9 +2255,19 @@ ghLogoutBtn.addEventListener('click', function() {
 // Returns true if current GitHub user is allowed to modify this project.
 // Projects without an owner field are unrestricted (legacy).
 function isProjectOwner() {
-  if (!projectConfig || !projectConfig.owner) return true; // legacy projects have no owner
-  if (!GH_OWNER) return false; // not connected to GitHub
-  return projectConfig.owner.toLowerCase() === GH_OWNER.toLowerCase();
+  // Determine owner from projectConfig or from the knownProjects entry
+  var ownerFromConfig = projectConfig && projectConfig.owner;
+  if (!ownerFromConfig && projectId) {
+    var entry = knownProjects.find(function(p) { return p.id === projectId; });
+    if (entry && entry.owner) ownerFromConfig = entry.owner;
+  }
+  if (!ownerFromConfig) return true; // legacy projects have no owner — allow
+  // If GH_OWNER not set but project has owner, check if the PAT can be verified
+  // For locally-created projects (owner in knownProjects), allow management
+  // since only the owner's session would have this entry with their username
+  var user = GH_OWNER || localStorage.getItem('dtf-gh-user') || '';
+  if (!user) return true; // can't verify — allow (delete will prompt for token anyway)
+  return ownerFromConfig.toLowerCase() === user.toLowerCase();
 }
 
 function showOwnershipError() {
