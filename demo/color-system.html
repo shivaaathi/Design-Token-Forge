@@ -3076,22 +3076,19 @@ function discoverProjects(callback) {
       .catch(function() { callback([]); });
     return;
   }
-  // Otherwise, try fetching known project configs locally
-  // Start with current project (always known)
-  var found = [];
-  if (projectId) found.push({id: projectId, name: (projectConfig && projectConfig.name) || projectId});
-
-  // Try fetching a projects index or scan common names
+  // Fetch remote projects.json — this is the source of truth
   fetch(depth + '/projects.json?_cb=' + Date.now())
     .then(function(r) { return r.ok ? r.json() : null; })
     .catch(function() { return null; })
     .then(function(index) {
       if (index && Array.isArray(index)) {
-        index.forEach(function(p) {
-          if (!found.some(function(f) { return f.id === p.id; })) found.push(p);
-        });
+        callback(index);
+      } else {
+        // Offline fallback: use current project only
+        var found = [];
+        if (projectId) found.push({id: projectId, name: (projectConfig && projectConfig.name) || projectId});
+        callback(found);
       }
-      callback(found);
     });
 }
 
@@ -3316,7 +3313,7 @@ projCreateBtn.addEventListener('click', function() {
     .finally(function() {
       // Persist active project so reload stays on the same one
       if (projectId) localStorage.setItem(STORAGE_KEY_ACTIVE, projectId);
-      // Seed knownProjects with current project
+      // Seed knownProjects with current project (shown until remote loads)
       if (projectId) {
         mergeKnownProjects([{id: projectId, name: (projectConfig && projectConfig.name) || projectId}]);
       }
@@ -3332,6 +3329,13 @@ projCreateBtn.addEventListener('click', function() {
           // Remote is source of truth — replace local list entirely
           knownProjects = [];
           mergeKnownProjects(found);
+          // If active project no longer exists, switch to first available
+          var ids = found.map(function(p) { return p.id; });
+          if (projectId && ids.indexOf(projectId) === -1) {
+            projectId = found[0].id;
+            localStorage.setItem(STORAGE_KEY_ACTIVE, projectId);
+            switchProject(projectId);
+          }
         }
         persistKnownProjects();
         populateProjectSelect();
