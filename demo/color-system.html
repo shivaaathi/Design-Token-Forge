@@ -2987,6 +2987,11 @@ function switchProject(newId) {
   SURF_PALETTE_SRC = JSON.parse(JSON.stringify(DEFAULT_SURF_SRC));
 
   fetch(depth + '/projects/' + newId + '/config.json?_cb=' + Date.now())
+    .then(function(r) {
+      // Fallback: try /{id}/config.json if projects/ path not found
+      if (!r.ok) return fetch(depth + '/' + newId + '/config.json?_cb=' + Date.now());
+      return r;
+    })
     .then(function(r) { return r.ok ? r.json() : null; })
     .catch(function() { return null; })
     .then(function(cfg) {
@@ -3277,6 +3282,10 @@ projCreateBtn.addEventListener('click', function() {
       if (targetId) {
         projectId = targetId;
         return fetch(depth + '/projects/' + projectId + '/config.json?_cb=' + Date.now())
+          .then(function(r) {
+            if (!r.ok) return fetch(depth + '/' + projectId + '/config.json?_cb=' + Date.now());
+            return r;
+          })
           .then(function(r) { return r.ok ? r.json() : null; })
           .catch(function() { return null; });
       }

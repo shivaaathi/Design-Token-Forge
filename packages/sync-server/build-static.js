@@ -299,6 +299,11 @@ async function main() {
     console.log('  ✓ config.json  → project configuration');
     // Also mirror to dist root for backward compat
     fs.copyFileSync(cfgDst, path.join(BASE_OUT_DIR, 'config.json'));
+    // Mirror to dist/projects/{id}/config.json (color-system.html fetches this path)
+    const projDistDir = path.join(BASE_OUT_DIR, 'projects', PROJECT_ID);
+    fs.mkdirSync(projDistDir, { recursive: true });
+    fs.copyFileSync(cfgDst, path.join(projDistDir, 'config.json'));
+    console.log('  ✓ projects/' + PROJECT_ID + '/config.json → for demo pages');
   }
 
   // ── Write per-project CSS to projects/{id}/ for local dev switching ──
