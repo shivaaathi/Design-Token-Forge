@@ -314,6 +314,7 @@ window.DTF = window.DTF || { onThemeChange: null };
   function doDelete(proj) {
     if (!confirm('Delete project "' + (proj.name || proj.id) + '"? This cannot be undone.')) return;
     if (!ghToken) { alert('Connect GitHub (PAT) in Color System to delete projects.'); return; }
+    var ghUser = localStorage.getItem('dtf-gh-user') || 'unknown';
     /* Recursively delete all files in the project folder */
     var dirPath = 'projects/' + proj.id;
     fetch(ghApiBase + '/contents/' + dirPath + '?ref=main', { headers: ghHdrs })
@@ -324,10 +325,14 @@ window.DTF = window.DTF || { onThemeChange: null };
           return fetch(ghApiBase + '/contents/' + f.path, {
             method: 'DELETE',
             headers: ghHdrs,
-            body: JSON.stringify({ message: 'Delete ' + f.path, sha: f.sha, branch: 'main' })
+            body: JSON.stringify({ message: 'Delete ' + f.path + ' [by ' + ghUser + ']', sha: f.sha, branch: 'main' })
           });
         });
         return Promise.all(delPromises);
+      })
+      .then(function(){
+        /* Write deletion log entry to projects/_log.json */
+        return _appendDeletionLog(proj, ghUser);
       })
       .then(function(){
         /* Mark deleted locally */
@@ -353,6 +358,25 @@ window.DTF = window.DTF || { onThemeChange: null };
         syncBtnLabel();
       })
       .catch(function(err){ alert('Delete failed. Check permissions.'); console.error(err); });
+  }
+
+  /* ── Append entry to projects/_log.json in the repo ── */
+  function _appendDeletionLog(proj, user) {
+    var logPath = 'projects/_log.json';
+    return fetch(ghApiBase + '/contents/' + logPath + '?ref=main', { headers: ghHdrs })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(file){
+        var log = [];
+        if (file && file.content) {
+          try { log = JSON.parse(atob(file.content.replace(/\n/g, ''))); } catch(e) { log = []; }
+        }
+        log.push({ action: 'delete', project: proj.id, name: proj.name || proj.id, owner: proj.owner || '', deletedBy: user, date: new Date().toISOString() });
+        var body = { message: 'Log deletion of ' + proj.id + ' by ' + user, content: btoa(JSON.stringify(log, null, 2)), branch: 'main' };
+        if (file && file.sha) body.sha = file.sha;
+        return fetch(ghApiBase + '/contents/' + logPath, {
+          method: 'PUT', headers: ghHdrs, body: JSON.stringify(body)
+        });
+      }).catch(function(e){ console.warn('[DTF] Deletion log write failed:', e); });
   }
 
   /* ── Initial load: populate from localStorage cache, then set button label ── */

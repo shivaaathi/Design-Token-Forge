@@ -3023,10 +3023,21 @@ function deleteProject() {
       return chain.then(function() {
         return ghDeleteFetch(dirPath + '/' + file.name, {
           method: 'DELETE',
-          body: { message: 'Delete project ' + delId + ': ' + file.name, sha: file.sha }
+          body: { message: 'Delete project ' + delId + ': ' + file.name + ' [by ' + ghUser + ']', sha: file.sha }
         });
       });
     }, Promise.resolve());
+  }).then(function() {
+    /* Write to deletion log (projects/_log.json) */
+    var logPath = '/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects/_log.json';
+    return ghDeleteFetch(logPath).then(function(file) {
+      var log = [];
+      if (file && file.content) { try { log = JSON.parse(atob(file.content.replace(/\n/g, ''))); } catch(e) {} }
+      log.push({ action: 'delete', project: delId, name: displayName, owner: (proj && proj.owner) || '', deletedBy: ghUser, date: new Date().toISOString() });
+      var body = { message: 'Log deletion of ' + delId + ' by ' + ghUser, content: btoa(JSON.stringify(log, null, 2)), branch: 'main' };
+      if (file && file.sha) body.sha = file.sha;
+      return ghDeleteFetch(logPath, { method: 'PUT', body: body });
+    }).catch(function(e) { console.warn('[DTF] Deletion log write failed:', e); });
   }).catch(function(e) {
     console.warn('[DTF] GitHub delete failed:', e.message);
   });
