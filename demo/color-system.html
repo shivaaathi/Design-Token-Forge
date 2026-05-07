@@ -2907,7 +2907,7 @@ function slugify(str) {
 
 function getVisibleProjects() {
   // Admin (upstream owner) sees all; others see only their own projects
-  var user = GH_OWNER ? GH_OWNER.toLowerCase() : '';
+  var user = (GH_OWNER || localStorage.getItem('dtf-gh-user') || '').toLowerCase();
   if (!user || user === GH_UPSTREAM_OWNER.toLowerCase()) return knownProjects;
   return knownProjects.filter(function(p) {
     if (!p.owner) return false; // legacy projects without owner — only admin sees them
