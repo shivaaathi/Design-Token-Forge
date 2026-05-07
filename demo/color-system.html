@@ -3328,7 +3328,11 @@ projCreateBtn.addEventListener('click', function() {
 
       // Discover additional projects (async — updates dropdown when done)
       discoverProjects(function(found) {
-        mergeKnownProjects(found);
+        if (found && found.length) {
+          // Remote is source of truth — replace local list entirely
+          knownProjects = [];
+          mergeKnownProjects(found);
+        }
         persistKnownProjects();
         populateProjectSelect();
       });
