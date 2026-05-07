@@ -306,6 +306,7 @@
 (function() {
   /* ── Config ─────────────────────────────────────── */
   const GH_REPO_NAME = 'Design-Token-Forge';
+  const GH_REPO_OWNER = 'sridhar-ravi-2917'; // upstream repo owner
   const GH_API = 'https://api.github.com';
 
   /* ── State ──────────────────────────────────────── */
@@ -451,26 +452,46 @@
       const user = await userResp.json();
       ghUsername = user.login;
 
-      // 2. Check access to Design-Token-Forge repo
-      const repoResp = await fetch(GH_API + '/repos/' + user.login + '/' + GH_REPO_NAME, {
+      // 2. Check access to Design-Token-Forge repo (try user's own first, then upstream)
+      let repoOwner = '';
+      let hasAccess = false;
+
+      // Try user's own repo first (fork scenario)
+      const ownResp = await fetch(GH_API + '/repos/' + user.login + '/' + GH_REPO_NAME, {
         headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
       });
-
-      if (repoResp.ok) {
-        const repo = await repoResp.json();
+      if (ownResp.ok) {
+        const repo = await ownResp.json();
         if (repo.permissions && repo.permissions.push) {
-          ghOwner = user.login;
-          ghPat = token;
-          repoVerified = true;
-          ghStatusEl.textContent = '✓ Connected as ' + user.login + ' — write access to ' + user.login + '/' + GH_REPO_NAME;
-          ghStatusEl.className = 'gh-status ok';
-        } else {
-          throw new Error('You have read access but not write access. Ask your team lead to add you as a collaborator.');
+          repoOwner = user.login;
+          hasAccess = true;
         }
+      }
+
+      // If not found under user, check the upstream repo (collaborator scenario)
+      if (!hasAccess) {
+        const upstreamResp = await fetch(GH_API + '/repos/' + GH_REPO_OWNER + '/' + GH_REPO_NAME, {
+          headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+        });
+        if (upstreamResp.ok) {
+          const repo = await upstreamResp.json();
+          if (repo.permissions && repo.permissions.push) {
+            repoOwner = GH_REPO_OWNER;
+            hasAccess = true;
+          } else {
+            throw new Error('You can see the repo but don\'t have write access. Ask your team lead to add you as a collaborator.');
+          }
+        }
+      }
+
+      if (hasAccess) {
+        ghOwner = repoOwner;
+        ghPat = token;
+        repoVerified = true;
+        ghStatusEl.textContent = '✓ Connected as ' + user.login + ' — write access to ' + repoOwner + '/' + GH_REPO_NAME;
+        ghStatusEl.className = 'gh-status ok';
       } else {
-        // Try the upstream repo (maybe it's under a different owner)
-        // Search for any fork of Design-Token-Forge they have push to
-        throw new Error('Repository "' + user.login + '/' + GH_REPO_NAME + '" not found. You need your own fork or write access. Ask your team lead to add you as a collaborator on the main repo.');
+        throw new Error('No write access to ' + GH_REPO_OWNER + '/' + GH_REPO_NAME + '. Ask your team lead to add you as a collaborator.');
       }
     } catch(err) {
       ghStatusEl.textContent = '✗ ' + err.message;
