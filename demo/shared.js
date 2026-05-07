@@ -79,7 +79,7 @@ window.DTF = window.DTF || { onThemeChange: null };
     var filtered = list.filter(function(p) { return deleted.indexOf(p.id) === -1; });
     var ghUser = (localStorage.getItem('dtf-gh-user') || '').toLowerCase();
     if (ghUser && ghUser !== upstreamOwner.toLowerCase()) {
-      filtered = filtered.filter(function(p) { return p.owner && p.owner.toLowerCase() === ghUser; });
+      filtered = filtered.filter(function(p) { return !p.owner || p.owner.toLowerCase() === ghUser; });
     }
     return filtered;
   }
@@ -94,18 +94,38 @@ window.DTF = window.DTF || { onThemeChange: null };
       ddPanel.appendChild(empty);
       return;
     }
-    list.forEach(function(proj) {
-      var row = document.createElement('button');
-      row.className = 'nav-proj-item';
-      row.type = 'button';
-      if (proj.id === currentId) row.setAttribute('data-active', '');
 
-      var nameEl = document.createElement('span');
-      nameEl.className = 'nav-proj-item-name';
-      nameEl.textContent = proj.name || proj.id;
-      row.appendChild(nameEl);
+    var ghUser = (localStorage.getItem('dtf-gh-user') || '').toLowerCase();
+    var mine = list.filter(function(p) { return !p.owner || p.owner.toLowerCase() === ghUser; });
+    var others = list.filter(function(p) { return p.owner && p.owner.toLowerCase() !== ghUser; });
 
-      /* Action buttons (rename + delete) */
+    mine.forEach(function(proj) { ddPanel.appendChild(_buildRow(proj, true)); });
+
+    if (others.length) {
+      var sep = document.createElement('div');
+      sep.className = 'nav-proj-sep';
+      ddPanel.appendChild(sep);
+      var groupLabel = document.createElement('div');
+      groupLabel.className = 'nav-proj-group-label';
+      groupLabel.textContent = 'Others\u2019 Projects';
+      ddPanel.appendChild(groupLabel);
+      others.forEach(function(proj) { ddPanel.appendChild(_buildRow(proj, false)); });
+    }
+  }
+
+  function _buildRow(proj, isOwner) {
+    var row = document.createElement('button');
+    row.className = 'nav-proj-item' + (isOwner ? '' : ' nav-proj-item-muted');
+    row.type = 'button';
+    if (proj.id === currentId) row.setAttribute('data-active', '');
+
+    var nameEl = document.createElement('span');
+    nameEl.className = 'nav-proj-item-name';
+    nameEl.textContent = proj.name || proj.id;
+    row.appendChild(nameEl);
+
+    if (isOwner) {
+      /* Action buttons (rename + delete) — only for own projects */
       var actions = document.createElement('span');
       actions.className = 'nav-proj-item-actions';
 
@@ -132,15 +152,15 @@ window.DTF = window.DTF || { onThemeChange: null };
       actions.appendChild(renBtn);
       actions.appendChild(delBtn);
       row.appendChild(actions);
+    }
 
-      /* Click row → switch project */
-      row.addEventListener('click', function() {
-        selectProject(proj.id);
-        closePanel();
-      });
-
-      ddPanel.appendChild(row);
+    /* Click row → switch project */
+    row.addEventListener('click', function() {
+      selectProject(proj.id);
+      closePanel();
     });
+
+    return row;
   }
 
   /* ── Fetch live projects — prefer projects.json (fast, no rate limit), fallback to API ── */
@@ -312,9 +332,17 @@ window.DTF = window.DTF || { onThemeChange: null };
 
   /* ── Delete project (API call) ── */
   function doDelete(proj) {
-    if (!confirm('Delete project "' + (proj.name || proj.id) + '"? This cannot be undone.')) return;
     if (!ghToken) { alert('Connect GitHub (PAT) in Color System to delete projects.'); return; }
-    var ghUser = localStorage.getItem('dtf-gh-user') || 'unknown';
+    var ghUser = localStorage.getItem('dtf-gh-user') || '';
+
+    /* Only the project owner (or upstream admin) can delete */
+    var projOwner = (proj.owner || '').toLowerCase();
+    if (projOwner && ghUser.toLowerCase() !== projOwner && ghUser.toLowerCase() !== upstreamOwner.toLowerCase()) {
+      alert('You cannot delete this project. It belongs to "' + (proj.owner) + '".');
+      return;
+    }
+
+    if (!confirm('Delete project "' + (proj.name || proj.id) + '"? This cannot be undone.')) return;
 
     /* Immediately update UI (don't wait for API) */
     cachedList = cachedList.filter(function(p){ return p.id !== proj.id; });

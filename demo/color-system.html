@@ -2914,8 +2914,7 @@ function getVisibleProjects() {
   var user = (GH_OWNER || localStorage.getItem('dtf-gh-user') || '').toLowerCase();
   if (!user || user === GH_UPSTREAM_OWNER.toLowerCase()) return knownProjects;
   return knownProjects.filter(function(p) {
-    if (!p.owner) return false; // legacy projects without owner — only admin sees them
-    return p.owner.toLowerCase() === user;
+    return !p.owner || p.owner.toLowerCase() === user;
   });
 }
 
