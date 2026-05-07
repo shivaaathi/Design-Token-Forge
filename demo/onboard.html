@@ -488,6 +488,9 @@
         repoVerified = true;
         ghStatusEl.textContent = '✓ Connected as ' + user.login + ' — write access to ' + repoOwner + '/' + GH_REPO_NAME;
         ghStatusEl.className = 'gh-status ok';
+        ghConnectBtn.disabled = true;
+        ghConnectBtn.textContent = 'Connected ✓';
+        ghConnectBtn.style.opacity = '0.6';
       } else {
         throw new Error('You don\'t have write access yet. Ask your team lead to add "' + user.login + '" as a collaborator on github.com/' + GH_REPO_OWNER + '/' + GH_REPO_NAME + '.');
       }
@@ -495,7 +498,6 @@
       ghStatusEl.textContent = '✗ ' + err.message;
       ghStatusEl.className = 'gh-status err';
       repoVerified = false;
-    } finally {
       ghConnectBtn.disabled = false;
       ghConnectBtn.textContent = 'Connect';
     }
@@ -625,6 +627,16 @@
       document.getElementById('successUrl').textContent = baseUrl;
       document.getElementById('successFigmaUrl').textContent = baseUrl;
       document.getElementById('successProjName').textContent = name;
+
+      /* Activate the new project in localStorage so it's immediately selected */
+      localStorage.setItem('dtf-active-project', slug);
+      const knownRaw = localStorage.getItem('dtf-known-projects');
+      let known = [];
+      try { known = JSON.parse(knownRaw) || []; } catch(e) {}
+      if (!known.some(p => p.id === slug)) {
+        known.push({ id: slug, name: name });
+        localStorage.setItem('dtf-known-projects', JSON.stringify(known));
+      }
 
     } catch (err) {
       errorBox.textContent = '❌ ' + err.message;
