@@ -2987,13 +2987,9 @@ function deleteProject() {
   localStorage.removeItem(STORAGE_KEY_SAVE_TS + '-' + delId);
 
   // Immediately redirect/switch — don't wait for API
-  // Check remaining projects owned by THIS user (not getVisibleProjects which needs GH_OWNER)
-  var delOwner = (projectConfig && projectConfig.owner) ? projectConfig.owner.toLowerCase() : '';
-  var myRemaining = knownProjects.filter(function(p) {
-    return p.owner && p.owner.toLowerCase() === delOwner;
-  });
-  if (myRemaining.length > 0) {
-    switchProject(myRemaining[0].id);
+  var remaining = getVisibleProjects();
+  if (remaining.length > 0) {
+    switchProject(remaining[0].id);
   } else {
     projectId = '';
     localStorage.removeItem(STORAGE_KEY_ACTIVE);
