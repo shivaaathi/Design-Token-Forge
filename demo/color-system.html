@@ -2919,14 +2919,25 @@ function renameProject() {
 }
 
 // ── Delete Project ───────────────────────────────────────
+var GH_UPSTREAM_OWNER = 'sridhar-ravi-2917'; // projects always live in the upstream repo
+
 function deleteProject() {
   if (!projectId || knownProjects.length <= 1) return;
   if (!isProjectOwner()) { alert('You cannot delete this project. It belongs to "' + (projectConfig && projectConfig.owner || 'another user') + '".'); return; }
-  if (!ghPat) { alert('Please connect to GitHub first (Deploy section) so the project can be permanently removed.'); return; }
   var proj = knownProjects.find(function(p) { return p.id === projectId; });
   var displayName = proj ? (proj.name || proj.id) : projectId;
+
+  // If no token yet, ask for it inline
+  var token = ghPat;
+  if (!token) {
+    token = prompt('To permanently delete "' + displayName + '", enter your GitHub personal access token (repo scope):');
+    if (!token || !token.trim()) return;
+    token = token.trim();
+  }
+
   var confirmed = confirm('Delete project "' + displayName + '"?\n\nThis will permanently remove the project from the repository for everyone. This cannot be undone.');
   if (!confirmed) return;
+
   var delId = projectId;
   // Remove from knownProjects
   knownProjects = knownProjects.filter(function(p) { return p.id !== delId; });
@@ -2938,25 +2949,47 @@ function deleteProject() {
   localStorage.removeItem(STORAGE_KEY_TOKENS + '-' + delId);
   localStorage.removeItem(STORAGE_KEY_CONFIG + '-' + delId);
   localStorage.removeItem(STORAGE_KEY_SAVE_TS + '-' + delId);
-  // Delete ALL files in the project directory from GitHub
-  var dirPath = '/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/projects/' + delId;
-  ghFetch(dirPath).then(function(files) {
+
+  // Delete ALL files in the project directory from the UPSTREAM repo
+  var dirPath = '/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects/' + delId;
+  function ghDeleteFetch(endpoint, opts) {
+    opts = opts || {};
+    var url = endpoint.startsWith('http') ? endpoint : GH_API + endpoint;
+    return fetch(url, {
+      method: opts.method || 'GET',
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: opts.body ? JSON.stringify(opts.body) : undefined
+    }).then(function(r) {
+      if (!r.ok) return r.json().then(function(d) { throw new Error(d.message || r.status); });
+      return r.json();
+    });
+  }
+
+  ghDeleteFetch(dirPath).then(function(files) {
     if (!Array.isArray(files)) files = [files];
-    // Delete files sequentially to avoid race conditions
     return files.reduce(function(chain, file) {
       return chain.then(function() {
-        return ghFetch(dirPath + '/' + file.name, {
+        return ghDeleteFetch(dirPath + '/' + file.name, {
           method: 'DELETE',
           body: { message: 'Delete project ' + delId + ': ' + file.name, sha: file.sha }
         });
       });
     }, Promise.resolve());
   }).then(function() {
-    showSaveMsg('Project "' + displayName + '" permanently deleted from GitHub');
+    showSaveMsg('Project "' + displayName + '" permanently deleted');
   }).catch(function(e) {
     console.warn('[DTF] GitHub delete failed:', e.message);
-    showSaveMsg('Local delete OK — GitHub removal failed: ' + e.message);
+    showSaveMsg('Delete failed: ' + e.message);
+    // Rollback local state since remote delete failed
+    if (!knownProjects.some(function(p) { return p.id === delId; })) {
+      knownProjects.push({id: delId, name: displayName});
+      persistKnownProjects();
+    }
+    deletedProjectIds = deletedProjectIds.filter(function(id) { return id !== delId; });
+    localStorage.setItem(STORAGE_KEY_DELETED, JSON.stringify(deletedProjectIds));
+    populateProjectSelect();
   });
+
   // Switch to first remaining project
   var nextId = knownProjects.length > 0 ? knownProjects[0].id : '';
   if (nextId) {
