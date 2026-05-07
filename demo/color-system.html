@@ -3037,6 +3037,19 @@ function deleteProject() {
       if (file && file.sha) body.sha = file.sha;
       return ghDeleteFetch(logPath, { method: 'PUT', body: body });
     }).catch(function(e) { console.warn('[DTF] Deletion log write failed:', e); });
+  }).then(function() {
+    /* Remove from projects.json */
+    var idxPath = '/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects.json';
+    return ghDeleteFetch(idxPath + '?ref=main').then(function(file) {
+      if (!file || !file.content) return;
+      var idx = [];
+      try { idx = JSON.parse(atob(file.content.replace(/\n/g, ''))); } catch(e) { return; }
+      var filtered = idx.filter(function(p) { return p.id !== delId; });
+      if (filtered.length === idx.length) return;
+      var body = { message: 'Remove ' + delId + ' from projects.json', content: btoa(unescape(encodeURIComponent(JSON.stringify(filtered, null, 2) + '\n'))), branch: 'main' };
+      if (file.sha) body.sha = file.sha;
+      return ghDeleteFetch(idxPath, { method: 'PUT', body: body });
+    }).catch(function(e) { console.warn('[DTF] projects.json removal failed:', e); });
   }).catch(function(e) {
     console.warn('[DTF] GitHub delete failed:', e.message);
   });
@@ -3141,20 +3154,26 @@ projSelect.addEventListener('change', function() {
 projSelect.addEventListener('mousedown', function() {
   discoverProjectsLive(function(found) {
     if (found && found.length) {
+      var remoteIds = found.map(function(p) { return p.id; });
+      var localOnly = knownProjects.filter(function(p) { return remoteIds.indexOf(p.id) === -1; });
       knownProjects = [];
       mergeKnownProjects(found);
+      if (localOnly.length) mergeKnownProjects(localOnly);
       persistKnownProjects();
       populateProjectSelect();
     }
   });
 });
 
-// Live project discovery via GitHub API (bypasses CDN cache)
+// Live project discovery — if PAT available use API (always fresh), else static json
 function discoverProjectsLive(callback) {
   var token = ghPat || localStorage.getItem('dtf-gh-pat') || '';
-  var headers = token
-    ? { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
-    : { 'Accept': 'application/vnd.github+json' };
+  if (!token) {
+    // No PAT — use static projects.json (no rate limit), localStorage merge handles new projects
+    discoverProjects(callback);
+    return;
+  }
+  var headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
   // Fetch projects/ directory listing from Git repo directly
   fetch('https://api.github.com/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects?ref=main&_cb=' + Date.now(), { headers: headers })
     .then(function(r) { return r.ok ? r.json() : null; })
@@ -3364,11 +3383,26 @@ projCreateBtn.addEventListener('click', function() {
     }
   })
   .then(function() {
+    /* Also update projects.json index so dropdown finds the new project */
+    return ghFetch('/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects.json?ref=main')
+      .then(function(idxFile) {
+        var idx = [];
+        var idxSha = idxFile.sha || null;
+        try { idx = JSON.parse(atob(idxFile.content.replace(/\\n/g, ''))); } catch(e) {}
+        if (!idx.some(function(p){ return p.id === slug; })) {
+          idx.push({ id: slug, name: name, owner: GH_OWNER, description: newConfig.description || '' });
+          var body = { message: 'Add ' + slug + ' to projects.json', content: btoa(unescape(encodeURIComponent(JSON.stringify(idx, null, 2) + '\\n'))), branch: 'main' };
+          if (idxSha) body.sha = idxSha;
+          return ghFetch('/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects.json', { method: 'PUT', body: body });
+        }
+      }).catch(function(e) { console.warn('[DTF] projects.json update failed:', e); });
+  })
+  .then(function() {
     // Success — add to known projects and switch
     // Clear from deleted list in case this slug was previously deleted
     deletedProjectIds = deletedProjectIds.filter(function(id) { return id !== slug; });
     localStorage.setItem(STORAGE_KEY_DELETED, JSON.stringify(deletedProjectIds));
-    knownProjects.push({id: slug, name: name});
+    knownProjects.push({id: slug, name: name, owner: GH_OWNER});
     persistKnownProjects();
     projDialogBackdrop.classList.remove('open');
     switchProject(slug);
@@ -3441,15 +3475,14 @@ projCreateBtn.addEventListener('click', function() {
       // Discover additional projects (async — updates dropdown when done)
       discoverProjectsLive(function(found) {
         if (found && found.length) {
-          // Remote is source of truth — but preserve the active project if not in remote yet
+          // Remote is source of truth — but preserve ALL local-only projects not yet in remote
           var remoteIds = found.map(function(p) { return p.id; });
-          var activeEntry = null;
-          if (projectId && remoteIds.indexOf(projectId) === -1) {
-            activeEntry = knownProjects.find(function(p) { return p.id === projectId; });
-          }
+          var localOnly = knownProjects.filter(function(p) {
+            return remoteIds.indexOf(p.id) === -1;
+          });
           knownProjects = [];
           mergeKnownProjects(found);
-          if (activeEntry) mergeKnownProjects([activeEntry]);
+          if (localOnly.length) mergeKnownProjects(localOnly);
           // If active project no longer exists, switch to first available
           var ids = knownProjects.map(function(p) { return p.id; });
           if (projectId && ids.indexOf(projectId) === -1) {

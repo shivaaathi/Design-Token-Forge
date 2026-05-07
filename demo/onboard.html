@@ -569,6 +569,25 @@
         const err = await commitResp.json();
         throw new Error(err.message || 'Failed to commit config file');
       }
+
+      /* Step 1b: Update projects.json index so dropdown finds the new project */
+      try {
+        const idxResp = await fetch(`${GH_API}/repos/${ghOwner}/${GH_REPO_NAME}/contents/projects.json?ref=main`, { headers });
+        let idx = [];
+        let idxSha = null;
+        if (idxResp.ok) {
+          const idxFile = await idxResp.json();
+          idxSha = idxFile.sha;
+          idx = JSON.parse(atob(idxFile.content.replace(/\n/g, '')));
+        }
+        if (!idx.some(p => p.id === slug)) {
+          idx.push({ id: slug, name: name, owner: ghUsername, description: 'Design tokens for ' + name });
+          const idxBody = { message: 'Add ' + slug + ' to projects.json', content: btoa(unescape(encodeURIComponent(JSON.stringify(idx, null, 2) + '\n'))), branch: 'main' };
+          if (idxSha) idxBody.sha = idxSha;
+          await fetch(`${GH_API}/repos/${ghOwner}/${GH_REPO_NAME}/contents/projects.json`, { method: 'PUT', headers, body: JSON.stringify(idxBody) });
+        }
+      } catch(e) { console.warn('[DTF] projects.json update failed (non-critical):', e); }
+
       setProgress('ps-commit', 'done');
 
       /* Step 2: Trigger deploy workflow */
