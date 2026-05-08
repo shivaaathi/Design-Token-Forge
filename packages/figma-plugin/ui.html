@@ -361,7 +361,7 @@
   <summary>Server URL</summary>
   <div class="server-config-inner">
     <div class="server-url-row">
-      <input type="text" id="serverUrlInput" placeholder="https://your-username.github.io/Design-Token-Forge" spellcheck="false">
+      <input type="text" id="serverUrlInput" placeholder="https://sridhar-ravi-2917.github.io/Design-Token-Forge" spellcheck="false">
       <button class="btn-url-save" id="saveUrlBtn">Save</button>
     </div>
     <div class="server-presets">
@@ -1128,15 +1128,7 @@
     setServerUrl('http://localhost:9500');
   });
   document.getElementById('presetGH').addEventListener('click', function() {
-    var current = serverUrlInput.value.trim();
-    // If already has a github.io URL, keep it; otherwise prompt with placeholder
-    if (current.indexOf('github.io') !== -1) {
-      setServerUrl(current);
-    } else {
-      serverUrlInput.value = 'https://your-username.github.io/Design-Token-Forge';
-      serverUrlInput.focus();
-      serverUrlInput.select();
-    }
+    setServerUrl('https://sridhar-ravi-2917.github.io/Design-Token-Forge');
   });
 
   /* ── Project selector ──────────────────────────────── */
