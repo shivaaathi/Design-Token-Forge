@@ -2856,14 +2856,19 @@ function doInitialRender() {
   var wrap = document.createElement('div');
   wrap.className = 'nav-project';
   wrap.innerHTML = '<span class="nav-project-label">Project</span>'
-    + '<select id="projSelect" title="Switch active project"></select>'
+    + '<div class="nav-proj-wrap">'
+    + '  <button class="nav-proj-btn" type="button" id="projDropBtn">\u2026</button>'
+    + '  <div class="nav-proj-panel" id="projDropPanel"></div>'
+    + '</div>'
     + '<button class="nav-project-action" id="projRenameBtn" type="button" title="Rename project"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 114 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>'
     + '<button class="nav-project-action nav-project-del" id="projDeleteBtn" type="button" title="Delete project"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>'
     + '<button class="nav-project-new" id="projNewBtn" type="button">+ New</button>';
   if (nav && toggle) nav.insertBefore(wrap, toggle);
   else if (nav) nav.appendChild(wrap);
 })();
-var projSelect = document.getElementById('projSelect');
+var projDropBtn = document.getElementById('projDropBtn');
+var projDropPanel = document.getElementById('projDropPanel');
+var projPanelOpen = false;
 var projInfo = null; /* no longer shown — path was low value */
 var projNewBtn = document.getElementById('projNewBtn');
 var projRenameBtn = document.getElementById('projRenameBtn');
@@ -2920,16 +2925,75 @@ function getVisibleProjects() {
 
 function populateProjectSelect() {
   var visible = getVisibleProjects();
-  var opts = visible.map(function(p) {
-    return '<option value="' + p.id + '"' + (p.id === projectId ? ' selected' : '') + '>' + escHtml(p.name || p.id) + '</option>';
-  }).join('');
-  projSelect.innerHTML = opts || '<option>(no projects)</option>';
+  // Update button label
+  var active = visible.find(function(p) { return p.id === projectId; });
+  projDropBtn.textContent = active ? (active.name || active.id) : (projectId || '\u2026');
+  // Render panel items
+  projDropPanel.innerHTML = '';
+  if (!visible.length) {
+    var empty = document.createElement('div');
+    empty.className = 'nav-proj-loading';
+    empty.textContent = 'No projects';
+    projDropPanel.appendChild(empty);
+  } else {
+    visible.forEach(function(p) {
+      var row = document.createElement('button');
+      row.className = 'nav-proj-item';
+      row.type = 'button';
+      if (p.id === projectId) row.setAttribute('data-active', '');
+      var nameEl = document.createElement('span');
+      nameEl.className = 'nav-proj-item-name';
+      nameEl.textContent = p.name || p.id;
+      row.appendChild(nameEl);
+      row.addEventListener('click', function() {
+        closeProjPanel();
+        if (p.id !== projectId) switchProject(p.id);
+      });
+      projDropPanel.appendChild(row);
+    });
+  }
   // Disable rename/delete when none selected or not the owner
   var canManage = visible.length > 0 && projectId && isProjectOwner();
   var canDelete = visible.length > 0 && projectId && isProjectOwner();
   if (projRenameBtn) projRenameBtn.disabled = !canManage;
   if (projDeleteBtn) projDeleteBtn.disabled = !canDelete;
 }
+
+function openProjPanel() {
+  projPanelOpen = true;
+  projDropPanel.setAttribute('data-open', '');
+  // Show loading, then fetch fresh
+  projDropPanel.innerHTML = '<div class="nav-proj-loading">Loading\u2026</div>';
+  discoverProjectsLive(function(found) {
+    if (!projPanelOpen) return;
+    if (found && found.length) {
+      var remoteIds = found.map(function(p) { return p.id; });
+      var localOnly = knownProjects.filter(function(p) { return remoteIds.indexOf(p.id) === -1; });
+      knownProjects = [];
+      mergeKnownProjects(found);
+      if (localOnly.length) mergeKnownProjects(localOnly);
+      persistKnownProjects();
+    }
+    populateProjectSelect();
+  });
+}
+
+function closeProjPanel() {
+  projPanelOpen = false;
+  projDropPanel.removeAttribute('data-open');
+}
+
+projDropBtn.addEventListener('click', function(e) {
+  e.stopPropagation();
+  if (projPanelOpen) closeProjPanel();
+  else openProjPanel();
+});
+document.addEventListener('click', function(e) {
+  if (projPanelOpen && !projDropPanel.parentElement.contains(e.target)) closeProjPanel();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && projPanelOpen) closeProjPanel();
+});
 
 // Sync the global localStorage keys so shared.js and other pages pick up the active project's tokens
 function syncGlobalKeys() {
@@ -3145,25 +3209,6 @@ function fullRerender() {
   updateSaveIndicator();
   syncGlobalKeys();
 }
-
-projSelect.addEventListener('change', function() {
-  switchProject(projSelect.value);
-});
-
-// Re-fetch projects from remote every time the dropdown is opened
-projSelect.addEventListener('mousedown', function() {
-  discoverProjectsLive(function(found) {
-    if (found && found.length) {
-      var remoteIds = found.map(function(p) { return p.id; });
-      var localOnly = knownProjects.filter(function(p) { return remoteIds.indexOf(p.id) === -1; });
-      knownProjects = [];
-      mergeKnownProjects(found);
-      if (localOnly.length) mergeKnownProjects(localOnly);
-      persistKnownProjects();
-      populateProjectSelect();
-    }
-  });
-});
 
 // Live project discovery — if PAT available use API (always fresh), else static json
 function discoverProjectsLive(callback) {
