@@ -17,13 +17,8 @@
   var onboardLabel = hasProjects ? 'Create Project' : 'Start Your Own Project';
 
   var NAV_ITEMS = [
-    { group: 'Get Started' },
-    { label: onboardLabel, href: 'onboard.html', hint: 'New' },
-    { sep: true },
-    { group: 'Admin' },
-    { label: 'Color System',    href: 'color-system.html',    hint: 'Live'        },
-    { label: 'Token Editor',    href: 'editor.html',          hint: 'Editor'      },
-    { label: 'Color Generator', href: 'color-generator.html', hint: 'Palette'     },
+    { group: 'Tools' },
+    { label: 'Edit Colors',     href: 'index.html',            hint: 'Home'        },
     { sep: true },
     { group: 'Reference' },
     { label: 'Color Tokens',    href: 'color-tokens.html',       hint: '~740 vars'   },
@@ -31,6 +26,7 @@
     { label: 'Frameworks',      href: 'frameworks.html',          hint: 'Components'  },
     { sep: true },
     { group: 'Components' },
+    { label: 'All Components',  href: 'components.html',       hint: 'Browse'      },
     { label: 'Button',          href: 'button.html',          hint: '246 vars'    },
     { label: 'IconButton',      href: 'icon-button.html',     hint: '120 vars'    },
     { label: 'SplitButton',     href: 'split-button.html',    hint: '154 vars'    },
@@ -84,14 +80,12 @@
 
   var navHtml = ''
     + '<div class="nav-crumb">'
-    +   (hasProjects
-        ? '<a href="index.html" class="nav-home" aria-label="Component Explorer" title="Component Explorer">'
+    +   '<a href="index.html" class="nav-home" aria-label="Home" title="Home">'
         +   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
         +     '<path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1v-9"/>'
         +   '</svg>'
         + '</a>'
         + '<span class="nav-sep">/</span>'
-        : '')
     +   '<div class="nav-switcher">'
     +     '<button class="nav-switcher-btn" id="navSwitcher" aria-expanded="false" aria-haspopup="true" type="button">'
     +       esc(pageLabel)
@@ -103,6 +97,7 @@
     +   '</div>'
     + '</div>'
     + '<div class="nav-actions">'
+    +   '<a href="onboard.html" class="nav-project-new" title="New Project">+ New</a>'
     +   '<button class="theme-toggle" id="themeToggle" type="button">Toggle Dark</button>'
     + '</div>';
 

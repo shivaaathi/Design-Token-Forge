@@ -450,7 +450,7 @@
         ghOwner = repoOwner;
         ghPat = token;
         repoVerified = true;
-        // Persist credentials so color-system.html can restore the session
+        // Persist credentials so index.html can restore the session
         localStorage.setItem('dtf-gh-user', user.login);
         localStorage.setItem('dtf-gh-pat', token);
         ghStatusEl.textContent = '✓ Connected as ' + user.login + ' — write access to ' + repoOwner + '/' + GH_REPO_NAME;
@@ -633,7 +633,7 @@
       localStorage.setItem('dtf-color-config-' + slug, localConfig);
 
       /* Redirect to color-system immediately */
-      window.location.href = 'color-system.html';
+      window.location.href = 'index.html';
 
     } catch (err) {
       errorBox.textContent = '❌ ' + err.message;
