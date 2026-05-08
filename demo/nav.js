@@ -94,7 +94,7 @@
     +   '</div>'
     + '</div>'
     + '<div class="nav-actions">'
-    +   '<a href="onboard.html" class="nav-project-new" title="New Project">+ New</a>'
+    +   (filename !== 'onboard.html' ? '<a href="onboard.html" class="nav-project-new" title="New Project">+ New</a>' : '')
     +   '<button class="theme-toggle" id="themeToggle" type="button">Toggle Dark</button>'
     + '</div>';
 
