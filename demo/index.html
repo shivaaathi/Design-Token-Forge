@@ -213,8 +213,8 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
 .deploy-btn:hover{background:#9F008F}
 .gh-deploy-panel{padding:12px 24px;border-top:1px solid var(--demo-border);background:var(--demo-surface-alt,#f9f9f9)}
 .gh-deploy-inner{display:flex;flex-direction:column;gap:10px}
-#ghAuthRow{display:block}
-#ghReadyRow{display:block}
+#ghAuthRow{display:block!important}
+#ghReadyRow{display:block!important}
 .gh-label{font-size:var(--font-size-11,11px);font-weight:600;color:var(--demo-fg-subtle)}
 #ghAuthRow input{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);font-family:var(--font-family-mono,monospace);font-size:var(--font-size-12,12px)}
 #ghAuthRow input:focus{outline:2px solid #166534;outline-offset:-1px}
@@ -688,13 +688,13 @@ body.auth-locked .global-save-bar{filter:blur(6px);pointer-events:none;user-sele
         <button class="gh-connect-btn" id="ghConnectBtn" type="button" style="display:block;width:100%;padding:10px;margin-top:8px;font-size:13px;border-radius:6px">Connect</button>
       </div>
       <div id="ghReadyRow" style="display:none">
-        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--demo-cm-bg);border-radius:6px;margin-bottom:16px">
-          <span style="font-size:12px;font-weight:600;color:#166534">&#10003; Connected as</span>
-          <span id="ghUser" style="font-size:12px;font-weight:700;color:var(--demo-fg-strong)"></span>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--demo-cm-bg);border-radius:6px;margin-bottom:12px">
+          <span style="font-size:11px;color:#166534">&#10003;</span>
+          <span id="ghUser" style="font-size:12px;font-weight:600"></span>
           <span style="flex:1"></span>
-          <button class="gh-logout-btn" id="ghLogoutBtn" type="button" style="font-size:11px;padding:4px 10px">Disconnect</button>
+          <button class="gh-logout-btn" id="ghLogoutBtn" type="button" style="font-size:11px;padding:3px 8px">Disconnect</button>
         </div>
-        <button class="gh-commit-btn" id="ghCommitBtn" type="button" style="width:100%;padding:10px 16px;font-size:13px;border-radius:6px">Commit &amp; Deploy</button>
+        <button class="gh-commit-btn" id="ghCommitBtn" type="button" style="display:block;width:100%;padding:10px 16px;font-size:13px;border-radius:6px">Commit &amp; Deploy</button>
       </div>
       <div class="gh-status" id="ghStatus" style="margin-top:12px"></div>
     </div>
