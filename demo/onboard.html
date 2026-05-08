@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Create Project — Design Token Forge</title>
 <link rel="stylesheet" href="../packages/tokens/src/index.css">
-<link rel="stylesheet" href="shared.css?v=20260509a">
+<link rel="stylesheet" href="shared.css?v=20260508a">
 <style>
 /* ── Wizard Layout ────────────────────────────────── */
 .wizard-container {
@@ -260,7 +260,7 @@
 </div>
 
 <script src="nav.js?v=20260507b"></script>
-<script src="shared.js?v=20260509a"></script>
+<script src="shared.js?v=20260508a"></script>
 <script>
 (function() {
   /* ── Adjust heading if user already has projects ── */
@@ -450,7 +450,6 @@
         ghOwner = repoOwner;
         ghPat = token;
         repoVerified = true;
-        // Persist credentials so index.html can restore the session
         localStorage.setItem('dtf-gh-user', user.login);
         localStorage.setItem('dtf-gh-pat', token);
         ghStatusEl.textContent = '✓ Connected as ' + user.login + ' — write access to ' + repoOwner + '/' + GH_REPO_NAME;
@@ -459,7 +458,7 @@
         ghConnectBtn.textContent = 'Connected ✓';
         ghConnectBtn.style.opacity = '0.6';
       } else {
-        throw new Error('You don\'t have write access yet. Ask your team lead to add "' + user.login + '" as a collaborator on github.com/' + GH_REPO_OWNER + '/' + GH_REPO_NAME + '.');
+        throw new Error('You need collaborator access. Ask your team admin to add "' + user.login + '" at github.com/' + GH_REPO_OWNER + '/' + GH_REPO_NAME + '/settings/access');
       }
     } catch(err) {
       ghStatusEl.textContent = '✗ ' + err.message;
@@ -632,7 +631,7 @@
       });
       localStorage.setItem('dtf-color-config-' + slug, localConfig);
 
-      /* Redirect to color-system immediately */
+      /* Redirect to color editor immediately */
       window.location.href = 'index.html';
 
     } catch (err) {

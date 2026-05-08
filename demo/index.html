@@ -2201,46 +2201,43 @@ ghConnectBtn.addEventListener('click', function() {
     ghUser.textContent = '\u2713 ' + u.login;
     ghAuthRow.style.display = 'none';
     ghReadyRow.style.display = 'block';
-    // Default: commit to the user's own repo
     GH_OWNER = u.login;
     localStorage.setItem('dtf-gh-user', u.login);
     localStorage.setItem('dtf-gh-pat', ghPat);
     GH_REPO = GH_REPO_NAME;
-    // Re-filter project list now that we know the user
     populateProjectSelect();
-    ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Checking your repo...';
+    ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Checking access...';
     ghStatusEl.className = 'gh-status';
-    // Verify user has their own repo (fork or original)
-    return ghFetch('/repos/' + u.login + '/' + GH_REPO_NAME)
+    // 1. Check upstream repo for collaborator access first
+    return ghFetch('/repos/sridhar-ravi-2917/' + GH_REPO_NAME)
       .then(function(repo) {
-        // Check write permission
         if (repo.permissions && repo.permissions.push) {
-          GH_OWNER = u.login;
+          GH_OWNER = 'sridhar-ravi-2917';
           GH_REPO = GH_REPO_NAME;
-          ghStatusEl.textContent = 'Ready \u2014 deploying to ' + u.login + '/' + GH_REPO_NAME;
+          ghStatusEl.textContent = 'Ready \u2014 deploying to sridhar-ravi-2917/' + GH_REPO_NAME;
           ghStatusEl.className = 'gh-status ok';
-        } else {
-          throw new Error('no-push');
+          return;
         }
+        throw new Error('no-push');
       })
       .catch(function() {
-        // User doesn't have their own repo — offer to fork
-        ghStatusEl.innerHTML = 'You don\u2019t have a <strong>' + GH_REPO_NAME + '</strong> repo yet. <button id="ghForkBtn" style="margin-left:8px;padding:4px 12px;border-radius:6px;border:1px solid var(--br-d);background:var(--primary);color:#fff;cursor:pointer;font-size:13px">Fork it now</button>';
-        ghStatusEl.className = 'gh-status';
-        document.getElementById('ghForkBtn').addEventListener('click', function() {
-          ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Forking repository...';
-          ghFetch('/repos/sridhar-ravi-2917/' + GH_REPO_NAME + '/forks', { method: 'POST', body: {} })
-            .then(function(fork) {
-              GH_OWNER = fork.owner.login;
-              GH_REPO = fork.name;
-              ghStatusEl.textContent = 'Ready \u2014 deploying to ' + GH_OWNER + '/' + GH_REPO;
+        // 2. Check user's own repo (fork or personal copy)
+        return ghFetch('/repos/' + u.login + '/' + GH_REPO_NAME)
+          .then(function(repo) {
+            if (repo.permissions && repo.permissions.push) {
+              GH_OWNER = u.login;
+              GH_REPO = GH_REPO_NAME;
+              ghStatusEl.textContent = 'Ready \u2014 deploying to ' + u.login + '/' + GH_REPO_NAME;
               ghStatusEl.className = 'gh-status ok';
-            })
-            .catch(function(e) {
-              ghStatusEl.textContent = '\u2717 Fork failed: ' + e.message;
-              ghStatusEl.className = 'gh-status err';
-            });
-        });
+            } else {
+              throw new Error('no-push');
+            }
+          })
+          .catch(function() {
+            // No access anywhere — tell them what to do
+            ghStatusEl.innerHTML = 'You need collaborator access. Ask the repo admin to add <strong>' + u.login + '</strong> at <a href="https://github.com/sridhar-ravi-2917/' + GH_REPO_NAME + '/settings/access" target="_blank" rel="noopener" style="color:var(--primary-content-default,#286CE5)">Settings → Collaborators</a>.';
+            ghStatusEl.className = 'gh-status err';
+          });
       });
   }).catch(function(e) {
     ghStatusEl.textContent = 'Auth failed: ' + e.message;
