@@ -356,31 +356,39 @@
   <label><input type="checkbox" id="autoSyncCb"> Auto-sync when tokens change</label>
 </div>
 
-<!-- Setup -->
-<details class="server-config" id="setupSection" open>
-  <summary>Setup</summary>
-  <div class="server-config-inner">
-    <div style="font-size:10px;font-weight:600;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Server URL</div>
+<!-- Setup: PAT-first flow -->
+<div id="setupSection">
+  <div id="setupAuth" class="server-config-inner" style="margin:12px 0">
+    <div style="font-size:12px;font-weight:600;margin-bottom:8px">Connect your GitHub account</div>
     <div class="server-url-row">
-      <input type="text" id="serverUrlInput" placeholder="https://your-org.github.io/Design-Token-Forge" spellcheck="false">
+      <input type="password" id="ghPatInput" placeholder="Paste your GitHub PAT (ghp_...)" spellcheck="false" style="flex:1;font-family:monospace;font-size:11px">
+      <button class="btn-url-save" id="ghVerifyBtn">Connect</button>
+    </div>
+    <div id="ghIdentityError" style="display:none;font-size:10px;color:#DC2626;margin-top:4px"></div>
+    <div style="font-size:10px;color:#888;margin-top:6px">
+      One-time setup. Needs <code>repo</code> scope.
+      <a href="https://github.com/settings/tokens/new?scopes=repo&description=DTF+Figma+Plugin" target="_blank" rel="noopener" style="color:#286CE5">Get a token &rarr;</a>
+    </div>
+  </div>
+  <div id="setupDone" style="display:none;margin:8px 0;align-items:center;gap:8px;padding:6px 10px;background:#DCFCE7;border-radius:6px;font-size:11px">
+    <span style="color:#166534;font-weight:600" id="ghIdentityName"></span>
+    <span style="flex:1"></span>
+    <button type="button" id="ghIdentityReset" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #ccc;background:#fff;cursor:pointer;color:#666">Disconnect</button>
+  </div>
+</div>
+<input type="hidden" id="serverUrlInput" value="">
+
+<!-- Advanced: manual server URL override -->
+<details class="server-config" style="margin-top:4px">
+  <summary style="font-size:10px;color:#999">Advanced</summary>
+  <div class="server-config-inner">
+    <div class="server-url-row">
+      <input type="text" id="serverUrlOverride" placeholder="Custom server URL (leave blank for default)" spellcheck="false">
       <button class="btn-url-save" id="saveUrlBtn">Save</button>
     </div>
     <div class="server-presets">
       <button type="button" id="presetLocal">Local</button>
-      <button type="button" id="presetGH">GitHub Pages</button>
     </div>
-    <div style="font-size:10px;font-weight:600;color:#888;margin:12px 0 4px;text-transform:uppercase;letter-spacing:0.5px">Your Identity</div>
-    <div id="ghIdentityAuth" class="server-url-row">
-      <input type="password" id="ghPatInput" placeholder="GitHub PAT (ghp_...)" spellcheck="false" style="flex:1;font-family:monospace;font-size:11px">
-      <button class="btn-url-save" id="ghVerifyBtn">Verify</button>
-    </div>
-    <div id="ghIdentityDone" style="display:none;align-items:center;gap:8px;padding:6px 10px;background:#DCFCE7;border-radius:6px;font-size:11px">
-      <span style="color:#166534;font-weight:600" id="ghIdentityName"></span>
-      <span style="flex:1"></span>
-      <button type="button" id="ghIdentityReset" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #ccc;background:#fff;cursor:pointer;color:#666">Change</button>
-    </div>
-    <div id="ghIdentityError" style="display:none;font-size:10px;color:#DC2626;margin-top:4px"></div>
-    <div style="font-size:10px;color:#888;margin-top:4px">One-time verification. Only shows projects you own.</div>
   </div>
 </details>
 
@@ -443,7 +451,7 @@
   function storageGet(k) { try { return localStorage.getItem(k); } catch(e) { return _mem[k] || null; } }
   function storageSet(k,v) { try { localStorage.setItem(k,v); } catch(e) { _mem[k]=v; } }
 
-  var DEFAULT_SERVER = '';
+  var DEFAULT_SERVER = 'https://sridhar-ravi-2917.github.io/Design-Token-Forge';
   var SERVER = storageGet('dtf-server-url') || DEFAULT_SERVER;
 
   serverUrlInput.value = SERVER;
@@ -1130,41 +1138,35 @@
   }
 
   saveUrlBtn.addEventListener('click', function() {
-    var url = serverUrlInput.value.trim();
+    var el = document.getElementById('serverUrlOverride');
+    var url = el.value.trim();
     if (url) setServerUrl(url);
-  });
-  serverUrlInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') { e.preventDefault(); saveUrlBtn.click(); }
   });
 
   /* Presets */
   document.getElementById('presetLocal').addEventListener('click', function() {
     setServerUrl('http://localhost:9500');
-  });
-  document.getElementById('presetGH').addEventListener('click', function() {
-    setServerUrl('https://sridhar-ravi-2917.github.io/Design-Token-Forge');
+    document.getElementById('serverUrlOverride').value = 'http://localhost:9500';
   });
 
   /* ── GitHub identity verification ──────────────────── */
   var ghPatInput = document.getElementById('ghPatInput');
   var ghVerifyBtn = document.getElementById('ghVerifyBtn');
-  var ghIdentityAuth = document.getElementById('ghIdentityAuth');
-  var ghIdentityDone = document.getElementById('ghIdentityDone');
+  var setupAuth = document.getElementById('setupAuth');
+  var setupDone = document.getElementById('setupDone');
   var ghIdentityName = document.getElementById('ghIdentityName');
   var ghIdentityError = document.getElementById('ghIdentityError');
   var ghIdentityReset = document.getElementById('ghIdentityReset');
-  var setupSection = document.getElementById('setupSection');
 
   function showIdentityState() {
     if (GH_USERNAME) {
-      ghIdentityAuth.style.display = 'none';
-      ghIdentityDone.style.display = 'flex';
+      setupAuth.style.display = 'none';
+      setupDone.style.display = 'flex';
       ghIdentityName.textContent = '\u2713 ' + GH_USERNAME;
       ghIdentityError.style.display = 'none';
-      if (SERVER) setupSection.removeAttribute('open');
     } else {
-      ghIdentityAuth.style.display = 'flex';
-      ghIdentityDone.style.display = 'none';
+      setupAuth.style.display = 'block';
+      setupDone.style.display = 'none';
     }
   }
   showIdentityState();
@@ -1173,26 +1175,31 @@
     var token = ghPatInput.value.trim();
     if (!token) { ghPatInput.focus(); return; }
     ghVerifyBtn.disabled = true;
-    ghVerifyBtn.textContent = '...';
+    ghVerifyBtn.textContent = 'Verifying...';
     ghIdentityError.style.display = 'none';
     fetch('https://api.github.com/user', {
       headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
     }).then(function(r) {
-      if (!r.ok) throw new Error(r.status === 401 ? 'Invalid token' : 'HTTP ' + r.status);
+      if (!r.ok) throw new Error(r.status === 401 ? 'Invalid token — needs repo scope' : 'HTTP ' + r.status);
       return r.json();
     }).then(function(user) {
       GH_USERNAME = user.login;
       storageSet('dtf-gh-username', GH_USERNAME);
       ghPatInput.value = '';
+      /* Auto-set server URL if not already configured */
+      if (!storageGet('dtf-server-url')) {
+        setServerUrl(DEFAULT_SERVER);
+      }
       projectsFetched = false;
       fetchProjects();
       showIdentityState();
+      startPolling();
     }).catch(function(e) {
       ghIdentityError.textContent = '\u2717 ' + e.message;
       ghIdentityError.style.display = 'block';
     }).finally(function() {
       ghVerifyBtn.disabled = false;
-      ghVerifyBtn.textContent = 'Verify';
+      ghVerifyBtn.textContent = 'Connect';
     });
   });
   ghPatInput.addEventListener('keydown', function(e) {
@@ -1202,8 +1209,8 @@
   ghIdentityReset.addEventListener('click', function() {
     GH_USERNAME = '';
     storageSet('dtf-gh-username', '');
-    ghIdentityAuth.style.display = 'flex';
-    ghIdentityDone.style.display = 'none';
+    setupAuth.style.display = 'block';
+    setupDone.style.display = 'none';
     projectsFetched = false;
     fetchProjects();
   });
