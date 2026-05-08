@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="../packages/components/src/toggle/toggle.css">
 <link rel="stylesheet" href="../packages/components/src/checkbox/checkbox.tokens.css">
 <link rel="stylesheet" href="../packages/components/src/checkbox/checkbox.css">
-<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="shared.css?v=20260508a">
 <style id="dynamicTokens"></style>
 <style>
 /* ════════════════════════════════════════════════════════════
@@ -697,7 +697,7 @@ body.auth-locked .global-save-bar{filter:blur(6px);pointer-events:none;user-sele
 </div>
 
 <script src="nav.js"></script>
-<script src="shared.js?v=20260416"></script>
+<script src="shared.js?v=20260508a"></script>
 <script src="palette-engine.js"></script>
 
 <!-- ── Admin Auth Gate Logic ── -->
@@ -3259,7 +3259,7 @@ function discoverProjectsLive(callback) {
 // Discover projects via static projects.json (CDN — may be cached)
 function discoverProjects(callback) {
   // Always use projects.json as source of truth (includes owner field)
-  fetch(depth + '/projects.json?_cb=' + Date.now())
+  fetch(depth + '/projects.json?_cb=' + Date.now(), { cache: 'no-cache' })
     .then(function(r) { return r.ok ? r.json() : null; })
     .catch(function() { return null; })
     .then(function(index) {

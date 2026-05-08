@@ -187,7 +187,7 @@ window.DTF = window.DTF || { onThemeChange: null };
   }
 
   function _fetchFromStatic(cb) {
-    fetch(pagesBase).then(function(r){ return r.ok ? r.json() : null; })
+    fetch(pagesBase, { cache: 'no-cache' }).then(function(r){ return r.ok ? r.json() : null; })
       .then(function(list){
         if (list && Array.isArray(list) && list.length) { cb(list); return; }
         _fetchFromApi(cb);
