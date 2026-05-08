@@ -37,16 +37,8 @@ window.DTF = window.DTF || { onThemeChange: null };
   ddWrap.appendChild(ddBtn);
   ddWrap.appendChild(ddPanel);
 
-  var newBtn = document.createElement('button');
-  newBtn.className = 'nav-project-new';
-  newBtn.type = 'button';
-  newBtn.textContent = '+ New';
-  newBtn.addEventListener('click', function() {
-    window.location.href = 'color-system.html?new-project=1';
-  });
   wrap.appendChild(label);
   wrap.appendChild(ddWrap);
-  wrap.appendChild(newBtn);
 
   var toggle = document.getElementById('themeToggle');
   if (toggle) nav.insertBefore(wrap, toggle);

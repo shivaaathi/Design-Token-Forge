@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Design Token Forge — Component Explorer</title>
 <link rel="stylesheet" href="../packages/tokens/src/index.css">
-<link rel="stylesheet" href="shared.css?v=20260508a">
+<link rel="stylesheet" href="shared.css?v=20260509a">
 <style>
 /* ── Hub Layout ───────────────────────────────────── */
 body{min-height:100vh;display:flex;flex-direction:column}
@@ -43,6 +43,16 @@ body{min-height:100vh;display:flex;flex-direction:column}
 .hub-sep{
   border:none;border-top:1px solid var(--demo-border);margin:4px 0 0;
 }
+.hub-secondary{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:12px;padding:0 4px;
+}
+.hub-secondary a{
+  color:var(--demo-fg-subtle);text-decoration:none;
+  transition:color 150ms;
+}
+.hub-secondary a:hover{color:var(--primary-component-bg-default);text-decoration:underline}
+.hub-dot{color:var(--demo-fg-faint);font-size:10px}
 
 /* ── Main Grid ────────────────────────────────────── */
 .hub-main{
@@ -148,42 +158,22 @@ body{min-height:100vh;display:flex;flex-direction:column}
 
 <!-- ── Hub Links ─────────────────────────────────────── -->
 <div class="hub-links">
-  <div class="hub-row-label">Get Started</div>
   <div class="hub-row">
     <a class="hub-link" id="hubOnboardLink" href="onboard.html" style="border-color:var(--primary-component-outline-default);background:var(--primary-container-bg,#f0f7ff)">
       <span class="hub-link-icon">&#128640;</span>
-      <span class="hub-link-text"><span class="hub-link-title" id="hubOnboardTitle">Start Your Own Project</span><span class="hub-link-hint">Configure &amp; deploy to your repo</span></span>
+      <span class="hub-link-text"><span class="hub-link-title" id="hubOnboardTitle">New Project</span><span class="hub-link-hint">Create &amp; deploy</span></span>
     </a>
-  </div>
-  <div class="hub-row-label">Admin</div>
-  <div class="hub-row">
     <a class="hub-link" href="color-system.html">
-      <span class="hub-link-icon">&#127752;</span>
-      <span class="hub-link-text"><span class="hub-link-title">Color System</span><span class="hub-link-hint">Pick, generate, deploy</span></span>
-    </a>
-    <a class="hub-link" href="editor.html">
-      <span class="hub-link-icon">&#9998;</span>
-      <span class="hub-link-text"><span class="hub-link-title">Token Editor</span><span class="hub-link-hint">Edit &amp; commit to GitHub</span></span>
-    </a>
-    <a class="hub-link" href="color-generator.html">
       <span class="hub-link-icon">&#127912;</span>
-      <span class="hub-link-text"><span class="hub-link-title">Color Generator</span><span class="hub-link-hint">Palette</span></span>
+      <span class="hub-link-text"><span class="hub-link-title">Colors</span><span class="hub-link-hint">Pick &amp; generate palette</span></span>
     </a>
   </div>
-  <div class="hub-row-label">Reference</div>
-  <div class="hub-row">
-    <a class="hub-link" href="color-tokens.html">
-      <span class="hub-link-icon">&#128203;</span>
-      <span class="hub-link-text"><span class="hub-link-title">Color Tokens</span><span class="hub-link-hint">~740 Variables</span></span>
-    </a>
-    <a class="hub-link" href="color-integration.html">
-      <span class="hub-link-icon">&#128214;</span>
-      <span class="hub-link-text"><span class="hub-link-title">Color Integration</span><span class="hub-link-hint">T0–T3 Usage</span></span>
-    </a>
-    <a class="hub-link" href="frameworks.html">
-      <span class="hub-link-icon">&#9889;</span>
-      <span class="hub-link-text"><span class="hub-link-title">Frameworks</span><span class="hub-link-hint">Components</span></span>
-    </a>
+  <div class="hub-secondary">
+    <a href="color-tokens.html">Tokens</a>
+    <span class="hub-dot">&middot;</span>
+    <a href="color-integration.html">How It Works</a>
+    <span class="hub-dot">&middot;</span>
+    <a href="frameworks.html">Frameworks</a>
   </div>
   <hr class="hub-sep">
 </div>
@@ -431,7 +421,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
 </main>
 
 <script src="nav.js"></script>
-<script src="shared.js?v=20260508a"></script>
+<script src="shared.js?v=20260509a"></script>
 <script>
 /* ── Adjust onboard link text ──────────────────────── */
 (function(){
@@ -439,7 +429,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
     var kp = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]');
     if (kp.length > 0) {
       var el = document.getElementById('hubOnboardTitle');
-      if (el) el.textContent = 'Create Project';
+      if (el) el.textContent = 'New Project';
     }
   } catch(e) {}
 })();
