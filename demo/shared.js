@@ -242,14 +242,13 @@ window.DTF = window.DTF || { onThemeChange: null };
           var cleaned = delList.filter(function(id){ return remoteIds.indexOf(id) !== -1; });
           if (cleaned.length !== delList.length) localStorage.setItem('dtf-deleted-projects', JSON.stringify(cleaned));
         } catch(e) {}
-        /* Merge ALL locally-known projects not yet in remote (just-created, pre-deploy) */
-        var localKnown = [];
-        try { localKnown = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]'); } catch(e) {}
-        localKnown.forEach(function(lp) {
-          if (lp && lp.id && !list.some(function(p){ return p.id === lp.id; })) {
-            list.push(lp);
-          }
-        });
+        /* Only keep the currently-active project if it's not in remote yet (just-created) */
+        if (currentId && !list.some(function(p){ return p.id === currentId; })) {
+          var localKnown = [];
+          try { localKnown = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]'); } catch(e) {}
+          var activeLocal = localKnown.find(function(p){ return p.id === currentId; });
+          if (activeLocal) list.push(activeLocal);
+        }
         localStorage.setItem('dtf-known-projects', JSON.stringify(list));
         cachedList = list;
         var visible = getVisibleProjects(list);
@@ -469,18 +468,17 @@ window.DTF = window.DTF || { onThemeChange: null };
         var cleaned = delList.filter(function(id){ return remoteIds.indexOf(id) !== -1; });
         if (cleaned.length !== delList.length) localStorage.setItem('dtf-deleted-projects', JSON.stringify(cleaned));
       } catch(e) {}
-      /* Merge ALL locally-known projects not yet in remote (just-created, pre-deploy) */
-      var localKnown = [];
-      try { localKnown = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]'); } catch(e) {}
-      localKnown.forEach(function(lp) {
-        if (lp && lp.id && !list.some(function(p){ return p.id === lp.id; })) {
-          list.push(lp);
-        }
-      });
+      /* Only keep the currently-active project if it's not in remote yet (just-created) */
+      if (currentId && !list.some(function(p){ return p.id === currentId; })) {
+        var localKnown = [];
+        try { localKnown = JSON.parse(localStorage.getItem('dtf-known-projects') || '[]'); } catch(e) {}
+        var activeLocal = localKnown.find(function(p){ return p.id === currentId; });
+        if (activeLocal) list.push(activeLocal);
+      }
       cachedList = list;
       localStorage.setItem('dtf-known-projects', JSON.stringify(list));
       syncBtnLabel();
-      /* If active project was deleted remotely and not in localStorage, reset */
+      /* If active project was deleted remotely, reset */
       if (currentId && !list.some(function(p){ return p.id === currentId; })) {
         var visible = getVisibleProjects(list);
         if (visible.length) selectProject(visible[0].id);

@@ -2967,11 +2967,14 @@ function openProjPanel() {
   discoverProjectsLive(function(found) {
     if (!projPanelOpen) return;
     if (found && found.length) {
-      var remoteIds = found.map(function(p) { return p.id; });
-      var localOnly = knownProjects.filter(function(p) { return remoteIds.indexOf(p.id) === -1; });
+      // Remote is source of truth — only keep active project if not in remote yet (just-created)
+      var activeLocal = null;
+      if (projectId && !found.some(function(p) { return p.id === projectId; })) {
+        activeLocal = knownProjects.find(function(p) { return p.id === projectId; });
+      }
       knownProjects = [];
       mergeKnownProjects(found);
-      if (localOnly.length) mergeKnownProjects(localOnly);
+      if (activeLocal) mergeKnownProjects([activeLocal]);
       persistKnownProjects();
     }
     populateProjectSelect();
@@ -3520,14 +3523,14 @@ projCreateBtn.addEventListener('click', function() {
       // Discover additional projects (async — updates dropdown when done)
       discoverProjectsLive(function(found) {
         if (found && found.length) {
-          // Remote is source of truth — but preserve ALL local-only projects not yet in remote
-          var remoteIds = found.map(function(p) { return p.id; });
-          var localOnly = knownProjects.filter(function(p) {
-            return remoteIds.indexOf(p.id) === -1;
-          });
+          // Remote is source of truth — only keep active project if not in remote yet (just-created)
+          var activeLocal = null;
+          if (projectId && !found.some(function(p) { return p.id === projectId; })) {
+            activeLocal = knownProjects.find(function(p) { return p.id === projectId; });
+          }
           knownProjects = [];
           mergeKnownProjects(found);
-          if (localOnly.length) mergeKnownProjects(localOnly);
+          if (activeLocal) mergeKnownProjects([activeLocal]);
           // If active project no longer exists, switch to first available
           var ids = knownProjects.map(function(p) { return p.id; });
           if (projectId && ids.indexOf(projectId) === -1) {
