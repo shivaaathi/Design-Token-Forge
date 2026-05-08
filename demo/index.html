@@ -2500,7 +2500,7 @@ function buildUpdatedConfig() {
   return cfg;
 }
 
-function ghMultiCommit(files, message) {
+function ghMultiCommit(files, message, _retry) {
   return ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/git/ref/heads/' + GH_BRANCH)
     .then(function(ref) {
       var commitSha = ref.object.sha;
@@ -2526,6 +2526,12 @@ function ghMultiCommit(files, message) {
             });
           });
         });
+    })
+    .catch(function(err) {
+      if (!_retry && err.message && err.message.indexOf('fast forward') !== -1) {
+        return ghMultiCommit(files, message, true);
+      }
+      throw err;
     });
 }
 
