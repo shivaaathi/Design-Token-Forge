@@ -1166,7 +1166,11 @@
       if (!Array.isArray(list)) throw new Error('Not an array');
       projectsFetched = true;
       projectList = list;
-      var filtered = GH_USERNAME ? list.filter(function(p) { return !p.owner || p.owner.toLowerCase() === GH_USERNAME.toLowerCase(); }) : list;
+      if (!GH_USERNAME) {
+        projectSelect.innerHTML = '<option value="">Set your GitHub username below</option>';
+        return;
+      }
+      var filtered = list.filter(function(p) { return !p.owner || p.owner.toLowerCase() === GH_USERNAME.toLowerCase(); });
       projectSelect.innerHTML = '';
       if (filtered.length === 0) {
         projectSelect.innerHTML = '<option value="">No projects</option>';
