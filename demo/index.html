@@ -690,7 +690,7 @@ body.auth-locked .global-save-bar{filter:blur(6px);pointer-events:none;user-sele
 <div class="global-save-bar" id="globalSaveBar">
   <span class="save-bar-msg" id="saveMsg"></span>
   <span class="save-bar-ts" id="saveTs"></span>
-  <button class="save-btn" id="saveBtn" type="button">Save &amp; Apply</button>
+  <button class="save-btn" id="saveBtn" type="button">Save to Browser</button>
 </div>
 
 </div>
@@ -2098,10 +2098,10 @@ saveBtn.addEventListener('click', function() {
   saveTs.textContent = 'Last saved: ' + now;
   saveBtn.setAttribute('data-saved', '');
   saveBtn.textContent = 'Saved!';
-  showSaveMsg('Tokens saved \u2014 all component pages will use these colors');
+  showSaveMsg('Saved to this browser \u2014 component pages will use these colors');
   setTimeout(function() {
     saveBtn.removeAttribute('data-saved');
-    saveBtn.innerHTML = 'Save &amp; Apply';
+    saveBtn.innerHTML = 'Save to Browser';
   }, 2000);
 });
 
