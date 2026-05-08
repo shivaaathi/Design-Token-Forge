@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="../packages/components/src/toggle/toggle.css">
 <link rel="stylesheet" href="../packages/components/src/checkbox/checkbox.tokens.css">
 <link rel="stylesheet" href="../packages/components/src/checkbox/checkbox.css">
-<link rel="stylesheet" href="shared.css?v=20260509a">
+<link rel="stylesheet" href="shared.css?v=20260509b">
 <style id="dynamicTokens"></style>
 <style>
 /* ════════════════════════════════════════════════════════════
@@ -705,7 +705,7 @@ body.auth-locked .global-save-bar{filter:blur(6px);pointer-events:none;user-sele
 </div>
 
 <script src="nav.js"></script>
-<script src="shared.js?v=20260509a"></script>
+<script src="shared.js?v=20260509b"></script>
 <script src="palette-engine.js"></script>
 
 <!-- ── Admin Auth Gate Logic ── -->
@@ -2161,7 +2161,7 @@ var ghStatusEl = document.getElementById('ghStatus');
 // Auto-restore GitHub session from localStorage
 if (ghPat && GH_OWNER) {
   ghAuthRow.style.display = 'none';
-  ghReadyRow.style.display = 'flex';
+  ghReadyRow.style.display = 'block';
   ghUser.textContent = '\u2713 ' + GH_OWNER;
   ghStatusEl.textContent = 'Ready \u2014 ' + GH_OWNER;
   ghStatusEl.className = 'gh-status ok';
@@ -2200,7 +2200,7 @@ ghConnectBtn.addEventListener('click', function() {
   ghFetch('/user').then(function(u) {
     ghUser.textContent = '\u2713 ' + u.login;
     ghAuthRow.style.display = 'none';
-    ghReadyRow.style.display = 'flex';
+    ghReadyRow.style.display = 'block';
     // Default: commit to the user's own repo
     GH_OWNER = u.login;
     localStorage.setItem('dtf-gh-user', u.login);
@@ -3323,7 +3323,7 @@ projGhConnectBtn.addEventListener('click', function() {
     syncDialogGhState();
     // Also sync the Deploy section if visible
     if (ghAuthRow) ghAuthRow.style.display = 'none';
-    if (ghReadyRow) { ghReadyRow.style.display = 'flex'; ghUser.textContent = '\u2713 ' + u.login; }
+    if (ghReadyRow) { ghReadyRow.style.display = 'block'; ghUser.textContent = '\u2713 ' + u.login; }
     // Re-validate slug
     projSlugInput.dispatchEvent(new Event('input'));
   }).catch(function(e) {
