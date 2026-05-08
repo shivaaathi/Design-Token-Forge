@@ -17,16 +17,12 @@
   var onboardLabel = hasProjects ? 'Create Project' : 'Start Your Own Project';
 
   var NAV_ITEMS = [
-    { group: 'Tools' },
-    { label: 'Edit Colors',     href: 'index.html',            hint: 'Home'        },
+    { label: 'Edit Colors',     href: 'index.html',              hint: ''            },
+    { label: 'Tokens',          href: 'color-tokens.html',       hint: ''            },
+    { label: 'How It Works',    href: 'color-integration.html',  hint: ''            },
+    { label: 'Frameworks',      href: 'frameworks.html',         hint: ''            },
     { sep: true },
-    { group: 'Reference' },
-    { label: 'Color Tokens',    href: 'color-tokens.html',       hint: '~740 vars'   },
-    { label: 'Color Integration', href: 'color-integration.html', hint: 'T0–T3 Usage' },
-    { label: 'Frameworks',      href: 'frameworks.html',          hint: 'Components'  },
-    { sep: true },
-    { group: 'Components' },
-    { label: 'All Components',  href: 'components.html',       hint: 'Browse'      },
+    { label: 'All Components',  href: 'components.html',         hint: ''            },
     { label: 'Button',          href: 'button.html',          hint: '246 vars'    },
     { label: 'IconButton',      href: 'icon-button.html',     hint: '120 vars'    },
     { label: 'SplitButton',     href: 'split-button.html',    hint: '154 vars'    },
@@ -74,7 +70,8 @@
       dropdownHtml += '<a href="' + it.href + '" role="menuitem"'
         + (isCurrent ? ' aria-current="page"' : '')
         + '>' + esc(it.label)
-        + ' <span class="dd-hint">' + esc(it.hint) + '</span></a>';
+        + (it.hint ? ' <span class="dd-hint">' + esc(it.hint) + '</span>' : '')
+        + '</a>';
     }
   }
 

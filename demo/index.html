@@ -2861,8 +2861,7 @@ function doInitialRender() {
     + '  <div class="nav-proj-panel" id="projDropPanel"></div>'
     + '</div>'
     + '<button class="nav-project-action" id="projRenameBtn" type="button" title="Rename project"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 114 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>'
-    + '<button class="nav-project-action nav-project-del" id="projDeleteBtn" type="button" title="Delete project"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>'
-    + '<button class="nav-project-new" id="projNewBtn" type="button">+ New</button>';
+    + '<button class="nav-project-action nav-project-del" id="projDeleteBtn" type="button" title="Delete project"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>';
   if (nav && toggle) nav.insertBefore(wrap, toggle);
   else if (nav) nav.appendChild(wrap);
 })();
@@ -3352,7 +3351,7 @@ function openNewProjectDialog() {
   setTimeout(function() { projNameInput.focus(); }, 50);
 }
 
-projNewBtn.addEventListener('click', openNewProjectDialog);
+projNewBtn && projNewBtn.addEventListener('click', openNewProjectDialog);
 projRenameBtn.addEventListener('click', renameProject);
 projDeleteBtn.addEventListener('click', deleteProject);
 
