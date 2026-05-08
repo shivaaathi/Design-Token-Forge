@@ -368,6 +368,11 @@
       <button type="button" id="presetLocal">Local</button>
       <button type="button" id="presetGH">GitHub Pages</button>
     </div>
+    <div class="server-url-row" style="margin-top:8px">
+      <input type="text" id="ghUsernameInput" placeholder="Your GitHub username" spellcheck="false" style="flex:1">
+      <button class="btn-url-save" id="saveUsernameBtn">Save</button>
+    </div>
+    <div style="font-size:10px;color:#888;margin-top:4px">Only shows projects you own. Leave blank to see all.</div>
   </div>
 </details>
 
@@ -436,6 +441,7 @@
   serverUrlInput.value = SERVER;
 
   var CURRENT_PROJECT = storageGet('dtf-project-id') || '';
+  var GH_USERNAME = storageGet('dtf-gh-username') || '';
   var projectList = [];
   var documentProject = '';       /* project stored in this Figma file */
   var pendingSwitchProject = '';  /* project user wants to switch to */
@@ -1131,6 +1137,20 @@
     setServerUrl('https://sridhar-ravi-2917.github.io/Design-Token-Forge');
   });
 
+  /* ── GitHub username filter ────────────────────────── */
+  var ghUsernameInput = document.getElementById('ghUsernameInput');
+  var saveUsernameBtn = document.getElementById('saveUsernameBtn');
+  ghUsernameInput.value = GH_USERNAME;
+  saveUsernameBtn.addEventListener('click', function() {
+    GH_USERNAME = ghUsernameInput.value.trim();
+    storageSet('dtf-gh-username', GH_USERNAME);
+    projectsFetched = false;
+    fetchProjects();
+  });
+  ghUsernameInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); saveUsernameBtn.click(); }
+  });
+
   /* ── Project selector ──────────────────────────────── */
   var projectsFetched = false;
   function fetchProjects() {
@@ -1146,21 +1166,22 @@
       if (!Array.isArray(list)) throw new Error('Not an array');
       projectsFetched = true;
       projectList = list;
+      var filtered = GH_USERNAME ? list.filter(function(p) { return !p.owner || p.owner.toLowerCase() === GH_USERNAME.toLowerCase(); }) : list;
       projectSelect.innerHTML = '';
-      if (list.length === 0) {
+      if (filtered.length === 0) {
         projectSelect.innerHTML = '<option value="">No projects</option>';
         return;
       }
-      for (var i = 0; i < list.length; i++) {
+      for (var i = 0; i < filtered.length; i++) {
         var opt = document.createElement('option');
-        opt.value = list[i].id;
-        opt.textContent = list[i].name;
-        if (list[i].id === CURRENT_PROJECT) opt.selected = true;
+        opt.value = filtered[i].id;
+        opt.textContent = filtered[i].name;
+        if (filtered[i].id === CURRENT_PROJECT) opt.selected = true;
         projectSelect.appendChild(opt);
       }
       /* If no saved project, select the first one */
-      if (!CURRENT_PROJECT && list.length > 0) {
-        CURRENT_PROJECT = list[0].id;
+      if (!CURRENT_PROJECT && filtered.length > 0) {
+        CURRENT_PROJECT = filtered[0].id;
         storageSet('dtf-project-id', CURRENT_PROJECT);
       }
       /* If document is linked to a project, ensure it's selected (covers race with scan-result) */
