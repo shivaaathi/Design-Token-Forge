@@ -2377,8 +2377,6 @@ ghCommitBtn.addEventListener('click', function() {
         .catch(function(e) {
           ghStatusEl.textContent = '\u2717 Commit failed: ' + e.message;
           ghStatusEl.className = 'gh-status err';
-        })
-        .finally(function() {
           ghCommitBtn.disabled = false;
           ghCommitBtn.textContent = '\uD83D\uDE80 Commit & Deploy';
         });
@@ -2538,24 +2536,24 @@ function ghMultiCommit(files, message, _retry) {
 function ghPollDeploy() {
   var start = Date.now();
   var noRunsCount = 0;
+  function resetBtn() { ghCommitBtn.disabled = false; ghCommitBtn.textContent = '\uD83D\uDE80 Commit & Deploy'; }
   var iv = setInterval(function() {
     ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO + '/actions/runs?branch=' + GH_BRANCH + '&per_page=1')
       .then(function(data) {
         if (!data.workflow_runs || !data.workflow_runs.length) {
           noRunsCount++;
           if (noRunsCount >= 3) {
-            clearInterval(iv);
+            clearInterval(iv); resetBtn();
             ghStatusEl.innerHTML = '\u2713 Committed! <span style="opacity:.7">GitHub Pages deploy may need to be enabled in your repo Settings \u2192 Pages.</span>';
             ghStatusEl.className = 'gh-status ok';
           }
           return;
         }
         var run = data.workflow_runs[0];
-        // Only track runs that started after our commit
         if (new Date(run.created_at).getTime() < start - 10000) {
           noRunsCount++;
           if (noRunsCount >= 4) {
-            clearInterval(iv);
+            clearInterval(iv); resetBtn();
             ghStatusEl.innerHTML = '\u2713 Committed! Deploy workflow hasn\u2019t started \u2014 check Actions tab in your repo.';
             ghStatusEl.className = 'gh-status ok';
           }
@@ -2563,7 +2561,7 @@ function ghPollDeploy() {
         }
         var elapsed = Math.round((Date.now() - start) / 1000);
         if (run.status === 'completed') {
-          clearInterval(iv);
+          clearInterval(iv); resetBtn();
           if (run.conclusion === 'success') {
             ghStatusEl.textContent = '\u2713 Deployed! Figma plugin will auto-detect the change. (' + elapsed + 's)';
             ghStatusEl.className = 'gh-status ok';
@@ -2575,15 +2573,14 @@ function ghPollDeploy() {
           ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Deploying... (' + elapsed + 's)';
         }
       }).catch(function() {
-        // Actions API might 404 if Actions not enabled on fork
         noRunsCount++;
         if (noRunsCount >= 3) {
-          clearInterval(iv);
+          clearInterval(iv); resetBtn();
           ghStatusEl.innerHTML = '\u2713 Committed successfully! <span style="opacity:.7">Enable GitHub Pages in repo Settings to auto-deploy.</span>';
           ghStatusEl.className = 'gh-status ok';
         }
       });
-    if (Date.now() - start > 120000) { clearInterval(iv); ghStatusEl.textContent = '\u2713 Committed! Deploy may still be running \u2014 check your repo Actions tab.'; ghStatusEl.className = 'gh-status ok'; }
+    if (Date.now() - start > 120000) { clearInterval(iv); resetBtn(); ghStatusEl.textContent = '\u2713 Committed! Deploy may still be running \u2014 check your repo Actions tab.'; ghStatusEl.className = 'gh-status ok'; }
   }, 5000);
 }
 
