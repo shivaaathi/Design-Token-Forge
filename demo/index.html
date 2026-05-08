@@ -252,7 +252,11 @@ html[data-theme="dark"] .cert-badge[data-status="FAILED"]{background:#7F1D1D;col
 /* ── New Project Dialog ───────────────────────────────────── */
 .proj-dialog-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;align-items:center;justify-content:center}
 .proj-dialog-backdrop.open{display:flex}
-.proj-dialog{background:var(--demo-surface);border:1px solid var(--demo-border);border-radius:var(--radius-lg,12px);padding:24px 28px;width:420px;max-width:92vw;box-shadow:0 8px 32px rgba(0,0,0,.25)}
+.proj-dialog{position:relative;background:var(--demo-surface);border:1px solid var(--demo-border);border-radius:var(--radius-lg,12px);padding:24px 28px;width:420px;max-width:92vw;box-shadow:0 8px 32px rgba(0,0,0,.25)}
+.proj-dialog-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.proj-dialog-head h3{margin:0;font-size:16px;color:var(--demo-fg-strong)}
+.proj-dialog-close{position:absolute;top:16px;right:16px;width:28px;height:28px;border:1px solid var(--demo-border);border-radius:var(--radius-sm,4px);background:var(--demo-surface);color:var(--demo-fg-faint);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 120ms;line-height:1}
+.proj-dialog-close:hover{color:var(--demo-fg-strong);border-color:var(--demo-fg-faint);background:var(--demo-surface-alt)}
 .proj-dialog h3{margin:0 0 16px;font-size:16px;color:var(--demo-fg-strong)}
 .proj-dialog .field{margin-bottom:14px}
 .proj-dialog .field label{display:block;font-size:12px;font-weight:600;color:var(--demo-fg-faint);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
@@ -685,9 +689,10 @@ body.auth-locked .global-save-bar{filter:blur(6px);pointer-events:none;user-sele
       <div id="ghReadyRow" style="display:none">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
           <span class="gh-user" id="ghUser"></span>
+          <span style="flex:1"></span>
           <button class="gh-logout-btn" id="ghLogoutBtn" type="button">Disconnect</button>
         </div>
-        <button class="gh-commit-btn" id="ghCommitBtn" type="button" style="width:100%;padding:12px">Commit &amp; Deploy</button>
+        <button class="gh-commit-btn" id="ghCommitBtn" type="button" style="width:100%;padding:12px;font-size:13px">Commit &amp; Deploy</button>
       </div>
       <div class="gh-status" id="ghStatus" style="margin-top:12px"></div>
     </div>
