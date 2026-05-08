@@ -356,23 +356,31 @@
   <label><input type="checkbox" id="autoSyncCb"> Auto-sync when tokens change</label>
 </div>
 
-<!-- Server URL config -->
-<details class="server-config">
-  <summary>Server URL</summary>
+<!-- Setup -->
+<details class="server-config" id="setupSection" open>
+  <summary>Setup</summary>
   <div class="server-config-inner">
+    <div style="font-size:10px;font-weight:600;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px">Server URL</div>
     <div class="server-url-row">
-      <input type="text" id="serverUrlInput" placeholder="https://sridhar-ravi-2917.github.io/Design-Token-Forge" spellcheck="false">
+      <input type="text" id="serverUrlInput" placeholder="https://your-org.github.io/Design-Token-Forge" spellcheck="false">
       <button class="btn-url-save" id="saveUrlBtn">Save</button>
     </div>
     <div class="server-presets">
       <button type="button" id="presetLocal">Local</button>
       <button type="button" id="presetGH">GitHub Pages</button>
     </div>
-    <div class="server-url-row" style="margin-top:8px">
-      <input type="text" id="ghUsernameInput" placeholder="Your GitHub username" spellcheck="false" style="flex:1">
-      <button class="btn-url-save" id="saveUsernameBtn">Save</button>
+    <div style="font-size:10px;font-weight:600;color:#888;margin:12px 0 4px;text-transform:uppercase;letter-spacing:0.5px">Your Identity</div>
+    <div id="ghIdentityAuth" class="server-url-row">
+      <input type="password" id="ghPatInput" placeholder="GitHub PAT (ghp_...)" spellcheck="false" style="flex:1;font-family:monospace;font-size:11px">
+      <button class="btn-url-save" id="ghVerifyBtn">Verify</button>
     </div>
-    <div style="font-size:10px;color:#888;margin-top:4px">Only shows projects you own. Leave blank to see all.</div>
+    <div id="ghIdentityDone" style="display:none;align-items:center;gap:8px;padding:6px 10px;background:#DCFCE7;border-radius:6px;font-size:11px">
+      <span style="color:#166534;font-weight:600" id="ghIdentityName"></span>
+      <span style="flex:1"></span>
+      <button type="button" id="ghIdentityReset" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #ccc;background:#fff;cursor:pointer;color:#666">Change</button>
+    </div>
+    <div id="ghIdentityError" style="display:none;font-size:10px;color:#DC2626;margin-top:4px"></div>
+    <div style="font-size:10px;color:#888;margin-top:4px">One-time verification. Only shows projects you own.</div>
   </div>
 </details>
 
@@ -435,7 +443,7 @@
   function storageGet(k) { try { return localStorage.getItem(k); } catch(e) { return _mem[k] || null; } }
   function storageSet(k,v) { try { localStorage.setItem(k,v); } catch(e) { _mem[k]=v; } }
 
-  var DEFAULT_SERVER = 'https://sridhar-ravi-2917.github.io/Design-Token-Forge';
+  var DEFAULT_SERVER = '';
   var SERVER = storageGet('dtf-server-url') || DEFAULT_SERVER;
 
   serverUrlInput.value = SERVER;
@@ -1137,18 +1145,67 @@
     setServerUrl('https://sridhar-ravi-2917.github.io/Design-Token-Forge');
   });
 
-  /* ── GitHub username filter ────────────────────────── */
-  var ghUsernameInput = document.getElementById('ghUsernameInput');
-  var saveUsernameBtn = document.getElementById('saveUsernameBtn');
-  ghUsernameInput.value = GH_USERNAME;
-  saveUsernameBtn.addEventListener('click', function() {
-    GH_USERNAME = ghUsernameInput.value.trim();
-    storageSet('dtf-gh-username', GH_USERNAME);
+  /* ── GitHub identity verification ──────────────────── */
+  var ghPatInput = document.getElementById('ghPatInput');
+  var ghVerifyBtn = document.getElementById('ghVerifyBtn');
+  var ghIdentityAuth = document.getElementById('ghIdentityAuth');
+  var ghIdentityDone = document.getElementById('ghIdentityDone');
+  var ghIdentityName = document.getElementById('ghIdentityName');
+  var ghIdentityError = document.getElementById('ghIdentityError');
+  var ghIdentityReset = document.getElementById('ghIdentityReset');
+  var setupSection = document.getElementById('setupSection');
+
+  function showIdentityState() {
+    if (GH_USERNAME) {
+      ghIdentityAuth.style.display = 'none';
+      ghIdentityDone.style.display = 'flex';
+      ghIdentityName.textContent = '\u2713 ' + GH_USERNAME;
+      ghIdentityError.style.display = 'none';
+      if (SERVER) setupSection.removeAttribute('open');
+    } else {
+      ghIdentityAuth.style.display = 'flex';
+      ghIdentityDone.style.display = 'none';
+    }
+  }
+  showIdentityState();
+
+  ghVerifyBtn.addEventListener('click', function() {
+    var token = ghPatInput.value.trim();
+    if (!token) { ghPatInput.focus(); return; }
+    ghVerifyBtn.disabled = true;
+    ghVerifyBtn.textContent = '...';
+    ghIdentityError.style.display = 'none';
+    fetch('https://api.github.com/user', {
+      headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+    }).then(function(r) {
+      if (!r.ok) throw new Error(r.status === 401 ? 'Invalid token' : 'HTTP ' + r.status);
+      return r.json();
+    }).then(function(user) {
+      GH_USERNAME = user.login;
+      storageSet('dtf-gh-username', GH_USERNAME);
+      ghPatInput.value = '';
+      projectsFetched = false;
+      fetchProjects();
+      showIdentityState();
+    }).catch(function(e) {
+      ghIdentityError.textContent = '\u2717 ' + e.message;
+      ghIdentityError.style.display = 'block';
+    }).finally(function() {
+      ghVerifyBtn.disabled = false;
+      ghVerifyBtn.textContent = 'Verify';
+    });
+  });
+  ghPatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); ghVerifyBtn.click(); }
+  });
+
+  ghIdentityReset.addEventListener('click', function() {
+    GH_USERNAME = '';
+    storageSet('dtf-gh-username', '');
+    ghIdentityAuth.style.display = 'flex';
+    ghIdentityDone.style.display = 'none';
     projectsFetched = false;
     fetchProjects();
-  });
-  ghUsernameInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') { e.preventDefault(); saveUsernameBtn.click(); }
   });
 
   /* ── Project selector ──────────────────────────────── */
