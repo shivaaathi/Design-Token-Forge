@@ -12,6 +12,12 @@
     "description": "Default project — the original DTF token set for the Desktop PDF Editor product."
   },
   {
+    "id": "tesla",
+    "name": "Tesla",
+    "owner": "gayathri-rp-19560",
+    "description": "Design tokens for Tesla"
+  },
+  {
     "id": "writer-handhelds",
     "name": "writer-handhelds",
     "owner": "sridhar-ravi-2917",
