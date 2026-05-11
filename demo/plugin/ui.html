@@ -1032,15 +1032,29 @@
         + (s.aliases > 0 ? ' ' + s.aliases + ' aliases linked.' : '');
       setStatus(text, s.errors.length > 0 ? 'err' : 'ok');
 
-      /* Immediately show Up to date state */
-      notif.className = 'notif visible synced';
-      notifIcon.textContent = '\u2713';
-      notifTitle.textContent = 'Variables are up to date';
-      notifBadge.style.display = 'none';
-      notifBody.innerHTML = text;
-      syncBtn.disabled = true;
-      syncBtn.textContent = 'Up to date \u2713';
-      syncBtn.className = 'btn-sync ready';
+      /* If sync resulted in 0 actual variables, don't show "up to date" —
+         something went wrong and the user needs to retry */
+      if (s.variables === 0 && s.errors.length > 0) {
+        notif.className = 'notif visible has-changes';
+        notifIcon.textContent = '\u26A0';
+        notifTitle.textContent = 'Sync completed with errors';
+        notifBadge.style.display = 'none';
+        notifBody.innerHTML = 'No variables were created. ' + s.errors.length + ' error(s). Try clicking <strong>Retry Sync</strong>.';
+        syncBtn.disabled = false;
+        syncBtn.textContent = 'Retry Sync';
+        syncBtn.className = 'btn-sync';
+        figmaHash = ''; /* Clear so next poll re-detects */
+      } else {
+        /* Immediately show Up to date state */
+        notif.className = 'notif visible synced';
+        notifIcon.textContent = '\u2713';
+        notifTitle.textContent = 'Variables are up to date';
+        notifBadge.style.display = 'none';
+        notifBody.innerHTML = text;
+        syncBtn.disabled = true;
+        syncBtn.textContent = 'Up to date \u2713';
+        syncBtn.className = 'btn-sync ready';
+      }
       hasExistingVars = true;
 
       /* Acknowledge to server */

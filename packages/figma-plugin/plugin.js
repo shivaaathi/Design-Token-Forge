@@ -181,6 +181,21 @@ async function syncAll(data) {
   var idMap = loadIdMap();
   var idMapSize = Object.keys(idMap).length;
   log('idMap loaded with ' + idMapSize + ' entries');
+
+  var existing = await buildExistingLookup();
+  var existingColNames = Object.keys(existing);
+  var existingVarTotal = 0;
+  for (var evi = 0; evi < existingColNames.length; evi++) {
+    existingVarTotal += Object.keys(existing[existingColNames[evi]].varMap).length;
+  }
+
+  /* If no variables exist but idMap has stale entries, clear it —
+     those IDs point to deleted variables and cause wasted async lookups */
+  if (existingVarTotal === 0 && idMapSize > 0) {
+    log('Clearing stale idMap (' + idMapSize + ' entries) — no variables exist in Figma');
+    idMap = {};
+  }
+
   if (data.renames) {
     var renameCount = applyRenamesToIdMap(data.renames, idMap);
     stats.renamed = renameCount;
@@ -198,7 +213,7 @@ async function syncAll(data) {
 
   var existing = await buildExistingLookup();
   var existingColNames = Object.keys(existing);
-  log('Existing DTF collections in Figma: ' + existingColNames.join(', '));
+  log('Existing DTF collections in Figma: ' + (existingColNames.length > 0 ? existingColNames.join(', ') : '(none)') + ' — ' + existingVarTotal + ' total vars');
   for (var eli = 0; eli < existingColNames.length; eli++) {
     var elName = existingColNames[eli];
     var elVarCount = Object.keys(existing[elName].varMap).length;
@@ -536,6 +551,21 @@ async function syncAll(data) {
     }
   }
 
+  /* Pass 4: Post-sync verification — ensure variables actually exist.
+     If stats say we created/updated N variables but Figma has 0,
+     something went silently wrong. Log and report it. */
+  var verifyCols = await findDTFCollections();
+  var verifyTotal = 0;
+  for (var vfi = 0; vfi < verifyCols.length; vfi++) {
+    verifyTotal += verifyCols[vfi].variableIds.length;
+  }
+  log('Post-sync verification: ' + verifyTotal + ' variables in ' + verifyCols.length + ' collections');
+  if (verifyTotal === 0 && stats.variables > 0) {
+    log('ERROR: sync reported ' + stats.variables + ' variables but Figma has 0 — variables may not have persisted');
+    stats.errors.push('Sync created ' + stats.variables + ' variables but verification found 0 — try re-syncing');
+  }
+  stats.variables = verifyTotal; /* Use actual Figma count, not theoretical */
+
   return stats;
 }
 
@@ -555,6 +585,21 @@ figma.ui.onmessage = async function(msg) {
       var savedHash = figma.root.getPluginData('dtf-hash') || '';
       var savedVarCount = parseInt(figma.root.getPluginData('dtf-var-count') || '0', 10);
       var savedProject = figma.root.getPluginData('dtf-project') || '';
+
+      /* ── Stale state cleanup ──────────────────────────────────
+         If all DTF collections are gone (user deleted them) but
+         saved sync state still exists, clear it so the plugin
+         starts fresh instead of showing "up to date". Also
+         clear the ID map — those variable IDs are all dead. */
+      if (varCount === 0 && savedHash) {
+        log('Stale state detected: 0 variables but savedHash=' + savedHash + ' — clearing document sync state');
+        figma.root.setPluginData('dtf-hash', '');
+        figma.root.setPluginData('dtf-var-count', '0');
+        saveIdMap({});
+        savedHash = '';
+        savedVarCount = 0;
+      }
+
       figma.ui.postMessage({
         type: 'scan-result',
         found: cols.length > 0,
