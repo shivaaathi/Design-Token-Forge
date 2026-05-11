@@ -313,13 +313,13 @@ body.auth-locked .global-save-bar{filter:blur(6px);pointer-events:none;user-sele
     <p class="auth-sub">Enter the admin passphrase to edit the Color System.</p>
     <form id="authForm" autocomplete="off">
       <div class="auth-input-wrap">
-        <input type="password" class="auth-input" id="authInput" placeholder="Passphrase" autofocus spellcheck="false">
+        <input type="password" class="auth-input" id="authInput" placeholder="Passphrase or GitHub PAT" autofocus spellcheck="false">
         <button type="button" class="auth-toggle-vis" id="authToggleVis" title="Show / hide">👁</button>
       </div>
       <button type="submit" class="auth-submit">Unlock</button>
       <div class="auth-err-msg" id="authErr"></div>
     </form>
-    <p class="auth-hint">Default: <code>DTF-Admin</code> · Change in source (<code>AUTH_HASH</code>)</p>
+    <p class="auth-hint">Enter <code>DTF-Admin</code> or your <strong>GitHub PAT</strong> (auto-connects deploy)</p>
   </div>
 </div>
 
@@ -631,7 +631,7 @@ body.auth-locked .global-save-bar{filter:blur(6px);pointer-events:none;user-sele
           <span id="projGhUser">Connected</span>
           <a id="projGhDisconnect">Disconnect</a>
         </div>
-        <div class="proj-gh-help">Requires <code>repo</code> scope. <a href="https://github.com/settings/tokens/new?scopes=repo&amp;description=DTF+Color+Editor" target="_blank" rel="noopener">Get a token &rarr;</a></div>
+        <div class="proj-gh-help">Requires <code>repo</code> + <code>workflow</code> scope. <a href="https://github.com/settings/tokens/new?scopes=repo,workflow&amp;description=DTF+Color+Editor" target="_blank" rel="noopener">Get a token &rarr;</a></div>
         <div class="proj-gh-status" id="projGhStatus"></div>
       </div>
 
@@ -681,8 +681,8 @@ body.auth-locked .global-save-bar{filter:blur(6px);pointer-events:none;user-sele
           <label for="ghPatInput">Personal Access Token</label>
           <input type="password" id="ghPatInput" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" style="width:100%;box-sizing:border-box">
           <span class="field-hint">
-            Needs <code>repo</code> scope &nbsp;·&nbsp;
-            <a href="https://github.com/settings/tokens/new?scopes=repo&description=DTF+Color+Editor" target="_blank" rel="noopener" style="color:var(--primary-content-default,#286CE5)">Get a token &rarr;</a>
+            Needs <code>repo</code> + <code>workflow</code> scope &nbsp;·&nbsp;
+            <a href="https://github.com/settings/tokens/new?scopes=repo,workflow&description=DTF+Color+Editor" target="_blank" rel="noopener" style="color:var(--primary-content-default,#286CE5)">Get a token &rarr;</a>
           </span>
         </div>
         <button class="gh-connect-btn" id="ghConnectBtn" type="button" style="display:block;width:100%;padding:10px;margin-top:8px;font-size:13px;border-radius:6px">Connect</button>
@@ -739,15 +739,48 @@ body.auth-locked .global-save-bar{filter:blur(6px);pointer-events:none;user-sele
     e.preventDefault();
     var phrase = input.value;
     if (!phrase) { showErr('Please enter the passphrase'); return; }
+
+    /* 1. Try static passphrase first */
     sha256(phrase).then(function(hash) {
       if (hash === AUTH_HASH) {
         sessionStorage.setItem(SESSION_KEY, AUTH_HASH);
         unlock();
-      } else {
-        showErr('Incorrect passphrase');
-        input.classList.add('auth-error');
-        setTimeout(function(){ input.classList.remove('auth-error'); }, 500);
+        return;
       }
+
+      /* 2. Looks like a GitHub PAT? Verify against API */
+      if (phrase.startsWith('ghp_') || phrase.startsWith('github_pat_')) {
+        errEl.textContent = '';
+        var btn = form.querySelector('.auth-submit');
+        btn.textContent = 'Verifying PAT\u2026';
+        btn.disabled = true;
+        fetch('https://api.github.com/user', {
+          headers: { 'Authorization': 'Bearer ' + phrase, 'Accept': 'application/vnd.github+json' }
+        }).then(function(r) {
+          if (!r.ok) throw new Error('Invalid token');
+          return r.json();
+        }).then(function(user) {
+          /* PAT valid — store credentials and unlock */
+          localStorage.setItem('dtf-gh-pat', phrase);
+          localStorage.setItem('dtf-gh-user', user.login);
+          localStorage.setItem('dtf-gh-owner', user.login);
+          sessionStorage.setItem(SESSION_KEY, AUTH_HASH);
+          unlock();
+        }).catch(function() {
+          showErr('Invalid PAT — check scopes (needs repo + workflow)');
+          input.classList.add('auth-error');
+          setTimeout(function(){ input.classList.remove('auth-error'); }, 500);
+        }).finally(function() {
+          btn.textContent = 'Unlock';
+          btn.disabled = false;
+        });
+        return;
+      }
+
+      /* 3. Neither matched */
+      showErr('Incorrect passphrase');
+      input.classList.add('auth-error');
+      setTimeout(function(){ input.classList.remove('auth-error'); }, 500);
     });
   });
 
@@ -2206,38 +2239,66 @@ ghConnectBtn.addEventListener('click', function() {
     localStorage.setItem('dtf-gh-pat', ghPat);
     GH_REPO = GH_REPO_NAME;
     populateProjectSelect();
-    ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Checking access...';
+    ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Checking your repo...';
     ghStatusEl.className = 'gh-status';
-    // 1. Check upstream repo for collaborator access first
-    return ghFetch('/repos/sridhar-ravi-2917/' + GH_REPO_NAME)
+
+    // 1. Check user's own repo first (own fork or original)
+    return ghFetch('/repos/' + u.login + '/' + GH_REPO_NAME)
       .then(function(repo) {
         if (repo.permissions && repo.permissions.push) {
-          GH_OWNER = 'sridhar-ravi-2917';
+          GH_OWNER = u.login;
           GH_REPO = GH_REPO_NAME;
-          ghStatusEl.textContent = 'Ready \u2014 deploying to sridhar-ravi-2917/' + GH_REPO_NAME;
+          localStorage.setItem('dtf-gh-owner', u.login);
+          ghStatusEl.textContent = 'Ready \u2014 deploying to ' + u.login + '/' + GH_REPO_NAME;
           ghStatusEl.className = 'gh-status ok';
           return;
         }
         throw new Error('no-push');
       })
       .catch(function() {
-        // 2. Check user's own repo (fork or personal copy)
-        return ghFetch('/repos/' + u.login + '/' + GH_REPO_NAME)
-          .then(function(repo) {
-            if (repo.permissions && repo.permissions.push) {
-              GH_OWNER = u.login;
-              GH_REPO = GH_REPO_NAME;
-              ghStatusEl.textContent = 'Ready \u2014 deploying to ' + u.login + '/' + GH_REPO_NAME;
-              ghStatusEl.className = 'gh-status ok';
-            } else {
-              throw new Error('no-push');
-            }
-          })
-          .catch(function() {
-            // No access anywhere — tell them what to do
-            ghStatusEl.innerHTML = 'You need collaborator access. Ask the repo admin to add <strong>' + u.login + '</strong> at <a href="https://github.com/sridhar-ravi-2917/' + GH_REPO_NAME + '/settings/access" target="_blank" rel="noopener" style="color:var(--primary-content-default,#286CE5)">Settings → Collaborators</a>.';
-            ghStatusEl.className = 'gh-status err';
-          });
+        // 2. No repo found — fork from upstream and set up Pages
+        ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Setting up your copy (first time, ~15 sec)...';
+        return ghFetch('/repos/sridhar-ravi-2917/' + GH_REPO_NAME + '/forks', {
+          method: 'POST', body: { default_branch_only: true }
+        }).then(function() {
+          // Wait for fork to be ready
+          var attempts = 0;
+          function waitForFork() {
+            return new Promise(function(resolve) { setTimeout(resolve, 2000); })
+              .then(function() { return ghFetch('/repos/' + u.login + '/' + GH_REPO_NAME); })
+              .then(function() {
+                // Fork ready — enable Actions + Pages
+                ghStatusEl.innerHTML = '<span class="gh-spinner"></span>Enabling Actions & Pages...';
+                return ghFetch('/repos/' + u.login + '/' + GH_REPO_NAME + '/actions/permissions', {
+                  method: 'PUT', body: { enabled: true, allowed_actions: 'all' }
+                }).then(function() {
+                  return ghFetch('/repos/' + u.login + '/' + GH_REPO_NAME + '/pages', {
+                    method: 'POST', body: { build_type: 'workflow' }
+                  }).catch(function() { /* Pages may already exist */ });
+                }).then(function() {
+                  // Trigger first deploy
+                  return ghFetch('/repos/' + u.login + '/' + GH_REPO_NAME + '/actions/workflows/deploy-tokens.yml/dispatches', {
+                    method: 'POST', body: { ref: 'main' }
+                  }).catch(function() {});
+                }).then(function() {
+                  GH_OWNER = u.login;
+                  GH_REPO = GH_REPO_NAME;
+                  localStorage.setItem('dtf-gh-owner', u.login);
+                  ghStatusEl.textContent = 'Ready \u2014 deploying to ' + u.login + '/' + GH_REPO_NAME;
+                  ghStatusEl.className = 'gh-status ok';
+                });
+              })
+              .catch(function() {
+                attempts++;
+                if (attempts >= 20) throw new Error('Fork is taking too long. Try again in a minute.');
+                return waitForFork();
+              });
+          }
+          return waitForFork();
+        }).catch(function(err) {
+          ghStatusEl.innerHTML = 'Setup failed: ' + (err.message || err) + '. <a href="https://github.com/sridhar-ravi-2917/' + GH_REPO_NAME + '/fork" target="_blank" rel="noopener" style="color:var(--primary-content-default,#286CE5)">Fork manually \u2192</a>';
+          ghStatusEl.className = 'gh-status err';
+        });
       });
   }).catch(function(e) {
     ghStatusEl.textContent = 'Auth failed: ' + e.message;
@@ -2275,8 +2336,7 @@ function isProjectOwner() {
   if (!ownerFromConfig) return true; // legacy projects have no owner — allow
   var user = GH_OWNER || localStorage.getItem('dtf-gh-user') || '';
   if (!user) return true; // can't verify — allow (delete will prompt for token anyway)
-  // Admin (upstream repo owner) can manage all projects
-  if (user.toLowerCase() === 'sridhar-ravi-2917') return true;
+  // In fork model, user owns their repo — admin check not needed
   return ownerFromConfig.toLowerCase() === user.toLowerCase();
 }
 
@@ -2928,7 +2988,7 @@ function slugify(str) {
 function getVisibleProjects() {
   // Admin (upstream owner) sees all; others see only their own projects
   var user = (GH_OWNER || localStorage.getItem('dtf-gh-user') || '').toLowerCase();
-  if (!user || user === GH_UPSTREAM_OWNER.toLowerCase()) return knownProjects;
+  if (!user) return knownProjects;
   return knownProjects.filter(function(p) {
     return !p.owner || p.owner.toLowerCase() === user;
   });
@@ -3037,7 +3097,6 @@ function renameProject() {
 }
 
 // ── Delete Project ───────────────────────────────────────
-var GH_UPSTREAM_OWNER = 'sridhar-ravi-2917'; // projects always live in the upstream repo
 
 function deleteProject() {
   if (!projectId || knownProjects.length <= 1) return;
@@ -3080,7 +3139,7 @@ function deleteProject() {
   }
 
   // Delete ALL files in the project directory from the UPSTREAM repo (background)
-  var dirPath = '/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects/' + delId;
+  var dirPath = '/repos/' + GH_OWNER + '/' + GH_REPO_NAME + '/contents/projects/' + delId;
   function ghDeleteFetch(endpoint, opts) {
     opts = opts || {};
     var url = endpoint.startsWith('http') ? endpoint : GH_API + endpoint;
@@ -3106,7 +3165,7 @@ function deleteProject() {
     }, Promise.resolve());
   }).then(function() {
     /* Write to deletion log (projects/_log.json) */
-    var logPath = '/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects/_log.json';
+    var logPath = '/repos/' + GH_OWNER + '/' + GH_REPO_NAME + '/contents/projects/_log.json';
     return ghDeleteFetch(logPath).then(function(file) {
       var log = [];
       if (file && file.content) { try { log = JSON.parse(atob(file.content.replace(/\n/g, ''))); } catch(e) {} }
@@ -3117,7 +3176,7 @@ function deleteProject() {
     }).catch(function(e) { console.warn('[DTF] Deletion log write failed:', e); });
   }).then(function() {
     /* Remove from projects.json */
-    var idxPath = '/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects.json';
+    var idxPath = '/repos/' + GH_OWNER + '/' + GH_REPO_NAME + '/contents/projects.json';
     return ghDeleteFetch(idxPath + '?ref=main').then(function(file) {
       if (!file || !file.content) return;
       var idx = [];
@@ -3234,7 +3293,7 @@ function discoverProjectsLive(callback) {
   }
   var headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
   // Fetch projects/ directory listing from Git repo directly
-  fetch('https://api.github.com/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects?ref=main&_cb=' + Date.now(), { headers: headers })
+  fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO_NAME + '/contents/projects?ref=main&_cb=' + Date.now(), { headers: headers })
     .then(function(r) { return r.ok ? r.json() : null; })
     .then(function(dirs) {
       if (!dirs || !Array.isArray(dirs)) { discoverProjects(callback); return; }
@@ -3244,7 +3303,7 @@ function discoverProjectsLive(callback) {
       var pending = projects.length;
       if (pending === 0) { callback([]); return; }
       projects.forEach(function(dir) {
-        fetch('https://api.github.com/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects/' + dir.name + '/config.json?ref=main', { headers: headers })
+        fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO_NAME + '/contents/projects/' + dir.name + '/config.json?ref=main', { headers: headers })
           .then(function(r) { return r.ok ? r.json() : null; })
           .then(function(file) {
             if (file && file.content) {
@@ -3443,7 +3502,7 @@ projCreateBtn.addEventListener('click', function() {
   })
   .then(function() {
     /* Also update projects.json index so dropdown finds the new project */
-    return ghFetch('/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects.json?ref=main')
+    return ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO_NAME + '/contents/projects.json?ref=main')
       .then(function(idxFile) {
         var idx = [];
         var idxSha = idxFile.sha || null;
@@ -3452,7 +3511,7 @@ projCreateBtn.addEventListener('click', function() {
           idx.push({ id: slug, name: name, owner: GH_OWNER, description: newConfig.description || '' });
           var body = { message: 'Add ' + slug + ' to projects.json', content: btoa(unescape(encodeURIComponent(JSON.stringify(idx, null, 2) + '\\n'))), branch: 'main' };
           if (idxSha) body.sha = idxSha;
-          return ghFetch('/repos/' + GH_UPSTREAM_OWNER + '/' + GH_REPO_NAME + '/contents/projects.json', { method: 'PUT', body: body });
+          return ghFetch('/repos/' + GH_OWNER + '/' + GH_REPO_NAME + '/contents/projects.json', { method: 'PUT', body: body });
         }
       }).catch(function(e) { console.warn('[DTF] projects.json update failed:', e); });
   })

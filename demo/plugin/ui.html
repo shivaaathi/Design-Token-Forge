@@ -375,8 +375,8 @@
     </div>
     <div id="ghIdentityError" style="display:none;font-size:10px;color:#DC2626;margin-top:4px"></div>
     <div style="font-size:10px;color:#888;margin-top:6px">
-      One-time setup. Needs <code>repo</code> scope.
-      <a href="https://github.com/settings/tokens/new?scopes=repo&description=DTF+Figma+Plugin" target="_blank" rel="noopener" style="color:#286CE5">Get a token &rarr;</a>
+      One-time setup. Needs <code>repo</code> + <code>workflow</code> scope.
+      <a href="https://github.com/settings/tokens/new?scopes=repo,workflow&description=DTF+Figma+Plugin" target="_blank" rel="noopener" style="color:#286CE5">Get a token &rarr;</a>
     </div>
   </div>
   <div id="setupDone" style="display:none;align-items:center;gap:8px;padding:8px 12px;background:#DCFCE7;border-radius:6px;font-size:11px">
@@ -461,7 +461,10 @@
   function storageSet(k,v) { try { localStorage.setItem(k,v); } catch(e) { _mem[k]=v; } }
 
   var DEFAULT_SERVER = 'https://sridhar-ravi-2917.github.io/Design-Token-Forge';
-  var SERVER = storageGet('dtf-server-url') || DEFAULT_SERVER;
+  var SERVER = storageGet('dtf-server-url') || (function() {
+    var u = storageGet('dtf-gh-username');
+    return u ? 'https://' + u + '.github.io/Design-Token-Forge' : DEFAULT_SERVER;
+  })();
 
   serverUrlInput.value = SERVER;
 
@@ -1225,8 +1228,9 @@
       GH_USERNAME = user.login;
       storageSet('dtf-gh-username', GH_USERNAME);
       ghPatInput.value = '';
-      /* Always ensure server URL points to the shared Pages site */
-      setServerUrl(DEFAULT_SERVER);
+      /* Point to user's own Pages site (fork-based model) */
+      var userServer = 'https://' + user.login + '.github.io/Design-Token-Forge';
+      setServerUrl(userServer);
       projectsFetched = false;
       fetchProjects();
       showIdentityState();

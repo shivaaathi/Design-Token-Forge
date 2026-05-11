@@ -331,11 +331,23 @@ function doConnect() {
       })
       .catch(function() {
         // Auto-fork if user doesn't have the repo
-        return ghFetch('/repos/sridhar-ravi-2917/' + REPO_NAME + '/forks', { method: 'POST', body: {} })
+        return ghFetch('/repos/sridhar-ravi-2917/' + REPO_NAME + '/forks', { method: 'POST', body: { default_branch_only: true } })
           .then(function(fork) {
-            OWNER = fork.owner.login;
-            REPO = fork.name;
-            toast('Created fork: ' + OWNER + '/' + REPO, 'ok');
+            OWNER = fork.owner ? fork.owner.login : user.login;
+            REPO = fork.name || REPO_NAME;
+            // Wait for fork to be ready, then enable Actions + Pages
+            function waitReady(n) {
+              return new Promise(function(r){ setTimeout(r, 2000); })
+                .then(function(){ return ghFetch('/repos/' + OWNER + '/' + REPO); })
+                .catch(function(){ if (n < 15) return waitReady(n+1); throw new Error('Fork timeout'); });
+            }
+            return waitReady(0).then(function() {
+              return ghFetch('/repos/' + OWNER + '/' + REPO + '/actions/permissions', { method: 'PUT', body: { enabled: true, allowed_actions: 'all' } }).catch(function(){});
+            }).then(function() {
+              return ghFetch('/repos/' + OWNER + '/' + REPO + '/pages', { method: 'POST', body: { build_type: 'workflow' } }).catch(function(){});
+            }).then(function() {
+              toast('Created fork: ' + OWNER + '/' + REPO, 'ok');
+            });
           });
       })
       .then(function() { loadAllFiles(); });

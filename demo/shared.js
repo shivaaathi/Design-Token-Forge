@@ -50,12 +50,12 @@ window.DTF = window.DTF || { onThemeChange: null };
   var cachedList = []; /* last-known project list for switching */
 
   /* GitHub API setup */
-  var ghApiBase = 'https://api.github.com/repos/sridhar-ravi-2917/Design-Token-Forge';
+  var ghOwnerStored = localStorage.getItem('dtf-gh-owner') || localStorage.getItem('dtf-gh-user') || 'sridhar-ravi-2917';
+  var ghApiBase = 'https://api.github.com/repos/' + ghOwnerStored + '/Design-Token-Forge';
   var ghToken = localStorage.getItem('dtf-gh-pat') || '';
   var ghHdrs = ghToken
     ? { 'Authorization': 'Bearer ' + ghToken, 'Accept': 'application/vnd.github+json' }
     : { 'Accept': 'application/vnd.github+json' };
-  var upstreamOwner = 'sridhar-ravi-2917';
 
   /* Set button text to active project name */
   function syncBtnLabel() {
@@ -70,7 +70,7 @@ window.DTF = window.DTF || { onThemeChange: null };
     try { deleted = JSON.parse(deletedRaw) || []; } catch(e) {}
     var filtered = list.filter(function(p) { return deleted.indexOf(p.id) === -1; });
     var ghUser = (localStorage.getItem('dtf-gh-user') || '').toLowerCase();
-    if (ghUser && ghUser !== upstreamOwner.toLowerCase()) {
+    if (ghUser) {
       filtered = filtered.filter(function(p) { return !p.owner || p.owner.toLowerCase() === ghUser; });
     }
     return filtered;

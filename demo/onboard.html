@@ -207,7 +207,7 @@
   <!-- ═══ Step 2: Connect GitHub ═══ -->
   <div class="step-panel" id="step2">
     <p style="font-size:13px;color:var(--demo-fg-subtle);margin-bottom:20px;line-height:1.6;">
-      Connect your GitHub account to commit your project config. You need write access to the <strong>Design-Token-Forge</strong> repository (ask your team lead to add you as a collaborator if needed).
+      Connect your GitHub account. Your project deploys to <strong>your own</strong> copy of the Design-Token-Forge repo — no special access needed.
     </p>
 
     <div class="form-group">
@@ -220,8 +220,8 @@
         <button class="btn btn-primary" id="ghConnectBtn">Connect</button>
       </div>
       <p class="hint">
-        When creating the token, check the <strong>repo</strong> scope (the main "repo" checkbox, not just sub-items).
-        Used to commit your project config. Stored only in this browser session.
+        When creating the token, check the <strong>repo</strong> scope and <strong>workflow</strong> scope.
+        Used to set up your fork and deploy tokens. Stored only in this browser session.
       </p>
       <div class="gh-status" id="ghStatus"></div>
     </div>
@@ -402,13 +402,14 @@
     ghConnectBtn.disabled = true;
     ghConnectBtn.textContent = 'Connecting…';
     ghStatusEl.className = 'gh-status';
-    ghStatusEl.style.display = 'none';
+    ghStatusEl.style.display = '';
+    ghStatusEl.innerHTML = '<span style="color:#666">⏳ Verifying token…</span>';
+
+    const ghHeaders = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' };
 
     try {
       // 1. Verify token & get username
-      const userResp = await fetch(GH_API + '/user', {
-        headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
-      });
+      const userResp = await fetch(GH_API + '/user', { headers: ghHeaders });
       if (!userResp.ok) {
         if (userResp.status === 401) throw new Error('Invalid token. Make sure you checked the "repo" scope when creating it.');
         throw new Error('Authentication failed (HTTP ' + userResp.status + ')');
@@ -416,51 +417,80 @@
       const user = await userResp.json();
       ghUsername = user.login;
 
-      // 2. Check access to Design-Token-Forge repo (check upstream first — collaborator scenario is most common)
+      // 2. Check if user already has their own repo (own fork or upstream original)
+      ghStatusEl.innerHTML = '<span style="color:#666">⏳ Checking your repo…</span>';
       let repoOwner = '';
-      let hasAccess = false;
+      const ownResp = await fetch(GH_API + '/repos/' + user.login + '/' + GH_REPO_NAME, { headers: ghHeaders });
 
-      // Try the shared upstream repo first
-      const upstreamResp = await fetch(GH_API + '/repos/' + GH_REPO_OWNER + '/' + GH_REPO_NAME, {
-        headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
-      });
-      if (upstreamResp.ok) {
-        const repo = await upstreamResp.json();
+      if (ownResp.ok) {
+        const repo = await ownResp.json();
         if (repo.permissions && repo.permissions.push) {
-          repoOwner = GH_REPO_OWNER;
-          hasAccess = true;
+          repoOwner = user.login;
         }
       }
 
-      // If no push access on upstream, try user's own repo (fork scenario)
-      if (!hasAccess) {
-        const ownResp = await fetch(GH_API + '/repos/' + user.login + '/' + GH_REPO_NAME, {
-          headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
+      // 3. If no repo, fork from upstream and set up Pages
+      if (!repoOwner) {
+        ghStatusEl.innerHTML = '<span style="color:#666">⏳ Setting up your copy… (this takes ~15 seconds)</span>';
+
+        // Fork the repo
+        const forkResp = await fetch(GH_API + '/repos/' + GH_REPO_OWNER + '/' + GH_REPO_NAME + '/forks', {
+          method: 'POST', headers: ghHeaders, body: JSON.stringify({ default_branch_only: true })
         });
-        if (ownResp.ok) {
-          const repo = await ownResp.json();
-          if (repo.permissions && repo.permissions.push) {
-            repoOwner = user.login;
-            hasAccess = true;
-          }
+        if (!forkResp.ok && forkResp.status !== 202) {
+          const fErr = await forkResp.json().catch(function() { return {}; });
+          throw new Error('Fork failed: ' + (fErr.message || 'HTTP ' + forkResp.status));
         }
+
+        // Wait for fork to be ready (GitHub forks are async)
+        ghStatusEl.innerHTML = '<span style="color:#666">⏳ Creating your fork…</span>';
+        for (let attempt = 0; attempt < 20; attempt++) {
+          await new Promise(function(r) { setTimeout(r, 2000); });
+          const check = await fetch(GH_API + '/repos/' + user.login + '/' + GH_REPO_NAME, { headers: ghHeaders });
+          if (check.ok) { repoOwner = user.login; break; }
+        }
+        if (!repoOwner) throw new Error('Fork is taking too long. Please try again in a minute.');
+
+        // Enable Actions on the fork
+        ghStatusEl.innerHTML = '<span style="color:#666">⏳ Enabling Actions…</span>';
+        await fetch(GH_API + '/repos/' + user.login + '/' + GH_REPO_NAME + '/actions/permissions', {
+          method: 'PUT', headers: ghHeaders,
+          body: JSON.stringify({ enabled: true, allowed_actions: 'all' })
+        });
+
+        // Enable GitHub Pages with Actions as build source
+        ghStatusEl.innerHTML = '<span style="color:#666">⏳ Enabling GitHub Pages…</span>';
+        try {
+          await fetch(GH_API + '/repos/' + user.login + '/' + GH_REPO_NAME + '/pages', {
+            method: 'POST', headers: ghHeaders,
+            body: JSON.stringify({ build_type: 'workflow' })
+          });
+        } catch(e) { /* Pages may already be enabled from a previous attempt */ }
+
+        // Trigger first deploy
+        ghStatusEl.innerHTML = '<span style="color:#666">⏳ Triggering first deploy…</span>';
+        try {
+          await fetch(GH_API + '/repos/' + user.login + '/' + GH_REPO_NAME + '/actions/workflows/deploy-tokens.yml/dispatches', {
+            method: 'POST', headers: ghHeaders,
+            body: JSON.stringify({ ref: 'main' })
+          });
+        } catch(e) { /* non-critical */ }
       }
 
-      if (hasAccess) {
-        ghOwner = repoOwner;
-        ghPat = token;
-        repoVerified = true;
-        localStorage.setItem('dtf-gh-user', user.login);
-        localStorage.setItem('dtf-gh-pat', token);
-        ghStatusEl.style.display = '';
-        ghStatusEl.textContent = '✓ Connected as ' + user.login + ' — write access to ' + repoOwner + '/' + GH_REPO_NAME;
-        ghStatusEl.className = 'gh-status ok';
-        ghConnectBtn.disabled = true;
-        ghConnectBtn.textContent = 'Connected ✓';
-        ghConnectBtn.style.opacity = '0.6';
-      } else {
-        throw new Error('You need collaborator access. Ask your team admin to add "' + user.login + '" at github.com/' + GH_REPO_OWNER + '/' + GH_REPO_NAME + '/settings/access');
-      }
+      // Success
+      ghOwner = repoOwner;
+      ghPat = token;
+      repoVerified = true;
+      localStorage.setItem('dtf-gh-user', user.login);
+      localStorage.setItem('dtf-gh-pat', token);
+      localStorage.setItem('dtf-gh-owner', repoOwner);
+      ghStatusEl.style.display = '';
+      ghStatusEl.textContent = '✓ Connected as ' + user.login + ' — deploying to ' + repoOwner + '/' + GH_REPO_NAME;
+      ghStatusEl.className = 'gh-status ok';
+      ghConnectBtn.disabled = true;
+      ghConnectBtn.textContent = 'Connected ✓';
+      ghConnectBtn.style.opacity = '0.6';
+
     } catch(err) {
       ghStatusEl.style.display = '';
       ghStatusEl.textContent = '✗ ' + err.message;
