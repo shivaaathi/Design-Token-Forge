@@ -9,7 +9,7 @@
     "id": "desktop-pdf-editor",
     "name": "Desktop PDF Editor",
     "owner": "sridhar-ravi-2917",
-    "description": "Default project ÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ the original DTF token set for the Desktop PDF Editor product."
+    "description": "Default project ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ the original DTF token set for the Desktop PDF Editor product."
   },
   {
     "id": "writer-handhelds",
@@ -22,5 +22,11 @@
     "name": "Calicut",
     "owner": "gayathri-rp-19560",
     "description": "Design tokens for Calicut"
+  },
+  {
+    "id": "slate-demo",
+    "name": "Slate demo",
+    "owner": "Gowthamrg20",
+    "description": "Design tokens for Slate demo"
   }
 ]
