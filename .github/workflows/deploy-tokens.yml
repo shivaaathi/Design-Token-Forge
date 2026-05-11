@@ -38,6 +38,11 @@ jobs:
             node packages/sync-server/build-static.js --project "$proj" --out-dir ./dist
           done
 
+      - name: Copy plugin UI to root
+        run: |
+          mkdir -p dist/plugin
+          cp demo/plugin/ui.html dist/plugin/ui.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
