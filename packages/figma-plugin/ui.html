@@ -1186,10 +1186,8 @@
       GH_USERNAME = user.login;
       storageSet('dtf-gh-username', GH_USERNAME);
       ghPatInput.value = '';
-      /* Auto-set server URL if not already configured */
-      if (!storageGet('dtf-server-url')) {
-        setServerUrl(DEFAULT_SERVER);
-      }
+      /* Always ensure server URL points to the shared Pages site */
+      setServerUrl(DEFAULT_SERVER);
       projectsFetched = false;
       fetchProjects();
       showIdentityState();
