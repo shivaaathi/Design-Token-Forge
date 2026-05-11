@@ -416,31 +416,31 @@
       const user = await userResp.json();
       ghUsername = user.login;
 
-      // 2. Check access to Design-Token-Forge repo (try user's own first, then upstream)
+      // 2. Check access to Design-Token-Forge repo (check upstream first — collaborator scenario is most common)
       let repoOwner = '';
       let hasAccess = false;
 
-      // Try user's own repo first (fork scenario)
-      const ownResp = await fetch(GH_API + '/repos/' + user.login + '/' + GH_REPO_NAME, {
+      // Try the shared upstream repo first
+      const upstreamResp = await fetch(GH_API + '/repos/' + GH_REPO_OWNER + '/' + GH_REPO_NAME, {
         headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
       });
-      if (ownResp.ok) {
-        const repo = await ownResp.json();
+      if (upstreamResp.ok) {
+        const repo = await upstreamResp.json();
         if (repo.permissions && repo.permissions.push) {
-          repoOwner = user.login;
+          repoOwner = GH_REPO_OWNER;
           hasAccess = true;
         }
       }
 
-      // If not found under user, check the upstream repo (collaborator scenario)
+      // If no push access on upstream, try user's own repo (fork scenario)
       if (!hasAccess) {
-        const upstreamResp = await fetch(GH_API + '/repos/' + GH_REPO_OWNER + '/' + GH_REPO_NAME, {
+        const ownResp = await fetch(GH_API + '/repos/' + user.login + '/' + GH_REPO_NAME, {
           headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' }
         });
-        if (upstreamResp.ok) {
-          const repo = await upstreamResp.json();
+        if (ownResp.ok) {
+          const repo = await ownResp.json();
           if (repo.permissions && repo.permissions.push) {
-            repoOwner = GH_REPO_OWNER;
+            repoOwner = user.login;
             hasAccess = true;
           }
         }
@@ -452,6 +452,7 @@
         repoVerified = true;
         localStorage.setItem('dtf-gh-user', user.login);
         localStorage.setItem('dtf-gh-pat', token);
+        ghStatusEl.style.display = '';
         ghStatusEl.textContent = '✓ Connected as ' + user.login + ' — write access to ' + repoOwner + '/' + GH_REPO_NAME;
         ghStatusEl.className = 'gh-status ok';
         ghConnectBtn.disabled = true;
@@ -461,6 +462,7 @@
         throw new Error('You need collaborator access. Ask your team admin to add "' + user.login + '" at github.com/' + GH_REPO_OWNER + '/' + GH_REPO_NAME + '/settings/access');
       }
     } catch(err) {
+      ghStatusEl.style.display = '';
       ghStatusEl.textContent = '✗ ' + err.message;
       ghStatusEl.className = 'gh-status err';
       repoVerified = false;
